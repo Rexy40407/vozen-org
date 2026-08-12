@@ -46,9 +46,39 @@
   const normalize = (value) => String(value ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const pathKey = (value) => String(value || '').replace(/\\/g, '/').replace(/\/index\.html$/, '/').replace(/\/$/, '');
   const samePath = (href) => pathKey(new URL(href, window.location.href).pathname) === pathKey(window.location.pathname);
-  const docUrl = (relative) => new URL(relative || 'index.html', config.root).href;
+  const cleanPublicIndexUrl = (value) => {
+    const target = new URL(value, window.location.href);
+    if (!localFile && target.origin === window.location.origin && /\/index\.html$/i.test(target.pathname)) {
+      target.pathname = target.pathname.replace(/index\.html$/i, '');
+    }
+    return target.href;
+  };
+  const docUrl = (relative) => cleanPublicIndexUrl(new URL(relative || 'index.html', config.root));
   const relativeOr = (value, fallback) => value ? new URL(value, config.root).href : fallback;
   const docsReturnStorageKey = 'vozen-docs-return-url';
+
+  function normalisePublicIndexAddress() {
+    if (localFile || !/\/index\.html$/i.test(window.location.pathname)) return;
+    const target = new URL(window.location.href);
+    target.pathname = target.pathname.replace(/index\.html$/i, '');
+    window.history.replaceState(null, document.title, target.pathname + target.search + target.hash);
+  }
+
+  function normalisePublicIndexLinks() {
+    if (localFile) return;
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const raw = link.getAttribute('href');
+      if (!raw || raw.startsWith('#')) return;
+      try {
+        const target = new URL(raw, window.location.href);
+        if (target.origin !== window.location.origin || !/\/index\.html$/i.test(target.pathname)) return;
+        target.pathname = target.pathname.replace(/index\.html$/i, '');
+        link.href = target.pathname + target.search + target.hash;
+      } catch (_) {
+        // Keep a malformed legacy link untouched instead of breaking navigation.
+      }
+    });
+  }
 
   // Older static pages may still link to an uncached shell stylesheet. Add the
   // current stylesheet after the document's own styles so every route — even
@@ -57,7 +87,7 @@
     if (document.querySelector('link[data-vozen-current-docs-shell]')) return;
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
-    stylesheet.href = new URL('docs-shell.css?v=ecosystem-nav-v8', docsRoot).href;
+    stylesheet.href = new URL('docs-shell.css?v=ecosystem-nav-v9', docsRoot).href;
     stylesheet.dataset.vozenCurrentDocsShell = 'true';
     document.head.appendChild(stylesheet);
   }
@@ -80,7 +110,7 @@
     else document.body.insertBefore(host, document.body.querySelector('main'));
 
     const navScript = document.createElement('script');
-    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-nav-v8', siteRoot.href).href;
+    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-nav-v9', siteRoot.href).href;
     document.body.appendChild(navScript);
   }
 
@@ -645,6 +675,8 @@
   }
 
   async function boot() {
+    normalisePublicIndexAddress();
+    normalisePublicIndexLinks();
     ensureCurrentShellStyles();
     installEcosystemNav();
     document.body.dataset.vozenDocsShell = 'ready';

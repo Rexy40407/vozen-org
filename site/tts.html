@@ -18,10 +18,10 @@
     <!-- Social + canonical. URLs ABSOLUTAS do dominio proprio (vozen.org via GitHub
          Pages). Se algum dia mudares de dominio, troca estas 4 URLs (canonical,
          og:url, og:image, twitter:image). -->
-    <link rel="canonical" href="https://vozen.org/tts.html" />
+    <link rel="canonical" href="https://vozen.org/tts/" />
     <meta property="og:site_name" content="Vozen" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://vozen.org/tts.html" />
+    <meta property="og:url" content="https://vozen.org/tts/" />
     <meta property="og:title" content="Vozen — Discord TTS in 35 languages and 38 voices" />
     <meta
       property="og:description"
@@ -46,9 +46,14 @@
     <link rel="stylesheet" href="css/pricing-cards-v9.css?v=free-align-v12" />
     <link rel="stylesheet" href="css/billing-v3.css?v=compact-checkout-v1" />
     <link rel="stylesheet" href="css/ecosystem-bridge.css" />
-    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v8" />
+    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v9" />
     <link rel="stylesheet" href="css/tts-ui-v1.css?v=voice-studio-v4" />
     <link rel="stylesheet" href="css/bundle-pricing-v1.css?v=bundle-ribbon-v2" />
+    <script>
+      if (window.location.protocol !== 'file:' && /\/tts\.html$/i.test(window.location.pathname)) {
+        window.location.replace('/tts/' + window.location.search + window.location.hash);
+      }
+    </script>
 
     <!-- FAQ structured data (Google rich results). Mantém em sincronia com
          window.VOZEN_FAQ (js/i18n.js) — o JSON-LD tem de ser ESTÁTICO porque os
@@ -83,16 +88,16 @@
     <!-- ─────────────── NAVBAR ─────────────── -->
     <header class="nav vozen-global-nav" id="nav" data-vozen-nav data-nav-product="TTS" data-nav-current="tts">
       <div class="wrap nav__inner">
-        <a class="brand" href="index.html" aria-label="Vozen ecosystem home">
+        <a class="brand" href="./" aria-label="Vozen ecosystem home">
           <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="assets/vozen-ecosystem-icon.png" alt="" /></span>
           <span class="brand__word">Vozen</span>
           <span class="nav__product">TTS</span>
         </a>
 
         <nav class="nav__links" aria-label="Primary">
-          <a class="is-current" href="tts.html" aria-current="page">Vozen TTS</a>
-          <a href="helper.html">Vozen Helper</a>
-          <a href="commands/index.html">Commands</a>
+          <a class="is-current" href="tts/" aria-current="page">Vozen TTS</a>
+          <a href="helper/">Vozen Helper</a>
+          <a href="commands/">Commands</a>
           <a href="premium.html">Premium</a>
         </nav>
 
@@ -650,7 +655,7 @@
     <footer class="foot">
       <div class="wrap foot__grid">
         <div>
-          <a class="brand" href="index.html" aria-label="Vozen ecosystem home">
+          <a class="brand" href="./" aria-label="Vozen ecosystem home">
             <span class="brand__mark"><img class="brand__portal" src="assets/vozen-ecosystem-icon.png" alt="" /></span>
             <span class="brand__word">Vozen</span>
           </a>
@@ -660,11 +665,11 @@
           <h4 data-i18n="foot.product">Product</h4>
           <a href="#features" data-i18n="nav.features">Features</a>
           <a href="#games" data-i18n="nav.games">Games</a>
-          <a href="commands/index.html" data-i18n="nav.commands">Commands</a>
+          <a href="commands/" data-i18n="nav.commands">Commands</a>
           <a href="premium.html#plans" data-i18n="nav.premium">Premium</a>
           <a href="#faq" data-i18n="nav.faq">FAQ</a>
-          <a href="index.html">Vozen ecosystem</a>
-          <a href="helper.html">Vozen Helper</a>
+          <a href="./">Vozen ecosystem</a>
+          <a href="helper/">Vozen Helper</a>
           <a href="/status">Status</a>
         </div>
         <div>
@@ -684,7 +689,7 @@
       </div>
     </footer>
 
-    <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v8"></script>
+    <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v9"></script>
     <script defer src="js/i18n-v41.js?v=payment-element"></script>
     <script defer src="js/main-v51.js?v=embedded-checkout-v1"></script>
     <script defer src="js/motion-v1.js"></script>

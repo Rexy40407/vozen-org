@@ -17,17 +17,22 @@
       name="description"
       content="Vozen Helper is a Discord operations companion for safer, clearer server management. Explore its modules and setup path."
     />
-    <link rel="canonical" href="https://vozen.org/helper.html" />
+    <link rel="canonical" href="https://vozen.org/helper/" />
     <title>Vozen Helper — Available now</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="css/main-v43.css?v=nav-icons-v2" />
     <link rel="stylesheet" href="css/ecosystem-v1.css?v=popup-viewport-v2" />
     <link rel="stylesheet" href="css/pricing-cards-v3.css" />
     <link rel="stylesheet" href="css/pricing-cards-v9.css?v=free-align-v12" />
-    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v8" />
+    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v9" />
     <link rel="stylesheet" href="css/helper-ui-preview.css?v=operations-preview-v1" />
     <link rel="stylesheet" href="css/helper-pricing-v1.css?v=helper-comparison-v1" />
     <link rel="stylesheet" href="css/bundle-pricing-v1.css?v=bundle-ribbon-v2" />
+    <script>
+      if (window.location.protocol !== 'file:' && /\/helper\.html$/i.test(window.location.pathname)) {
+        window.location.replace('/helper/' + window.location.search + window.location.hash);
+      }
+    </script>
   </head>
   <body class="helper-page">
     <a class="eco-skip" href="#helper">Skip to content</a>
@@ -351,7 +356,7 @@
           <p class="helper-plan-comparison__footnote">Premium limits apply only when the Helper runtime and any required provider are available.</p>
         </section>
 
-        <a class="eco-back" href="index.html">← Back to Vozen</a>
+        <a class="eco-back" href="./">← Back to Vozen</a>
       </div>
     </main>
 
@@ -365,7 +370,7 @@
       </div>
     </footer>
 
-    <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v8"></script>
+    <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v9"></script>
     <script defer src="js/i18n-v41.js"></script>
     <script defer src="js/main-v51.js"></script>
     <script defer src="js/helper-ambient-v1.js?v=popup-safe-v4"></script>

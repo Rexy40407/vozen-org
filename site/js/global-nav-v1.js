@@ -32,7 +32,7 @@
     const current = host.dataset.navCurrent || "";
     const product = host.dataset.navProduct || "Vozen";
     const docsSurface = host.dataset.navSurface === "docs";
-    const link = (target) => `${root}${target}`;
+    const link = (target) => target ? `${root}${target}` : (root || './');
     const currentClass = (name) => current === name ? " is-current" : "";
     const currentAria = (name) => current === name ? ' aria-current="page"' : "";
 
@@ -42,16 +42,16 @@
     if (docsSurface) {
       host.outerHTML = `<header class="docs-ecosystem-nav">
         <div class="docs-ecosystem-nav__inner">
-          <a class="docs-ecosystem-nav__brand" href="${link('index.html')}" aria-label="Vozen ecosystem home">
+          <a class="docs-ecosystem-nav__brand" href="${link('')}" aria-label="Vozen ecosystem home">
             <span class="docs-ecosystem-nav__mark" aria-hidden="true"><img src="${link('assets/vozen-ecosystem-icon.png')}" alt="" /></span>
             <span class="docs-ecosystem-nav__word">Vozen</span>
             <span class="docs-ecosystem-nav__product">Ecosystem</span>
           </a>
           <nav class="docs-ecosystem-nav__links" aria-label="Vozen products">
-            <a class="${currentClass('tts').trim()}" href="${link('tts.html')}"${currentAria('tts')}>Vozen TTS</a>
-            <a class="${currentClass('helper').trim()}" href="${link('helper.html')}"${currentAria('helper')}>Vozen Helper</a>
-            <a class="${currentClass('docs').trim()}" href="${link('docs/index.html')}"${currentAria('docs')}>Docs</a>
-            <a class="${currentClass('commands').trim()}" href="${link('commands/index.html')}"${currentAria('commands')}>Commands</a>
+            <a class="${currentClass('tts').trim()}" href="${link('tts/')}"${currentAria('tts')}>Vozen TTS</a>
+            <a class="${currentClass('helper').trim()}" href="${link('helper/')}"${currentAria('helper')}>Vozen Helper</a>
+            <a class="${currentClass('docs').trim()}" href="${link('docs/')}"${currentAria('docs')}>Docs</a>
+            <a class="${currentClass('commands').trim()}" href="${link('commands/')}"${currentAria('commands')}>Commands</a>
             <span class="docs-ecosystem-nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable">Premium</span>
           </nav>
           <div class="docs-ecosystem-nav__actions">
@@ -66,16 +66,16 @@
 
     host.outerHTML = `<header class="nav vozen-global-nav" id="nav">
       <div class="wrap nav__inner">
-        <a class="brand" href="${link('index.html')}" aria-label="Vozen ecosystem home">
+        <a class="brand" href="${link('')}" aria-label="Vozen ecosystem home">
           <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="${link('assets/vozen-ecosystem-icon.png')}" alt="" /></span>
           <span class="brand__word">Vozen</span>
           <span class="nav__product">${product}</span>
         </a>
         <nav class="nav__links" aria-label="Primary">
-          <a class="${currentClass('tts').trim()}" href="${link('tts.html')}"${currentAria('tts')}>Vozen TTS</a>
-          <a class="${currentClass('helper').trim()}" href="${link('helper.html')}"${currentAria('helper')}>Vozen Helper</a>
-          <a class="${currentClass('docs').trim()}" href="${link('docs/index.html')}"${currentAria('docs')}>Docs</a>
-          <a class="${currentClass('commands').trim()}" href="${link('commands/index.html')}"${currentAria('commands')}>Commands</a>
+          <a class="${currentClass('tts').trim()}" href="${link('tts/')}"${currentAria('tts')}>Vozen TTS</a>
+          <a class="${currentClass('helper').trim()}" href="${link('helper/')}"${currentAria('helper')}>Vozen Helper</a>
+          <a class="${currentClass('docs').trim()}" href="${link('docs/')}"${currentAria('docs')}>Docs</a>
+          <a class="${currentClass('commands').trim()}" href="${link('commands/')}"${currentAria('commands')}>Commands</a>
           <span class="nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable">Premium</span>
         </nav>
         <div class="nav__actions">

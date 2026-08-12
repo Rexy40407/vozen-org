@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07070d" />
+    <meta name="description" content="Vozen Helper for Discord." />
+    <link rel="canonical" href="https://vozen.org/helper/" />
+    <title>Vozen Helper</title>
+    <style>body{margin:0;background:#07070d;color:#f6f8ff;font:16px system-ui,sans-serif}.route-loading{display:grid;min-height:100vh;place-items:center;padding:24px;text-align:center;color:#bac3dc}.route-loading strong{display:block;color:#fff;margin-bottom:8px}</style>
+  </head>
+  <body>
+    <main class="route-loading" aria-live="polite"><div><strong>Loading Vozen Helper</strong><span>Preparing your server workspace.</span></div></main>
+    <script>
+      (async () => {
+        const response = await fetch('../helper.html');
+        if (!response.ok) throw new Error('The Helper page could not be loaded.');
+        let source = await response.text();
+        source = source
+          .replace(/<head([^>]*)>/i, '<head$1><base href="../">')
+          .replaceAll('https://vozen.org/helper.html', 'https://vozen.org/helper/');
+        document.open();
+        document.write(source);
+        document.close();
+      })().catch((error) => {
+        document.querySelector('.route-loading').innerHTML = '<div><strong>Vozen Helper could not load.</strong><span>Please refresh this page and try again.</span></div>';
+        console.error(error);
+      });
+    </script>
+  </body>
+</html>
