@@ -165,16 +165,29 @@
   text-align: center;
 }
 
+.command-filter-set {
+  margin-top: var(--commands-space-3);
+}
+
+.command-filter-set__label {
+  margin: 0 0 9px;
+  color: var(--text-2);
+  font: 700 11px var(--f-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.command-product-filters,
 .command-filters {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--commands-space-1);
-  margin-top: var(--commands-space-3);
 }
 
+.command-product-filters button,
 .command-filters button {
   grid-column: span 3;
-  min-height: 36px;
+  min-height: 40px;
   padding: 7px 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -189,26 +202,40 @@
     transform 180ms ease;
 }
 
+.command-product-filters button {
+  grid-column: span 4;
+  color: var(--text-0);
+  background: rgba(11, 16, 31, 0.72);
+}
+
 .command-filters button:nth-child(n + 5) {
   grid-column: span 4;
 }
 
+.command-product-filters button:hover,
 .command-filters button:hover {
   border-color: var(--line-2);
   color: var(--text-0);
   transform: translateY(-1px);
 }
 
+.command-product-filters button:focus-visible,
 .command-filters button:focus-visible {
   outline: 2px solid var(--aqua);
   outline-offset: 2px;
 }
 
+.command-product-filters button.is-active,
 .command-filters button.is-active {
   border-color: transparent;
   color: #fff;
   background: var(--blurple);
   box-shadow: 0 7px 18px -10px rgba(102, 114, 255, 0.9);
+}
+
+.command-product-filters button[data-product-filter="helper"].is-active {
+  background: #137f76;
+  box-shadow: 0 7px 18px -10px rgba(46, 230, 200, 0.55);
 }
 
 .command-results {
@@ -388,6 +415,19 @@
   content: "↳";
 }
 
+.command-row__product {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: var(--commands-space-3);
+  padding: 4px 7px;
+  border: 1px solid rgba(46, 230, 200, 0.24);
+  border-radius: 5px;
+  color: var(--aqua);
+  background: rgba(46, 230, 200, 0.07);
+  font: 700 10px var(--f-mono);
+  letter-spacing: 0.04em;
+}
+
 .command-empty {
   margin-top: var(--commands-space-4);
   padding: var(--commands-space-4);
@@ -552,6 +592,7 @@
     min-height: 54px;
   }
 
+  .command-product-filters,
   .command-filters {
     display: flex;
     margin-inline: calc(var(--commands-space-4) * -1);
@@ -561,10 +602,12 @@
     scrollbar-width: none;
   }
 
+  .command-product-filters::-webkit-scrollbar,
   .command-filters::-webkit-scrollbar {
     display: none;
   }
 
+  .command-product-filters button,
   .command-filters button {
     min-height: 42px;
     flex: none;

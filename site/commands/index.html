@@ -93,14 +93,19 @@
               <input id="commandSearch" type="search" autocomplete="off" placeholder="Try setup, voice or games" />
               <kbd>/</kbd>
             </label>
-            <div class="command-filters" role="group" aria-label="Command filters">
-              <button class="is-active" type="button" data-filter="all">All</button>
-              <button type="button" data-filter="start">Start & voice</button>
-              <button type="button" data-filter="fun">Fun & games</button>
-              <button type="button" data-filter="stats">Stats</button>
-              <button type="button" data-filter="settings">Settings</button>
-              <button type="button" data-filter="premium">Premium</button>
-              <button type="button" data-filter="help">Help</button>
+            <div class="command-filter-set">
+              <p class="command-filter-set__label" id="commandProductLabel">Show commands for</p>
+              <div class="command-product-filters" role="group" aria-labelledby="commandProductLabel">
+                <button class="is-active" type="button" data-product-filter="all" aria-pressed="true">All products</button>
+                <button type="button" data-product-filter="tts" aria-pressed="false">Vozen TTS</button>
+                <button type="button" data-product-filter="helper" aria-pressed="false">Vozen Helper</button>
+              </div>
+            </div>
+            <div class="command-filter-set">
+              <p class="command-filter-set__label" id="commandCategoryLabel">Filter by category</p>
+              <div class="command-filters" id="commandCategoryFilters" role="group" aria-labelledby="commandCategoryLabel">
+                <button class="is-active" type="button" data-filter="all" aria-pressed="true">All categories</button>
+              </div>
             </div>
             <p class="command-results" id="commandResults" aria-live="polite">Showing all commands</p>
           </div>
@@ -122,13 +127,13 @@
             <aside class="commands-aside">
               <div class="commands-aside__block commands-aside__block--accent">
                 <p class="command-finder__kicker">New here?</p>
-                <h2>Three steps to voice</h2>
-                <ol class="commands-steps">
+                <h2 id="commandAsideTitle">Three steps to voice</h2>
+                <ol class="commands-steps" id="commandAsideSteps">
                   <li><code>/setup</code><span>Configure the server once</span></li>
                   <li><code>/join</code><span>Join your current voice channel</span></li>
                   <li><code>/tts</code><span>Say something out loud</span></li>
                 </ol>
-                <a class="btn btn--discord-cta btn--sm" href="https://discord.com/oauth2/authorize?client_id=1523826014935842997&amp;permissions=326420745216&amp;scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Add Vozen to Discord</a>
+                <a class="btn btn--discord-cta btn--sm" id="commandAsideCta" href="https://discord.com/oauth2/authorize?client_id=1523826014935842997&amp;permissions=326420745216&amp;scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Add Vozen to Discord</a>
               </div>
               <div class="commands-aside__block">
                 <p class="command-finder__kicker">Reading the labels</p>
@@ -138,7 +143,7 @@
                   <li><span class="command-tag command-tag--admin">Admin</span><span>Requires Manage Server</span></li>
                 </ul>
               </div>
-              <div class="commands-aside__note"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><p>Every command is registered from the Rust contract used by the live bot</p></div>
+              <div class="commands-aside__note"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><p id="commandAsideNote">Every command is registered from the Rust contract used by the live bot</p></div>
             </aside>
           </div>
         </div>
@@ -158,6 +163,6 @@
     <script defer src="../js/i18n-v41.js"></script>
     <script defer src="../js/main-v51.js"></script>
     <script defer src="../js/motion-v1.js"></script>
-    <script defer src="../js/commands-v1.js"></script>
+    <script defer src="../js/commands-v1.js?v=product-filter-v1"></script>
   </body>
 </html>
