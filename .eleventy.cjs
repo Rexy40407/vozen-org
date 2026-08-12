@@ -52,8 +52,8 @@ module.exports = function (eleventyConfig) {
     <meta name="description" content="${description}">
     <link rel="canonical" href="https://vozen.org${canonicalPath}">
     <title>${title} - Vozen Helper</title>
-    <link rel="stylesheet" href="${helperRoot}assets/docs.css?v=ecosystem-nav-v7">
-    <link rel="stylesheet" href="${docsRoot}shared/docs-shell.css?v=ecosystem-nav-v7">
+    <link rel="stylesheet" href="${helperRoot}assets/docs.css?v=ecosystem-nav-v8">
+    <link rel="stylesheet" href="${docsRoot}shared/docs-shell.css?v=ecosystem-nav-v8">
   </head>
   <body data-docs-product="helper">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -78,8 +78,8 @@ module.exports = function (eleventyConfig) {
       <span>Vozen Helper documentation</span>
       <span><a href="${siteRoot}privacy.html">Privacy</a> - <a href="${siteRoot}terms.html">Terms</a></span>
     </footer>
-    <script src="${docsRoot}shared/docs-shell.js?v=ecosystem-nav-v7"></script>
-    <script src="${siteRoot}js/global-nav-v1.js?v=ecosystem-nav-v7"></script>
+    <script src="${docsRoot}shared/docs-shell.js?v=ecosystem-nav-v8"></script>
+    <script src="${siteRoot}js/global-nav-v1.js?v=ecosystem-nav-v8"></script>
   </body>
 </html>`;
   });
