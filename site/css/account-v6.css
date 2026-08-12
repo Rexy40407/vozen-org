@@ -4069,49 +4069,70 @@ body.page-account .ppanel__logoutaction:active {
   transform: scale(0.98);
 }
 
-/* The shared desktop site is now 10% larger. Account content keeps its tuned dimensions, while
-   the navigation matches the rest of Vozen on every desktop page. */
+/* Account uses the same physical ecosystem navigation profile as every public
+   product page.  Keep this scoped so the account workspace itself retains its
+   intentionally denser layout. */
 @media (min-width: 1001px) {
   body.page-account {
-    --nav-h: 77px;
+    --nav-h: 92px;
+  }
+
+  body.page-account .nav__inner {
+    width: min(1280px, calc(100% - 56px));
+    max-width: none;
+    min-height: 92px;
+    height: 92px;
+    padding: 0;
   }
 
   body.page-account .brand__mark {
-    width: 44px;
-    height: 44px;
-    border-radius: 13px;
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
   }
 
   body.page-account .brand__word {
-    font-size: 25px;
+    font-size: 29px;
+  }
+
+  body.page-account .nav__product {
+    font-size: 16px;
   }
 
   body.page-account .nav__links {
-    gap: 33px;
+    gap: 36px;
   }
 
   body.page-account .nav__links a {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   body.page-account .nav__actions {
-    gap: 15px;
+    gap: 16px;
+  }
+
+  body.page-account .nav__gh {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
   }
 
   body.page-account .nav__gh svg {
-    width: 22px;
-    height: 22px;
+    width: 23px;
+    height: 23px;
   }
 
   body.page-account .lang__btn {
-    gap: 8px;
-    padding: 7px 13px;
-    font-size: 14px;
+    gap: 9px;
+    padding: 8px 15px;
+    font-size: 15px;
   }
 
   body.page-account .nav__login {
-    padding: 10px 20px;
-    font-size: 16px;
+    min-height: 52px;
+    padding: 0 22px;
+    font-size: 17px;
   }
 }
 

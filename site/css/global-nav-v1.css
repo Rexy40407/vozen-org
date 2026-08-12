@@ -70,6 +70,40 @@
   filter: brightness(1.06);
 }
 
+/* One desktop profile for the whole ecosystem.  Public marketing pages use a
+   1.1 page zoom above 1100px while Account does not, so the local inverse
+   zoom is intentional: it lets the header keep the exact same physical
+   measurements everywhere without shrinking the page below it. */
+@media (min-width: 1001px) {
+  .vozen-global-nav .nav__inner {
+    width: min(1280px, calc(100% - 56px));
+    max-width: none;
+    min-height: 92px;
+    height: 92px;
+    padding: 0;
+  }
+
+  .vozen-global-nav .brand__mark {
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+  }
+
+  .vozen-global-nav .brand__word { font-size: 29px; }
+  .vozen-global-nav .nav__product { font-size: 16px; }
+  .vozen-global-nav .nav__links { gap: 36px; }
+  .vozen-global-nav .nav__links a { font-size: 17px; }
+  .vozen-global-nav .nav__actions { gap: 16px; }
+  .vozen-global-nav .nav__gh { display: grid; width: 42px; height: 42px; place-items: center; }
+  .vozen-global-nav .nav__gh svg { width: 23px; height: 23px; }
+  .vozen-global-nav .lang__btn { gap: 9px; padding: 8px 15px; font-size: 15px; }
+  .vozen-global-nav .nav__login { min-height: 52px; padding: 0 22px; font-size: 17px; }
+}
+
+@media (min-width: 1101px) {
+  body:not(.page-account) .vozen-global-nav { zoom: .9090909091; }
+}
+
 .vozen-global-nav .nav__links a.is-current {
   position: relative;
   color: var(--text-0, #f7f8fb);
