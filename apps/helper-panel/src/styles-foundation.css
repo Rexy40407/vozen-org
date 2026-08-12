@@ -296,6 +296,280 @@ textarea:focus-visible {
   min-width: 120px;
 }
 
+/* Owner-safe operational tracker. It deliberately shows only the selected
+ * guild's existing API data, never global runtime data from another server. */
+.helper-tracker {
+  display: grid;
+  gap: 16px;
+}
+
+.helper-tracker-intro {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+  padding: clamp(24px, 3vw, 34px);
+  border-color: color-mix(in srgb, var(--panel-accent-blue) 45%, var(--panel-border));
+  background:
+    radial-gradient(circle at 88% 5%, rgb(130 165 255 / 16%), transparent 37%),
+    linear-gradient(145deg, rgba(20, 32, 52, 0.98), rgba(10, 18, 30, 0.98));
+}
+
+.helper-tracker-intro h2,
+.tracker-panel h3,
+.tracker-health h3 {
+  margin: 8px 0 7px;
+  color: var(--panel-copy);
+  font-family: 'Vozen Outfit', 'Segoe UI', system-ui, sans-serif;
+  letter-spacing: -0.035em;
+}
+
+.helper-tracker-intro h2 {
+  font-size: clamp(27px, 3.2vw, 42px);
+}
+
+.helper-tracker-intro p,
+.tracker-health p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--panel-copy-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tracker-runtime {
+  display: flex;
+  align-items: center;
+  min-width: 176px;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgb(8 14 24 / 56%);
+}
+
+.tracker-runtime > i,
+.tracker-event-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--panel-accent);
+  box-shadow: 0 0 0 5px rgb(142 229 210 / 12%);
+}
+
+.tracker-runtime.warning > i {
+  background: var(--panel-warning);
+  box-shadow: 0 0 0 5px rgb(241 203 133 / 12%);
+}
+
+.tracker-runtime.checking > i {
+  background: var(--panel-accent-blue);
+  box-shadow: 0 0 0 5px rgb(130 165 255 / 12%);
+}
+
+.tracker-runtime div {
+  display: grid;
+  gap: 3px;
+}
+
+.tracker-runtime small {
+  color: var(--panel-copy-subtle);
+  font-family: 'Vozen Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.tracker-runtime b {
+  color: var(--panel-copy);
+  font-size: 13px;
+}
+
+.tracker-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tracker-stat {
+  display: grid;
+  gap: 7px;
+  min-height: 116px;
+  align-content: end;
+  padding: 20px;
+}
+
+.tracker-stat strong {
+  color: var(--panel-copy);
+  font-family: 'Vozen Outfit', 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(28px, 3vw, 42px);
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+}
+
+.tracker-stat span {
+  color: var(--panel-copy-subtle);
+  font-family: 'Vozen Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tracker-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 16px;
+}
+
+.tracker-panel {
+  min-height: 292px;
+  padding: 23px;
+}
+
+.tracker-panel-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--panel-border) 88%, transparent);
+}
+
+.tracker-panel h3,
+.tracker-health h3 {
+  font-size: 20px;
+}
+
+.tracker-panel .link-button {
+  flex: 0 0 auto;
+  padding: 0;
+  color: var(--panel-accent);
+}
+
+.tracker-events,
+.tracker-guilds {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tracker-events li,
+.tracker-guilds li {
+  display: grid;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding: 13px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--panel-border) 72%, transparent);
+}
+
+.tracker-events li {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.tracker-events li:last-child,
+.tracker-guilds li:last-child {
+  border-bottom: 0;
+}
+
+.tracker-events div,
+.tracker-guilds div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.tracker-events b,
+.tracker-guilds b {
+  overflow: hidden;
+  color: var(--panel-copy);
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.tracker-events small,
+.tracker-guilds small {
+  overflow: hidden;
+  color: var(--panel-copy-subtle);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tracker-events time {
+  color: var(--panel-copy-subtle);
+  font-family: 'Vozen Mono', ui-monospace, monospace;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.tracker-guilds li {
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+}
+
+.tracker-guilds li > span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  color: var(--panel-accent);
+  background: color-mix(in srgb, var(--panel-accent) 8%, transparent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tracker-guilds li.selected > span {
+  border-color: color-mix(in srgb, var(--panel-accent) 55%, var(--panel-border));
+  background: linear-gradient(135deg, rgb(130 165 255 / 30%), rgb(142 229 210 / 30%));
+  color: #fff;
+}
+
+.tracker-guilds em {
+  color: var(--panel-accent);
+  font-family: 'Vozen Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.tracker-empty {
+  display: grid;
+  min-height: 178px;
+  place-content: center start;
+  gap: 6px;
+  color: var(--panel-copy-muted);
+}
+
+.tracker-empty b {
+  color: var(--panel-copy);
+  font-size: 14px;
+}
+
+.tracker-empty span {
+  font-size: 12px;
+}
+
+.tracker-health {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  border-color: color-mix(in srgb, var(--panel-accent) 35%, var(--panel-border));
+}
+
+.tracker-health .secondary {
+  flex: 0 0 auto;
+  min-width: 152px;
+}
+
 /* The editor and preview are independent columns. The preview must not be
  * stretched to match a tall controls column. */
 .panel-main .editor-grid {
@@ -496,6 +770,14 @@ textarea:focus-visible {
     max-height: none;
     overflow: visible;
   }
+
+  .tracker-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tracker-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 720px) {
@@ -631,11 +913,47 @@ textarea:focus-visible {
     max-height: none;
     padding: 28px 22px;
   }
+
+  .helper-tracker-intro,
+  .tracker-health {
+    display: grid;
+    gap: 18px;
+  }
+
+  .tracker-runtime,
+  .tracker-health .secondary {
+    width: 100%;
+  }
+
+  .tracker-stat {
+    min-height: 102px;
+  }
+
+  .tracker-panel {
+    min-height: 0;
+    padding: 19px;
+  }
+
+  .tracker-panel-heading {
+    align-items: start;
+  }
 }
 
 @media (max-width: 420px) {
   .panel-main .metrics {
     grid-template-columns: 1fr;
+  }
+
+  .tracker-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tracker-events li {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .tracker-events time {
+    grid-column: 2;
   }
 
   .panel-main .rank-preview {
