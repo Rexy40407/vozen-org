@@ -330,6 +330,7 @@ const OAUTH_RETURN_HASH_KEY = 'vh_oauth_return_hash';
 function isSafePanelHash(value: string): boolean {
   return (
     value === '#/' ||
+    value === '#/servers' ||
     value === '#/quick-setup' ||
     value === '#/features' ||
     value === '#/activity' ||

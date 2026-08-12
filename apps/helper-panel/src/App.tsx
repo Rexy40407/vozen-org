@@ -65,7 +65,7 @@ const localPreviewMode =
 type Category =
   'all' | 'protection' | 'community' | 'management' | 'utility' | 'social' | 'growth' | 'web3';
 type Route = {
-  page: 'overview' | 'features' | 'activity' | 'rank-card' | 'quick-setup' | 'detail';
+  page: 'overview' | 'servers' | 'features' | 'activity' | 'rank-card' | 'quick-setup' | 'detail';
   key?: string;
 };
 type ProviderSubscriptionHealth =
@@ -1873,6 +1873,7 @@ const spec = (key: string): SectionSpec[] => {
 function parseRoute(hash: string): Route {
   const value = hash.replace(/^#/, '') || '/';
   if (value === '/' || value === '') return { page: 'overview' };
+  if (value === '/servers') return { page: 'servers' };
   if (value === '/quick-setup') return { page: 'quick-setup' };
   if (value === '/features' || value === '/config') return { page: 'features' };
   if (value === '/activity') return { page: 'activity' };
@@ -1957,7 +1958,7 @@ function App() {
   const [studioTemplates, setStudioTemplates] = useState<StudioTemplate[]>([]);
   const [route, setRoute] = useState<Route>(() => parseRoute(window.location.hash));
   const [me, setMe] = useState<Me | null>(null);
-  const [guilds, setGuilds] = useState<Guild[]>(demoGuilds);
+  const [guilds, setGuilds] = useState<Guild[]>(() => (localPreviewMode ? demoGuilds : []));
   const [guildContext, setGuildContext] = useState<GuildContext | null>(null);
   const [quickSetup, setQuickSetup] = useState<QuickSetupState | null>(null);
   const [quickSetupDefaults, setQuickSetupDefaults] = useState<QuickSetupFeatureDefaults>({});
@@ -2022,7 +2023,10 @@ function App() {
     }
     void Promise.all([
       api.me(),
-      api.guilds().catch(() => ({ guilds: demoGuilds })),
+      api.guilds().catch(() => {
+        setMessage('Could not load your servers. Return to your account and try again.');
+        return { guilds: [] };
+      }),
       api.features().catch(() => {
         // Do not present stale/demo state as the real guild catalogue.  Keep
         // the topics discoverable, but make every state explicitly blocked so
@@ -2370,13 +2374,15 @@ function App() {
         item.label.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
     );
   }, [features, filter, search]);
-  async function switchGuild(guildId: string) {
+  async function switchGuild(guildId: string, nextPath?: string) {
     if (localPreviewMode) {
       setMe((current) => (current ? { ...current, guildId } : current));
+      if (nextPath) navigate(nextPath);
       return;
     }
     try {
       await api.switchGuild(guildId);
+      if (nextPath) window.location.hash = nextPath;
       window.location.reload();
     } catch (cause) {
       setMessage(cause instanceof Error ? cause.message : 'Could not switch server.');
@@ -2796,6 +2802,9 @@ function App() {
   if (status === 'loading')
     return (
       <div className="center" role="status" aria-live="polite" aria-busy="true">
+        <a className="panel-state-exit" href="/account/">
+          ← Exit to account
+        </a>
         <div className="loader" />
         <p>Preparing your workspace…</p>
       </div>
@@ -2806,6 +2815,14 @@ function App() {
         error={status === 'auth' ? authError : message}
         loading={authLoading}
         onLogin={() => void startLogin()}
+      />
+    );
+  if (route.page === 'servers')
+    return (
+      <ServerPicker
+        guilds={guilds}
+        selectedGuildId={me?.guildId}
+        onSelect={(guildId) => void switchGuild(guildId, '#/')}
       />
     );
   const title =
@@ -2874,6 +2891,9 @@ function App() {
             </button>
           ))}
         </nav>
+        <a className="panel-account-link" href="/account/">
+          ← Exit to account
+        </a>
         <div className="runtime">
           <i /> {localPreviewMode ? 'Local preview' : 'Synced with Rust'}
         </div>
@@ -3504,6 +3524,75 @@ function PremiumCard({ icon, title, text }: { icon: string; title: string; text:
   );
 }
 
+function ServerPicker({
+  guilds,
+  selectedGuildId,
+  onSelect,
+}: {
+  guilds: Guild[];
+  selectedGuildId?: string;
+  onSelect: (guildId: string) => void;
+}) {
+  const manageableGuilds = guilds.filter((guild) => guild.canManage);
+  return (
+    <main className="helper-server-picker" aria-labelledby="server-picker-title">
+      <a className="helper-server-picker__exit" href="/account/">
+        ← Exit to account
+      </a>
+      <section className="helper-server-picker__surface">
+        <small className="eyebrow">HELPER WORKSPACE</small>
+        <h1 id="server-picker-title" data-route-heading tabIndex={-1}>
+          Pick a server
+        </h1>
+        <p className="helper-server-picker__intro">
+          Choose a server where you manage Vozen Helper. We will open that server&apos;s dashboard
+          next.
+        </p>
+        <div className="helper-server-picker__heading">
+          <div>
+            <b>Your servers</b>
+            <small>Only servers you can manage are shown.</small>
+          </div>
+          <span aria-label={`${manageableGuilds.length} available servers`}>
+            {manageableGuilds.length}
+          </span>
+        </div>
+        {manageableGuilds.length ? (
+          <div className="helper-server-picker__list">
+            {manageableGuilds.map((guild) => (
+              <button
+                className="helper-server-picker__server"
+                key={guild.id}
+                type="button"
+                onClick={() => onSelect(guild.id)}
+              >
+                <span className="helper-server-picker__initial" aria-hidden="true">
+                  {guild.name.trim().slice(0, 2).toUpperCase() || 'VH'}
+                </span>
+                <span className="helper-server-picker__copy">
+                  <strong>{guild.name}</strong>
+                  <small>
+                    {guild.id === selectedGuildId ? 'Current workspace' : 'Open Helper dashboard'}
+                  </small>
+                </span>
+                <span className="helper-server-picker__arrow" aria-hidden="true">
+                  →
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <section className="helper-server-picker__empty" aria-live="polite">
+            <h2>No manageable servers found</h2>
+            <p>Return to your account, refresh the Discord connection, then try again.</p>
+            <a href="/account/">Return to account</a>
+          </section>
+        )}
+      </section>
+    </main>
+  );
+}
+
 function AuthScreen({
   error,
   loading,
@@ -3516,6 +3605,9 @@ function AuthScreen({
   const visibleError = /unauthenticated|API 401/i.test(error) ? '' : error;
   return (
     <main className="auth-shell" aria-labelledby="auth-title">
+      <a className="auth-account-exit" href="/account/">
+        ← Exit to account
+      </a>
       <div className="auth-brand">
         <span>✦</span>
         <div>

@@ -190,6 +190,10 @@
   /* Classes precisam de :hover/:focus/::after — impossível em style="" inline;
      injetamos um <style> uma vez. */
   var CSS = [
+    /* Every product workspace has a safe, first-party way back to the account. */
+    ".dash-productbar{display:flex;justify-content:flex-end;width:min(100%,960px);margin:0 auto 14px}",
+    ".dash-exit{align-items:center;color:var(--text-2,#9a9ab0);display:inline-flex;font-size:.88rem;font-weight:700;justify-content:center;min-height:44px;padding:0 13px;text-decoration:none;border:1px solid var(--line-2,#23233a);border-radius:10px;transition:border-color .16s ease,color .16s ease,background .16s ease}",
+    ".dash-exit:hover,.dash-exit:focus-visible{background:rgba(56,224,200,.08);border-color:var(--aqua,#38e0c8);color:var(--aqua,#38e0c8)}",
     /* picker de servidores: lista horizontal, com a densidade do dashboard de billing */
     ".dash-picker{margin-top:18px;padding:22px;background:rgba(23,22,19,.74);border:1px solid rgba(225,205,157,.13);border-radius:16px}",
     ".dash-picker__list{display:grid;gap:10px;margin-top:28px}",
@@ -250,7 +254,7 @@
   document.head.appendChild(styleEl);
 
   function view(html) {
-    root.innerHTML = html;
+    root.innerHTML = '<div class="dash-productbar"><a class="dash-exit" href="/account/">&#8592; Exit to account</a></div>' + html;
   }
 
   function renderLogin(msgKey) {
