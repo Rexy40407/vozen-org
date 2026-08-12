@@ -10,5 +10,6 @@ assert.match(ignore, /site\/panel\/helper-tracker\//);
 assert.doesNotMatch(ignore, /site\/panel\/helper\//);
 assert.match(legacyEntry, /location\.replace\('\/panel\/helper-tracker\/'\)/);
 assert.match(legacyEntry, /http-equiv="refresh"/);
+assert.doesNotMatch(legacyEntry, /href="\/panel\/helper-tracker\//);
 
 console.log('Helper tracker compatibility route contract passed.');
