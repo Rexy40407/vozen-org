@@ -39,6 +39,11 @@
   // Página dedicada da conta (account.html). Só aí o painel Premium é o conteúdo
   // principal — e mostra o estado "em breve" enquanto o backend não está no ar.
   const IS_ACCOUNT = document.body.classList.contains("page-account");
+  const IS_PREMIUM = document.body.classList.contains("page-premium");
+  // Checkout is intentionally paused while the public Vozen pricing is being reviewed.
+  // Keep this guard centralized so stale billing intents or old cached markup cannot open Stripe.
+  const PAYMENTS_ENABLED = false;
+  const PREMIUM_PLANS_URL = "premium.html#plans";
   // Deterministic fixture for local visual QA. The hostname gate keeps this branch unreachable on
   // vozen.org; it exists so the authenticated layout can be reviewed without copying a real token
   // or Discord profile into development tools.
@@ -298,6 +303,10 @@
      ao webhook o que foi comprado (o Ko-fi nao envia o nome do produto). */
   /* ── Stripe checkout ───────────────────────────────────────────────── */
   function readBillingIntent() {
+    if (!PAYMENTS_ENABLED) {
+      try { sessionStorage.removeItem(BILLING_INTENT_KEY); } catch {}
+      return null;
+    }
     try {
       const raw = sessionStorage.getItem(BILLING_INTENT_KEY);
       sessionStorage.removeItem(BILLING_INTENT_KEY);
@@ -434,6 +443,7 @@
   }
 
   function openBillingCheckout(plan, interval, seats, button) {
+    if (!PAYMENTS_ENABLED) return null;
     closeBillingCheckout();
     billingCheckoutOpener = document.activeElement;
     billingRequest = { plan, interval, seats, button };
@@ -455,6 +465,7 @@
   function beginBillingAuth() { login({ billing: true }); }
 
   function ensureStripeJs() {
+    if (!PAYMENTS_ENABLED) return Promise.reject(new Error("Payments are disabled"));
     if (typeof window.Stripe === "function") return Promise.resolve(window.Stripe);
     return new Promise((resolve, reject) => {
       const existing = document.querySelector('script[data-vozen-stripe]');
@@ -480,6 +491,7 @@
   }
 
   async function continueHostedBillingCheckout() {
+    if (!PAYMENTS_ENABLED) return;
     const token = storedToken();
     if (!token || !billingRequest) { setBillingPhase("auth"); return; }
     try {
@@ -544,6 +556,7 @@
   }
 
   async function paymentSessionStatus(sessionId) {
+    if (!PAYMENTS_ENABLED) return null;
     const token = storedToken();
     if (!token || !sessionId) return null;
     const res = await fetch(PREMIUM_API_BASE + "/api/billing/checkout/status", {
@@ -570,6 +583,7 @@
   }
 
   async function continueBillingCheckout() {
+    if (!PAYMENTS_ENABLED) return;
     const token = storedToken();
     if (!billingRequest || !token) { setBillingPhase("auth"); return; }
     resetBillingStripe();
@@ -597,12 +611,13 @@
   }
 
   async function resumeBillingReturn() {
+    if (!PAYMENTS_ENABLED) return false;
     const url = new URL(window.location.href);
     const sessionId = url.searchParams.get("session_id");
     if (url.searchParams.get("checkout") !== "return" || !sessionId) return false;
     url.searchParams.delete("checkout");
     url.searchParams.delete("session_id");
-    history.replaceState(null, "", url.pathname + url.search + (url.hash || "#premium"));
+    history.replaceState(null, "", url.pathname + url.search + (url.hash || (IS_PREMIUM ? "#plans" : "#premium")));
     const result = await paymentSessionStatus(sessionId);
     if (!result) return false;
     openBillingCheckout("premium", "monthly", 2, null);
@@ -614,6 +629,7 @@
   }
 
   async function startCheckout(plan, interval, seats = 2) {
+    if (!PAYMENTS_ENABLED) return;
     const button = document.activeElement instanceof HTMLButtonElement ? document.activeElement : null;
     if (button) { button.disabled = true; button.dataset.previousText = button.textContent || ""; }
     if (!openBillingCheckout(plan, interval, seats, button)) return;
@@ -902,8 +918,8 @@
       } catch {}
       let billingReturn = false;
       try { billingReturn = !!sessionStorage.getItem(BILLING_INTENT_KEY); } catch {}
-      if (IS_ACCOUNT && billingReturn) {
-        location.replace("/premium#plans");
+      if (PAYMENTS_ENABLED && !IS_PREMIUM && billingReturn) {
+        location.replace(PREMIUM_PLANS_URL);
         return;
       }
       activationResume = consumeActivationIntent(fromHash.state);
@@ -956,9 +972,9 @@
       if (await resumeBillingReturn()) return;
       const purchase = readBillingIntent();
       if (purchase) {
-        if (!IS_ACCOUNT) {
-          history.replaceState(null, "", "#premium");
-          document.getElementById("premium")?.scrollIntoView({ block: "start" });
+        if (!IS_PREMIUM) {
+          location.replace(PREMIUM_PLANS_URL);
+          return;
         }
         window.setTimeout(() => void startCheckout(purchase.plan, purchase.interval, purchase.seats), 0);
         return;
@@ -1012,7 +1028,7 @@
     const text = active ? t("account.active") : t("account.notActive");
     const action = active
       ? ""
-      : `<a class="ppanel__get" href="/premium#plans">${t("nav.premium")} <span aria-hidden="true">→</span></a>`;
+      : `<a class="ppanel__get" href="premium.html#plans">${t("nav.premium")} <span aria-hidden="true">→</span></a>`;
     return (
       `<article class="ppanel__status ${state}">` +
       `<div class="ppanel__status-top"><span class="ppanel__status-label">${esc(label)}</span>` +
@@ -1746,12 +1762,10 @@
 
   document.getElementById("accountBilling")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;
-    const message = document.getElementById("accountBillingMessage");
+    if (!PAYMENTS_ENABLED) return;
     const token = storedToken();
     if (!token) return login();
     button.disabled = true;
-    button.setAttribute("aria-busy", "true");
-    if (message) message.textContent = "Opening secure billing…";
     try {
       const response = await fetch(PREMIUM_API_BASE + "/api/billing/portal", {
         method: "POST", headers: { Authorization: "Bearer " + token },
@@ -1761,8 +1775,7 @@
       window.location.href = payload.url;
     } catch {
       button.disabled = false;
-      button.removeAttribute("aria-busy");
-      if (message) message.textContent = "Billing management is temporarily unavailable. Please try again shortly.";
+      alert("Billing management is temporarily unavailable. Please try again shortly.");
     }
   });
 
@@ -1781,12 +1794,6 @@
   // "/#features" in the address bar; once the browser has applied the fragment
   // (hashchange) we strip it with replaceState, keeping the scroll position.
   // The OAuth return fragment (#access_token=…) is left for readTokenFromHash.
-  // Keep the old public /#premium link alive for one compatibility release,
-  // while making /premium the canonical pricing URL.
-  if (location.pathname === "/" && location.hash === "#premium") {
-    location.replace("/premium");
-  }
-
   window.addEventListener("hashchange", () => {
     const id = location.hash.slice(1);
     if (!id || id.indexOf("=") !== -1) return;

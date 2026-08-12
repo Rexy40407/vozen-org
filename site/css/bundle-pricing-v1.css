@@ -1,0 +1,101 @@
+/* Shared bundle ribbon for the two Vozen products.
+   It sits above the cards so the bundle promise is clear without changing the
+   rhythm or height of one plan in isolation. */
+.bundle-ribbon {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  width: min(1110px, 100%);
+  margin: 0 auto 20px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 189, 64, 0.44);
+  border-radius: 14px;
+  background:
+    linear-gradient(112deg, rgba(255, 189, 64, 0.14), rgba(255, 143, 93, 0.06) 56%, rgba(255, 255, 255, 0.025)),
+    rgba(13, 22, 38, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.bundle-ribbon__eyebrow {
+  color: #ffd167;
+  font-family: var(--f-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.bundle-ribbon__copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.bundle-ribbon__copy strong {
+  color: #fffaf0;
+  font-family: var(--f-display, var(--f-body, sans-serif));
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.bundle-ribbon__copy span {
+  overflow: hidden;
+  color: var(--text-1, #b4c5dc);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bundle-ribbon__value {
+  justify-self: end;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255, 209, 103, 0.28);
+  color: #ffd167;
+  font-family: var(--f-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .bundle-ribbon {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 12px;
+    margin-bottom: 16px;
+    padding: 11px 12px;
+  }
+
+  .bundle-ribbon__eyebrow {
+    grid-row: 1 / span 2;
+    align-self: start;
+    padding-top: 2px;
+  }
+
+  .bundle-ribbon__copy span {
+    white-space: normal;
+  }
+
+  .bundle-ribbon__value {
+    justify-self: start;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 440px) {
+  .bundle-ribbon {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .bundle-ribbon__eyebrow {
+    grid-row: auto;
+  }
+}

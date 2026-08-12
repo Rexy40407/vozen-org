@@ -1,0 +1,107 @@
+/* Shared marketing navigation for the Vozen ecosystem. */
+.vozen-global-nav {
+  background: transparent;
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: background-color 240ms ease, border-color 240ms ease, backdrop-filter 240ms ease;
+}
+
+.vozen-global-nav.is-stuck {
+  background: rgba(5, 6, 15, .84);
+  border-bottom-color: rgba(173, 185, 228, .12);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 36px -28px rgba(0, 0, 0, .9);
+}
+
+/* Vozen ecosystem mark — shared by the global navigation. */
+.vozen-global-nav .brand__mark {
+  overflow: hidden;
+}
+
+.vozen-global-nav .brand__portal {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scale(1.34);
+  object-fit: cover;
+}
+
+.nav__product {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-1, #aeb6cf);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav__product::before {
+  width: 1px;
+  height: 21px;
+  background: rgba(184, 194, 226, .22);
+  content: "";
+}
+
+.vozen-global-nav .nav__links {
+  gap: clamp(18px, 2.2vw, 30px);
+}
+
+.vozen-global-nav .nav__links a.is-current {
+  position: relative;
+  color: var(--text-0, #f7f8fb);
+}
+
+.vozen-global-nav .nav__links a.is-current::after {
+  position: absolute;
+  right: 0;
+  bottom: -9px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--aqua, #35ddc5);
+  box-shadow: 0 5px 14px rgba(46, 230, 200, .48);
+  content: "";
+}
+
+@media (max-width: 1080px) {
+  .vozen-global-nav .nav__links {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  .nav__product {
+    display: none;
+  }
+
+  .vozen-global-nav .nav__burger {
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 350px) {
+  .vozen-global-nav .nav__gh,
+  .vozen-global-nav .lang {
+    display: none;
+  }
+
+  .vozen-global-nav .nav__inner {
+    gap: 12px;
+  }
+
+  .vozen-global-nav .nav__actions {
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vozen-global-nav {
+    transition: none;
+  }
+}
