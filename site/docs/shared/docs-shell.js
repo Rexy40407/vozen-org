@@ -67,13 +67,8 @@
     if (topbar?.parentNode) topbar.parentNode.insertBefore(host, topbar);
     else document.body.insertBefore(host, document.body.querySelector('main'));
 
-    const stylesheet = document.createElement('link');
-    stylesheet.rel = 'stylesheet';
-    stylesheet.href = new URL('docs/shared/ecosystem-nav.css?v=docs-shell-v1', siteRoot.href).href;
-    document.head.appendChild(stylesheet);
-
     const navScript = document.createElement('script');
-    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-shell-v2', siteRoot.href).href;
+    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-shell-v3', siteRoot.href).href;
     document.body.appendChild(navScript);
   }
 
