@@ -18,19 +18,31 @@
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;");
+  const ukFlag = String.fromCodePoint(0x1f1ec, 0x1f1e7);
+  const discordDecorationAsset = (account) => {
+    const asset = account.avatarDecorationAsset
+      || account.avatar_decoration_asset
+      || account.avatarDecorationData?.asset
+      || account.avatar_decoration_data?.asset
+      || "";
+    return /^[A-Za-z0-9_]{1,128}$/.test(String(asset)) ? String(asset) : "";
+  };
   const discordAvatarMarkup = (account) => {
     const initial = escapeHtml(account.username.trim().slice(0, 1).toUpperCase() || "V");
     const id = String(account.id || "");
     const avatar = String(account.avatar || "");
     const validId = /^\d{16,22}$/.test(id);
-    const validAvatar = /^(?:a_)?[A-Za-z0-9_]{16,128}$/.test(avatar);
+    const validAvatar = /^(?:a_)?[A-Za-z0-9_]{1,128}$/.test(avatar);
 
     if (!validId || !validAvatar) {
       return `<span class="docs-ecosystem-nav__account-mark docs-ecosystem-nav__account-mark--fallback" aria-hidden="true">${initial}</span>`;
     }
 
     const extension = avatar.startsWith("a_") ? "gif" : "png";
-    return `<img class="docs-ecosystem-nav__account-avatar" src="https://cdn.discordapp.com/avatars/${escapeHtml(id)}/${escapeHtml(avatar)}.${extension}?size=96" alt="" aria-hidden="true" width="24" height="24" referrerpolicy="no-referrer">`;
+    const image = `<img class="docs-ecosystem-nav__account-avatar" src="https://cdn.discordapp.com/avatars/${escapeHtml(id)}/${escapeHtml(avatar)}.${extension}?size=96" alt="" aria-hidden="true" width="24" height="24" referrerpolicy="no-referrer">`;
+    const decoration = discordDecorationAsset(account);
+    if (!decoration) return image;
+    return `<span class="docs-ecosystem-nav__account-avatar-wrap" aria-hidden="true">${image}<img class="docs-ecosystem-nav__account-decoration" src="https://cdn.discordapp.com/avatar-decoration-presets/${escapeHtml(decoration)}.png?size=96" alt="" width="32" height="32" referrerpolicy="no-referrer"></span>`;
   };
   // Older public pages still contain the pre-ecosystem header in their HTML.
   // Remove it before rendering the shared shell so there is only one nav and
@@ -70,7 +82,7 @@
           </nav>
           <div class="docs-ecosystem-nav__actions">
             <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub">${githubIcon}</a>
-            <span class="docs-ecosystem-nav__language" aria-label="Site language: English"><span class="docs-ecosystem-nav__language-flag" aria-hidden="true">🇬🇧</span><span>English</span><svg class="docs-ecosystem-nav__language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+            <span class="docs-ecosystem-nav__language" aria-label="Site language: English"><span class="docs-ecosystem-nav__language-flag" aria-hidden="true">${ukFlag}</span><span>English</span><svg class="docs-ecosystem-nav__language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
             <a class="docs-ecosystem-nav__login" data-vozen-docs-login href="${link('account.html')}">${discordIcon}<span>Log in</span></a>
           </div>
         </div>
@@ -96,7 +108,7 @@
           <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" title="Open source on GitHub">${githubIcon}</a>
           <div class="lang" id="langMenu">
             <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language">
-              <span class="lang__flag" id="langBtnFlag">🇬🇧</span><span class="lang__name" id="langBtnName">English</span>
+              <span class="lang__flag" id="langBtnFlag">${ukFlag}</span><span class="lang__name" id="langBtnName">English</span>
               <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language"></ul>
