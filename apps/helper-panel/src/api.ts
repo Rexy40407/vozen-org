@@ -326,6 +326,8 @@ const base =
   'https://api.vozen.org/rust';
 let sessionBearer: string | null = null;
 const OAUTH_RETURN_HASH_KEY = 'vh_oauth_return_hash';
+const VOZEN_ACCOUNT_TOKEN_KEY = 'vozen.dtoken';
+let vozenAccountBootstrapAttempted = false;
 
 function isSafePanelHash(value: string): boolean {
   return (
@@ -385,6 +387,40 @@ export function apiUrl(path: string): string {
   return `${base}${path}`;
 }
 
+function vozenAccountToken(): string | null {
+  try {
+    const token = sessionStorage.getItem(VOZEN_ACCOUNT_TOKEN_KEY)?.trim() ?? '';
+    return /^[A-Za-z0-9._~-]{20,4096}$/.test(token) ? token : null;
+  } catch {
+    return null;
+  }
+}
+
+// The token stays in same-origin sessionStorage, is sent once in a request
+// body over HTTPS, then the API replaces it with an HttpOnly Helper cookie.
+// It is deliberately never appended to a URL or persisted by this panel.
+export async function bootstrapVozenAccountSession(): Promise<boolean> {
+  if (vozenAccountBootstrapAttempted) return false;
+  vozenAccountBootstrapAttempted = true;
+  const token = vozenAccountToken();
+  if (!token) return false;
+  try {
+    const response = await fetch(apiUrl('/api/session/vozen'), {
+      method: 'POST',
+      cache: 'no-store',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(apiUrl(path), {
     ...init,
@@ -412,6 +448,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  bootstrapVozenAccountSession,
   me: () => request<Me>('/api/me'),
   guilds: () => request<{ guilds: Guild[] }>('/api/guilds'),
   guildContext: () => request<GuildContext>('/api/guild-context'),

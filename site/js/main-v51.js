@@ -798,7 +798,7 @@
     u.searchParams.set("client_id", CLIENT_ID);
     u.searchParams.set("redirect_uri", options && options.billing === true ? BILLING_OAUTH_REDIRECT : OAUTH_REDIRECT);
     u.searchParams.set("response_type", "token");
-    u.searchParams.set("scope", "identify email");
+    u.searchParams.set("scope", "identify email guilds");
     u.searchParams.set("state", state);
     location.href = u.toString();
     return null;

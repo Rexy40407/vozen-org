@@ -2020,7 +2020,9 @@ function App() {
       setStatus('ready');
       return;
     }
-    void Promise.all([
+    void (async () => {
+      await api.bootstrapVozenAccountSession();
+      return Promise.all([
       api.me(),
       api.guilds().catch(() => ({ guilds: demoGuilds })),
       api.features().catch(() => {
@@ -2036,7 +2038,8 @@ function App() {
       api.activity().catch(() => ({ activity: [] })),
       api.quotas().catch(() => ({ plan: 'Free', limits: {}, usage: {} })),
       api.rankCard().catch(() => ({ guildId: '', config: defaultRankCard })),
-    ])
+      ]);
+    })()
       .then(
         ([
           nextMe,
