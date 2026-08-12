@@ -81,6 +81,21 @@
   content: "";
 }
 
+/* Keep the future Premium page published without advertising it as available. */
+.docs-ecosystem-nav__premium-disabled {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 8px 0;
+  color: #aeb9ce;
+  font-size: 15px;
+  font-weight: 500;
+  opacity: .46;
+  cursor: not-allowed;
+  user-select: none;
+  white-space: nowrap;
+}
+
 .docs-ecosystem-nav__actions { display: flex; align-items: center; gap: 14px; min-width: max-content; }
 .docs-ecosystem-nav__github { display: grid; width: 36px; height: 36px; place-items: center; }
 .docs-ecosystem-nav__language { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 12px; border: 1px solid rgba(174, 185, 206, .2); border-radius: 999px; color: #e5ebf6; font-size: 13px; font-weight: 650; }
@@ -103,8 +118,8 @@
   .docs-ecosystem-nav__mark { width: 38px; height: 38px; border-radius: 11px; }
   .docs-ecosystem-nav__word { font-size: 21px; }
   .docs-ecosystem-nav__product,
-  .docs-ecosystem-nav__links a:nth-child(4),
-  .docs-ecosystem-nav__links a:nth-child(5),
+  .docs-ecosystem-nav__links > :nth-child(4),
+  .docs-ecosystem-nav__links > :nth-child(5),
   .docs-ecosystem-nav__language { display: none; }
   .docs-ecosystem-nav__links a.is-current::after { bottom: -14px; }
 }

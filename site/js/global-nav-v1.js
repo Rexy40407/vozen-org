@@ -37,7 +37,7 @@
             <a class="${currentClass('helper').trim()}" href="${link('helper.html')}"${currentAria('helper')}>Vozen Helper</a>
             <a class="${currentClass('docs').trim()}" href="${link('docs/index.html')}"${currentAria('docs')}>Docs</a>
             <a class="${currentClass('commands').trim()}" href="${link('commands/index.html')}"${currentAria('commands')}>Commands</a>
-            <a class="${currentClass('premium').trim()}" href="${link('premium.html')}"${currentAria('premium')}>Premium</a>
+            <span class="docs-ecosystem-nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable">Premium</span>
           </nav>
           <div class="docs-ecosystem-nav__actions">
             <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub">${githubIcon}</a>
@@ -61,7 +61,7 @@
           <a class="${currentClass('helper').trim()}" href="${link('helper.html')}"${currentAria('helper')}>Vozen Helper</a>
           <a class="${currentClass('docs').trim()}" href="${link('docs/index.html')}"${currentAria('docs')}>Docs</a>
           <a class="${currentClass('commands').trim()}" href="${link('commands/index.html')}"${currentAria('commands')}>Commands</a>
-          <a class="${currentClass('premium').trim()}" href="${link('premium.html')}"${currentAria('premium')}>Premium</a>
+          <span class="nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable">Premium</span>
         </nav>
         <div class="nav__actions">
           <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" title="Open source on GitHub">${githubIcon}</a>

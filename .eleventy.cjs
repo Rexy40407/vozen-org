@@ -39,7 +39,7 @@ module.exports = function (eleventyConfig) {
     <link rel="canonical" href="https://vozen.org${this.page.url || '/docs/helper/'}">
     <title>${title} - Vozen Helper</title>
     <link rel="stylesheet" href="/docs/helper/assets/docs.css">
-    <link rel="stylesheet" href="/docs/shared/ecosystem-nav.css?v=docs-shell-v3">
+    <link rel="stylesheet" href="/docs/shared/ecosystem-nav.css?v=premium-paused-v1">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -66,7 +66,7 @@ module.exports = function (eleventyConfig) {
     </footer>
     <script src="/docs/helper/assets/minisearch.min.js"></script>
     <script src="/docs/helper/assets/docs.js"></script>
-    <script src="/js/global-nav-v1.js?v=ecosystem-shell-v2"></script>
+    <script src="/js/global-nav-v1.js?v=premium-paused-v1"></script>
   </body>
 </html>`;
   });

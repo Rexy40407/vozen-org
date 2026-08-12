@@ -65,6 +65,21 @@
   content: "";
 }
 
+/* Premium remains discoverable while payments are paused, but is deliberately
+   not a link. The Premium page itself stays published for future reactivation. */
+.vozen-global-nav .nav__premium-disabled {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  color: var(--text-1, #aeb6cf);
+  font-size: 15px;
+  font-weight: 500;
+  opacity: .46;
+  cursor: not-allowed;
+  user-select: none;
+  white-space: nowrap;
+}
+
 @media (max-width: 1080px) {
   .vozen-global-nav .nav__links {
     gap: 18px;
