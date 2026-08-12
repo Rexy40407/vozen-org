@@ -18,6 +18,20 @@
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;");
+  const discordAvatarMarkup = (account) => {
+    const initial = escapeHtml(account.username.trim().slice(0, 1).toUpperCase() || "V");
+    const id = String(account.id || "");
+    const avatar = String(account.avatar || "");
+    const validId = /^\d{16,22}$/.test(id);
+    const validAvatar = /^(?:a_)?[A-Za-z0-9_]{16,128}$/.test(avatar);
+
+    if (!validId || !validAvatar) {
+      return `<span class="docs-ecosystem-nav__account-mark docs-ecosystem-nav__account-mark--fallback" aria-hidden="true">${initial}</span>`;
+    }
+
+    const extension = avatar.startsWith("a_") ? "gif" : "png";
+    return `<img class="docs-ecosystem-nav__account-avatar" src="https://cdn.discordapp.com/avatars/${escapeHtml(id)}/${escapeHtml(avatar)}.${extension}?size=96" alt="" aria-hidden="true" width="24" height="24" referrerpolicy="no-referrer">`;
+  };
   // Older public pages still contain the pre-ecosystem header in their HTML.
   // Remove it before rendering the shared shell so there is only one nav and
   // the existing page scripts keep receiving the canonical #nav element.
@@ -56,7 +70,7 @@
           </nav>
           <div class="docs-ecosystem-nav__actions">
             <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub">${githubIcon}</a>
-            <span class="docs-ecosystem-nav__language" aria-label="Site language"><span aria-hidden="true">&#127468;&#127463;</span> English</span>
+            <span class="docs-ecosystem-nav__language" aria-label="Site language: English"><span class="docs-ecosystem-nav__language-flag" aria-hidden="true">🇬🇧</span><span>English</span><svg class="docs-ecosystem-nav__language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
             <a class="docs-ecosystem-nav__login" data-vozen-docs-login href="${link('account.html')}">${discordIcon}<span>Log in</span></a>
           </div>
         </div>
@@ -98,10 +112,9 @@
   if (account) {
     document.querySelectorAll("[data-vozen-docs-login]").forEach((link) => {
       const username = escapeHtml(account.username);
-      const initial = escapeHtml(account.username.trim().slice(0, 1).toUpperCase() || "V");
       link.classList.add("docs-ecosystem-nav__login--account");
       link.setAttribute("aria-label", `Open ${account.username}'s Vozen account`);
-      link.innerHTML = `<span class="docs-ecosystem-nav__account-mark" aria-hidden="true">${initial}</span><span>${username}</span>`;
+      link.innerHTML = `${discordAvatarMarkup(account)}<span>${username}</span>`;
     });
   }
 })();
