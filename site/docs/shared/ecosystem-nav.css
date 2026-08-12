@@ -61,7 +61,14 @@
   box-shadow: 0 7px 22px rgba(84, 116, 255, .33);
 }
 
-.docs-ecosystem-nav__mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.docs-ecosystem-nav__mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.34);
+  transform-origin: center;
+}
 .docs-ecosystem-nav__word { color: #f7f8fc; font-size: 24px; font-weight: 750; letter-spacing: -.05em; }
 .docs-ecosystem-nav__product { display: inline-flex; align-items: center; gap: 12px; color: #aeb9ce; font-size: 14px; font-weight: 500; }
 .docs-ecosystem-nav__product::before { width: 1px; height: 21px; background: rgba(191, 204, 234, .2); content: ""; }
