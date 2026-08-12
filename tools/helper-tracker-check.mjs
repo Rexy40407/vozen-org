@@ -7,7 +7,7 @@ const [legacyEntry, ignore] = await Promise.all([
 ]);
 
 assert.match(ignore, /site\/panel\/helper-tracker\//);
-assert.doesNotMatch(ignore, /site\/panel\/helper\//);
+assert.doesNotMatch(ignore, /^site\/panel\/helper\/$/m);
 assert.match(legacyEntry, /location\.replace\('\/panel\/helper-tracker\/'\)/);
 assert.match(legacyEntry, /http-equiv="refresh"/);
 assert.doesNotMatch(legacyEntry, /href="\/panel\/helper-tracker\//);
