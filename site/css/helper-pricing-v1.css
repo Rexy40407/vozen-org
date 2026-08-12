@@ -1,0 +1,554 @@
+/* Helper-only plan presentation. The TTS pricing mechanics remain shared. */
+html.helper-ui-preview .helper-pricing {
+  position: relative;
+  overflow: hidden;
+  margin-top: 72px;
+  padding: clamp(24px, 3.2vw, 40px) clamp(16px, 3vw, 42px);
+  border: 1px solid rgba(104, 226, 215, 0.18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 9% 0%, rgba(85, 235, 209, 0.09), transparent 34%),
+    linear-gradient(145deg, rgba(9, 22, 42, 0.92), rgba(8, 11, 26, 0.82));
+}
+
+html.helper-ui-preview .helper-pricing::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(104, 226, 215, 0.65), transparent);
+  content: "";
+}
+
+html.helper-ui-preview .helper-pricing::after {
+  display: block;
+  max-width: 780px;
+  margin: 24px auto 0;
+  color: var(--text-2, #8da0bd);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  text-align: center;
+  content: "Premium is a server plan: one subscription covers the selected communities.";
+}
+
+html.helper-ui-preview .helper-pricing__heading {
+  max-width: 760px;
+  margin-bottom: 18px;
+}
+
+html.helper-ui-preview .helper-pricing__heading > p {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--text-1, #b4c5dc);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+html.helper-ui-preview .helper-pricing .price-toolbar {
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+html.helper-ui-preview .helper-pricing .payments-paused {
+  justify-content: flex-start;
+  max-width: none;
+  margin: 0 0 18px;
+}
+
+html.helper-ui-preview .helper-pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 16px;
+  max-width: none;
+}
+
+html.helper-ui-preview .helper-pricing__grid .paid-plans {
+  display: contents;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 22px 24px 20px;
+  border-radius: 22px;
+  background: rgba(13, 24, 43, 0.9);
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card[hidden] {
+  display: none !important;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--free {
+  border-color: rgba(55, 214, 202, 0.52);
+  box-shadow: inset 0 1px 0 rgba(55, 214, 202, 0.1);
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--plus {
+  border-color: rgba(132, 137, 255, 0.55);
+  background: linear-gradient(155deg, rgba(30, 32, 73, 0.92), rgba(13, 24, 43, 0.92));
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro {
+  border-color: rgba(255, 189, 64, 0.62);
+  background: linear-gradient(155deg, rgba(45, 38, 38, 0.92), rgba(22, 23, 38, 0.94));
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__topline {
+  min-height: 26px;
+  align-items: center;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card h3 {
+  margin: 16px 0 6px;
+  font-size: clamp(1.65rem, 2vw, 2.15rem);
+  letter-spacing: -0.04em;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__pitch {
+  min-height: 46px;
+  margin: 0;
+  color: var(--text-1, #b4c5dc);
+  line-height: 1.45;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__pitch {
+  font-size: 0;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__pitch::after {
+  color: var(--text-1, #b4c5dc);
+  font-size: 1rem;
+  line-height: 1.55;
+  content: "The bundle for communities: premium TTS plus Helper for everyone.";
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__price {
+  margin: 14px 0 12px;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__price b {
+  font-size: clamp(44px, 5.2vw, 56px);
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__highlights {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 0;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__highlights li {
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--plus .price-card__highlights li:nth-child(n + 6),
+html.helper-ui-preview .helper-pricing__grid .price-card--pro > .price-card__highlights:not(.helper-premium-highlights) {
+  display: none;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__scope-note {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(104, 226, 215, 0.24);
+  border-radius: 10px;
+  color: #b9eee8;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+/* Keep the decision order stable even though the legacy cards still share markup. */
+html.helper-ui-preview .helper-pricing__grid .price-card--plus .price-card__price,
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__price {
+  order: 2;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--plus .price-card__scope-note,
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .helper-premium-highlights {
+  order: 3;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__scope-note {
+  order: 4;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__deal,
+html.helper-ui-preview .helper-pricing__grid .price-card--plus .price-card__note,
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__note {
+  order: 5;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--plus .price-card__buy,
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__buy {
+  order: 6;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--plus .price-card__idnote,
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__idnote {
+  order: 7;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__note {
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__deal {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  font-size: 0.76rem;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__buy {
+  width: 100%;
+  min-height: 46px;
+  margin-top: auto;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card__idnote {
+  min-height: 2.2em;
+  margin-bottom: 0;
+}
+
+@media (max-width: 1120px) {
+  html.helper-ui-preview .helper-pricing__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  html.helper-ui-preview .helper-pricing__grid .price-card--free {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  html.helper-ui-preview .helper-pricing {
+    margin-top: 72px;
+    padding: 28px 16px;
+    border-radius: 20px;
+  }
+
+  html.helper-ui-preview .helper-pricing__grid {
+    grid-template-columns: 1fr;
+  }
+
+  html.helper-ui-preview .helper-pricing__grid .price-card--free {
+    grid-column: auto;
+  }
+
+  html.helper-ui-preview .helper-pricing__grid .price-card {
+    min-height: 0;
+    padding: 26px 22px 22px;
+  }
+
+  html.helper-ui-preview .helper-pricing__grid .price-card__pitch {
+    min-height: 0;
+  }
+}
+
+/* Helper-only plan comparison: compact, readable and aligned with the TTS pricing language. */
+html.helper-ui-preview .helper-plan-comparison {
+  width: min(1110px, 100%);
+  margin: 0 auto 96px;
+  overflow: hidden;
+  border: 1px solid rgba(104, 226, 215, 0.18);
+  border-radius: 22px;
+  background: rgba(10, 15, 31, 0.86);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 24px 70px -50px rgba(0, 0, 0, 0.8);
+}
+
+html.helper-ui-preview .helper-plan-comparison__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 32px 32px 28px;
+  border-bottom: 1px solid rgba(150, 173, 207, 0.14);
+}
+
+html.helper-ui-preview .helper-plan-comparison__header h2 {
+  margin: 14px 0 8px;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+}
+
+html.helper-ui-preview .helper-plan-comparison__header p:not(.helper-plan-comparison__status) {
+  margin: 0;
+  color: var(--text-1, #b4c5dc);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+html.helper-ui-preview .helper-plan-comparison__status {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(55, 214, 202, 0.32);
+  border-radius: 999px;
+  color: #6ce2d7;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table-wrap {
+  overflow-x: auto;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table th,
+html.helper-ui-preview .helper-plan-comparison__table td {
+  padding: 17px 28px;
+  border-bottom: 1px solid rgba(150, 173, 207, 0.12);
+}
+
+html.helper-ui-preview .helper-plan-comparison__table thead {
+  background: rgba(126, 148, 183, 0.08);
+}
+
+html.helper-ui-preview .helper-plan-comparison__table thead th {
+  color: #f2f6ff;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table thead th:first-child {
+  width: 60%;
+  text-align: left;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table thead th:not(:first-child) {
+  width: 20%;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table tbody th {
+  color: #b9c7dc;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table tbody td {
+  color: #b9c7dc;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+}
+
+html.helper-ui-preview .helper-plan-comparison__table tbody tr:last-child th,
+html.helper-ui-preview .helper-plan-comparison__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+html.helper-ui-preview .helper-plan-comparison__mark {
+  display: inline-grid;
+  min-width: 28px;
+  min-height: 28px;
+  place-items: center;
+}
+
+html.helper-ui-preview .helper-plan-comparison__mark--yes {
+  color: #51dfd0;
+}
+
+html.helper-ui-preview .helper-plan-comparison__mark--premium {
+  color: #ffbd40;
+}
+
+html.helper-ui-preview .helper-plan-comparison__mark--no {
+  color: #6d7890;
+  font-weight: 400;
+}
+
+html.helper-ui-preview .helper-plan-comparison__footnote {
+  margin: 0;
+  padding: 16px 28px 22px;
+  color: #7f91ae;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+html.helper-ui-preview .helper-plan-comparison__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 720px) {
+  html.helper-ui-preview .helper-plan-comparison {
+    margin-bottom: 64px;
+    border-radius: 18px;
+  }
+
+  html.helper-ui-preview .helper-plan-comparison__header {
+    display: block;
+    padding: 24px 20px 22px;
+  }
+
+  html.helper-ui-preview .helper-plan-comparison__status {
+    display: inline-flex;
+    margin-top: 18px;
+  }
+
+  html.helper-ui-preview .helper-plan-comparison__table {
+    min-width: 560px;
+  }
+
+  html.helper-ui-preview .helper-plan-comparison__table th,
+  html.helper-ui-preview .helper-plan-comparison__table td {
+    padding: 14px 18px;
+  }
+
+  html.helper-ui-preview .helper-plan-comparison__table tbody th {
+    font-size: 14px;
+  }
+
+  html.helper-ui-preview .helper-plan-comparison__footnote {
+    padding: 14px 20px 18px;
+  }
+}
+
+@media (max-width: 430px) {
+  html.helper-ui-preview .helper-pricing__grid .price-card__topline {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  html.helper-ui-preview .helper-pricing__grid .price-card__recommended {
+    white-space: normal;
+    text-align: right;
+  }
+}
+
+/*
+ * Helper uses the same pricing composition as the Vozen TTS page: a quiet,
+ * centered heading, billing control, compact notice, then the plan cards.
+ * Keep the Helper-only card content above, but do not wrap it in a second
+ * product-specific panel or change the TTS page itself.
+ */
+html.helper-ui-preview .helper-pricing {
+  position: relative;
+  overflow: visible;
+  margin: 96px 0 80px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+html.helper-ui-preview .helper-pricing::before,
+html.helper-ui-preview .helper-pricing::after {
+  display: none;
+  content: none;
+}
+
+html.helper-ui-preview .helper-pricing__heading {
+  max-width: 660px;
+  margin: 0 auto clamp(36px, 5vw, 54px);
+  text-align: center;
+}
+
+html.helper-ui-preview .helper-pricing__heading .eyebrow {
+  display: inline-flex;
+}
+
+html.helper-ui-preview .helper-pricing__heading h2 {
+  margin: 16px 0;
+  font-size: clamp(34px, 5vw, 54px);
+  line-height: 1.05;
+}
+
+html.helper-ui-preview .helper-pricing__heading > p {
+  max-width: 660px;
+  margin: 0 auto;
+  color: var(--text-1, #b4c5dc);
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+html.helper-ui-preview .helper-pricing .price-toolbar {
+  justify-content: center;
+  margin: 0 auto clamp(18px, 3vw, 28px);
+}
+
+html.helper-ui-preview .helper-pricing .payments-paused {
+  justify-content: center;
+  max-width: 720px;
+  margin: -8px auto 28px;
+  text-align: center;
+}
+
+html.helper-ui-preview .helper-pricing__grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: 20px;
+  max-width: 1110px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card {
+  min-height: 590px;
+  padding: 32px;
+  border-radius: var(--radius, 18px);
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__pitch {
+  font-size: 15px;
+}
+
+html.helper-ui-preview .helper-pricing__grid .price-card--pro .price-card__pitch::after {
+  content: none;
+}
+
+@media (max-width: 920px) {
+  html.helper-ui-preview .helper-pricing__grid {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 720px) {
+  html.helper-ui-preview .helper-pricing {
+    margin: 72px 0 56px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  html.helper-ui-preview .helper-pricing__heading {
+    max-width: 100%;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  html.helper-ui-preview .helper-pricing__heading > p {
+    font-size: 16px;
+  }
+
+  html.helper-ui-preview .helper-pricing__grid {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  html.helper-ui-preview .helper-pricing__grid .price-card {
+    min-height: 0;
+  }
+}

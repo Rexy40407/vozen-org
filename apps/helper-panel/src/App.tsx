@@ -2021,7 +2021,9 @@ function App() {
       setStatus('ready');
       return;
     }
-    void Promise.all([
+    void (async () => {
+      await api.bootstrapVozenAccountSession();
+      return Promise.all([
       api.me(),
       api.guilds().catch(() => {
         setMessage('Could not load your servers. Return to your account and try again.');
@@ -2040,7 +2042,8 @@ function App() {
       api.activity().catch(() => ({ activity: [] })),
       api.quotas().catch(() => ({ plan: 'Free', limits: {}, usage: {} })),
       api.rankCard().catch(() => ({ guildId: '', config: defaultRankCard })),
-    ])
+      ]);
+    })()
       .then(
         ([
           nextMe,

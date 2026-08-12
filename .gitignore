@@ -1,3 +1,10 @@
+node_modules/
+site/docs/helper/
+*.log
 apps/helper-panel/node_modules/
 apps/helper-panel/dist/
-site/panel/helper/
+site/panel/helper-tracker/
+# The old /panel/helper/ address is now a one-file redirect only.
+site/panel/helper/assets/
+site/panel/helper/fonts/
+site/panel/helper/rank-card-banners/

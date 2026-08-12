@@ -18,6 +18,12 @@
     <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
     <link rel="stylesheet" href="../css/main-v43.css" />
     <link rel="stylesheet" href="../css/commands-v1.css" />
+    <link rel="stylesheet" href="../css/global-nav-v1.css?v=ecosystem-nav-v9" />
+    <script>
+      if (window.location.protocol !== 'file:' && /\/commands\/index\.html$/i.test(window.location.pathname)) {
+        window.location.replace('/commands/' + window.location.search + window.location.hash);
+      }
+    </script>
   </head>
   <body class="page-commands">
     <div class="grain" aria-hidden="true"></div>
@@ -28,7 +34,8 @@
 
     <a class="skip-link" href="#commandSearch">Skip to command search</a>
 
-    <header class="nav" id="nav">
+    <div data-vozen-nav data-nav-root="../" data-nav-current="commands" data-nav-product="Ecosystem"></div>
+    <header class="nav" id="legacy-nav">
       <div class="wrap nav__inner">
         <a class="brand" href="../" aria-label="Vozen home">
           <span class="brand__mark" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span></span>
@@ -70,15 +77,33 @@
         <div class="wrap commands-hero__layout">
           <div class="commands-hero__copy">
             <p class="eyebrow">Vozen command catalogue</p>
-            <h1>Find the right command</h1>
-            <p class="commands-hero__lead">Search the live catalogue, filter by feature and see what every slash command needs before you use it</p>
+            <h1>Commands, without the mix-up.</h1>
+            <p class="commands-hero__lead">Pick a Vozen bot first, then search only the commands that belong to it.</p>
           </div>
 
           <div class="command-finder" id="commandFinder">
             <div class="command-finder__intro">
-              <p class="command-finder__kicker">Command search</p>
-              <h2>What do you want Vozen to do?</h2>
-              <p>Search by name, option or action</p>
+              <p class="command-finder__kicker">Choose a bot</p>
+              <h2>What do you want to explore?</h2>
+              <p>Each catalogue stays focused on one bot.</p>
+            </div>
+            <div class="command-product-picker" role="tablist" aria-label="Choose a Vozen bot">
+              <button class="is-active" type="button" role="tab" aria-selected="true" data-command-product="tts">
+                <span class="command-product-picker__title">
+                  <span class="command-product-picker__icon command-product-picker__icon--tts" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span></span>
+                  <span>Vozen TTS</span>
+                </span>
+                <small>Voice &amp; community</small>
+              </button>
+              <button type="button" role="tab" aria-selected="false" data-command-product="helper">
+                <span class="command-product-picker__title">
+                  <span class="command-product-picker__icon command-product-picker__icon--helper" aria-hidden="true">
+                    <svg viewBox="0 0 64 64"><path d="m15 34-6-4m2 0-2 4M49 34l6-4m-2 0 2 4M32 17v-5"/><circle cx="32" cy="9" r="3"/><rect x="13" y="18" width="38" height="31" rx="13"/><rect x="18" y="24" width="28" height="19" rx="8"/><circle cx="26" cy="33" r="3"/><circle cx="38" cy="33" r="3"/><path d="M26 38c3.3 3.2 8.7 3.2 12 0"/></svg>
+                  </span>
+                  <span>Vozen Helper</span>
+                </span>
+                <small>Server operations</small>
+              </button>
             </div>
             <label class="command-search">
               <span class="sr-only">Search commands</span>
@@ -86,15 +111,7 @@
               <input id="commandSearch" type="search" autocomplete="off" placeholder="Try setup, voice or games" />
               <kbd>/</kbd>
             </label>
-            <div class="command-filters" role="group" aria-label="Command filters">
-              <button class="is-active" type="button" data-filter="all">All</button>
-              <button type="button" data-filter="start">Start & voice</button>
-              <button type="button" data-filter="fun">Fun & games</button>
-              <button type="button" data-filter="stats">Stats</button>
-              <button type="button" data-filter="settings">Settings</button>
-              <button type="button" data-filter="premium">Premium</button>
-              <button type="button" data-filter="help">Help</button>
-            </div>
+            <div class="command-filters" id="commandFilters" role="group" aria-label="Command filters"></div>
             <p class="command-results" id="commandResults" aria-live="polite">Showing all commands</p>
           </div>
         </div>
@@ -107,7 +124,7 @@
               <p class="command-finder__kicker">Full catalogue</p>
               <h2 id="catalogueTitle">Explore every command</h2>
             </div>
-            <p>Choose a category above or scan the complete Rust command set below</p>
+            <p id="catalogueNote">Choose a category above or scan the complete TTS command set below.</p>
           </div>
 
           <div class="commands-layout">
@@ -115,13 +132,13 @@
             <aside class="commands-aside">
               <div class="commands-aside__block commands-aside__block--accent">
                 <p class="command-finder__kicker">New here?</p>
-                <h2>Three steps to voice</h2>
-                <ol class="commands-steps">
+                <h2 id="commandAsideTitle">Three steps to voice</h2>
+                <ol class="commands-steps" id="commandAsideSteps">
                   <li><code>/setup</code><span>Configure the server once</span></li>
                   <li><code>/join</code><span>Join your current voice channel</span></li>
                   <li><code>/tts</code><span>Say something out loud</span></li>
                 </ol>
-                <a class="btn btn--discord-cta btn--sm" href="https://discord.com/oauth2/authorize?client_id=1523826014935842997&amp;permissions=326420745216&amp;scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Add Vozen to Discord</a>
+                <a class="btn btn--discord-cta btn--sm" id="commandAsideCta" href="https://discord.com/oauth2/authorize?client_id=1523826014935842997&amp;permissions=326420745216&amp;scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Add Vozen to Discord</a>
               </div>
               <div class="commands-aside__block">
                 <p class="command-finder__kicker">Reading the labels</p>
@@ -131,7 +148,7 @@
                   <li><span class="command-tag command-tag--admin">Admin</span><span>Requires Manage Server</span></li>
                 </ul>
               </div>
-              <div class="commands-aside__note"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><p>Every command is registered from the Rust contract used by the live bot</p></div>
+              <div class="commands-aside__note"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><p id="commandAsideNote">Every command is registered from the Rust contract used by the live bot</p></div>
             </aside>
           </div>
         </div>
@@ -147,9 +164,10 @@
       <div class="wrap foot__base"><span>© 2026 Vozen</span><span class="foot__legal"><a href="../privacy.html" data-i18n="foot.privacy">Privacy</a><a href="../terms.html" data-i18n="foot.terms">Terms</a></span><span data-i18n="foot.legal">Not affiliated with Discord</span></div>
     </footer>
 
+    <script defer src="../js/global-nav-v1.js?v=ecosystem-nav-v9"></script>
     <script defer src="../js/i18n-v41.js"></script>
     <script defer src="../js/main-v51.js"></script>
     <script defer src="../js/motion-v1.js"></script>
-    <script defer src="../js/commands-v1.js"></script>
+    <script defer src="../js/commands-v1.js?v=product-picker-v2"></script>
   </body>
 </html>

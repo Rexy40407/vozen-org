@@ -1,0 +1,178 @@
+/* Shared marketing navigation for the Vozen ecosystem. */
+
+.vozen-global-nav {
+  background: transparent;
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: background-color 240ms ease, border-color 240ms ease, backdrop-filter 240ms ease;
+}
+
+.vozen-global-nav.is-stuck {
+  background: rgba(5, 6, 15, .84);
+  border-bottom-color: rgba(173, 185, 228, .12);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 36px -28px rgba(0, 0, 0, .9);
+}
+
+/* Vozen ecosystem mark — shared by the global navigation. */
+.vozen-global-nav .brand__mark {
+  overflow: hidden;
+}
+
+.vozen-global-nav .brand__portal {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scale(1.34);
+  object-fit: cover;
+}
+
+.vozen-global-nav .nav__product {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-1, #aeb6cf);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.vozen-global-nav .nav__product::before {
+  width: 1px;
+  height: 21px;
+  background: rgba(184, 194, 226, .22);
+  content: "";
+}
+
+.vozen-global-nav .nav__links {
+  gap: clamp(18px, 2.2vw, 30px);
+}
+
+.vozen-global-nav .nav__actions { gap: 14px; }
+
+.vozen-global-nav .nav__login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  color: #f7fbff;
+  font-weight: 750;
+  opacity: 1;
+  filter: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.vozen-global-nav .nav__login:hover {
+  color: #fff;
+  filter: brightness(1.06);
+}
+
+/* One desktop profile for the whole ecosystem.  Public marketing pages use a
+   1.1 page zoom above 1100px while Account does not, so the local inverse
+   zoom is intentional: it lets the header keep the exact same physical
+   measurements everywhere without shrinking the page below it. */
+@media (min-width: 1001px) {
+  .vozen-global-nav .nav__inner {
+    width: min(1280px, calc(100% - 56px));
+    max-width: none;
+    min-height: 92px;
+    height: 92px;
+    padding: 0;
+  }
+
+  .vozen-global-nav .brand__mark {
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+  }
+
+  .vozen-global-nav .brand__word { font-size: 29px; }
+  .vozen-global-nav .nav__product { font-size: 16px; }
+  .vozen-global-nav .nav__links { gap: 36px; }
+  .vozen-global-nav .nav__links a { font-size: 17px; }
+  .vozen-global-nav .nav__actions { gap: 16px; }
+  .vozen-global-nav .nav__gh { display: grid; width: 42px; height: 42px; place-items: center; }
+  .vozen-global-nav .nav__gh svg { width: 23px; height: 23px; }
+  .vozen-global-nav .lang__btn { gap: 9px; padding: 8px 15px; font-size: 15px; }
+  .vozen-global-nav .nav__login { min-height: 52px; padding: 0 22px; font-size: 17px; }
+}
+
+@media (min-width: 1101px) {
+  body:not(.page-account) .vozen-global-nav { zoom: .9090909091; }
+}
+
+.vozen-global-nav .nav__links a.is-current {
+  position: relative;
+  color: var(--text-0, #f7f8fb);
+}
+
+.vozen-global-nav .nav__links a.is-current::after {
+  position: absolute;
+  right: 0;
+  bottom: -9px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--aqua, #35ddc5);
+  box-shadow: 0 5px 14px rgba(46, 230, 200, .48);
+  content: "";
+}
+
+/* Premium remains discoverable while payments are paused, but is deliberately
+   not a link. The Premium page itself stays published for future reactivation. */
+.vozen-global-nav .nav__premium-disabled {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  color: var(--text-1, #aeb6cf);
+  font-size: 15px;
+  font-weight: 500;
+  opacity: .46;
+  cursor: not-allowed;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 1080px) {
+  .vozen-global-nav .nav__links {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  .vozen-global-nav .nav__product {
+    display: none;
+  }
+
+  .vozen-global-nav .nav__burger {
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 350px) {
+  .vozen-global-nav .nav__gh,
+  .vozen-global-nav .lang {
+    display: none;
+  }
+
+  .vozen-global-nav .nav__inner {
+    gap: 12px;
+  }
+
+  .vozen-global-nav .nav__actions {
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vozen-global-nav {
+    transition: none;
+  }
+}

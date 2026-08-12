@@ -450,7 +450,7 @@ code { font-family: var(--f-mono); font-size: 0.9em; color: var(--aqua); }
 /* O :not(.ppmodal) e a mesma historia outra vez: esta regra (0,3,1) e mais especifica que
    `.ppmodal` (0,1,0), por isso ganhava-lhe o `position: fixed` e punha o modal no fluxo da
    pagina — aparecia como uma caixa la em baixo em vez de cobrir o ecra. */
-body > *:not(.grain):not(.orbs):not(.nav):not(.ppmodal):not(.skip-link) { position: relative; z-index: 2; }
+body > *:not(.grain):not(.orbs):not(.nav):not(.ppmodal):not(.skip-link):not(.eco-skip) { position: relative; z-index: 2; }
 
 /* ── equalizer mark ─────────────────────────────────────── */
 .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 18px; }
@@ -568,8 +568,15 @@ button.is-tap, a.btn.is-tap, [role="button"].is-tap {
 .brand { display: inline-flex; align-items: center; gap: 11px; }
 .brand__mark {
   display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px;
-  background: var(--grad-brand); color: #fff;
+  overflow: hidden; aspect-ratio: 1 / 1; background: var(--grad-brand); color: #fff;
   box-shadow: 0 8px 22px -6px rgba(102, 114, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.brand__portal {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scale(1.34);
+  object-fit: cover;
 }
 .brand__word { font-family: var(--f-display); font-weight: 700; font-size: 23px; color: var(--text-0); letter-spacing: -0.04em; }
 .nav__links { display: flex; gap: 30px; }
@@ -1059,7 +1066,22 @@ button.is-tap, a.btn.is-tap, [role="button"].is-tap {
 .btn--discord svg { display: block; }
 .btn--discord:active { transform: translateY(0); }
 /* Botão de login na navbar (substitui o CTA "Add to Discord"): logo + texto alinhados. */
-.nav__login { display: inline-flex; align-items: center; gap: 8px; }
+.nav__login {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  background: linear-gradient(105deg, #657ff0, #3bcdbd);
+  border-color: rgba(204, 216, 255, .24);
+  box-shadow: 0 12px 32px -15px rgba(83, 141, 255, .88);
+}
+.nav__login::after {
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .3) 50%, transparent 70%);
+}
+.nav__login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px -13px rgba(59, 205, 189, .58), inset 0 1px 0 rgba(255, 255, 255, .28);
+}
 .nav__login svg { display: block; }
 /* Logged-in account chip: a neutral surface, NOT the loud CTA gradient — the
    brand gradient (blue -> teal) otherwise shows its blue start around the round
@@ -1542,6 +1564,22 @@ body.is-modal-open { overflow: hidden; }
 .price-card__buy--disabled,
 .price-card__buy--disabled:hover,
 .price-card__buy--disabled:disabled { background: #3a3d4c; color: #9da3b8; box-shadow: none; cursor: not-allowed; opacity: .82; transform: none; }
+.payments-paused {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 720px;
+  margin: -8px auto 28px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 194, 75, .32);
+  border-radius: 12px;
+  color: #ffdc91;
+  background: rgba(255, 194, 75, .08);
+  font-size: 13px;
+  text-align: center;
+}
+.payments-paused > span { color: #ffc24b; font-size: 18px; line-height: 0; }
 /* Nota-promo do Premium: "paga 1, leva 2 servidores". Destaque âmbar por baixo do preço. */
 .price-card__deal {
   margin: -8px 0 20px; padding: 9px 13px; border-radius: 12px;
@@ -1789,6 +1827,7 @@ body.is-modal-open { overflow: hidden; }
   .nav .nav__login > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .nav .nav__login svg { width: 20px; height: 15px; }
   .nav .nav__login:active { transform: scale(0.96); }
+  .nav .nav__burger { width: 44px; height: 44px; align-items: center; justify-content: center; padding: 10px; }
   .stats__grid { grid-template-columns: repeat(2, 1fr); gap: 26px 12px; }
   .stat:not(:last-child)::after { display: none; }
   .cards, .steps { grid-template-columns: 1fr; }
@@ -1801,6 +1840,21 @@ body.is-modal-open { overflow: hidden; }
   .foot__grid { grid-template-columns: 1fr 1fr; }
   .foot__base { flex-direction: column; gap: 8px; text-align: center; }
   .cmd { flex-direction: column; gap: 4px; }
+}
+
+@media (max-width: 350px) {
+  .nav .nav__gh,
+  .nav .lang {
+    display: none;
+  }
+
+  .nav .nav__inner {
+    gap: 12px;
+  }
+
+  .nav .nav__actions {
+    gap: 10px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

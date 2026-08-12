@@ -1,0 +1,17 @@
+.brand__product {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  margin-left: 2px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(204, 222, 255, 0.2);
+  color: var(--text-1);
+  font: 600 12px/1 var(--f-body);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 520px) {
+  .brand__product {
+    display: none;
+  }
+}

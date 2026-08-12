@@ -66,13 +66,37 @@
     padding: 12px 18px;
   }
 }
-/* Optical alignment: keep the Free CTA anchored while lowering its content to the paid cards. */
+/* Optical alignment: all plans share one vertical rhythm for their offer details. */
 @media (min-width: 921px) {
-  .price-card--free { padding-top: 34px; }
-}
-/* Continue the Free card rhythm after the aligned header. */
-@media (min-width: 921px) {
-  .price-card--free .seat-toggle { margin-top: 40px; }
-  /* Keep the Free CTA rhythm without offsetting its content from the paid cards. */
-  .price-card--free .price-card__price { margin-bottom: 25px; }
+  .pricing > .price-card--free,
+  .pricing > .paid-plans > .price-card--plus,
+  .pricing > .paid-plans > .price-card--pro {
+    padding-top: 32px;
+  }
+
+  .pricing > .price-card--free .price-card__topline,
+  .pricing > .paid-plans > .price-card--plus .price-card__topline,
+  .pricing > .paid-plans > .price-card--pro .price-card__topline {
+    min-height: 28px;
+    margin-bottom: 20px;
+  }
+
+  .pricing > .price-card--free .price-card__pitch,
+  .pricing > .paid-plans > .price-card--plus .price-card__pitch,
+  .pricing > .paid-plans > .price-card--pro .price-card__pitch {
+    min-height: 52px;
+    margin: 8px 0 20px;
+  }
+
+  .pricing > .price-card--free .seat-toggle,
+  .pricing > .paid-plans > .price-card--plus .seat-toggle,
+  .pricing > .paid-plans > .price-card--pro .seat-toggle {
+    margin: 18px 0 12px;
+  }
+
+  .pricing > .price-card--free .price-card__price,
+  .pricing > .paid-plans > .price-card--plus .price-card__price,
+  .pricing > .paid-plans > .price-card--pro .price-card__price {
+    margin: 0 0 16px;
+  }
 }
