@@ -65,7 +65,7 @@ const localPreviewMode =
 type Category =
   'all' | 'protection' | 'community' | 'management' | 'utility' | 'social' | 'growth' | 'web3';
 type Route = {
-  page: 'overview' | 'tracker' | 'features' | 'activity' | 'rank-card' | 'quick-setup' | 'detail';
+  page: 'overview' | 'features' | 'activity' | 'rank-card' | 'quick-setup' | 'detail';
   key?: string;
 };
 type ProviderSubscriptionHealth =
@@ -116,7 +116,6 @@ function configForSchema(
 
 const pages = [
   { id: 'overview', label: 'Dashboard', icon: '⌂', hint: 'Overview' },
-  { id: 'tracker', label: 'Helper tracker', icon: '◉', hint: 'Live server status' },
   { id: 'quick-setup', label: 'Quick Setup', icon: '✧', hint: 'Guided setup' },
   { id: 'features', label: 'Features', icon: '✦', hint: 'Configure modules' },
   { id: 'activity', label: 'Activity', icon: '◷', hint: 'Server history' },
@@ -1874,7 +1873,6 @@ const spec = (key: string): SectionSpec[] => {
 function parseRoute(hash: string): Route {
   const value = hash.replace(/^#/, '') || '/';
   if (value === '/' || value === '') return { page: 'overview' };
-  if (value === '/tracker') return { page: 'tracker' };
   if (value === '/quick-setup') return { page: 'quick-setup' };
   if (value === '/features' || value === '/config') return { page: 'features' };
   if (value === '/activity') return { page: 'activity' };
@@ -2817,8 +2815,6 @@ function App() {
   const subtitle =
     route.page === 'overview'
       ? 'The essentials to get your server ready.'
-      : route.page === 'tracker'
-        ? 'Live status and recent work for the selected Helper server.'
       : route.page === 'quick-setup'
         ? 'Set up the essentials in short steps, with the review before publishing.'
         : route.page === 'features'
@@ -2920,19 +2916,6 @@ function App() {
             stats={stats}
             quota={quota}
             cases={cases}
-            onOpen={navigate}
-          />
-        )}
-        {route.page === 'tracker' && (
-          <HelperTracker
-            guild={currentGuild}
-            guilds={guilds}
-            dbOk={me?.dbOk}
-            features={features}
-            stats={stats}
-            cases={cases}
-            activity={activity}
-            quota={quota}
             onOpen={navigate}
           />
         )}
@@ -3684,159 +3667,6 @@ function Overview({
     </>
   );
 }
-
-function trackerDate(value: number): Date | null {
-  const milliseconds = value < 1_000_000_000_000 ? value * 1_000 : value;
-  const date = new Date(milliseconds);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function trackerTimestamp(value: number): string {
-  const date = trackerDate(value);
-  if (!date) return 'Time unavailable';
-  return new Intl.DateTimeFormat(undefined, {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
-}
-
-function HelperTracker({
-  guild,
-  guilds,
-  dbOk,
-  features,
-  stats,
-  cases,
-  activity,
-  quota,
-  onOpen,
-}: {
-  guild: Guild | undefined;
-  guilds: Guild[];
-  dbOk: boolean | undefined;
-  features: Feature[];
-  stats: { totalCases: number };
-  cases: CaseRecord[];
-  activity: ActivityRecord[];
-  quota: { plan: string; limits: Record<string, number>; usage: Record<string, number> };
-  onOpen: (path: string) => void;
-}) {
-  const activeFeatures = features.filter((feature) => feature.enabled).length;
-  const readyFeatures = features.filter((feature) => feature.health?.operational !== false).length;
-  const databaseState = dbOk === true ? 'Connected' : dbOk === false ? 'Needs attention' : 'Checking';
-  const databaseClass = dbOk === true ? 'ready' : dbOk === false ? 'warning' : 'checking';
-  const latestActivity = activity.slice(0, 5);
-  const summary = [
-    { value: String(activeFeatures), label: 'active modules' },
-    { value: String(stats.totalCases), label: 'moderation cases' },
-    { value: String(activity.length), label: 'recent events loaded' },
-    { value: quota.plan || 'Free', label: 'current plan' },
-  ];
-
-  return (
-    <section className="helper-tracker" aria-label="Helper tracker">
-      <div className="helper-tracker-intro card">
-        <div>
-          <small className="eyebrow">HELPER TRACKER</small>
-          <h2>{guild?.name ?? 'Your Helper server'}</h2>
-          <p>
-            Operational snapshot for the selected server. Configuration stays separate, so this
-            page is safe to read without changing anything.
-          </p>
-        </div>
-        <div className={`tracker-runtime ${databaseClass}`}>
-          <i />
-          <div>
-            <small>RUNTIME</small>
-            <b>{databaseState}</b>
-          </div>
-        </div>
-      </div>
-
-      <div className="tracker-summary" aria-label="Tracker summary">
-        {summary.map((item) => (
-          <div className="tracker-stat card" key={item.label}>
-            <strong>{item.value}</strong>
-            <span>{item.label}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="tracker-layout">
-        <section className="tracker-panel card">
-          <div className="tracker-panel-heading">
-            <div>
-              <small className="eyebrow">RECENT ACTIVITY</small>
-              <h3>What Helper handled</h3>
-            </div>
-            <button type="button" className="link-button" onClick={() => onOpen('#/activity')}>
-              View history
-            </button>
-          </div>
-          {latestActivity.length ? (
-            <ol className="tracker-events">
-              {latestActivity.map((entry) => (
-                <li key={`${entry.id}-${entry.created_at}`}>
-                  <span className="tracker-event-mark" aria-hidden="true" />
-                  <div>
-                    <b>{entry.kind.replace(/[_-]+/g, ' ')}</b>
-                    <small>{entry.detail || entry.user_tag || 'Helper activity recorded.'}</small>
-                  </div>
-                  <time dateTime={trackerDate(entry.created_at)?.toISOString()}>
-                    {trackerTimestamp(entry.created_at)}
-                  </time>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <div className="tracker-empty">
-              <b>No recent activity yet</b>
-              <span>Helper will list the next actions it handles here.</span>
-            </div>
-          )}
-        </section>
-
-        <section className="tracker-panel card">
-          <div className="tracker-panel-heading">
-            <div>
-              <small className="eyebrow">SERVERS AVAILABLE</small>
-              <h3>{guilds.length} server{guilds.length === 1 ? '' : 's'} you can manage</h3>
-            </div>
-            <button type="button" className="link-button" onClick={() => onOpen('#/features')}>
-              Configure modules
-            </button>
-          </div>
-          <ul className="tracker-guilds">
-            {guilds.map((item) => (
-              <li key={item.id} className={item.id === guild?.id ? 'selected' : undefined}>
-                <span aria-hidden="true">{item.name.trim().slice(0, 1).toUpperCase() || 'V'}</span>
-                <div>
-                  <b>{item.name}</b>
-                  <small>{item.id === guild?.id ? 'Selected for this tracker' : 'Available in the server switcher'}</small>
-                </div>
-                {item.id === guild?.id && <em>Live</em>}
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-
-      <section className="tracker-health card">
-        <div>
-          <small className="eyebrow">HELPER HEALTH</small>
-          <h3>{readyFeatures} of {features.length} modules ready to use</h3>
-          <p>{cases.length} recent moderation records and {activity.length} recent activity records are currently available in this view.</p>
-        </div>
-        <button type="button" className="secondary" onClick={() => onOpen('#/features')}>
-          Review modules
-        </button>
-      </section>
-    </section>
-  );
-}
-
 function Metric({ value, label }: { value: string; label: string }) {
   return (
     <div className="metric card">
