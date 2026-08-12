@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://js.stripe.com https://*.js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com https://*.stripe.com https://*.link.com; connect-src 'self' https://api.vozen.org https://api.stripe.com https://checkout.stripe.com https://r.stripe.com https://*.stripe.com https://link.com https://*.link.com; frame-src https://checkout.stripe.com https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://link.com https://*.link.com; media-src 'self'; form-action 'self'" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07070d" />
+    <title>Premium — Vozen</title>
+    <meta name="description" content="Compare the Vozen plans for your community." />
+    <link rel="canonical" href="https://vozen.org/premium" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="css/main-v43.css" />
+    <link rel="stylesheet" href="css/pricing-cards-v3.css" />
+    <link rel="stylesheet" href="css/pricing-cards-v9.css?v=free-align-v10" />
+    <link rel="stylesheet" href="css/billing-v3.css?v=compact-checkout-v1" />
+    <link rel="stylesheet" href="css/premium-page-v1.css" />
+  </head>
+  <body class="page-premium">
+    <div class="grain" aria-hidden="true"></div>
+    <div class="orbs" aria-hidden="true"><span class="orb orb--blurple"></span><span class="orb orb--aqua"></span></div>
+    <a class="skip-link" href="#plans">Skip to plans</a>
+
+    <header class="nav" id="nav">
+      <div class="wrap nav__inner">
+        <a class="brand" href="/" aria-label="Vozen home">
+          <span class="brand__mark" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span></span>
+          <span class="brand__word">Vozen</span>
+        </a>
+        <nav class="nav__links" aria-label="Primary navigation">
+          <a href="/#features">Features</a>
+          <a href="/#games">Games</a>
+          <a href="/commands/">Commands</a>
+          <a href="/#languages">Languages</a>
+          <a href="/premium" aria-current="page">Premium</a>
+          <a href="/#faq">FAQ</a>
+        </nav>
+        <div class="nav__actions">
+          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub">
+            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          </a>
+          <div class="lang" id="langMenu">
+            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language"><span class="lang__flag" id="langBtnFlag">🇬🇧</span><span class="lang__name" id="langBtnName">English</span><svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language"></ul>
+          </div>
+          <button class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" type="button"><span>Log in</span></button>
+          <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="premium-hero" aria-labelledby="premiumTitle">
+        <div class="wrap premium-hero__inner">
+          <span class="eyebrow eyebrow--amber">Pricing</span>
+          <h1 id="premiumTitle">Choose who gets the upgrade.</h1>
+          <p>Keep the core free, upgrade your personal voice experience, or unlock Premium for every member in your community.</p>
+          <div class="bill-toggle" role="group" aria-label="Billing period">
+            <button class="bill-toggle__btn is-active" type="button" data-period="monthly">Monthly</button>
+            <button class="bill-toggle__btn" type="button" data-period="yearly">Yearly <span>−20%</span></button>
+          </div>
+          <p class="premium-hero__notice">Payments are temporarily disabled. Pricing is shown for reference.</p>
+        </div>
+      </section>
+
+      <section class="section section--premium" id="plans" aria-labelledby="plansTitle">
+        <div class="wrap">
+          <h2 class="sr-only" id="plansTitle">Vozen plans</h2>
+          <div class="pricing" id="pricingGrid">
+            <article class="price-card price-card--free">
+              <div class="price-card__topline"><span class="price-card__badge price-card__badge--free">✦ forever</span></div>
+              <h3>Free</h3>
+              <p class="price-card__pitch">All the essentials. No card, no trial.</p>
+              <div class="seat-toggle plan-scope plan-scope--free"><span class="seat-toggle__btn is-active">forever</span></div>
+              <div class="price-card__price"><span class="price-line"><b><span class="amt">€0</span></b></span><span class="per">forever</span></div>
+              <ul class="ticks price-card__highlights" aria-label="Free plan highlights">
+                <li>38 Piper voices</li><li>35 languages</li><li>Auto-read your channel</li><li>13 of the 16 games</li><li>Daily talk streaks</li>
+              </ul>
+              <p class="price-card__note">Core features, free forever</p>
+              <a class="price-card__buy price-card__buy--free js-invite" href="#">Add to Discord</a>
+              <p class="price-card__idnote">All the essentials. No card, no trial.</p>
+            </article>
+
+            <div class="paid-plans">
+              <article class="price-card price-card--plus">
+                <div class="price-card__topline"><span class="price-card__badge price-card__badge--plus">✦ PERSONAL</span></div>
+                <h3>Vozen Plus</h3>
+                <p class="price-card__pitch">Your premium voice perks follow you into every server.</p>
+                <div class="seat-toggle plan-scope"><span class="seat-toggle__btn is-active">Goes with you to any server</span></div>
+                <div class="price-card__price"><span class="price-line"><b><span class="amt amt--m">€3.99</span><span class="amt amt--y">€37.99</span></b><s class="was was--y">€47.88</s></span><span class="per per--m">/ month · per user</span><span class="per per--y">/ year · per user</span></div>
+                <ul class="ticks price-card__highlights"><li class="price-card__included-free">Everything in Free</li><li>Kokoro neural engine</li><li>Google HD voices</li><li>All 8 voice effects</li><li>50 personal pronunciations</li><li>Word Chain, Wordle and /rizz</li></ul>
+                <p class="price-card__note">Digital subscription · no shipping</p>
+                <button class="price-card__buy" type="button" data-billing-plan="plus">Continue to checkout</button>
+                <p class="price-card__idnote">Sign in with Discord first. Stripe handles payment details.</p>
+              </article>
+
+              <article class="price-card price-card--pro" id="proCard">
+                <div class="price-card__topline"><span class="price-card__badge">💎 PREMIUM</span><span class="price-card__recommended">BEST FOR SERVERS</span></div>
+                <h3>Vozen Premium</h3>
+                <p class="price-card__pitch">Premium TTS and Helper for everyone in each selected server.</p>
+                <aside class="price-card__bundle" aria-label="Premium bundle"><span>VOZEN TTS + VOZEN HELPER</span><strong>Two bots. One subscription.</strong></aside>
+                <div class="seat-toggle" role="group" aria-label="Servers per subscription"><button type="button" class="seat-toggle__btn is-active" data-seats="2">2 servers</button><button type="button" class="seat-toggle__btn" data-seats="5">5 servers</button></div>
+                <div class="price-card__price"><span class="price-line"><b><span class="amt amt--m amt--s2">€6.99</span><span class="amt amt--m amt--s5">€14.99</span><span class="amt amt--y amt--s2">€66.99</span><span class="amt amt--y amt--s5">€133.99</span></b><s class="was was--y was--s2">€83.88</s><s class="was was--y was--s5">€179.88</s></span><span class="per per--m per--s2">/ month · 2 servers</span><span class="per per--m per--s5">/ month · 5 servers</span><span class="per per--y per--s2">/ year · 2 servers</span><span class="per per--y per--s5">/ year · 5 servers</span></div>
+                <ul class="ticks ticks--amber price-card__highlights"><li class="price-card__included-free">Everything in Free</li><li>Premium TTS voices and effects for everyone</li><li>Helper Premium for every selected server</li><li>More panels, workflows, feeds and templates</li><li>Longer audit, analytics and transcript history</li><li>Advanced roles, XP and automation options</li></ul>
+                <p class="price-card__note">Digital subscription · no shipping</p>
+                <button class="price-card__buy price-card__buy--pro" type="button" data-billing-plan="premium">Continue to checkout</button>
+                <p class="price-card__idnote">Sign in with Discord first. Stripe handles payment details.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot"><div class="wrap foot__base"><span>© 2026 Vozen</span><span class="foot__legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></span><span>Not affiliated with Discord</span></div></footer>
+    <script defer src="js/i18n-v41.js?v=payment-element"></script>
+    <script defer data-vozen-stripe src="https://js.stripe.com/dahlia/stripe.js"></script>
+    <script defer src="js/main-v51.js?v=embedded-checkout-v1"></script>
+    <script defer src="js/motion-v1.js"></script>
+  </body>
+</html>

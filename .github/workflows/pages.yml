@@ -11,6 +11,8 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.eleventy.cjs'
+      - 'apps/helper-panel/**'
+      - 'tools/install-helper-panel.mjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -35,11 +37,21 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run docs:build
-      - run: npm run docs:test
-      - run: npm run docs:links
-      - run: npm run docs:a11y
+          cache-dependency-path: |
+            package-lock.json
+            apps/helper-panel/package-lock.json
+      - name: Build Helper documentation
+        run: |
+          npm ci
+          npm run docs:build
+          npm run docs:test
+          npm run docs:links
+          npm run docs:a11y
+      - name: Build Helper panel
+        run: |
+          npm ci --prefix apps/helper-panel
+          npm run build --prefix apps/helper-panel
+          node tools/install-helper-panel.mjs
       - uses: actions/configure-pages@v5
         with:
           enablement: true
