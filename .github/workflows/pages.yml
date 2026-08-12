@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'apps/helper-panel/**'
+      - 'tools/install-helper-panel.mjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -25,6 +27,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/helper-panel/package-lock.json
+      - name: Build Helper panel
+        run: |
+          npm ci --prefix apps/helper-panel
+          npm run build --prefix apps/helper-panel
+          node tools/install-helper-panel.mjs
       - uses: actions/configure-pages@v5
         with:
           enablement: true
