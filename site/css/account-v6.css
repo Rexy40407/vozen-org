@@ -2121,6 +2121,40 @@ body.page-account .ppanel__receiptbody > .ppanel__claimhint {
   border-color: rgba(46, 230, 200, 0.48);
 }
 
+.account-task--tts {
+  border-color: rgba(125, 137, 255, 0.38);
+  background:
+    linear-gradient(110deg, rgba(112, 124, 255, 0.16), rgba(102, 114, 255, 0.06)),
+    rgba(255, 255, 255, 0.025);
+}
+
+.account-task--helper {
+  border-color: rgba(46, 230, 200, 0.36);
+  background:
+    linear-gradient(110deg, rgba(46, 230, 200, 0.13), rgba(79, 185, 255, 0.06)),
+    rgba(255, 255, 255, 0.025);
+}
+
+.account-task--helper .account-task__icon {
+  color: #061815;
+  border: 0;
+  background: linear-gradient(145deg, #82ead7, #49b7ed);
+}
+
+.account-task--billing .account-task__icon {
+  color: #ffd36c;
+  border-color: rgba(255, 185, 65, 0.25);
+  background: rgba(255, 185, 65, 0.08);
+}
+
+.account-task-message {
+  min-height: 1.3em;
+  margin: 8px 0 -5px;
+  color: var(--text-2);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
 .account-task__icon {
   display: grid;
   place-items: center;

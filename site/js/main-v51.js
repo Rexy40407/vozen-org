@@ -903,7 +903,7 @@
       let billingReturn = false;
       try { billingReturn = !!sessionStorage.getItem(BILLING_INTENT_KEY); } catch {}
       if (IS_ACCOUNT && billingReturn) {
-        location.replace("/#premium");
+        location.replace("/premium#plans");
         return;
       }
       activationResume = consumeActivationIntent(fromHash.state);
@@ -1012,7 +1012,7 @@
     const text = active ? t("account.active") : t("account.notActive");
     const action = active
       ? ""
-      : `<a class="ppanel__get" href="/#premium">${t("nav.premium")} <span aria-hidden="true">→</span></a>`;
+      : `<a class="ppanel__get" href="/premium#plans">${t("nav.premium")} <span aria-hidden="true">→</span></a>`;
     return (
       `<article class="ppanel__status ${state}">` +
       `<div class="ppanel__status-top"><span class="ppanel__status-label">${esc(label)}</span>` +
@@ -1746,9 +1746,12 @@
 
   document.getElementById("accountBilling")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;
+    const message = document.getElementById("accountBillingMessage");
     const token = storedToken();
     if (!token) return login();
     button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    if (message) message.textContent = "Opening secure billing…";
     try {
       const response = await fetch(PREMIUM_API_BASE + "/api/billing/portal", {
         method: "POST", headers: { Authorization: "Bearer " + token },
@@ -1758,7 +1761,8 @@
       window.location.href = payload.url;
     } catch {
       button.disabled = false;
-      alert("Billing management is temporarily unavailable. Please try again shortly.");
+      button.removeAttribute("aria-busy");
+      if (message) message.textContent = "Billing management is temporarily unavailable. Please try again shortly.";
     }
   });
 
@@ -1777,6 +1781,12 @@
   // "/#features" in the address bar; once the browser has applied the fragment
   // (hashchange) we strip it with replaceState, keeping the scroll position.
   // The OAuth return fragment (#access_token=…) is left for readTokenFromHash.
+  // Keep the old public /#premium link alive for one compatibility release,
+  // while making /premium the canonical pricing URL.
+  if (location.pathname === "/" && location.hash === "#premium") {
+    location.replace("/premium");
+  }
+
   window.addEventListener("hashchange", () => {
     const id = location.hash.slice(1);
     if (!id || id.indexOf("=") !== -1) return;
