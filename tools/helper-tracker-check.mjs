@@ -10,6 +10,7 @@ const [html, script, css] = await Promise.all([
 
 assert.match(html, /<title>Vozen · Painel · Helper<\/title>/);
 assert.match(html, /aria-live="polite"/);
+assert.match(html, /href="https:\/\/vozen\.org\/panel\/helper\/"/);
 assert.match(html, /href="https:\/\/rexy40407\.github\.io\/painel\/vozen\.html"/);
 assert.match(html, /Servidores do Helper/);
 assert.match(html, /Atividade recente/);
