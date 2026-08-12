@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#070914" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; style-src 'self'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src https://api.vozen.org; form-action 'self'"
+    />
+    <title>Vozen · Painel · Helper</title>
+    <link rel="stylesheet" href="tracker.css" />
+  </head>
+  <body>
+    <main class="auth-screen" id="authScreen" aria-live="polite">
+      <div class="auth-card">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <p class="eyebrow">VOZEN · PAINEL</p>
+        <h1>Helper tracker</h1>
+        <p id="authMessage">A verificar a sessão do Helper…</p>
+        <a class="button button--primary" id="signinButton" href="/panel/helper/" hidden>
+          Entrar com Discord
+        </a>
+      </div>
+    </main>
+
+    <main class="panel" id="panel" hidden>
+      <header class="panel-header">
+        <div class="panel-brand">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span>
+            <strong>Vozen · Painel</strong>
+            <small id="sessionLabel">sessão iniciada</small>
+          </span>
+        </div>
+        <nav class="product-switch" aria-label="Trocar de painel">
+          <span class="is-active" aria-current="page">Helper</span>
+          <a href="https://rexy40407.github.io/painel/vozen.html">Vozen</a>
+        </nav>
+        <button class="button button--quiet" id="logoutButton" type="button">Terminar sessão</button>
+      </header>
+
+      <div class="tabs" aria-label="Secções do Helper">
+        <button class="tab is-active" type="button" data-tab="overview">Resumo</button>
+        <button class="tab" type="button" data-tab="servers">Servidores</button>
+      </div>
+
+      <section class="ops" aria-label="Estado operacional do Vozen Helper">
+        <article class="ops-card" id="runtimeCard" data-state="loading">
+          <div class="ops-top">
+            <span class="eyebrow">RUNTIME</span>
+            <span class="status-pill" id="runtimeStatus">A carregar</span>
+          </div>
+          <strong class="ops-value" id="runtimeValue">—</strong>
+          <p class="ops-detail" id="runtimeDetail">A confirmar o estado do Helper…</p>
+          <div class="metric-line"><span id="runtimeFill"></span></div>
+          <small class="ops-updated" id="lastUpdated">A aguardar leitura</small>
+          <button class="detail-toggle" type="button" data-detail="runtimeDetails" aria-expanded="false">
+            Ver detalhes <span aria-hidden="true">⌄</span>
+          </button>
+          <dl class="details" id="runtimeDetails" hidden>
+            <div><dt>API</dt><dd id="runtimeApi">—</dd></div>
+            <div><dt>Servidor atual</dt><dd id="runtimeGuild">—</dd></div>
+          </dl>
+        </article>
+
+        <article class="ops-card" id="moduleCard" data-state="loading">
+          <div class="ops-top">
+            <span class="eyebrow">MÓDULOS</span>
+            <span class="status-pill" id="moduleStatus">A carregar</span>
+          </div>
+          <strong class="ops-value" id="moduleValue">—</strong>
+          <p class="ops-detail" id="moduleDetail">A obter os módulos do servidor…</p>
+          <div class="metric-line"><span id="moduleFill"></span></div>
+          <small class="ops-updated" id="moduleUpdated">Configuração por servidor</small>
+          <button class="detail-toggle" type="button" data-detail="moduleDetails" aria-expanded="false">
+            Ver detalhes <span aria-hidden="true">⌄</span>
+          </button>
+          <dl class="details" id="moduleDetails" hidden>
+            <div><dt>Ativos</dt><dd id="modulesEnabled">—</dd></div>
+            <div><dt>Disponíveis</dt><dd id="modulesAvailable">—</dd></div>
+          </dl>
+        </article>
+
+        <article class="ops-card ops-card--activity" id="activityCard" data-state="loading">
+          <div class="ops-top">
+            <span class="eyebrow">ATIVIDADE</span>
+            <button class="refresh-button" id="refreshButton" type="button" aria-label="Atualizar dados" title="Atualizar dados">↻</button>
+          </div>
+          <strong class="ops-value"><i aria-hidden="true"></i><span id="activityValue">—</span></strong>
+          <p class="ops-detail" id="activityDetail">A carregar atividade recente…</p>
+          <button class="detail-toggle" type="button" data-detail="activityDetails" aria-expanded="false">
+            Ver servidor selecionado <span aria-hidden="true">⌄</span>
+          </button>
+          <div class="activity-details" id="activityDetails" hidden>
+            <span class="eyebrow">SERVIDOR SELECIONADO</span>
+            <strong id="selectedGuildName">—</strong>
+            <p id="selectedGuildDetail">A sessão determina os dados que podes consultar.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-grid" id="overviewPane">
+        <article class="table-card">
+          <header class="card-heading">
+            <div>
+              <h2>Servidores do Helper</h2>
+              <p>Servidores que podes gerir.</p>
+            </div>
+            <span class="count-chip"><b id="guildCount">0</b> servidores</span>
+          </header>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Servidor</th><th>Acesso</th><th>Estado</th></tr></thead>
+              <tbody id="guildRows"></tbody>
+            </table>
+          </div>
+          <p class="empty-state" id="guildEmpty" hidden>Ainda não existem servidores disponíveis nesta sessão.</p>
+        </article>
+
+        <article class="activity-card">
+          <header class="card-heading">
+            <div>
+              <h2>Atividade recente</h2>
+              <p>Últimas ações tratadas pelo Helper.</p>
+            </div>
+          </header>
+          <ol class="activity-list" id="activityRows"></ol>
+          <p class="empty-state" id="activityEmpty" hidden>O Helper ainda não registou atividade neste servidor.</p>
+        </article>
+      </section>
+    </main>
+    <script src="tracker.js"></script>
+  </body>
+</html>

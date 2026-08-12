@@ -7,6 +7,7 @@
     "docs:test": "node tools/docs-test.mjs",
     "docs:links": "node tools/docs-links.mjs",
     "docs:a11y": "node tools/docs-a11y.mjs",
+    "helper-tracker:check": "node tools/helper-tracker-check.mjs",
     "build": "npm run docs:build"
   },
   "devDependencies": {
