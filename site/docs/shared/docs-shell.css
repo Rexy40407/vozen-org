@@ -19,7 +19,7 @@
   --docs-shell-sidebar:292px;
   --docs-shell-content:1200px;
   --docs-shell-shadow:0 22px 55px rgba(0,9,20,.32);
-  --docs-ecosystem-nav-height:70px;
+  --docs-ecosystem-nav-height:80px;
   font-family:Outfit,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
@@ -238,20 +238,24 @@ body.docs-shell-active .docs-main .docs-local-toc{border-color:var(--docs-shell-
   .docs-failure-gallery{grid-template-columns:1fr}
 }
 @media(max-width:390px){.docs-ecosystem-nav__github{display:none}.docs-ecosystem-nav__login span{display:none}.docs-ecosystem-nav__login{width:38px;padding:0}}
-/* Match the dimensions and group spacing of the public ecosystem header.
-   This lives after the fallback block above so a root Docs page gets the same
-   result even when the navigation script has not loaded yet. */
-.docs-ecosystem-nav{height:70px}
-.docs-ecosystem-nav__inner{justify-content:space-between;gap:30px;width:100%;max-width:1160px;padding:0 24px}
+/* Match the public ecosystem header exactly. These explicit overrides sit
+   after the legacy shell rules so every Docs entry point receives one shared
+   1160px grid instead of a wider, visually different navigation bar. */
+:root{--docs-ecosystem-nav-height:70px}
+.docs-ecosystem-nav{height:var(--docs-ecosystem-nav-height)}
+.docs-ecosystem-nav__inner{justify-content:space-between;gap:clamp(20px,3vw,44px);width:100%;max-width:1160px;padding:0 24px}
 .docs-ecosystem-nav__mark{width:40px;height:40px;border-radius:12px}
-.docs-ecosystem-nav__word{font-size:23px;font-weight:700;letter-spacing:-.04em}
-.docs-ecosystem-nav__product{gap:12px;font-weight:500}.docs-ecosystem-nav__product::before{height:21px}
-.docs-ecosystem-nav__links{gap:clamp(18px,2.2vw,30px)}.docs-ecosystem-nav__links a{font-size:15px;font-weight:500}
+.docs-ecosystem-nav__word{font-size:23px;font-weight:750;letter-spacing:-.05em}
+.docs-ecosystem-nav__product{gap:12px;font-weight:600}.docs-ecosystem-nav__product::before{height:22px}
+.docs-ecosystem-nav__links{gap:clamp(18px,2.2vw,30px)}.docs-ecosystem-nav__links a{font-size:14px;font-weight:650}
 .docs-ecosystem-nav__premium-disabled{display:inline-flex;align-items:center;min-height:30px;padding:8px 0;color:#aeb9ce;font-size:15px;font-weight:500;opacity:.46;cursor:not-allowed;user-select:none;white-space:nowrap}
-.docs-ecosystem-nav__actions{gap:14px;margin-left:0}
-@media(max-width:1120px){.docs-ecosystem-nav__inner{gap:20px;max-width:none;padding:0 16px}}
-@media(max-width:980px){:root{--docs-ecosystem-nav-height:66px}.docs-ecosystem-nav{height:66px}.docs-ecosystem-nav__inner{gap:15px}.docs-ecosystem-nav__mark{width:38px;height:38px;border-radius:11px}.docs-ecosystem-nav__word{font-size:21px}.docs-ecosystem-nav__product,.docs-ecosystem-nav__links>:nth-child(4),.docs-ecosystem-nav__links>:nth-child(5),.docs-ecosystem-nav__language{display:none}.docs-ecosystem-nav__links{gap:16px}.docs-ecosystem-nav__links a,.docs-ecosystem-nav__premium-disabled{font-size:13px}.docs-ecosystem-nav__links a.is-current::after{bottom:-14px}}
-@media(max-width:620px){:root{--docs-ecosystem-nav-height:60px}.docs-ecosystem-nav{height:60px}.docs-ecosystem-nav__inner{width:calc(100% - 24px);padding:0;gap:10px}.docs-ecosystem-nav__mark{width:34px;height:34px;border-radius:10px}.docs-ecosystem-nav__word{font-size:19px}.docs-ecosystem-nav__links{display:none}.docs-ecosystem-nav__actions{gap:4px}.docs-ecosystem-nav__github{width:34px;height:34px}.docs-ecosystem-nav__login{min-height:36px;padding:0 11px;font-size:12px}}
+.docs-ecosystem-nav__actions{gap:14px;margin-left:0}.docs-ecosystem-nav__login{min-height:44px;padding:0 18px;opacity:1;filter:none;background:linear-gradient(110deg,#637cff,#36d3c4);color:#f7fbff!important;cursor:pointer;box-shadow:0 8px 20px rgba(71,215,202,.24)}.docs-ecosystem-nav__login:hover{color:#fff!important;filter:brightness(1.07)}
+.docs-ecosystem-nav__login--account{border:1px solid rgba(157,184,221,.24);background:rgba(14,29,48,.92)!important;color:#f3f7ff!important;box-shadow:none}
+.docs-ecosystem-nav__login--account:hover{background:rgba(21,45,69,.98)!important;color:#fff!important}
+.docs-ecosystem-nav__account-mark{display:grid;width:24px;height:24px;place-items:center;border-radius:8px;background:linear-gradient(135deg,#6e80ff,#46d8c9);color:#07101c;font-size:11px;font-weight:900}
+@media(max-width:1120px){.docs-ecosystem-nav__inner{gap:20px;width:100%;padding:0 16px}}
+@media(max-width:980px){:root{--docs-ecosystem-nav-height:68px}.docs-ecosystem-nav__inner{gap:15px}.docs-ecosystem-nav__mark{width:38px;height:38px;border-radius:11px}.docs-ecosystem-nav__word{font-size:21px}.docs-ecosystem-nav__product,.docs-ecosystem-nav__links>:nth-child(4),.docs-ecosystem-nav__links>:nth-child(5),.docs-ecosystem-nav__language{display:none}.docs-ecosystem-nav__links{gap:16px}.docs-ecosystem-nav__links a,.docs-ecosystem-nav__premium-disabled{font-size:13px}.docs-ecosystem-nav__links a.is-current::after{bottom:-17px}}
+@media(max-width:620px){:root{--docs-ecosystem-nav-height:64px}.docs-ecosystem-nav__inner{width:calc(100% - 24px);padding:0;gap:10px}.docs-ecosystem-nav__mark{width:36px;height:36px;border-radius:11px}.docs-ecosystem-nav__word{font-size:20px}.docs-ecosystem-nav__links{display:none}.docs-ecosystem-nav__actions{gap:4px}.docs-ecosystem-nav__github{width:34px;height:34px}.docs-ecosystem-nav__login{min-height:40px;padding:0 12px;font-size:12px}}
 @media(max-width:390px){.docs-ecosystem-nav__github{display:none}.docs-ecosystem-nav__login span{display:none}.docs-ecosystem-nav__login{width:38px;padding:0}}
 
 @media(prefers-reduced-motion:reduce){

@@ -3,6 +3,21 @@
   "use strict";
 
   const hosts = document.querySelectorAll("[data-vozen-nav]");
+  const cachedAccount = () => {
+    try {
+      if (!sessionStorage.getItem("vozen.dtoken")) return null;
+      const raw = sessionStorage.getItem("vozen.navuser");
+      const parsed = raw ? JSON.parse(raw) : null;
+      return parsed && parsed.user && typeof parsed.user.username === "string" ? parsed.user : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const escapeHtml = (value) => String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;");
   // Older public pages still contain the pre-ecosystem header in their HTML.
   // Remove it before rendering the shared shell so there is only one nav and
   // the existing page scripts keep receiving the canonical #nav element.
@@ -42,7 +57,7 @@
           <div class="docs-ecosystem-nav__actions">
             <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub">${githubIcon}</a>
             <span class="docs-ecosystem-nav__language" aria-label="Site language"><span aria-hidden="true">&#127468;&#127463;</span> English</span>
-            <a class="docs-ecosystem-nav__login" href="${link('account.html')}">${discordIcon}<span>Log in</span></a>
+            <a class="docs-ecosystem-nav__login" data-vozen-docs-login href="${link('account.html')}">${discordIcon}<span>Log in</span></a>
           </div>
         </div>
       </header>`;
@@ -78,4 +93,15 @@
       </div>
     </header>`;
   });
+
+  const account = cachedAccount();
+  if (account) {
+    document.querySelectorAll("[data-vozen-docs-login]").forEach((link) => {
+      const username = escapeHtml(account.username);
+      const initial = escapeHtml(account.username.trim().slice(0, 1).toUpperCase() || "V");
+      link.classList.add("docs-ecosystem-nav__login--account");
+      link.setAttribute("aria-label", `Open ${account.username}'s Vozen account`);
+      link.innerHTML = `<span class="docs-ecosystem-nav__account-mark" aria-hidden="true">${initial}</span><span>${username}</span>`;
+    });
+  }
 })();

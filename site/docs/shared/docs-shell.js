@@ -50,6 +50,18 @@
   const relativeOr = (value, fallback) => value ? new URL(value, config.root).href : fallback;
   const docsReturnStorageKey = 'vozen-docs-return-url';
 
+  // Older static pages may still link to an uncached shell stylesheet. Add the
+  // current stylesheet after the document's own styles so every route — even
+  // a directly opened file:// page — gets the same navigation geometry.
+  function ensureCurrentShellStyles() {
+    if (document.querySelector('link[data-vozen-current-docs-shell]')) return;
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = new URL('docs-shell.css?v=ecosystem-nav-v5', docsRoot).href;
+    stylesheet.dataset.vozenCurrentDocsShell = 'true';
+    document.head.appendChild(stylesheet);
+  }
+
   function installEcosystemNav() {
     if (document.querySelector('[data-vozen-nav]') || document.querySelector('.docs-ecosystem-nav')) return;
 
@@ -68,7 +80,7 @@
     else document.body.insertBefore(host, document.body.querySelector('main'));
 
     const navScript = document.createElement('script');
-    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-shell-v3', siteRoot.href).href;
+    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-nav-v5', siteRoot.href).href;
     document.body.appendChild(navScript);
   }
 
@@ -633,6 +645,7 @@
   }
 
   async function boot() {
+    ensureCurrentShellStyles();
     installEcosystemNav();
     document.body.dataset.vozenDocsShell = 'ready';
     document.body.classList.add('docs-shell-active');

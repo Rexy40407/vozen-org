@@ -1,5 +1,12 @@
-/* Shared marketing navigation for the Vozen ecosystem. */
+/* Shared marketing navigation for the Vozen ecosystem.
+   It owns its dimensions so individual product styles can never resize it. */
+:root { --vozen-ecosystem-nav-height: 70px; }
+
 .vozen-global-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: var(--vozen-ecosystem-nav-height);
   background: transparent;
   border-bottom-color: transparent;
   -webkit-backdrop-filter: none;
@@ -17,8 +24,22 @@
 
 /* Vozen ecosystem mark — shared by the global navigation. */
 .vozen-global-nav .brand__mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   overflow: hidden;
 }
+
+.vozen-global-nav .nav__inner {
+  width: 100%;
+  max-width: var(--wrap, 1160px);
+  height: var(--vozen-ecosystem-nav-height);
+  min-height: var(--vozen-ecosystem-nav-height);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.vozen-global-nav .brand__word { font-size: 23px; }
 
 .vozen-global-nav .brand__portal {
   display: block;
@@ -28,7 +49,7 @@
   object-fit: cover;
 }
 
-.nav__product {
+.vozen-global-nav .nav__product {
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -37,7 +58,7 @@
   font-weight: 500;
 }
 
-.nav__product::before {
+.vozen-global-nav .nav__product::before {
   width: 1px;
   height: 21px;
   background: rgba(184, 194, 226, .22);
@@ -46,6 +67,27 @@
 
 .vozen-global-nav .nav__links {
   gap: clamp(18px, 2.2vw, 30px);
+}
+
+.vozen-global-nav .nav__actions { gap: 14px; }
+
+.vozen-global-nav .nav__login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  color: #f7fbff;
+  font-weight: 750;
+  opacity: 1;
+  filter: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.vozen-global-nav .nav__login:hover {
+  color: #fff;
+  filter: brightness(1.06);
 }
 
 .vozen-global-nav .nav__links a.is-current {
@@ -81,13 +123,22 @@
 }
 
 @media (max-width: 1080px) {
+  :root { --vozen-ecosystem-nav-height: 68px; }
+
+  .vozen-global-nav .nav__inner {
+    width: 100%;
+    padding: 0 16px;
+  }
+
   .vozen-global-nav .nav__links {
     gap: 18px;
   }
 }
 
 @media (max-width: 720px) {
-  .nav__product {
+  :root { --vozen-ecosystem-nav-height: 64px; }
+
+  .vozen-global-nav .nav__product {
     display: none;
   }
 
@@ -119,4 +170,11 @@
   .vozen-global-nav {
     transition: none;
   }
+}
+
+/* Marketing pages retain their established 110% content scale on large
+   displays. The shared header deliberately opts out so it has the same
+   physical size and alignment as account and documentation pages. */
+@media (min-width: 1101px) {
+  body:not(.page-account) .vozen-global-nav { zoom: .90909091; }
 }
