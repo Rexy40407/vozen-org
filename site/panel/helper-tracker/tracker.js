@@ -3,12 +3,22 @@
 
   const API = 'https://api.vozen.org/rust';
   const $ = (id) => document.getElementById(id);
+  let sessionBearer = null;
+  try {
+    sessionBearer = sessionStorage.getItem('vh_session_bearer');
+  } catch (_) {
+    // Storage is optional. A same-site cookie can still authenticate the request.
+  }
   const request = async (path, init = {}) => {
     const response = await fetch(`${API}${path}`, {
       ...init,
       credentials: 'include',
       cache: 'no-store',
-      headers: { Accept: 'application/json', ...(init.headers || {}) },
+      headers: {
+        Accept: 'application/json',
+        ...(sessionBearer ? { Authorization: `Bearer ${sessionBearer}` } : {}),
+        ...(init.headers || {}),
+      },
     });
     if (!response.ok) {
       const error = new Error(`HTTP ${response.status}`);
@@ -178,6 +188,8 @@
   $('refreshButton').addEventListener('click', load);
   $('logoutButton').addEventListener('click', async () => {
     try { await request('/api/logout', { method: 'POST' }); } catch (_) { /* stale cookies still leave the browser */ }
+    sessionBearer = null;
+    try { sessionStorage.removeItem('vh_session_bearer'); } catch (_) { /* storage optional */ }
     $('panel').hidden = true;
     setText('authMessage', 'Sessão terminada.');
     $('signinButton').hidden = false;
