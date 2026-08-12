@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'docs-src/**'
+      - 'docs-data/**'
+      - 'tools/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.eleventy.cjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -25,6 +31,15 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run docs:build
+      - run: npm run docs:test
+      - run: npm run docs:links
+      - run: npm run docs:a11y
       - uses: actions/configure-pages@v5
         with:
           enablement: true

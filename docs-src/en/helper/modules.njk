@@ -1,0 +1,8 @@
+---
+title: All Helper modules
+description: The complete Vozen Helper module catalogue.
+permalink: /modules/
+---
+<p class="eyebrow">MODULE INDEX</p><h1>All modules</h1><p class="lede">Every module has a page. Status, permissions and capabilities come from the Helper technical manifest.</p>
+<div class="module-index">{% for feature in helperDocs.features | sort(false, false, 'title') %}<a class="module-row" href="/docs/helper/modules/{{ feature.slug }}/"><span><strong>{{ feature.title }}</strong><small>{{ feature.summary }}</small></span><span class="status status-{{ feature.maturity }}">{{ feature.statusLabel }}</span></a>{% endfor %}</div>
+

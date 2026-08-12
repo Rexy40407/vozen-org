@@ -1,0 +1,4252 @@
+{
+  "features": [
+    {
+      "adapter": "achievements_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/achievements",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "firstRewardRole": "",
+        "firstThreshold": 100,
+        "pillarRewardRole": "",
+        "pillarThreshold": 10000,
+        "regularRewardRole": "",
+        "regularThreshold": 1000
+      },
+      "dependencies": [
+        "message_content",
+        "levels",
+        "send_messages"
+      ],
+      "intents": [
+        "Message Content"
+      ],
+      "key": "community.achievements",
+      "maturity": "operational",
+      "panelPath": "/modules/community/achievements",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose the real XP thresholds used by the achievements command.",
+            "fields": [
+              {
+                "key": "firstThreshold",
+                "kind": "number",
+                "label": "First steps threshold",
+                "max": 1000000,
+                "min": 1
+              },
+              {
+                "key": "regularThreshold",
+                "kind": "number",
+                "label": "Regular threshold",
+                "max": 1000000,
+                "min": 1
+              },
+              {
+                "key": "pillarThreshold",
+                "kind": "number",
+                "label": "Community pillar threshold",
+                "max": 1000000,
+                "min": 1
+              },
+              {
+                "advanced": true,
+                "key": "firstRewardRole",
+                "kind": "role",
+                "label": "First steps reward role"
+              },
+              {
+                "advanced": true,
+                "key": "regularRewardRole",
+                "kind": "role",
+                "label": "Regular reward role"
+              },
+              {
+                "advanced": true,
+                "key": "pillarRewardRole",
+                "kind": "role",
+                "label": "Community pillar reward role"
+              }
+            ],
+            "title": "XP milestones"
+          }
+        ],
+        "source": "achievements_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the achievements module from the Vozen Helper panel.",
+      "title": "Achievements"
+    },
+    {
+      "adapter": "birthdays_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "channel": "",
+        "message": "Happy birthday, {user}! 🎉",
+        "role": "",
+        "timezone": "UTC"
+      },
+      "dependencies": [
+        "guild_members",
+        "send_messages",
+        "scheduler"
+      ],
+      "intents": [
+        "Guild Members"
+      ],
+      "key": "community.birthdays",
+      "maturity": "operational",
+      "panelPath": "/modules/community/birthdays",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Store only day and month and announce birthdays once per year.",
+            "fields": [
+              {
+                "key": "channel",
+                "kind": "channel",
+                "label": "Announcement channel"
+              },
+              {
+                "advanced": true,
+                "help": "Temporarily give this role to the member when their birthday is announced.",
+                "key": "role",
+                "kind": "role",
+                "label": "Birthday role (optional)"
+              },
+              {
+                "help": "Use {user} for the member mention.",
+                "key": "message",
+                "kind": "text",
+                "label": "Announcement message",
+                "max": 1000,
+                "min": 1
+              },
+              {
+                "help": "The local day used to decide when a birthday announcement is sent.",
+                "key": "timezone",
+                "kind": "select",
+                "label": "Announcement timezone",
+                "options": [
+                  [
+                    "UTC",
+                    "UTC"
+                  ],
+                  [
+                    "UTC-05:00",
+                    "UTC-05:00"
+                  ],
+                  [
+                    "UTC+01:00",
+                    "UTC+01:00"
+                  ],
+                  [
+                    "UTC+02:00",
+                    "UTC+02:00"
+                  ],
+                  [
+                    "UTC+05:30",
+                    "UTC+05:30"
+                  ],
+                  [
+                    "UTC+08:00",
+                    "UTC+08:00"
+                  ]
+                ]
+              }
+            ],
+            "title": "Birthday announcements"
+          }
+        ],
+        "source": "birthdays_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the birthdays module from the Vozen Helper panel.",
+      "title": "Birthdays"
+    },
+    {
+      "adapter": "economy_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/balance",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "currencyName": "credits",
+        "dailyReward": 100,
+        "workCooldownMinutes": 60,
+        "workReward": 50
+      },
+      "dependencies": [
+        "scheduler"
+      ],
+      "intents": [],
+      "key": "community.economy",
+      "maturity": "operational",
+      "panelPath": "/modules/community/economy",
+      "permissions": [],
+      "schema": {
+        "sections": [
+          {
+            "description": "Bounded community rewards backed by an auditable balance ledger.",
+            "fields": [
+              {
+                "key": "currencyName",
+                "kind": "text",
+                "label": "Currency name",
+                "maxLength": 24
+              },
+              {
+                "key": "dailyReward",
+                "kind": "number",
+                "label": "Daily reward",
+                "max": 10000,
+                "min": 1
+              },
+              {
+                "key": "workReward",
+                "kind": "number",
+                "label": "Work reward",
+                "max": 10000,
+                "min": 1
+              },
+              {
+                "key": "workCooldownMinutes",
+                "kind": "number",
+                "label": "Work cooldown (minutes)",
+                "max": 1440,
+                "min": 5
+              }
+            ],
+            "title": "Rewards"
+          }
+        ],
+        "source": "economy_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the economy module from the Vozen Helper panel.",
+      "title": "Economy"
+    },
+    {
+      "adapter": "events_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/event-create",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "announcementChannel": "",
+        "defaultCapacity": 0,
+        "defaultDurationHours": 2,
+        "reminderHours": 1,
+        "reminders": true
+      },
+      "dependencies": [
+        "manage_events",
+        "scheduler"
+      ],
+      "intents": [],
+      "key": "community.events",
+      "maturity": "operational",
+      "panelPath": "/modules/community/events",
+      "permissions": [
+        "Manage Events"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "These values are applied to new events created with the Helper.",
+            "fields": [
+              {
+                "key": "defaultDurationHours",
+                "kind": "number",
+                "label": "Default duration (hours)",
+                "max": 8760,
+                "min": 1
+              },
+              {
+                "key": "defaultCapacity",
+                "kind": "number",
+                "label": "Default capacity (0 = unlimited)",
+                "max": 100000,
+                "min": 0
+              },
+              {
+                "key": "announcementChannel",
+                "kind": "channel",
+                "label": "Announcement channel (optional)"
+              }
+            ],
+            "title": "Event defaults"
+          },
+          {
+            "description": "Post one reminder before each new event in the announcement channel.",
+            "fields": [
+              {
+                "key": "reminders",
+                "kind": "toggle",
+                "label": "Send start reminders"
+              },
+              {
+                "advanced": true,
+                "key": "reminderHours",
+                "kind": "number",
+                "label": "Hours before start",
+                "max": 168,
+                "min": 1
+              }
+            ],
+            "title": "Start reminder"
+          }
+        ],
+        "source": "events_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the events module from the Vozen Helper panel.",
+      "title": "Events"
+    },
+    {
+      "adapter": "giveaways_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/giveaway-start",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "defaultDurationHours": 24,
+        "defaultWinners": 1,
+        "requiredRole": ""
+      },
+      "dependencies": [
+        "send_messages",
+        "scheduler",
+        "interactions"
+      ],
+      "intents": [],
+      "key": "community.giveaways",
+      "maturity": "operational",
+      "panelPath": "/modules/community/giveaways",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Commands can still override these defaults when needed.",
+            "fields": [
+              {
+                "key": "defaultDurationHours",
+                "kind": "number",
+                "label": "Default duration (hours)",
+                "max": 168,
+                "min": 1
+              },
+              {
+                "key": "defaultWinners",
+                "kind": "number",
+                "label": "Default winners",
+                "max": 20,
+                "min": 1
+              },
+              {
+                "key": "requiredRole",
+                "kind": "role",
+                "label": "Required role (optional)"
+              }
+            ],
+            "title": "Giveaway defaults"
+          }
+        ],
+        "source": "giveaways_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the giveaways module from the Vozen Helper panel.",
+      "title": "Giveaways"
+    },
+    {
+      "adapter": "leaderboard_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/leaderboard",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "maxEntries": 10,
+        "public": true
+      },
+      "dependencies": [
+        "levels",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "community.leaderboard",
+      "maturity": "operational",
+      "panelPath": "/modules/roles-and-progression/leaderboard",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Control how many members appear in the XP leaderboard.",
+            "fields": [
+              {
+                "help": "Keep the public result concise and predictable.",
+                "key": "maxEntries",
+                "kind": "number",
+                "label": "Members shown",
+                "max": 100,
+                "min": 1
+              },
+              {
+                "help": "When disabled, only the requesting member sees the result.",
+                "key": "public",
+                "kind": "toggle",
+                "label": "Show the leaderboard publicly"
+              }
+            ],
+            "title": "Leaderboard privacy"
+          }
+        ],
+        "source": "leaderboard_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Show community progress with privacy-aware leaderboard controls.",
+      "title": "XP leaderboard"
+    },
+    {
+      "adapter": "levels_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/rank",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "announceChannel": "",
+        "announceTemplate": "{member} reached level {level}!",
+        "cooldownSeconds": 60,
+        "ignoredChannels": [],
+        "levelRoles": [],
+        "stackRoles": true,
+        "voiceXpEnabled": false,
+        "voiceXpPerMinute": 2,
+        "xpMax": 30,
+        "xpMin": 15
+      },
+      "dependencies": [
+        "message_content_intent",
+        "send_messages"
+      ],
+      "intents": [
+        "Message Content"
+      ],
+      "key": "community.levels",
+      "maturity": "operational",
+      "panelPath": "/modules/roles-and-progression/levels",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Tune message XP and level-up announcements.",
+            "fields": [
+              {
+                "key": "xpMin",
+                "kind": "number",
+                "label": "Minimum XP per message",
+                "max": 1000,
+                "min": 1
+              },
+              {
+                "key": "xpMax",
+                "kind": "number",
+                "label": "Maximum XP per message",
+                "max": 2000,
+                "min": 1
+              },
+              {
+                "key": "cooldownSeconds",
+                "kind": "number",
+                "label": "XP cooldown (seconds)",
+                "max": 3600,
+                "min": 0
+              },
+              {
+                "advanced": true,
+                "key": "voiceXpEnabled",
+                "kind": "toggle",
+                "label": "Award XP in voice channels"
+              },
+              {
+                "advanced": true,
+                "key": "voiceXpPerMinute",
+                "kind": "number",
+                "label": "Voice XP per minute",
+                "max": 30,
+                "min": 0
+              },
+              {
+                "advanced": true,
+                "key": "ignoredChannels",
+                "kind": "channels",
+                "label": "Channels that do not award XP",
+                "max": 100
+              },
+              {
+                "advanced": true,
+                "key": "levelRoles",
+                "kind": "tags",
+                "label": "Level role rewards (level=role ID)",
+                "max": 50
+              },
+              {
+                "advanced": true,
+                "key": "stackRoles",
+                "kind": "toggle",
+                "label": "Keep previous level roles"
+              },
+              {
+                "advanced": true,
+                "key": "announceChannel",
+                "kind": "channel",
+                "label": "Level-up channel"
+              },
+              {
+                "advanced": true,
+                "key": "announceTemplate",
+                "kind": "text",
+                "label": "Level-up message",
+                "max": 1000
+              }
+            ],
+            "title": "XP progression"
+          }
+        ],
+        "source": "levels_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Reward healthy participation with XP, levels and configurable progression.",
+      "title": "Levels and XP"
+    },
+    {
+      "adapter": "role_panels_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/rolepanel",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "channel": "",
+        "maxRoles": 5,
+        "panelDescription": "Select the roles that fit you.",
+        "panelTitle": "Choose your roles",
+        "removeOnUnselect": true,
+        "selectionMode": "multiple"
+      },
+      "dependencies": [
+        "manage_roles",
+        "interactions"
+      ],
+      "intents": [],
+      "key": "community.role_panels",
+      "maturity": "operational",
+      "panelPath": "/modules/community/role-panels",
+      "permissions": [
+        "Manage Roles"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "The role panel command applies these values to newly published panels.",
+            "fields": [
+              {
+                "key": "channel",
+                "kind": "channel",
+                "label": "Panel channel (optional)"
+              },
+              {
+                "key": "roleIds",
+                "kind": "roles",
+                "label": "Panel roles",
+                "max": 5
+              },
+              {
+                "key": "panelTitle",
+                "kind": "text",
+                "label": "Panel title",
+                "max": 80,
+                "min": 1
+              },
+              {
+                "key": "panelDescription",
+                "kind": "textarea",
+                "label": "Panel description",
+                "max": 1000
+              },
+              {
+                "key": "maxRoles",
+                "kind": "number",
+                "label": "Maximum roles",
+                "max": 5,
+                "min": 1
+              },
+              {
+                "key": "selectionMode",
+                "kind": "select",
+                "label": "Selection mode",
+                "options": [
+                  [
+                    "multiple",
+                    "Members can choose several roles"
+                  ],
+                  [
+                    "unique",
+                    "Members can choose one role"
+                  ]
+                ]
+              },
+              {
+                "key": "removeOnUnselect",
+                "kind": "toggle",
+                "label": "Remove the role when toggled off"
+              }
+            ],
+            "title": "Panel defaults"
+          }
+        ],
+        "source": "role_panels_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the role panels module from the Vozen Helper panel.",
+      "title": "Role panels"
+    },
+    {
+      "adapter": "starboard_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/starboard-set",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "allowSelfStar": false,
+        "channel": "",
+        "emoji": "⭐",
+        "ignoredChannels": [],
+        "ignoredRoles": [],
+        "includeImages": true,
+        "threshold": 3
+      },
+      "dependencies": [
+        "read_message_history",
+        "add_reactions",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "community.starboard",
+      "maturity": "operational",
+      "panelPath": "/modules/community/starboard",
+      "permissions": [
+        "Add Reactions",
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose the channel and reaction score required to feature a message.",
+            "fields": [
+              {
+                "key": "channel",
+                "kind": "channel",
+                "label": "Starboard channel"
+              },
+              {
+                "key": "threshold",
+                "kind": "number",
+                "label": "Stars required",
+                "max": 100,
+                "min": 1
+              },
+              {
+                "key": "emoji",
+                "kind": "text",
+                "label": "Reaction emoji",
+                "max": 32,
+                "min": 1
+              },
+              {
+                "advanced": true,
+                "key": "allowSelfStar",
+                "kind": "toggle",
+                "label": "Allow authors to star their own message"
+              },
+              {
+                "advanced": true,
+                "key": "includeImages",
+                "kind": "toggle",
+                "label": "Include image attachments"
+              },
+              {
+                "advanced": true,
+                "key": "ignoredChannels",
+                "kind": "channels",
+                "label": "Ignored channels",
+                "max": 100
+              },
+              {
+                "advanced": true,
+                "key": "ignoredRoles",
+                "kind": "roles",
+                "label": "Ignored member roles",
+                "max": 100
+              }
+            ],
+            "title": "Starboard"
+          }
+        ],
+        "source": "starboard_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the starboard module from the Vozen Helper panel.",
+      "title": "Starboard"
+    },
+    {
+      "adapter": "suggestions_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "community",
+      "commands": [
+        {
+          "name": "/suggest",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "anonymous": false,
+        "channel": "",
+        "cooldownHours": 24,
+        "requiredRole": "",
+        "staffChannel": "",
+        "voteMode": "up_down"
+      },
+      "dependencies": [
+        "send_messages",
+        "interactions"
+      ],
+      "intents": [],
+      "key": "community.suggestions",
+      "maturity": "operational",
+      "panelPath": "/modules/community/suggestions",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "These options are applied to every new suggestion.",
+            "fields": [
+              {
+                "key": "channel",
+                "kind": "channel",
+                "label": "Suggestion channel"
+              },
+              {
+                "key": "voteMode",
+                "kind": "select",
+                "label": "Voting mode",
+                "options": [
+                  [
+                    "up_down",
+                    "Support / against"
+                  ],
+                  [
+                    "up_only",
+                    "Support only"
+                  ]
+                ]
+              },
+              {
+                "key": "anonymous",
+                "kind": "toggle",
+                "label": "Hide author in the public message"
+              }
+            ],
+            "title": "Suggestion intake"
+          },
+          {
+            "description": "Control submission frequency and give staff a private notification channel.",
+            "fields": [
+              {
+                "advanced": true,
+                "key": "cooldownHours",
+                "kind": "number",
+                "label": "Cooldown per member (hours)",
+                "max": 720,
+                "min": 0
+              },
+              {
+                "advanced": true,
+                "key": "requiredRole",
+                "kind": "role",
+                "label": "Required role (optional)"
+              },
+              {
+                "advanced": true,
+                "key": "staffChannel",
+                "kind": "channel",
+                "label": "Staff notification channel (optional)"
+              }
+            ],
+            "title": "Moderation"
+          }
+        ],
+        "source": "suggestions_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the suggestions module from the Vozen Helper panel.",
+      "title": "Suggestions"
+    },
+    {
+      "adapter": "stripe_connect_server_sales_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "growth",
+      "commands": [],
+      "configurable": false,
+      "defaults": {
+        "currency": "eur",
+        "priceCents": 0,
+        "productName": "",
+        "targetRoleId": "",
+        "trialDays": 0
+      },
+      "dependencies": [
+        "Stripe Connect account",
+        "KYC, tax and refund policy",
+        "Signed Stripe webhooks",
+        "Support and chargeback process"
+      ],
+      "intents": [],
+      "key": "growth.monetization",
+      "maturity": "blocked",
+      "panelPath": "/modules/growth/monetization",
+      "permissions": [],
+      "schema": {
+        "sections": [
+          {
+            "description": "Offer a server subscription through Stripe Connect. Production requires legal, tax and support approval.",
+            "fields": [
+              {
+                "key": "productName",
+                "kind": "text",
+                "label": "Product name",
+                "max": 80
+              },
+              {
+                "key": "targetRoleId",
+                "kind": "role",
+                "label": "Subscriber role"
+              },
+              {
+                "key": "priceCents",
+                "kind": "number",
+                "label": "Monthly price (cents)",
+                "max": 10000000,
+                "min": 0
+              },
+              {
+                "help": "ISO 4217 lowercase code, for example eur.",
+                "key": "currency",
+                "kind": "text",
+                "label": "Currency"
+              },
+              {
+                "key": "trialDays",
+                "kind": "number",
+                "label": "Trial days",
+                "max": 30,
+                "min": 0
+              }
+            ],
+            "title": "Server monetization"
+          }
+        ],
+        "source": "stripe_connect_server_sales_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the server monetization module from the Vozen Helper panel.",
+      "title": "Server monetization"
+    },
+    {
+      "adapter": "stats_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "insights",
+      "commands": [
+        {
+          "name": "/serverstats",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "channelId": "",
+        "intervalMinutes": 15,
+        "nameTemplate": "messages-{messages}",
+        "public": false,
+        "windowDays": 7
+      },
+      "dependencies": [
+        "message_events",
+        "scheduler",
+        "manage_channels"
+      ],
+      "intents": [],
+      "key": "insights.stats",
+      "maturity": "operational",
+      "panelPath": "/modules/insights/stats",
+      "permissions": [
+        "Manage Channels"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Control the period, visibility and optional live counter channel for server statistics.",
+            "fields": [
+              {
+                "help": "Number of recent daily snapshots included.",
+                "key": "windowDays",
+                "kind": "number",
+                "label": "Reporting window (days)",
+                "max": 30,
+                "min": 1
+              },
+              {
+                "help": "When disabled, only the requesting member sees the summary.",
+                "key": "public",
+                "kind": "toggle",
+                "label": "Show publicly"
+              },
+              {
+                "help": "Rename one existing voice or text channel with the latest message count.",
+                "key": "channelId",
+                "kind": "channel",
+                "label": "Live counter channel (optional)"
+              },
+              {
+                "advanced": true,
+                "key": "intervalMinutes",
+                "kind": "number",
+                "label": "Counter refresh (minutes)",
+                "max": 1440,
+                "min": 5
+              },
+              {
+                "help": "Use {messages}, {joins}, {leaves} and {days}.",
+                "key": "nameTemplate",
+                "kind": "text",
+                "label": "Channel name template",
+                "max": 100
+              }
+            ],
+            "title": "Server statistics"
+          }
+        ],
+        "source": "stats_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the statistics channels module from the Vozen Helper panel.",
+      "title": "Statistics channels"
+    },
+    {
+      "adapter": "audit_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [
+        {
+          "name": "/modlogs",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "includeContent": false,
+        "logChannel": "",
+        "shadowMode": false,
+        "threshold": 3,
+        "windowSeconds": 10
+      },
+      "dependencies": [
+        "view_audit_log"
+      ],
+      "intents": [],
+      "key": "management.audit",
+      "maturity": "operational",
+      "panelPath": "/modules/management/audit",
+      "permissions": [
+        "View Audit Log"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Record audit events and contain repeated destructive changes.",
+            "fields": [
+              {
+                "key": "threshold",
+                "kind": "number",
+                "label": "Actions before containment",
+                "max": 25,
+                "min": 2
+              },
+              {
+                "key": "windowSeconds",
+                "kind": "number",
+                "label": "Detection window (seconds)",
+                "max": 60,
+                "min": 3
+              },
+              {
+                "help": "Record and alert without automatic containment.",
+                "key": "shadowMode",
+                "kind": "toggle",
+                "label": "Shadow mode"
+              },
+              {
+                "advanced": true,
+                "key": "logChannel",
+                "kind": "channel",
+                "label": "Audit log channel (optional)"
+              },
+              {
+                "advanced": true,
+                "help": "Off by default. Discord may not provide content for every edit/delete event.",
+                "key": "includeContent",
+                "kind": "toggle",
+                "label": "Include cached message content"
+              }
+            ],
+            "title": "Destructive action protection"
+          }
+        ],
+        "source": "audit_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the audit module from the Vozen Helper panel.",
+      "title": "Audit"
+    },
+    {
+      "adapter": "custom_commands_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [
+        {
+          "name": "/tag",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "ignoredChannels": [],
+        "maxResponseLength": 1000,
+        "maxTags": 100,
+        "staffOnly": false,
+        "triggerPrefix": "!"
+      },
+      "dependencies": [
+        "message_content",
+        "send_messages"
+      ],
+      "intents": [
+        "Message Content"
+      ],
+      "key": "management.custom_commands",
+      "maturity": "operational",
+      "panelPath": "/modules/management/custom-commands",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Saved responses are deliberately bounded and never execute code.",
+            "fields": [
+              {
+                "help": "The character(s) members type before a saved command, for example !rules.",
+                "key": "triggerPrefix",
+                "kind": "text",
+                "label": "Command prefix",
+                "maxLength": 3
+              },
+              {
+                "advanced": true,
+                "help": "Commands are not answered in these channels.",
+                "key": "ignoredChannels",
+                "kind": "channels",
+                "label": "Ignored channels"
+              },
+              {
+                "advanced": true,
+                "help": "Only members with Manage Server or Administrator can invoke saved commands.",
+                "key": "staffOnly",
+                "kind": "toggle",
+                "label": "Staff-only commands"
+              },
+              {
+                "help": "The maximum number of saved responses this server can keep.",
+                "key": "maxTags",
+                "kind": "number",
+                "label": "Maximum saved commands",
+                "max": 100,
+                "min": 1
+              },
+              {
+                "help": "Responses longer than this are rejected before they can be sent.",
+                "key": "maxResponseLength",
+                "kind": "number",
+                "label": "Maximum response length",
+                "max": 2000,
+                "min": 1
+              }
+            ],
+            "title": "Custom command behaviour"
+          }
+        ],
+        "source": "custom_commands_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the custom commands module from the Vozen Helper panel.",
+      "title": "Custom commands"
+    },
+    {
+      "adapter": "invite_tracker_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [
+        {
+          "name": "/invites",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "includeInviter": true,
+        "maxEntries": 10
+      },
+      "dependencies": [
+        "manage_guild",
+        "guild_invites",
+        "send_messages"
+      ],
+      "intents": [
+        "Guild Invites"
+      ],
+      "key": "management.invite_tracker",
+      "maturity": "operational",
+      "panelPath": "/modules/management/invite-tracker",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Control the staff-facing invite list without scraping or storing invite tokens.",
+            "fields": [
+              {
+                "key": "maxEntries",
+                "kind": "number",
+                "label": "Invites shown",
+                "max": 50,
+                "min": 1
+              },
+              {
+                "key": "includeInviter",
+                "kind": "toggle",
+                "label": "Show inviter names"
+              }
+            ],
+            "title": "Invite overview"
+          }
+        ],
+        "source": "invite_tracker_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the invite tracker module from the Vozen Helper panel.",
+      "title": "Invite tracker"
+    },
+    {
+      "adapter": "moderation_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [
+        {
+          "name": "/warn",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "maxPurge": 100,
+        "requireReason": true
+      },
+      "dependencies": [
+        "moderate_members",
+        "manage_messages"
+      ],
+      "intents": [],
+      "key": "management.moderation",
+      "maturity": "operational",
+      "panelPath": "/modules/management/moderation",
+      "permissions": [
+        "Moderate Members",
+        "Manage Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Set guardrails used by manual moderation commands.",
+            "fields": [
+              {
+                "help": "Reject destructive actions without a useful reason.",
+                "key": "requireReason",
+                "kind": "toggle",
+                "label": "Require a reason"
+              },
+              {
+                "help": "Upper bound for one purge command.",
+                "key": "maxPurge",
+                "kind": "number",
+                "label": "Maximum purge count",
+                "max": 100,
+                "min": 1
+              }
+            ],
+            "title": "Moderation safety"
+          }
+        ],
+        "source": "moderation_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the moderation module from the Vozen Helper panel.",
+      "title": "Moderation"
+    },
+    {
+      "adapter": "nickname_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "nickname": ""
+      },
+      "dependencies": [
+        "change_nickname",
+        "manage_nicknames"
+      ],
+      "intents": [],
+      "key": "management.nickname",
+      "maturity": "operational",
+      "panelPath": "/modules/management/nickname",
+      "permissions": [
+        "Change Nickname",
+        "Manage Nicknames"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose the display name the Helper uses in this server.",
+            "fields": [
+              {
+                "help": "Discord allows up to 32 characters. Leave it empty when disabling to restore the default name.",
+                "key": "nickname",
+                "kind": "text",
+                "label": "Server nickname",
+                "max": 32,
+                "min": 0
+              }
+            ],
+            "title": "Helper identity"
+          }
+        ],
+        "source": "nickname_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the nickname module from the Vozen Helper panel.",
+      "title": "Nickname"
+    },
+    {
+      "adapter": "polls_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [
+        {
+          "name": "/poll",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "channel": "",
+        "defaultDurationHours": 24
+      },
+      "dependencies": [
+        "send_messages",
+        "scheduler",
+        "interactions"
+      ],
+      "intents": [],
+      "key": "management.polls",
+      "maturity": "operational",
+      "panelPath": "/modules/management/polls",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "The command uses these values when no override is provided.",
+            "fields": [
+              {
+                "key": "defaultDurationHours",
+                "kind": "number",
+                "label": "Default duration (hours)",
+                "max": 168,
+                "min": 1
+              },
+              {
+                "key": "channel",
+                "kind": "channel",
+                "label": "Poll channel (optional)"
+              }
+            ],
+            "title": "Poll defaults"
+          }
+        ],
+        "source": "polls_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the polls module from the Vozen Helper panel.",
+      "title": "Polls"
+    },
+    {
+      "adapter": "privacy_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [
+        {
+          "name": "/privacy",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "allowMemberErase": true,
+        "allowMemberExport": true,
+        "maxExportBytes": 1000000
+      },
+      "dependencies": [
+        "direct_messages",
+        "manager_session"
+      ],
+      "intents": [],
+      "key": "management.privacy",
+      "maturity": "operational",
+      "panelPath": "/modules/management/privacy",
+      "permissions": [],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose which self-service privacy requests members can make.",
+            "fields": [
+              {
+                "help": "Members can request their own JSON export through /privacy data.",
+                "key": "allowMemberExport",
+                "kind": "toggle",
+                "label": "Allow member exports"
+              },
+              {
+                "help": "Voluntary profile data is erased; moderation audit records stay retained.",
+                "key": "allowMemberErase",
+                "kind": "toggle",
+                "label": "Allow member erasure"
+              },
+              {
+                "help": "Protects DMs and storage from oversized exports.",
+                "key": "maxExportBytes",
+                "kind": "number",
+                "label": "Maximum export size",
+                "max": 10000000,
+                "min": 65536
+              }
+            ],
+            "title": "Member data controls"
+          }
+        ],
+        "source": "privacy_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the privacy module from the Vozen Helper panel.",
+      "title": "Privacy"
+    },
+    {
+      "adapter": "templates_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [],
+      "configurable": true,
+      "defaults": {},
+      "dependencies": [
+        "manager_session"
+      ],
+      "intents": [],
+      "key": "management.templates",
+      "maturity": "operational",
+      "panelPath": "/modules/management/templates",
+      "permissions": [],
+      "schema": {
+        "sections": [
+          {
+            "description": "Save and transfer validated server configuration without copying secrets.",
+            "fields": [],
+            "title": "Portable templates"
+          }
+        ],
+        "source": "templates_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the templates module from the Vozen Helper panel.",
+      "title": "Templates"
+    },
+    {
+      "adapter": "workflows_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "management",
+      "commands": [
+        {
+          "name": "/workflow-create",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "allowMentions": false,
+        "maxReplyLength": 1000,
+        "maxWorkflows": 10
+      },
+      "dependencies": [
+        "message_content",
+        "send_messages"
+      ],
+      "intents": [
+        "Message Content"
+      ],
+      "key": "management.workflows",
+      "maturity": "operational",
+      "panelPath": "/modules/management/workflows",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Bounded message automations keep your server responsive.",
+            "fields": [
+              {
+                "help": "The maximum number of active and paused workflows stored for this server.",
+                "key": "maxWorkflows",
+                "kind": "number",
+                "label": "Maximum workflows",
+                "max": 100,
+                "min": 1
+              },
+              {
+                "help": "Longer generated replies are rejected before they can be sent.",
+                "key": "maxReplyLength",
+                "kind": "number",
+                "label": "Maximum reply length",
+                "max": 1500,
+                "min": 1
+              },
+              {
+                "help": "When disabled, everyone/here mentions are neutralised.",
+                "key": "allowMentions",
+                "kind": "toggle",
+                "label": "Allow mentions in replies"
+              }
+            ],
+            "title": "Automation safety limits"
+          }
+        ],
+        "source": "workflows_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the automations module from the Vozen Helper panel.",
+      "title": "Automations"
+    },
+    {
+      "adapter": "anti_raid_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "protection",
+      "commands": [
+        {
+          "name": "/anti-raid",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "alertChannel": "",
+        "alertOnly": false,
+        "incidentMinutes": 10,
+        "joinThreshold": 10,
+        "pauseInvites": true,
+        "verification": "high",
+        "windowSeconds": 10
+      },
+      "dependencies": [
+        "guild_members_intent",
+        "manage_roles"
+      ],
+      "intents": [
+        "Guild Members"
+      ],
+      "key": "protection.anti_raid",
+      "maturity": "operational",
+      "panelPath": "/modules/protect/raid",
+      "permissions": [
+        "Manage Roles"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Enable the gate when too many members arrive in a short window.",
+            "fields": [
+              {
+                "key": "joinThreshold",
+                "kind": "number",
+                "label": "Joins before containment",
+                "max": 100,
+                "min": 2
+              },
+              {
+                "key": "windowSeconds",
+                "kind": "number",
+                "label": "Window (seconds)",
+                "max": 60,
+                "min": 3
+              },
+              {
+                "key": "incidentMinutes",
+                "kind": "number",
+                "label": "Containment duration (minutes)",
+                "max": 120,
+                "min": 1
+              },
+              {
+                "key": "verification",
+                "kind": "select",
+                "label": "Verification level",
+                "options": [
+                  [
+                    "medium",
+                    "Medium"
+                  ],
+                  [
+                    "high",
+                    "High"
+                  ],
+                  [
+                    "very_high",
+                    "Very high"
+                  ]
+                ]
+              },
+              {
+                "help": "Uses the join gate temporarily and restores it when containment expires.",
+                "key": "pauseInvites",
+                "kind": "toggle",
+                "label": "Pause invite entry during an incident"
+              },
+              {
+                "advanced": true,
+                "key": "alertChannel",
+                "kind": "channel",
+                "label": "Alert channel"
+              },
+              {
+                "advanced": true,
+                "key": "alertOnly",
+                "kind": "toggle",
+                "label": "Monitor only"
+              }
+            ],
+            "title": "Join burst protection"
+          }
+        ],
+        "source": "anti_raid_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Respond to unusual join bursts while keeping a reviewable incident trail.",
+      "title": "Raid protection"
+    },
+    {
+      "adapter": "anti_scam_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "protection",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "alertOnly": false,
+        "blockInvites": true,
+        "blockedDomains": [],
+        "blockedKeywords": [
+          "free nitro",
+          "steam gift",
+          "claim your prize",
+          "verify your wallet"
+        ],
+        "ignoredChannels": [],
+        "ignoredRoles": [],
+        "logChannel": "",
+        "timeoutSeconds": 300
+      },
+      "dependencies": [
+        "message_content_intent",
+        "manage_messages"
+      ],
+      "intents": [
+        "Message Content"
+      ],
+      "key": "protection.antiscam",
+      "maturity": "operational",
+      "panelPath": "/modules/protect/scam",
+      "permissions": [
+        "Manage Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Detect invite scams, suspicious domains and common social-engineering phrases.",
+            "fields": [
+              {
+                "key": "blockInvites",
+                "kind": "toggle",
+                "label": "Block unsolicited Discord invites"
+              },
+              {
+                "advanced": true,
+                "key": "blockedDomains",
+                "kind": "tags",
+                "label": "Blocked domains",
+                "max": 100
+              },
+              {
+                "advanced": true,
+                "key": "blockedKeywords",
+                "kind": "tags",
+                "label": "Blocked phrases",
+                "max": 100
+              },
+              {
+                "advanced": true,
+                "key": "ignoredChannels",
+                "kind": "channels",
+                "label": "Ignored channels",
+                "max": 100
+              },
+              {
+                "advanced": true,
+                "key": "ignoredRoles",
+                "kind": "roles",
+                "label": "Ignored roles",
+                "max": 100
+              },
+              {
+                "advanced": true,
+                "key": "logChannel",
+                "kind": "channel",
+                "label": "Log channel"
+              },
+              {
+                "advanced": true,
+                "key": "timeoutSeconds",
+                "kind": "number",
+                "label": "Timeout (seconds)",
+                "max": 86400,
+                "min": 0
+              },
+              {
+                "advanced": true,
+                "key": "alertOnly",
+                "kind": "toggle",
+                "label": "Monitor only"
+              }
+            ],
+            "title": "Scam protection"
+          }
+        ],
+        "source": "anti_scam_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Identify suspicious links and common phishing patterns with bounded, explainable rules.",
+      "title": "Scam protection"
+    },
+    {
+      "adapter": "anti_spam_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "protection",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "alertOnly": false,
+        "duplicateLimit": 3,
+        "floodCount": 6,
+        "ignoredChannels": [],
+        "ignoredRoles": [],
+        "logChannel": "",
+        "mentionLimit": 5,
+        "timeoutSeconds": 60,
+        "windowSeconds": 10
+      },
+      "dependencies": [
+        "message_content_intent",
+        "moderate_members"
+      ],
+      "intents": [
+        "Message Content"
+      ],
+      "key": "protection.antispam",
+      "maturity": "operational",
+      "panelPath": "/modules/protect/spam",
+      "permissions": [
+        "Moderate Members"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Deteta padrões de flood, repetição e menções com limites seguros.",
+            "fields": [
+              {
+                "help": "Número de mensagens do mesmo membro antes de sinalizar.",
+                "key": "floodCount",
+                "kind": "number",
+                "label": "Mensagens no intervalo",
+                "max": 30,
+                "min": 3
+              },
+              {
+                "help": "As mensagens antigas saem automaticamente desta janela.",
+                "key": "windowSeconds",
+                "kind": "number",
+                "label": "Janela de tempo (segundos)",
+                "max": 60,
+                "min": 3
+              },
+              {
+                "help": "Quantas mensagens iguais acionam a regra.",
+                "key": "duplicateLimit",
+                "kind": "number",
+                "label": "Repetições iguais",
+                "max": 12,
+                "min": 2
+              },
+              {
+                "help": "Usa 0 para apenas registar o incidente.",
+                "key": "timeoutSeconds",
+                "kind": "number",
+                "label": "Timeout inicial (segundos)",
+                "max": 86400,
+                "min": 0
+              }
+            ],
+            "title": "Resposta automática"
+          },
+          {
+            "description": "Escolhe recursos reais do servidor para evitar falsos positivos e receber contexto.",
+            "fields": [
+              {
+                "advanced": true,
+                "key": "mentionLimit",
+                "kind": "number",
+                "label": "Limite de menções por mensagem",
+                "max": 30,
+                "min": 1
+              },
+              {
+                "advanced": true,
+                "help": "Mensagens nestes canais não entram no avaliador.",
+                "key": "ignoredChannels",
+                "kind": "channels",
+                "label": "Canais ignorados"
+              },
+              {
+                "advanced": true,
+                "help": "Membros com um destes cargos não entram no avaliador.",
+                "key": "ignoredRoles",
+                "kind": "roles",
+                "label": "Cargos ignorados"
+              },
+              {
+                "advanced": true,
+                "help": "O Helper publica aqui o motivo e o modo da decisão.",
+                "key": "logChannel",
+                "kind": "channel",
+                "label": "Canal de registo"
+              },
+              {
+                "advanced": true,
+                "help": "Mantém a deteção e auditoria, mas não aplica timeout.",
+                "key": "alertOnly",
+                "kind": "toggle",
+                "label": "Apenas alertar, sem aplicar castigo"
+              }
+            ],
+            "title": "Exceções e alertas"
+          }
+        ],
+        "source": "anti_spam_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Detect repeated messages, bursts and excessive mentions before they disrupt conversation.",
+      "title": "Spam protection"
+    },
+    {
+      "adapter": "join_gate_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "protection",
+      "commands": [
+        {
+          "name": "/join-gate",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "action": "quarantine",
+        "autoRole": "",
+        "blockedNamePatterns": [],
+        "logChannel": "",
+        "minimumAccountDays": 0,
+        "requireAvatar": false,
+        "verifiedRole": ""
+      },
+      "dependencies": [
+        "guild_members_intent",
+        "manage_roles"
+      ],
+      "intents": [
+        "Guild Members"
+      ],
+      "key": "protection.join_gate",
+      "maturity": "operational",
+      "panelPath": "/modules/protect/join-gate",
+      "permissions": [
+        "Manage Roles"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Hold accounts below the configured age behind a verification role.",
+            "fields": [
+              {
+                "key": "minimumAccountDays",
+                "kind": "number",
+                "label": "Minimum account age (days)",
+                "max": 365,
+                "min": 0
+              },
+              {
+                "key": "requireAvatar",
+                "kind": "toggle",
+                "label": "Require a profile avatar"
+              },
+              {
+                "key": "action",
+                "kind": "select",
+                "label": "Action for suspicious accounts",
+                "options": [
+                  [
+                    "quarantine",
+                    "Quarantine"
+                  ],
+                  [
+                    "alert",
+                    "Alert only"
+                  ]
+                ]
+              },
+              {
+                "key": "verifiedRole",
+                "kind": "role",
+                "label": "Quarantine role"
+              },
+              {
+                "key": "autoRole",
+                "kind": "role",
+                "label": "Role for verified members"
+              },
+              {
+                "advanced": true,
+                "key": "blockedNamePatterns",
+                "kind": "tags",
+                "label": "Blocked name patterns"
+              },
+              {
+                "advanced": true,
+                "key": "logChannel",
+                "kind": "channel",
+                "label": "Log channel"
+              }
+            ],
+            "title": "Join verification"
+          }
+        ],
+        "source": "join_gate_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Apply a safer entry path for new members before they receive full access.",
+      "title": "Join gate"
+    },
+    {
+      "adapter": "bluesky_public_feed_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New Bluesky post from {handle}: **{text}**\\n{url}",
+        "sourceHandle": "",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "Bluesky public AppView API",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "social.bluesky",
+      "maturity": "operational",
+      "panelPath": "/modules/social/bluesky",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Poll a public profile through the official Bluesky AppView API and post new updates in Discord.",
+            "fields": [
+              {
+                "help": "For example: vozen.org or @vozen.org.",
+                "key": "sourceHandle",
+                "kind": "text",
+                "label": "Bluesky handle"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Polling interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "Bluesky alerts"
+          }
+        ],
+        "source": "bluesky_public_feed_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the bluesky module from the Vozen Helper panel.",
+      "title": "Bluesky"
+    },
+    {
+      "adapter": "meta_instagram_official_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": false,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New Instagram post from @{username}: {url}",
+        "targetChannelId": "",
+        "username": ""
+      },
+      "dependencies": [
+        "Meta Instagram API app",
+        "Professional account OAuth grant",
+        "Meta App Review and deletion callbacks",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "social.instagram",
+      "maturity": "blocked",
+      "panelPath": "/modules/social/instagram",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Notify a Discord channel about posts from a professional Instagram account authorised through Meta OAuth.",
+            "fields": [
+              {
+                "help": "The account must explicitly authorise Vozen through Meta OAuth.",
+                "key": "username",
+                "kind": "text",
+                "label": "Professional account"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Check interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "Instagram alerts"
+          }
+        ],
+        "source": "meta_instagram_official_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the instagram module from the Vozen Helper panel.",
+      "title": "Instagram"
+    },
+    {
+      "adapter": "kick_official_api_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": false,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "{sourceHandle} is live on Kick: {url}",
+        "sourceHandle": "",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "Approved Kick developer application",
+        "Official Kick API/webhook access",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "social.kick",
+      "maturity": "blocked",
+      "panelPath": "/modules/social/kick",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Notify a Discord channel about streams through an approved Kick API application.",
+            "fields": [
+              {
+                "help": "Enter the channel slug, not a web URL.",
+                "key": "sourceHandle",
+                "kind": "text",
+                "label": "Kick channel"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Check interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "Kick alerts"
+          }
+        ],
+        "source": "kick_official_api_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the kick module from the Vozen Helper panel.",
+      "title": "Kick"
+    },
+    {
+      "adapter": "podcast_rss_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "feedUrl": "",
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New update from {feed}: **{title}**\\n{url}",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "outbound_https",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "social.podcasts",
+      "maturity": "operational",
+      "panelPath": "/modules/social/podcasts",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Polls a public podcast RSS or Atom feed with the same SSRF protection and deduplication as RSS alerts.",
+            "fields": [
+              {
+                "key": "feedUrl",
+                "kind": "text",
+                "label": "Public feed URL"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Polling interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "Podcast alerts"
+          }
+        ],
+        "source": "podcast_rss_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the podcasts module from the Vozen Helper panel.",
+      "title": "Podcasts"
+    },
+    {
+      "adapter": "reddit_oauth_readonly_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": false,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New post in r/{subreddit}: **{title}**\\n{permalink}",
+        "sourceSubreddit": "",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "Reddit OAuth application",
+        "Commercial API approval",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "social.reddit",
+      "maturity": "blocked",
+      "panelPath": "/modules/social/reddit",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Read public subreddit posts through Reddit's official OAuth API. Commercial approval is required before enabling delivery.",
+            "fields": [
+              {
+                "help": "For example: vozen or r/vozen.",
+                "key": "sourceSubreddit",
+                "kind": "text",
+                "label": "Subreddit"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Polling interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "Reddit alerts"
+          }
+        ],
+        "source": "reddit_oauth_readonly_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the reddit module from the Vozen Helper panel.",
+      "title": "Reddit"
+    },
+    {
+      "adapter": "rss_atom_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "feedUrl": "",
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New update from {feed}: **{title}**\\n{url}",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "outbound_https",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "social.rss",
+      "maturity": "beta",
+      "panelPath": "/modules/social/rss",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Polls validated RSS and Atom feeds with SSRF protection and deduplication.",
+            "fields": [
+              {
+                "key": "feedUrl",
+                "kind": "text",
+                "label": "Public feed URL"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Polling interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "RSS alerts"
+          }
+        ],
+        "source": "rss_atom_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the rss module from the Vozen Helper panel.",
+      "title": "Rss"
+    },
+    {
+      "adapter": "tiktok_display_api_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": false,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New TikTok video from @{username}: {url}",
+        "targetChannelId": "",
+        "username": ""
+      },
+      "dependencies": [
+        "TikTok Display API app",
+        "TikTok App Review",
+        "Creator OAuth grant",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "social.tiktok",
+      "maturity": "blocked",
+      "panelPath": "/modules/social/tiktok",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Notify a Discord channel about videos from a creator who authorises the Display API scopes.",
+            "fields": [
+              {
+                "help": "The creator must authorise the Vozen application.",
+                "key": "username",
+                "kind": "text",
+                "label": "Creator username"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Check interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "TikTok alerts"
+          }
+        ],
+        "source": "tiktok_display_api_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the tiktok module from the Vozen Helper panel.",
+      "title": "Tiktok"
+    },
+    {
+      "adapter": "twitch_eventsub_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "{handle} is live: **{title}**\\n{url}",
+        "sourceLogin": "",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "TWITCH_CLIENT_ID",
+        "TWITCH_CLIENT_SECRET",
+        "TWITCH_EVENTSUB_SECRET",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "social.twitch",
+      "maturity": "beta",
+      "panelPath": "/modules/social/twitch",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Uses the official Helix/EventSub API with signed webhook verification and deduplication.",
+            "fields": [
+              {
+                "help": "Use the channel login, without a URL or @ prefix.",
+                "key": "sourceLogin",
+                "kind": "text",
+                "label": "Twitch channel login"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Polling interval (seconds)",
+                "max": 86400,
+                "min": 900
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "Twitch alerts"
+          }
+        ],
+        "source": "twitch_eventsub_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the twitch module from the Vozen Helper panel.",
+      "title": "Twitch"
+    },
+    {
+      "adapter": "x_api_official_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": false,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New post from @{sourceHandle}: {url}",
+        "sourceHandle": "",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "X developer application",
+        "Official OAuth access",
+        "Approved API budget",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "social.x",
+      "maturity": "blocked",
+      "panelPath": "/modules/social/x",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Notify a Discord channel about posts from an X account through the official API.",
+            "fields": [
+              {
+                "help": "Enter the handle without an @ or URL.",
+                "key": "sourceHandle",
+                "kind": "text",
+                "label": "X handle"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Check interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "X alerts"
+          }
+        ],
+        "source": "x_api_official_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the x module from the Vozen Helper panel.",
+      "title": "X"
+    },
+    {
+      "adapter": "youtube_data_api_v3_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "social-alerts",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "intervalSeconds": 900,
+        "mention": "",
+        "messageTemplate": "New video from {channel}: **{title}**\\n{url}",
+        "sourceChannelId": "",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "YOUTUBE_API_KEY",
+        "send_messages",
+        "embed_links"
+      ],
+      "intents": [],
+      "key": "social.youtube",
+      "maturity": "beta",
+      "panelPath": "/modules/social/youtube",
+      "permissions": [
+        "Send Messages",
+        "Embed Links"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Polls the official YouTube Data API and delivers deduplicated new-video alerts.",
+            "fields": [
+              {
+                "help": "Use the channel ID, not a watch URL.",
+                "key": "sourceChannelId",
+                "kind": "text",
+                "label": "YouTube channel ID"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Polling interval (seconds)",
+                "max": 86400,
+                "min": 900
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Alert message"
+              },
+              {
+                "advanced": true,
+                "key": "mention",
+                "kind": "text",
+                "label": "Optional mention"
+              }
+            ],
+            "title": "YouTube alerts"
+          }
+        ],
+        "source": "youtube_data_api_v3_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the youtube module from the Vozen Helper panel.",
+      "title": "Youtube"
+    },
+    {
+      "adapter": "rank_card_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "personalization",
+      "commands": [
+        {
+          "name": "/rank",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "avatar_ring_color": "#8EE5D2",
+        "avatar_ring_width": 4,
+        "background_color": "#101725",
+        "background_data": null,
+        "background_preset": null,
+        "background_url": null,
+        "font": "system",
+        "overlay_opacity": 0.36000001430511475,
+        "primary_color": "#8EE5D2",
+        "text_color": "#F4F7FB"
+      },
+      "dependencies": [
+        "attach_files"
+      ],
+      "intents": [],
+      "key": "studio.rank_card",
+      "maturity": "operational",
+      "panelPath": "/modules/roles-and-progression/xp-card",
+      "permissions": [
+        "Attach Files"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose curated backgrounds and colours for the XP card rendered by /rank.",
+            "fields": [
+              {
+                "key": "font",
+                "kind": "select",
+                "label": "Font",
+                "options": [
+                  "system",
+                  "inter",
+                  "roboto",
+                  "poppins",
+                  "space_grotesk",
+                  "lexend"
+                ]
+              },
+              {
+                "key": "primaryColor",
+                "kind": "color",
+                "label": "Primary colour"
+              },
+              {
+                "key": "textColor",
+                "kind": "color",
+                "label": "Text colour"
+              },
+              {
+                "key": "backgroundColor",
+                "kind": "color",
+                "label": "Background colour"
+              },
+              {
+                "key": "overlayOpacity",
+                "kind": "number",
+                "label": "Overlay opacity",
+                "max": 0.85,
+                "min": 0
+              },
+              {
+                "advanced": true,
+                "key": "backgroundPreset",
+                "kind": "select",
+                "label": "Curated background"
+              },
+              {
+                "advanced": true,
+                "key": "avatarRingColor",
+                "kind": "color",
+                "label": "Avatar ring colour"
+              },
+              {
+                "advanced": true,
+                "key": "avatarRingWidth",
+                "kind": "number",
+                "label": "Avatar ring width",
+                "max": 8,
+                "min": 0
+              }
+            ],
+            "title": "XP card appearance"
+          }
+        ],
+        "source": "rank_card_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Personalise the XP card with curated backgrounds, colours and typography.",
+      "title": "XP card"
+    },
+    {
+      "adapter": "tickets_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "support",
+      "commands": [
+        {
+          "name": "/ticket-panel",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "categoryId": "",
+        "closeAfterHours": 1,
+        "maxOpen": 1,
+        "panelDescription": "Open a private ticket and the support team will help you.",
+        "panelTitle": "Need support?",
+        "staffRole": "",
+        "transcriptChannel": ""
+      },
+      "dependencies": [
+        "manage_channels",
+        "send_messages",
+        "manage_roles"
+      ],
+      "intents": [],
+      "key": "support.tickets",
+      "maturity": "operational",
+      "panelPath": "/modules/support/tickets",
+      "permissions": [
+        "Manage Channels",
+        "Send Messages",
+        "Manage Roles"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose the real category, support role, transcript channel and SLA used by ticket interactions.",
+            "fields": [
+              {
+                "help": "New ticket channels are created inside this category.",
+                "key": "categoryId",
+                "kind": "category",
+                "label": "Ticket category"
+              },
+              {
+                "help": "This role can claim, close and reopen tickets.",
+                "key": "staffRole",
+                "kind": "role",
+                "label": "Support team role"
+              },
+              {
+                "help": "Closed ticket transcripts are sent here.",
+                "key": "transcriptChannel",
+                "kind": "channel",
+                "label": "Transcript channel"
+              },
+              {
+                "help": "Limit the number of simultaneous tickets one member can open.",
+                "key": "maxOpen",
+                "kind": "number",
+                "label": "Open tickets per member",
+                "max": 10,
+                "min": 1
+              },
+              {
+                "key": "panelTitle",
+                "kind": "text",
+                "label": "Panel title",
+                "max": 100,
+                "min": 1
+              },
+              {
+                "key": "panelDescription",
+                "kind": "textarea",
+                "label": "Panel description",
+                "max": 1000,
+                "min": 1
+              },
+              {
+                "help": "The Helper records an overdue ticket job after this period.",
+                "key": "closeAfterHours",
+                "kind": "number",
+                "label": "SLA reminder (hours)",
+                "max": 168,
+                "min": 1
+              }
+            ],
+            "title": "Support workflow"
+          }
+        ],
+        "source": "tickets_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Collect member requests in private, auditable support conversations.",
+      "title": "Tickets"
+    },
+    {
+      "adapter": "welcome_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "support",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "autoRole": "",
+        "channel": "",
+        "delaySeconds": 0,
+        "dmMessage": "Hello {member}, welcome to {server}!",
+        "farewellChannel": "",
+        "farewellMessage": "Goodbye {member}. We hope to see you again!",
+        "message": "Welcome {member} to {server}!",
+        "sendDm": false,
+        "templateId": ""
+      },
+      "dependencies": [
+        "guild_members_intent",
+        "send_messages",
+        "manage_roles"
+      ],
+      "intents": [
+        "Guild Members"
+      ],
+      "key": "support.welcome",
+      "maturity": "operational",
+      "panelPath": "/modules/welcome/members",
+      "permissions": [
+        "Send Messages",
+        "Manage Roles"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Configure the channel, message, optional DM and real auto-role used on member join.",
+            "fields": [
+              {
+                "key": "channel",
+                "kind": "channel",
+                "label": "Welcome channel"
+              },
+              {
+                "help": "Variables: {member} and {server}.",
+                "key": "message",
+                "kind": "textarea",
+                "label": "Public message",
+                "maxLength": 2000
+              },
+              {
+                "advanced": true,
+                "key": "delaySeconds",
+                "kind": "number",
+                "label": "Delay before sending (seconds)",
+                "max": 300,
+                "min": 0
+              },
+              {
+                "key": "sendDm",
+                "kind": "toggle",
+                "label": "Send a direct message"
+              },
+              {
+                "advanced": true,
+                "key": "dmMessage",
+                "kind": "textarea",
+                "label": "Direct message",
+                "maxLength": 2000
+              },
+              {
+                "advanced": true,
+                "key": "autoRole",
+                "kind": "role",
+                "label": "Automatic role"
+              },
+              {
+                "advanced": true,
+                "key": "farewellChannel",
+                "kind": "channel",
+                "label": "Farewell channel"
+              },
+              {
+                "advanced": true,
+                "key": "farewellMessage",
+                "kind": "textarea",
+                "label": "Farewell message",
+                "maxLength": 2000
+              },
+              {
+                "advanced": true,
+                "help": "Optional: choose a template created in Models and importação.",
+                "key": "templateId",
+                "kind": "select",
+                "label": "Reusable message template",
+                "options": [
+                  [
+                    "",
+                    "No template"
+                  ]
+                ]
+              }
+            ],
+            "title": "Welcome message"
+          }
+        ],
+        "source": "welcome_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Greet new members with a message, optional DM and safe role assignment.",
+      "title": "Welcome messages"
+    },
+    {
+      "adapter": "welcome_channel_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "support",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "channelId": "",
+        "channelsChannel": "",
+        "introductionsChannel": "",
+        "message": "Welcome {member}! Start with the rules, introduce yourself and check the server channels.",
+        "rulesChannel": "",
+        "steps": [
+          "rules",
+          "introductions",
+          "channels"
+        ],
+        "templateId": ""
+      },
+      "dependencies": [
+        "send_messages",
+        "view_channel"
+      ],
+      "intents": [],
+      "key": "support.welcome_channel",
+      "maturity": "operational",
+      "panelPath": "/modules/welcome/guided-channel",
+      "permissions": [
+        "Send Messages",
+        "View Channels"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Post the first steps and server rules when a new member arrives.",
+            "fields": [
+              {
+                "key": "channelId",
+                "kind": "channel",
+                "label": "Welcome channel"
+              },
+              {
+                "help": "Use {member} and {server} as placeholders.",
+                "key": "message",
+                "kind": "textarea",
+                "label": "Guide message",
+                "max": 2000,
+                "min": 1
+              },
+              {
+                "help": "Choose from rules, introductions, channels and help.",
+                "key": "steps",
+                "kind": "tags",
+                "label": "Guided steps",
+                "max": 4
+              },
+              {
+                "advanced": true,
+                "key": "rulesChannel",
+                "kind": "channel",
+                "label": "Rules channel (optional)"
+              },
+              {
+                "advanced": true,
+                "key": "introductionsChannel",
+                "kind": "channel",
+                "label": "Introductions channel (optional)"
+              },
+              {
+                "advanced": true,
+                "key": "channelsChannel",
+                "kind": "channel",
+                "label": "Channels guide (optional)"
+              },
+              {
+                "advanced": true,
+                "help": "Optional: choose a template created in Models and importação.",
+                "key": "templateId",
+                "kind": "select",
+                "label": "Reusable guide template",
+                "options": [
+                  [
+                    "",
+                    "No template"
+                  ]
+                ]
+              }
+            ],
+            "title": "Guided welcome channel"
+          }
+        ],
+        "source": "welcome_channel_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the guided welcome channel module from the Vozen Helper panel.",
+      "title": "Guided welcome channel"
+    },
+    {
+      "adapter": "embeds_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "utilities",
+      "commands": [
+        {
+          "name": "/embed",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "defaultColor": "",
+        "defaultFooter": "",
+        "maxDescription": 2000
+      },
+      "dependencies": [
+        "send_messages",
+        "embed_links"
+      ],
+      "intents": [],
+      "key": "utility.embeds",
+      "maturity": "operational",
+      "panelPath": "/modules/utility/embeds",
+      "permissions": [
+        "Send Messages",
+        "Embed Links"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Publish a bounded embed from a slash command; mentions are disabled by default.",
+            "fields": [
+              {
+                "key": "maxDescription",
+                "kind": "number",
+                "label": "Maximum description length",
+                "max": 4000,
+                "min": 1
+              },
+              {
+                "key": "defaultColor",
+                "kind": "text",
+                "label": "Default colour (hex)",
+                "maxLength": 7,
+                "placeholder": "#5865F2"
+              },
+              {
+                "key": "defaultFooter",
+                "kind": "text",
+                "label": "Default footer",
+                "maxLength": 2048
+              }
+            ],
+            "title": "Safe embed publishing"
+          }
+        ],
+        "source": "embeds_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the embeds module from the Vozen Helper panel.",
+      "title": "Embeds"
+    },
+    {
+      "adapter": "emojis_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "utilities",
+      "commands": [
+        {
+          "name": "/emojis",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "animatedOnly": false,
+        "maxEntries": 50
+      },
+      "dependencies": [
+        "manage_expressions",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "utility.emojis",
+      "maturity": "operational",
+      "panelPath": "/modules/utility/emojis",
+      "permissions": [
+        "Manage Expressions",
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose how many custom emojis the staff command lists.",
+            "fields": [
+              {
+                "key": "maxEntries",
+                "kind": "number",
+                "label": "Emojis shown",
+                "max": 100,
+                "min": 1
+              },
+              {
+                "key": "animatedOnly",
+                "kind": "toggle",
+                "label": "Only animated emojis"
+              }
+            ],
+            "title": "Emoji inventory"
+          }
+        ],
+        "source": "emojis_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the emojis module from the Vozen Helper panel.",
+      "title": "Emojis"
+    },
+    {
+      "adapter": "help_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "utilities",
+      "commands": [
+        {
+          "name": "/help",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "showDashboard": true,
+        "showModules": true
+      },
+      "dependencies": [
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "utility.help",
+      "maturity": "operational",
+      "panelPath": "/modules/utility/help",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Choose the links and module list shown by /help.",
+            "fields": [
+              {
+                "help": "Include the enabled module summary in the response.",
+                "key": "showModules",
+                "kind": "toggle",
+                "label": "Show module list"
+              },
+              {
+                "help": "Append the dashboard URL for server managers.",
+                "key": "showDashboard",
+                "kind": "toggle",
+                "label": "Include dashboard link"
+              }
+            ],
+            "title": "Help message"
+          }
+        ],
+        "source": "help_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the help module from the Vozen Helper panel.",
+      "title": "Help"
+    },
+    {
+      "adapter": "reminders_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "utilities",
+      "commands": [
+        {
+          "name": "/remind",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "allowRecurring": false,
+        "maxDelayHours": 168,
+        "maxRecurrences": 12,
+        "maxTextLength": 500,
+        "notifyUser": true,
+        "timezone": "UTC"
+      },
+      "dependencies": [
+        "scheduler",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "utility.reminders",
+      "maturity": "operational",
+      "panelPath": "/modules/utility/reminders",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Keep reminders useful and bounded for every member.",
+            "fields": [
+              {
+                "help": "The longest time a member can schedule a reminder.",
+                "key": "maxDelayHours",
+                "kind": "number",
+                "label": "Maximum delay (hours)",
+                "max": 8760,
+                "min": 1
+              },
+              {
+                "help": "Longer text is rejected before a job is created.",
+                "key": "maxTextLength",
+                "kind": "number",
+                "label": "Maximum message length",
+                "max": 500,
+                "min": 50
+              },
+              {
+                "help": "Used when a reminder time is written as HH:MM, such as 09:30.",
+                "key": "timezone",
+                "kind": "select",
+                "label": "Reminder timezone",
+                "options": [
+                  [
+                    "UTC",
+                    "UTC"
+                  ],
+                  [
+                    "UTC-05:00",
+                    "UTC-05:00"
+                  ],
+                  [
+                    "UTC+01:00",
+                    "UTC+01:00"
+                  ],
+                  [
+                    "UTC+02:00",
+                    "UTC+02:00"
+                  ],
+                  [
+                    "UTC+05:30",
+                    "UTC+05:30"
+                  ],
+                  [
+                    "UTC+08:00",
+                    "UTC+08:00"
+                  ]
+                ]
+              },
+              {
+                "help": "Turn off to post a quiet reminder without a mention.",
+                "key": "notifyUser",
+                "kind": "toggle",
+                "label": "Mention the member when it fires"
+              },
+              {
+                "help": "Members can choose a bounded daily or weekly reminder.",
+                "key": "allowRecurring",
+                "kind": "toggle",
+                "label": "Allow recurring reminders"
+              },
+              {
+                "help": "Limits how many times a recurring reminder is re-created.",
+                "key": "maxRecurrences",
+                "kind": "number",
+                "label": "Maximum repeats",
+                "max": 52,
+                "min": 1
+              }
+            ],
+            "title": "Reminder limits"
+          }
+        ],
+        "source": "reminders_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the reminders module from the Vozen Helper panel.",
+      "title": "Reminders"
+    },
+    {
+      "adapter": "bounded_search_adapter_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "utilities",
+      "commands": [
+        {
+          "name": "/search",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "allowAniList": true,
+        "allowBluesky": true,
+        "allowTwitch": true,
+        "allowWikipedia": true,
+        "allowYouTube": true,
+        "maxResults": 5
+      },
+      "dependencies": [
+        "outbound_https",
+        "send_messages"
+      ],
+      "intents": [],
+      "key": "utility.search",
+      "maturity": "operational",
+      "panelPath": "/modules/utility/search",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Search is limited to providers with documented APIs; arbitrary URLs are never fetched.",
+            "fields": [
+              {
+                "key": "maxResults",
+                "kind": "number",
+                "label": "Results per search",
+                "max": 5,
+                "min": 1
+              },
+              {
+                "key": "allowWikipedia",
+                "kind": "toggle",
+                "label": "Wikipedia"
+              },
+              {
+                "key": "allowAniList",
+                "kind": "toggle",
+                "label": "AniList"
+              },
+              {
+                "key": "allowBluesky",
+                "kind": "toggle",
+                "label": "Bluesky"
+              },
+              {
+                "key": "allowYouTube",
+                "kind": "toggle",
+                "label": "YouTube"
+              },
+              {
+                "key": "allowTwitch",
+                "kind": "toggle",
+                "label": "Twitch"
+              }
+            ],
+            "title": "Approved search sources"
+          }
+        ],
+        "source": "bounded_search_adapter_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the search module from the Vozen Helper panel.",
+      "title": "Search"
+    },
+    {
+      "adapter": "temp_channels_adapter_v2",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "utilities",
+      "commands": [
+        {
+          "name": "/temp-channel",
+          "source": "runtime-command-registry"
+        }
+      ],
+      "configurable": true,
+      "defaults": {
+        "categoryId": "",
+        "maxActive": 10,
+        "nameTemplate": "{user}'s room"
+      },
+      "dependencies": [
+        "manage_channels",
+        "voice_states"
+      ],
+      "intents": [
+        "Guild Voice States"
+      ],
+      "key": "utility.temp_channels",
+      "maturity": "operational",
+      "panelPath": "/modules/utility/temp-channels",
+      "permissions": [
+        "Manage Channels"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Create bounded rooms with a predictable name and optional category.",
+            "fields": [
+              {
+                "help": "New rooms are created inside this category when selected.",
+                "key": "categoryId",
+                "kind": "category",
+                "label": "Category (optional)"
+              },
+              {
+                "help": "Use {user} for the member display name.",
+                "key": "nameTemplate",
+                "kind": "text",
+                "label": "Room name template",
+                "max": 80,
+                "min": 1
+              },
+              {
+                "key": "maxActive",
+                "kind": "number",
+                "label": "Maximum active rooms",
+                "max": 50,
+                "min": 1
+              }
+            ],
+            "title": "Temporary voice rooms"
+          }
+        ],
+        "source": "temp_channels_adapter_v2",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the temp channels module from the Vozen Helper panel.",
+      "title": "Temp Channels"
+    },
+    {
+      "adapter": "coingecko_simple_price_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "web3",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "coinIds": "bitcoin",
+        "currency": "usd",
+        "maxResults": 5
+      },
+      "dependencies": [
+        "CoinGecko public API",
+        "Use Application Commands"
+      ],
+      "intents": [],
+      "key": "web3.crypto_queries",
+      "maturity": "operational",
+      "panelPath": "/modules/web3/crypto-queries",
+      "permissions": [],
+      "schema": {
+        "sections": [
+          {
+            "description": "Query read-only CoinGecko prices from an application command.",
+            "fields": [
+              {
+                "help": "Comma-separated IDs such as bitcoin, ethereum or solana.",
+                "key": "coinIds",
+                "kind": "text",
+                "label": "CoinGecko IDs"
+              },
+              {
+                "help": "Three to ten lowercase letters, for example usd or eur.",
+                "key": "currency",
+                "kind": "text",
+                "label": "Currency"
+              },
+              {
+                "advanced": true,
+                "key": "maxResults",
+                "kind": "number",
+                "label": "Maximum results",
+                "max": 10,
+                "min": 1
+              }
+            ],
+            "title": "Crypto queries"
+          }
+        ],
+        "source": "coingecko_simple_price_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the crypto queries module from the Vozen Helper panel.",
+      "title": "Crypto Queries"
+    },
+    {
+      "adapter": "coingecko_simple_price_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "web3",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "coinIds": "bitcoin",
+        "currency": "usd",
+        "intervalSeconds": 900,
+        "messageTemplate": "Crypto update: {coins}",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "CoinGecko public API",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "web3.crypto_stats",
+      "maturity": "operational",
+      "panelPath": "/modules/web3/crypto-stats",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Publish bounded CoinGecko price updates to a Discord channel.",
+            "fields": [
+              {
+                "help": "Comma-separated IDs such as bitcoin, ethereum or solana.",
+                "key": "coinIds",
+                "kind": "text",
+                "label": "CoinGecko IDs"
+              },
+              {
+                "help": "Three to ten lowercase letters, for example usd or eur.",
+                "key": "currency",
+                "kind": "text",
+                "label": "Currency"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Update interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Statistics message"
+              }
+            ],
+            "title": "Crypto statistics"
+          }
+        ],
+        "source": "coingecko_simple_price_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the crypto stats module from the Vozen Helper panel.",
+      "title": "Crypto Stats"
+    },
+    {
+      "adapter": "operator_rpc_gas_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "web3",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "intervalSeconds": 900,
+        "messageTemplate": "{network} gas: {gasPriceGwei} Gwei (block {blockNumber})",
+        "network": "ethereum",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "Operator-approved HTTPS RPC",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "web3.gas_tracker",
+      "maturity": "beta",
+      "panelPath": "/modules/web3/gas-tracker",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Publish read-only gas prices from an operator-approved RPC endpoint.",
+            "fields": [
+              {
+                "key": "network",
+                "kind": "select",
+                "label": "Network",
+                "options": [
+                  "ethereum",
+                  "polygon",
+                  "arbitrum",
+                  "base"
+                ]
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Update interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Statistics message"
+              }
+            ],
+            "title": "Gas tracker"
+          }
+        ],
+        "source": "operator_rpc_gas_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the gas tracker module from the Vozen Helper panel.",
+      "title": "Gas Tracker"
+    },
+    {
+      "adapter": "siwe_read_only_role_gate_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "web3",
+      "commands": [],
+      "configurable": false,
+      "defaults": {
+        "assetType": "erc721",
+        "chain": "ethereum",
+        "contractAddress": "",
+        "intervalSeconds": 3600,
+        "minimumBalance": "1",
+        "targetRoleId": "",
+        "tokenId": ""
+      },
+      "dependencies": [
+        "SIWE domain and session secret",
+        "Operator-approved RPC endpoint",
+        "Approved contract allow-list",
+        "Manage Roles"
+      ],
+      "intents": [],
+      "key": "web3.gating",
+      "maturity": "blocked",
+      "panelPath": "/modules/web3/gating",
+      "permissions": [
+        "Manage Roles"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Grant a Discord role after a one-time SIWE signature and read-only contract check.",
+            "fields": [
+              {
+                "key": "chain",
+                "kind": "select",
+                "label": "Network",
+                "options": [
+                  "ethereum",
+                  "polygon",
+                  "arbitrum",
+                  "base"
+                ]
+              },
+              {
+                "help": "Only an approved contract is accepted; never enter a private key.",
+                "key": "contractAddress",
+                "kind": "text",
+                "label": "Contract address"
+              },
+              {
+                "key": "assetType",
+                "kind": "select",
+                "label": "Token standard",
+                "options": [
+                  "erc20",
+                  "erc721",
+                  "erc1155"
+                ]
+              },
+              {
+                "advanced": true,
+                "key": "tokenId",
+                "kind": "text",
+                "label": "Token ID (ERC-1155)"
+              },
+              {
+                "key": "targetRoleId",
+                "kind": "role",
+                "label": "Holder role"
+              },
+              {
+                "key": "minimumBalance",
+                "kind": "text",
+                "label": "Minimum balance"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Recheck interval (seconds)",
+                "max": 86400,
+                "min": 900
+              }
+            ],
+            "title": "Wallet gating"
+          }
+        ],
+        "source": "siwe_read_only_role_gate_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the gating module from the Vozen Helper panel.",
+      "title": "Gating"
+    },
+    {
+      "adapter": "opensea_read_only_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "web3",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "collectionSlug": ""
+      },
+      "dependencies": [
+        "OpenSea API key",
+        "Use Application Commands"
+      ],
+      "intents": [],
+      "key": "web3.nft_queries",
+      "maturity": "beta",
+      "panelPath": "/modules/web3/nft-queries",
+      "permissions": [],
+      "schema": {
+        "sections": [
+          {
+            "description": "Query one approved OpenSea collection from an application command.",
+            "fields": [
+              {
+                "key": "collectionSlug",
+                "kind": "text",
+                "label": "OpenSea collection slug"
+              }
+            ],
+            "title": "NFT collection queries"
+          }
+        ],
+        "source": "opensea_read_only_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the nft queries module from the Vozen Helper panel.",
+      "title": "Nft Queries"
+    },
+    {
+      "adapter": "opensea_read_only_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "web3",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "collectionSlug": "",
+        "intervalSeconds": 900,
+        "maxResults": 5,
+        "messageTemplate": "OpenSea update: {collection}",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "OpenSea API key",
+        "Use Application Commands"
+      ],
+      "intents": [],
+      "key": "web3.nft_sales",
+      "maturity": "beta",
+      "panelPath": "/modules/web3/nft-sales",
+      "permissions": [],
+      "schema": {
+        "sections": [
+          {
+            "description": "Read-only recent sales from an approved OpenSea collection.",
+            "fields": [
+              {
+                "key": "collectionSlug",
+                "kind": "text",
+                "label": "OpenSea collection slug"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Update interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Statistics message"
+              },
+              {
+                "advanced": true,
+                "key": "maxResults",
+                "kind": "number",
+                "label": "Maximum events",
+                "max": 10,
+                "min": 1
+              }
+            ],
+            "title": "NFT sales and listings"
+          }
+        ],
+        "source": "opensea_read_only_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the nft sales module from the Vozen Helper panel.",
+      "title": "Nft Sales"
+    },
+    {
+      "adapter": "opensea_read_only_v1",
+      "capabilities": {
+        "health": true,
+        "preflight": true,
+        "rollback": true,
+        "simulation": true
+      },
+      "category": "web3",
+      "commands": [],
+      "configurable": true,
+      "defaults": {
+        "collectionSlug": "",
+        "intervalSeconds": 900,
+        "maxResults": 5,
+        "messageTemplate": "OpenSea update: {collection}",
+        "targetChannelId": ""
+      },
+      "dependencies": [
+        "OpenSea API key",
+        "Send Messages"
+      ],
+      "intents": [],
+      "key": "web3.nft_stats",
+      "maturity": "beta",
+      "panelPath": "/modules/web3/nft-stats",
+      "permissions": [
+        "Send Messages"
+      ],
+      "schema": {
+        "sections": [
+          {
+            "description": "Read-only floor, volume and sales statistics from OpenSea.",
+            "fields": [
+              {
+                "key": "collectionSlug",
+                "kind": "text",
+                "label": "OpenSea collection slug"
+              },
+              {
+                "key": "targetChannelId",
+                "kind": "channel",
+                "label": "Discord channel"
+              },
+              {
+                "key": "intervalSeconds",
+                "kind": "number",
+                "label": "Update interval (seconds)",
+                "max": 86400,
+                "min": 300
+              },
+              {
+                "advanced": true,
+                "key": "messageTemplate",
+                "kind": "textarea",
+                "label": "Statistics message"
+              }
+            ],
+            "title": "NFT collection statistics"
+          }
+        ],
+        "source": "opensea_read_only_v1",
+        "version": 1
+      },
+      "schemaVersion": 1,
+      "summary": "Configure the nft stats module from the Vozen Helper panel.",
+      "title": "Nft Stats"
+    }
+  ],
+  "generatedAt": "1970-01-01T00:00:00Z",
+  "product": "vozen-helper",
+  "schemaVersion": 1,
+  "sourceCommit": "4f0dae6cd253ef8677558e5f821b6e114cef8969"
+}

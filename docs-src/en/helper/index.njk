@@ -1,0 +1,11 @@
+---
+title: Configure your server with confidence
+description: Task-first documentation for Vozen Helper.
+permalink: /
+---
+<p class="eyebrow">VOZEN HELPER - DOCUMENTATION</p>
+<h1>Configure your server with confidence.</h1>
+<p class="lede">Start with a goal, see what the Helper can really do today, and publish changes only after a safe preview.</p>
+<div class="hero-actions"><a class="button" href="/docs/helper/get-started/quick-setup/">Start Quick Setup</a><a class="button button-quiet" href="/docs/helper/modules/">Browse all modules</a></div>
+<section class="task-grid"><h2>What do you want to do?</h2>{% for task in helperDocs.tasks %}<a class="task-card" href="/docs/helper/guides/{{ task.key }}/"><span class="task-number">{{ loop.index }}</span><span><strong>{{ task.label }}</strong><small>{{ task.features.length }} module{% if task.features.length != 1 %}s{% endif %}</small></span><span aria-hidden="true">-&gt;</span></a>{% endfor %}</section>
+<section class="card split-card"><div><p class="eyebrow">QUICK ANSWERS</p><h2>Find the right next step</h2><p>Use the module index for a complete technical view, or go straight to troubleshooting when something is not responding.</p></div><div class="link-stack"><a href="/docs/helper/status/features/">Understand feature status -&gt;</a><a href="/docs/helper/troubleshooting/bot-not-responding/">Bot not responding -&gt;</a><a href="/docs/helper/reference/permissions/">Check permissions -&gt;</a></div></section>
