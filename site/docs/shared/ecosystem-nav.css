@@ -1,0 +1,128 @@
+/*
+ * Ecosystem navigation used only by the documentation surfaces.
+ *
+ * It intentionally has no shared .nav, .brand or .wrap selectors. Docs load
+ * their own stylesheet, so reusing the marketing-header classes made both
+ * systems style each other and caused the header/sidebar collision.
+ */
+:root { --docs-ecosystem-nav-height: 74px; }
+
+.docs-ecosystem-nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  height: var(--docs-ecosystem-nav-height);
+  border-bottom: 1px solid rgba(122, 159, 194, .2);
+  background: rgba(6, 11, 23, .98);
+  color: #f5f8ff;
+  font-family: Outfit, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+}
+
+.docs-ecosystem-nav *,
+.docs-ecosystem-nav *::before,
+.docs-ecosystem-nav *::after { box-sizing: border-box; }
+
+.docs-ecosystem-nav__inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 3vw, 44px);
+  width: min(1440px, calc(100% - 48px));
+  height: 100%;
+  margin: 0 auto;
+}
+
+.docs-ecosystem-nav a { color: #aeb9ce; text-decoration: none; }
+.docs-ecosystem-nav a:hover { color: #fff; text-decoration: none; }
+.docs-ecosystem-nav a:focus-visible {
+  outline: 3px solid rgba(105, 230, 210, .58);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.docs-ecosystem-nav__brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 11px;
+  min-width: max-content;
+}
+
+.docs-ecosystem-nav__mark {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 13px;
+  box-shadow: 0 7px 22px rgba(84, 116, 255, .33);
+}
+
+.docs-ecosystem-nav__mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.docs-ecosystem-nav__word { color: #f7f8fc; font-size: 24px; font-weight: 750; letter-spacing: -.05em; }
+.docs-ecosystem-nav__product { display: inline-flex; align-items: center; gap: 11px; color: #aeb9ce; font-size: 14px; font-weight: 600; }
+.docs-ecosystem-nav__product::before { width: 1px; height: 22px; background: rgba(191, 204, 234, .2); content: ""; }
+
+.docs-ecosystem-nav__links { display: flex; align-items: center; gap: clamp(16px, 2vw, 29px); min-width: 0; }
+.docs-ecosystem-nav__links a { position: relative; padding: 8px 0; font-size: 14px; font-weight: 650; white-space: nowrap; }
+.docs-ecosystem-nav__links a.is-current { color: #fff; }
+.docs-ecosystem-nav__links a.is-current::after {
+  position: absolute;
+  right: 0;
+  bottom: -17px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: #42ddca;
+  box-shadow: 0 4px 12px rgba(66, 221, 202, .5);
+  content: "";
+}
+
+.docs-ecosystem-nav__actions { display: flex; align-items: center; gap: 12px; margin-left: auto; min-width: max-content; }
+.docs-ecosystem-nav__github { display: grid; width: 36px; height: 36px; place-items: center; }
+.docs-ecosystem-nav__language { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 12px; border: 1px solid rgba(174, 185, 206, .2); border-radius: 999px; color: #e5ebf6; font-size: 13px; font-weight: 650; }
+.docs-ecosystem-nav__login { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 15px; border-radius: 999px; background: linear-gradient(110deg, #6b7dff, #43d8c8); color: #07101c !important; font-size: 13px; font-weight: 800; box-shadow: 0 8px 20px rgba(71, 215, 202, .18); }
+.docs-ecosystem-nav__login:hover { color: #02070d !important; filter: brightness(1.06); }
+
+/* Static Helper pages keep their compact Docs header below the ecosystem bar. */
+.docs-ecosystem-nav + .docs-header { top: var(--docs-ecosystem-nav-height); z-index: 40; }
+.docs-ecosystem-nav + .docs-header ~ .search-results { top: calc(var(--docs-ecosystem-nav-height) + 72px); }
+
+@media (max-width: 1120px) {
+  .docs-ecosystem-nav__inner { gap: 20px; width: min(100% - 32px, 1440px); }
+  .docs-ecosystem-nav__links { gap: 16px; }
+  .docs-ecosystem-nav__links a { font-size: 13px; }
+}
+
+@media (max-width: 920px) {
+  :root { --docs-ecosystem-nav-height: 66px; }
+  .docs-ecosystem-nav__inner { gap: 15px; }
+  .docs-ecosystem-nav__mark { width: 38px; height: 38px; border-radius: 11px; }
+  .docs-ecosystem-nav__word { font-size: 21px; }
+  .docs-ecosystem-nav__product,
+  .docs-ecosystem-nav__links a:nth-child(4),
+  .docs-ecosystem-nav__links a:nth-child(5),
+  .docs-ecosystem-nav__language { display: none; }
+  .docs-ecosystem-nav__links a.is-current::after { bottom: -14px; }
+}
+
+@media (max-width: 620px) {
+  :root { --docs-ecosystem-nav-height: 60px; }
+  .docs-ecosystem-nav__inner { width: calc(100% - 24px); gap: 10px; }
+  .docs-ecosystem-nav__mark { width: 34px; height: 34px; border-radius: 10px; }
+  .docs-ecosystem-nav__word { font-size: 19px; }
+  .docs-ecosystem-nav__links { display: none; }
+  .docs-ecosystem-nav__actions { gap: 4px; }
+  .docs-ecosystem-nav__github { width: 34px; height: 34px; }
+  .docs-ecosystem-nav__login { min-height: 36px; padding: 0 11px; font-size: 12px; }
+}
+
+@media (max-width: 390px) {
+  .docs-ecosystem-nav__github { display: none; }
+  .docs-ecosystem-nav__login span { display: none; }
+  .docs-ecosystem-nav__login { width: 38px; padding: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-ecosystem-nav * { transition: none !important; }
+}

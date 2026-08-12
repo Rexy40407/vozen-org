@@ -39,11 +39,11 @@ module.exports = function (eleventyConfig) {
     <link rel="canonical" href="https://vozen.org${this.page.url || '/docs/helper/'}">
     <title>${title} - Vozen Helper</title>
     <link rel="stylesheet" href="/docs/helper/assets/docs.css">
-    <link rel="stylesheet" href="/css/global-nav-v1.css?v=ecosystem-shell-v2">
+    <link rel="stylesheet" href="/docs/shared/ecosystem-nav.css?v=docs-shell-v1">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <div data-vozen-nav data-nav-root="/" data-nav-current="docs" data-nav-product="Ecosystem"></div>
+    <div data-vozen-nav data-nav-root="/" data-nav-current="docs" data-nav-product="Ecosystem" data-nav-surface="docs"></div>
     <header class="docs-header">
       <a class="brand" href="/docs/helper/">Vozen <span>Helper</span></a>
       <nav aria-label="Primary">

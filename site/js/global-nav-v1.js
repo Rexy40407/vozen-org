@@ -16,9 +16,38 @@
     const root = host.dataset.navRoot || "";
     const current = host.dataset.navCurrent || "";
     const product = host.dataset.navProduct || "Vozen";
+    const docsSurface = host.dataset.navSurface === "docs";
     const link = (target) => `${root}${target}`;
     const currentClass = (name) => current === name ? " is-current" : "";
     const currentAria = (name) => current === name ? ' aria-current="page"' : "";
+
+    // Documentation has its own shell and typography.  Keep this header
+    // deliberately namespaced so public-site navigation rules can never
+    // resize or overlap the Docs navigation beneath it.
+    if (docsSurface) {
+      host.outerHTML = `<header class="docs-ecosystem-nav">
+        <div class="docs-ecosystem-nav__inner">
+          <a class="docs-ecosystem-nav__brand" href="${link('index.html')}" aria-label="Vozen ecosystem home">
+            <span class="docs-ecosystem-nav__mark" aria-hidden="true"><img src="${link('assets/vozen-ecosystem-icon.png')}" alt="" /></span>
+            <span class="docs-ecosystem-nav__word">Vozen</span>
+            <span class="docs-ecosystem-nav__product">Ecosystem</span>
+          </a>
+          <nav class="docs-ecosystem-nav__links" aria-label="Vozen products">
+            <a class="${currentClass('tts').trim()}" href="${link('tts.html')}"${currentAria('tts')}>Vozen TTS</a>
+            <a class="${currentClass('helper').trim()}" href="${link('helper.html')}"${currentAria('helper')}>Vozen Helper</a>
+            <a class="${currentClass('docs').trim()}" href="${link('docs/index.html')}"${currentAria('docs')}>Docs</a>
+            <a class="${currentClass('commands').trim()}" href="${link('commands/index.html')}"${currentAria('commands')}>Commands</a>
+            <a class="${currentClass('premium').trim()}" href="${link('premium.html')}"${currentAria('premium')}>Premium</a>
+          </nav>
+          <div class="docs-ecosystem-nav__actions">
+            <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub">${githubIcon}</a>
+            <span class="docs-ecosystem-nav__language" aria-label="Site language"><span aria-hidden="true">&#127468;&#127463;</span> English</span>
+            <a class="docs-ecosystem-nav__login" href="${link('account.html')}">${discordIcon}<span>Log in</span></a>
+          </div>
+        </div>
+      </header>`;
+      return;
+    }
 
     host.outerHTML = `<header class="nav vozen-global-nav" id="nav">
       <div class="wrap nav__inner">

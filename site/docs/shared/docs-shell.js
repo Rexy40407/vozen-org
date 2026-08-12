@@ -51,21 +51,25 @@
   const docsReturnStorageKey = 'vozen-docs-return-url';
 
   function installEcosystemNav() {
-    if (document.querySelector('[data-vozen-nav]') || document.querySelector('.vozen-global-nav')) return;
+    if (document.querySelector('[data-vozen-nav]') || document.querySelector('.docs-ecosystem-nav')) return;
 
     const host = document.createElement('div');
     host.dataset.vozenNav = '';
     host.dataset.navRoot = siteRoot.href;
     host.dataset.navCurrent = 'docs';
     host.dataset.navProduct = 'Ecosystem';
+    host.dataset.navSurface = 'docs';
 
-    const topbar = document.querySelector('.docs-topbar');
+    // On first load the legacy Docs header still exists.  Insert before it so
+    // that the ecosystem header always sits above the Docs topbar, including
+    // before createTopbar() upgrades that legacy header.
+    const topbar = document.querySelector('.docs-topbar, .docs-header');
     if (topbar?.parentNode) topbar.parentNode.insertBefore(host, topbar);
     else document.body.insertBefore(host, document.body.querySelector('main'));
 
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
-    stylesheet.href = new URL('css/global-nav-v1.css?v=ecosystem-shell-v2', siteRoot.href).href;
+    stylesheet.href = new URL('docs/shared/ecosystem-nav.css?v=docs-shell-v1', siteRoot.href).href;
     document.head.appendChild(stylesheet);
 
     const navScript = document.createElement('script');
