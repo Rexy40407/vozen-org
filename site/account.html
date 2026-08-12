@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/main-v43.css" />
     <link rel="stylesheet" href="css/account-v6.css" />
     <link rel="stylesheet" href="css/billing-v3.css?v=compact-checkout-v1" />
+    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-shell-v2" />
     <style>
       body.page-account:not(.is-account-ready) main,
       body.page-account:not(.is-account-ready) .foot {
@@ -42,7 +43,8 @@
     <a class="skip-link" href="#account" data-i18n="common.skipToContent">Skip to content</a>
 
     <!-- ─────────────── NAVBAR ─────────────── -->
-    <header class="nav" id="nav">
+    <div data-vozen-nav data-nav-root="" data-nav-current="" data-nav-product="Ecosystem"></div>
+    <header class="nav" id="legacy-nav">
       <div class="wrap nav__inner">
         <a class="brand" href="/" aria-label="Vozen home" data-i18n-aria-label="common.homeLabel">
           <span class="brand__mark" aria-hidden="true">
@@ -226,6 +228,7 @@
       </div>
     </footer>
 
+    <script defer src="js/global-nav-v1.js?v=ecosystem-shell-v2"></script>
     <script defer src="js/i18n-v41.js?v=payment-element"></script>
     <script defer data-vozen-stripe src="https://js.stripe.com/dahlia/stripe.js"></script>
     <script defer src="js/main-v51.js?v=embedded-checkout-v1"></script>

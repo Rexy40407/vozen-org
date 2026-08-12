@@ -50,6 +50,29 @@
   const relativeOr = (value, fallback) => value ? new URL(value, config.root).href : fallback;
   const docsReturnStorageKey = 'vozen-docs-return-url';
 
+  function installEcosystemNav() {
+    if (document.querySelector('[data-vozen-nav]') || document.querySelector('.vozen-global-nav')) return;
+
+    const host = document.createElement('div');
+    host.dataset.vozenNav = '';
+    host.dataset.navRoot = siteRoot.href;
+    host.dataset.navCurrent = 'docs';
+    host.dataset.navProduct = 'Ecosystem';
+
+    const topbar = document.querySelector('.docs-topbar');
+    if (topbar?.parentNode) topbar.parentNode.insertBefore(host, topbar);
+    else document.body.insertBefore(host, document.body.querySelector('main'));
+
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = new URL('css/global-nav-v1.css?v=ecosystem-shell-v2', siteRoot.href).href;
+    document.head.appendChild(stylesheet);
+
+    const navScript = document.createElement('script');
+    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-shell-v2', siteRoot.href).href;
+    document.body.appendChild(navScript);
+  }
+
   function isDocsUrl(value) {
     try {
       return /\/docs(?:\/|$)/i.test(new URL(value, window.location.href).pathname.replace(/\\/g, '/'));
@@ -611,6 +634,7 @@
   }
 
   async function boot() {
+    installEcosystemNav();
     document.body.dataset.vozenDocsShell = 'ready';
     document.body.classList.add('docs-shell-active');
     const topbar = createTopbar();
