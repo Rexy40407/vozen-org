@@ -254,7 +254,7 @@
   document.head.appendChild(styleEl);
 
   function view(html) {
-    root.innerHTML = '<div class="dash-productbar"><a class="dash-exit" href="/account/">&#8592; Exit to account</a></div>' + html;
+    root.innerHTML = html;
   }
 
   function renderLogin(msgKey) {

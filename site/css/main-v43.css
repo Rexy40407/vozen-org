@@ -1903,6 +1903,31 @@ body.page-dashboard .account-shell,
 body.page-dashboard .dash-root {
   max-width: 900px;
 }
+body.page-dashboard .dashboard-account-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 18px;
+}
+body.page-dashboard .dashboard-account-exit {
+  align-items: center;
+  border: 1px solid var(--line-2, #23233a);
+  border-radius: 10px;
+  color: var(--text-2, #9a9ab0);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 14px;
+  text-decoration: none;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+body.page-dashboard .dashboard-account-exit:hover,
+body.page-dashboard .dashboard-account-exit:focus-visible {
+  background: rgba(56, 224, 200, 0.08);
+  border-color: var(--aqua, #38e0c8);
+  color: var(--aqua, #38e0c8);
+}
 body.page-dashboard .account-hero {
   max-width: 900px;
   margin-bottom: 30px;
@@ -1930,6 +1955,7 @@ body.page-dashboard .dash-picker h2 {
 }
 @media (max-width: 720px) {
   body.page-dashboard .account-section { padding-top: 96px; }
+  body.page-dashboard .dashboard-account-bar { justify-content: flex-start; }
   body.page-dashboard .dash-picker { padding: 16px; }
 }
 

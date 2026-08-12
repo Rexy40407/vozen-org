@@ -21,6 +21,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
     <link rel="stylesheet" href="css/main-v43.css" />
+    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v9" />
   </head>
   <body class="page-dashboard" data-i18n-document-title="dashboard.documentTitle">
     <!-- grain overlay -->
@@ -34,6 +35,10 @@
     <a class="skip-link" href="#dash" data-i18n="common.skipToContent" data-i18n-aria-label="common.skipToContent">Skip to content</a>
 
     <!-- ─────────────── NAVBAR ─────────────── -->
+    <!-- Shared ecosystem navigation: it keeps TTS, Helper and the account reachable. -->
+    <div data-vozen-nav data-nav-root="" data-nav-current="tts" data-nav-product="TTS"></div>
+
+    <!-- Legacy fallback navigation. Removed by global-nav-v1 after the shared header renders. -->
     <header class="nav" id="nav">
       <div class="wrap nav__inner">
         <a class="brand" href="/" aria-label="Vozen home" data-i18n-aria-label="common.homeLabel">
@@ -98,6 +103,9 @@
       <!-- ─────────────── DASHBOARD ─────────────── -->
       <section class="section account-section" id="dash">
         <div class="wrap account-shell">
+          <div class="dashboard-account-bar">
+            <a class="dashboard-account-exit" href="/account/">← Back to account</a>
+          </div>
           <header class="account-hero reveal">
             <span class="eyebrow eyebrow--aqua" data-i18n="dashboard.eyebrow">Dashboard</span>
             <h1 data-i18n="dashboard.title">Server settings</h1>
@@ -145,6 +153,7 @@
       </div>
     </footer>
 
+    <script defer src="js/global-nav-v1.js"></script>
     <script defer src="js/i18n-v41.js"></script>
     <script defer src="js/main-v51.js"></script>
     <script defer src="js/motion-v1.js"></script>
