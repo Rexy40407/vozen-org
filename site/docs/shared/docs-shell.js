@@ -87,7 +87,7 @@
     if (document.querySelector('link[data-vozen-current-docs-shell]')) return;
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
-    stylesheet.href = new URL('docs-shell.css?v=ecosystem-nav-v12', docsRoot).href;
+    stylesheet.href = new URL('docs-shell.css?v=ecosystem-nav-v13', docsRoot).href;
     stylesheet.dataset.vozenCurrentDocsShell = 'true';
     document.head.appendChild(stylesheet);
   }

@@ -1,3 +1,4 @@
+@font-face{font-family:"Unbounded";src:url('../../assets/fonts/unbounded-500-latin.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
 @font-face{font-family:Outfit;src:url('../../assets/fonts/outfit-400-latin.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:Outfit;src:url('../../assets/fonts/outfit-400-latin.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
 @font-face{font-family:Outfit;src:url('../../assets/fonts/outfit-400-latin.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
@@ -246,7 +247,7 @@ body.docs-shell-active .docs-main .docs-local-toc{border-color:var(--docs-shell-
 .docs-ecosystem-nav{height:var(--docs-ecosystem-nav-height)}
 .docs-ecosystem-nav__inner{justify-content:space-between;gap:36px;width:min(1280px,calc(100% - 56px));max-width:none;padding:0}
 .docs-ecosystem-nav__mark{width:52px;height:52px;border-radius:15px}
-.docs-ecosystem-nav__word{font-size:29px;font-weight:750;letter-spacing:-.05em}
+.docs-ecosystem-nav__word{font-family:"Unbounded",system-ui,sans-serif;font-size:29px;font-weight:700;letter-spacing:-.04em}
 .docs-ecosystem-nav__product{gap:12px;font-size:16px;font-weight:600}.docs-ecosystem-nav__product::before{height:24px}
 .docs-ecosystem-nav__links{gap:36px}.docs-ecosystem-nav__links a{font-size:17px;font-weight:650}
 .docs-ecosystem-nav__premium-disabled{display:inline-flex;align-items:center;min-height:30px;padding:8px 0;color:#aeb9ce;font-size:16px;font-weight:500;opacity:.46;cursor:not-allowed;user-select:none;white-space:nowrap}
