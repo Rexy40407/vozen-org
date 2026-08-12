@@ -5,7 +5,7 @@
  * their own stylesheet, so reusing the marketing-header classes made both
  * systems style each other and caused the header/sidebar collision.
  */
-:root { --docs-ecosystem-nav-height: 74px; }
+:root { --docs-ecosystem-nav-height: 70px; }
 
 .docs-ecosystem-nav {
   position: sticky;
@@ -26,10 +26,13 @@
 .docs-ecosystem-nav__inner {
   display: flex;
   align-items: center;
-  gap: clamp(20px, 3vw, 44px);
-  width: min(1440px, calc(100% - 48px));
+  justify-content: space-between;
+  gap: 30px;
+  width: 100%;
+  max-width: 1160px;
   height: 100%;
   margin: 0 auto;
+  padding: 0 24px;
 }
 
 .docs-ecosystem-nav a { color: #aeb9ce; text-decoration: none; }
@@ -50,8 +53,8 @@
 
 .docs-ecosystem-nav__mark {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   place-items: center;
   overflow: hidden;
   border-radius: 13px;
@@ -59,12 +62,12 @@
 }
 
 .docs-ecosystem-nav__mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.docs-ecosystem-nav__word { color: #f7f8fc; font-size: 24px; font-weight: 750; letter-spacing: -.05em; }
-.docs-ecosystem-nav__product { display: inline-flex; align-items: center; gap: 11px; color: #aeb9ce; font-size: 14px; font-weight: 600; }
-.docs-ecosystem-nav__product::before { width: 1px; height: 22px; background: rgba(191, 204, 234, .2); content: ""; }
+.docs-ecosystem-nav__word { color: #f7f8fc; font-size: 23px; font-weight: 700; letter-spacing: -.04em; }
+.docs-ecosystem-nav__product { display: inline-flex; align-items: center; gap: 12px; color: #aeb9ce; font-size: 14px; font-weight: 500; }
+.docs-ecosystem-nav__product::before { width: 1px; height: 21px; background: rgba(191, 204, 234, .2); content: ""; }
 
-.docs-ecosystem-nav__links { display: flex; align-items: center; gap: clamp(16px, 2vw, 29px); min-width: 0; }
-.docs-ecosystem-nav__links a { position: relative; padding: 8px 0; font-size: 14px; font-weight: 650; white-space: nowrap; }
+.docs-ecosystem-nav__links { display: flex; align-items: center; gap: clamp(18px, 2.2vw, 30px); min-width: 0; }
+.docs-ecosystem-nav__links a { position: relative; padding: 8px 0; font-size: 15px; font-weight: 500; white-space: nowrap; }
 .docs-ecosystem-nav__links a.is-current { color: #fff; }
 .docs-ecosystem-nav__links a.is-current::after {
   position: absolute;
@@ -78,7 +81,7 @@
   content: "";
 }
 
-.docs-ecosystem-nav__actions { display: flex; align-items: center; gap: 12px; margin-left: auto; min-width: max-content; }
+.docs-ecosystem-nav__actions { display: flex; align-items: center; gap: 14px; min-width: max-content; }
 .docs-ecosystem-nav__github { display: grid; width: 36px; height: 36px; place-items: center; }
 .docs-ecosystem-nav__language { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 12px; border: 1px solid rgba(174, 185, 206, .2); border-radius: 999px; color: #e5ebf6; font-size: 13px; font-weight: 650; }
 .docs-ecosystem-nav__login { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 15px; border-radius: 999px; background: linear-gradient(110deg, #6b7dff, #43d8c8); color: #07101c !important; font-size: 13px; font-weight: 800; box-shadow: 0 8px 20px rgba(71, 215, 202, .18); }
@@ -89,7 +92,7 @@
 .docs-ecosystem-nav + .docs-header ~ .search-results { top: calc(var(--docs-ecosystem-nav-height) + 72px); }
 
 @media (max-width: 1120px) {
-  .docs-ecosystem-nav__inner { gap: 20px; width: min(100% - 32px, 1440px); }
+  .docs-ecosystem-nav__inner { gap: 20px; max-width: none; padding: 0 16px; }
   .docs-ecosystem-nav__links { gap: 16px; }
   .docs-ecosystem-nav__links a { font-size: 13px; }
 }
