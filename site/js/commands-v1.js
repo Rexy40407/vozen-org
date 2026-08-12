@@ -81,59 +81,70 @@
     ["/temp-channel", "Create or manage a temporary voice channel.", "utilities", "Moderator", "Manage Channels"],
   ].map(([name, description, category, access, usage]) => ({ product: "helper", name, description, category, access, usage }));
 
-  const commands = [...ttsCommands, ...helperCommands];
-  const productLabels = { tts: "Vozen TTS", helper: "Vozen Helper" };
-  const categoryGroups = {
-    tts: [
-      ["start", "Start & voice", "Get Vozen into a call and control the queue."],
-      ["fun", "Fun & games", "Make the voice channel playful."],
-      ["stats", "Stats & activity", "See what your server is saying."],
-      ["settings", "Settings & privacy", "Shape Vozen around your server."],
-      ["premium", "Premium", "Extra engines and server-wide upgrades."],
-      ["help", "Help & community", "Find support and share Vozen."],
-    ],
-    helper: [
-      ["protection", "Protection", "Review safety settings before they act in Discord."],
-      ["community", "Community", "Run healthy community tools and events."],
-      ["support", "Support", "Set up private, auditable support conversations."],
-      ["management", "Management", "Moderate, audit and automate the server."],
-      ["utilities", "Utilities", "Use small tools that keep work moving."],
-      ["insights", "Insights", "See an at-a-glance server activity summary."],
-    ],
+  const catalogue = {
+    tts: {
+      label: "Vozen TTS",
+      search: "Try setup, voice or games",
+      note: "Choose a category above or scan the complete TTS command set below.",
+      contract: "Every command is registered from the Rust contract used by the live bot.",
+      commands: ttsCommands,
+      groups: [
+        ["start", "Start & voice", "Get Vozen into a call and control the queue."],
+        ["fun", "Fun & games", "Make the voice channel playful."],
+        ["stats", "Stats & activity", "See what your server is saying."],
+        ["settings", "Settings & privacy", "Shape Vozen around your server."],
+        ["premium", "Premium", "Extra engines and server-wide upgrades."],
+        ["help", "Help & community", "Find support and share Vozen."],
+      ],
+      steps: [["/setup", "Configure the server once"], ["/join", "Join your current voice channel"], ["/tts", "Say something out loud"]],
+      action: "Add Vozen TTS to Discord",
+      href: "https://discord.com/oauth2/authorize?client_id=1523826014935842997&permissions=326420745216&scope=bot%20applications.commands",
+      external: true,
+    },
+    helper: {
+      label: "Vozen Helper",
+      search: "Try protection, ticket or workflow",
+      note: "Choose a category above or explore Helper's current command contract.",
+      contract: "Helper commands are exported from the Rust contract used by the live Helper.",
+      commands: helperCommands,
+      groups: [
+        ["protection", "Protection", "Review safety settings before they act in Discord."],
+        ["community", "Community", "Run healthy community tools and events."],
+        ["support", "Support", "Set up private, auditable support conversations."],
+        ["management", "Management", "Moderate, audit and automate the server."],
+        ["utilities", "Utilities", "Use small tools that keep work moving."],
+        ["insights", "Insights", "See an at-a-glance server activity summary."],
+      ],
+      steps: [["/help", "See the server tools available to you"], ["/anti-raid", "Review your protection controls"], ["/ticket-panel", "Publish support when your server needs it"]],
+      action: "Open Vozen Helper",
+      href: "../helper/",
+      external: false,
+    },
   };
 
   const groupsEl = document.getElementById("commandGroups");
   const search = document.getElementById("commandSearch");
   const result = document.getElementById("commandResults");
-  const categoryFilters = document.getElementById("commandCategoryFilters");
-  const categoryFilterSet = categoryFilters?.closest(".command-filter-set");
-  const productFilters = [...document.querySelectorAll("[data-product-filter]")];
+  const filtersEl = document.getElementById("commandFilters");
+  const productButtons = [...document.querySelectorAll("[data-command-product]")];
   const asideTitle = document.getElementById("commandAsideTitle");
   const asideSteps = document.getElementById("commandAsideSteps");
   const asideCta = document.getElementById("commandAsideCta");
   const asideNote = document.getElementById("commandAsideNote");
-  let activeProduct = "all";
-  let activeCategory = "all";
+  let product = "tts";
+  let activeFilter = "all";
 
   const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   const tagClass = (tag) => tag.toLowerCase().includes("premium") ? "command-tag--premium" : /admin|moderator/i.test(tag) ? "command-tag--admin" : "command-tag--free";
+  const current = () => catalogue[product];
 
-  function availableGroups() {
-    if (activeProduct === "all") return [];
-    return categoryGroups[activeProduct] || [];
-  }
-
-  function renderCategoryFilters() {
-    const groups = availableGroups();
-    const categories = activeProduct === "all" ? [] : groups;
-    categoryFilters.innerHTML = [
-      '<button class="is-active" type="button" data-filter="all" aria-pressed="true">All categories</button>',
-      ...categories.map(([id, title]) => `<button type="button" data-filter="${id}" aria-pressed="false">${title}</button>`),
-    ].join("");
-    categoryFilterSet.hidden = activeProduct === "all";
-    categoryFilters.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => {
-      activeCategory = button.dataset.filter || "all";
-      categoryFilters.querySelectorAll("[data-filter]").forEach((item) => {
+  function renderFilters() {
+    const item = current();
+    filtersEl.innerHTML = [["all", "All"], ...item.groups.map(([id, title]) => [id, title])]
+      .map(([id, title], index) => `<button class="${index === 0 ? "is-active" : ""}" type="button" data-filter="${id}" aria-pressed="${index === 0}">${title}</button>`).join("");
+    filtersEl.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => {
+      activeFilter = button.dataset.filter || "all";
+      filtersEl.querySelectorAll("[data-filter]").forEach((item) => {
         const selected = item === button;
         item.classList.toggle("is-active", selected);
         item.setAttribute("aria-pressed", String(selected));
@@ -143,88 +154,67 @@
   }
 
   function renderAside() {
-    const helperIsSelected = activeProduct === "helper";
-    asideTitle.textContent = helperIsSelected ? "Three steps to Helper" : "Three steps to voice";
-    asideSteps.innerHTML = helperIsSelected
-      ? '<li><code>/help</code><span>See the server tools available to you</span></li><li><code>/modules</code><span>Choose a module in the Helper panel</span></li><li><code>/ticket-panel</code><span>Publish support when your server needs it</span></li>'
-      : '<li><code>/setup</code><span>Configure the server once</span></li><li><code>/join</code><span>Join your current voice channel</span></li><li><code>/tts</code><span>Say something out loud</span></li>';
-    asideCta.hidden = helperIsSelected;
-    asideNote.textContent = helperIsSelected
-      ? "Helper commands are exported from the Rust contract used by the live Helper."
-      : "Every command is registered from the Rust contract used by the live bot.";
-  }
-
-  function visibleCommands() {
-    const query = (search?.value || "").trim().toLowerCase();
-    return commands.filter((command) => {
-      const matchesProduct = activeProduct === "all" || command.product === activeProduct;
-      const matchesCategory = activeCategory === "all" || command.category === activeCategory;
-      const searchable = `${command.name} ${command.description} ${command.access} ${command.usage} ${productLabels[command.product]}`.toLowerCase();
-      return matchesProduct && matchesCategory && (!query || searchable.includes(query));
-    });
+    const item = current();
+    const isTts = product === "tts";
+    asideTitle.textContent = isTts ? "Three steps to voice" : "Three steps to Helper";
+    asideSteps.innerHTML = item.steps.map(([command, copy]) => `<li><code>${escapeHtml(command)}</code><span>${escapeHtml(copy)}</span></li>`).join("");
+    asideCta.textContent = item.action;
+    asideCta.href = item.href;
+    asideCta.toggleAttribute("target", item.external);
+    asideCta.toggleAttribute("rel", item.external);
+    if (item.external) asideCta.setAttribute("rel", "noopener noreferrer");
+    asideNote.textContent = item.contract;
   }
 
   function commandRow(command) {
     return `<article class="command-row">
       <div class="command-row__top"><code>${escapeHtml(command.name)}</code><span class="command-tag ${tagClass(command.access)}">${escapeHtml(command.access)}</span></div>
       <p>${escapeHtml(command.description)}</p>
-      ${activeProduct === "all" ? `<span class="command-row__product">${productLabels[command.product]}</span>` : ""}
       ${command.usage ? `<span class="command-row__usage">${escapeHtml(command.usage)}</span>` : ""}
     </article>`;
   }
 
-  function groupMarkup(id, title, note, items, key) {
-    if (!items.length) return "";
-    return `<section class="command-group" aria-labelledby="group-${key}">
-      <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-${key}">${title}</h3><span class="command-group__count">${items.length}</span></div><p>${note}</p></div></div>
-      <div class="command-list">${items.map(commandRow).join("")}</div>
-    </section>`;
-  }
-
-  function renderGroups(visible) {
-    if (activeProduct === "all") {
-      return ["tts", "helper"].map((product) => groupMarkup(
-        product,
-        productLabels[product],
-        product === "tts" ? "Voice, playback and personal settings." : "Server protection, community and management tools.",
-        visible.filter((command) => command.product === product),
-        product,
-      )).join("");
-    }
-    return availableGroups().map(([id, title, note]) => groupMarkup(
-      id,
-      title,
-      note,
-      visible.filter((command) => command.category === id),
-      `${activeProduct}-${id}`,
-    )).join("");
-  }
-
   function render() {
-    const visible = visibleCommands();
-    groupsEl.innerHTML = renderGroups(visible);
+    const item = current();
+    const query = (search?.value || "").trim().toLowerCase();
+    const visible = item.commands.filter((command) => {
+      const matchesFilter = activeFilter === "all" || command.category === activeFilter;
+      const searchable = `${command.name} ${command.description} ${command.access} ${command.usage}`.toLowerCase();
+      return matchesFilter && (!query || searchable.includes(query));
+    });
+    groupsEl.innerHTML = item.groups.map(([id, title, note]) => {
+      const items = visible.filter((command) => command.category === id);
+      if (!items.length) return "";
+      return `<section class="command-group" aria-labelledby="group-${id}">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-${id}">${title}</h3><span class="command-group__count">${items.length}</span></div><p>${note}</p></div></div>
+        <div class="command-list">${items.map(commandRow).join("")}</div>
+      </section>`;
+    }).join("");
     const noun = visible.length === 1 ? "command" : "commands";
-    const query = (search?.value || "").trim();
-    const scope = activeProduct === "all" ? "both products" : productLabels[activeProduct];
-    result.textContent = query || activeProduct !== "all" || activeCategory !== "all"
-      ? `${visible.length} ${noun} match in ${scope}.`
-      : `Showing all ${visible.length} commands across both products.`;
+    result.textContent = query || activeFilter !== "all" ? `${visible.length} ${noun} match your search.` : `Showing all ${visible.length} ${item.label} commands.`;
     document.querySelectorAll(".command-empty").forEach((empty) => empty.remove());
-    if (!visible.length) result.insertAdjacentHTML("afterend", '<p class="command-empty">No commands match that search. Try a shorter word or choose All products.</p>');
+    if (!visible.length) result.insertAdjacentHTML("afterend", '<p class="command-empty">No commands match that search. Try a shorter word or choose a different category.</p>');
   }
 
-  productFilters.forEach((button) => button.addEventListener("click", () => {
-    activeProduct = button.dataset.productFilter || "all";
-    activeCategory = "all";
-    productFilters.forEach((item) => {
-      const selected = item === button;
-      item.classList.toggle("is-active", selected);
-      item.setAttribute("aria-pressed", String(selected));
+  function setProduct(nextProduct) {
+    product = nextProduct;
+    activeFilter = "all";
+    search.value = "";
+    const item = current();
+    search.placeholder = item.search;
+    document.getElementById("catalogueTitle").textContent = `Explore ${item.label} commands`;
+    document.getElementById("catalogueNote").textContent = item.note;
+    productButtons.forEach((button) => {
+      const selected = button.dataset.commandProduct === product;
+      button.classList.toggle("is-active", selected);
+      button.setAttribute("aria-selected", String(selected));
     });
-    renderCategoryFilters();
+    renderFilters();
     renderAside();
     render();
-  }));
+  }
+
+  productButtons.forEach((button) => button.addEventListener("click", () => setProduct(button.dataset.commandProduct)));
   search?.addEventListener("input", render);
   document.addEventListener("keydown", (event) => {
     if (event.key === "/" && document.activeElement !== search && !event.metaKey && !event.ctrlKey && !event.altKey) {
@@ -233,7 +223,5 @@
     }
   });
 
-  renderCategoryFilters();
-  renderAside();
-  render();
+  setProduct(product);
 })();

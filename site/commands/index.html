@@ -77,15 +77,33 @@
         <div class="wrap commands-hero__layout">
           <div class="commands-hero__copy">
             <p class="eyebrow">Vozen command catalogue</p>
-            <h1>Find the right command</h1>
-            <p class="commands-hero__lead">Search the live catalogue, filter by feature and see what every slash command needs before you use it</p>
+            <h1>Commands, without the mix-up.</h1>
+            <p class="commands-hero__lead">Pick a Vozen bot first, then search only the commands that belong to it.</p>
           </div>
 
           <div class="command-finder" id="commandFinder">
             <div class="command-finder__intro">
-              <p class="command-finder__kicker">Command search</p>
-              <h2>What do you want Vozen to do?</h2>
-              <p>Search by name, option or action</p>
+              <p class="command-finder__kicker">Choose a bot</p>
+              <h2>What do you want to explore?</h2>
+              <p>Each catalogue stays focused on one bot.</p>
+            </div>
+            <div class="command-product-picker" role="tablist" aria-label="Choose a Vozen bot">
+              <button class="is-active" type="button" role="tab" aria-selected="true" data-command-product="tts">
+                <span class="command-product-picker__title">
+                  <span class="command-product-picker__icon command-product-picker__icon--tts" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span></span>
+                  <span>Vozen TTS</span>
+                </span>
+                <small>Voice &amp; community</small>
+              </button>
+              <button type="button" role="tab" aria-selected="false" data-command-product="helper">
+                <span class="command-product-picker__title">
+                  <span class="command-product-picker__icon command-product-picker__icon--helper" aria-hidden="true">
+                    <svg viewBox="0 0 64 64"><path d="m15 34-6-4m2 0-2 4M49 34l6-4m-2 0 2 4M32 17v-5"/><circle cx="32" cy="9" r="3"/><rect x="13" y="18" width="38" height="31" rx="13"/><rect x="18" y="24" width="28" height="19" rx="8"/><circle cx="26" cy="33" r="3"/><circle cx="38" cy="33" r="3"/><path d="M26 38c3.3 3.2 8.7 3.2 12 0"/></svg>
+                  </span>
+                  <span>Vozen Helper</span>
+                </span>
+                <small>Server operations</small>
+              </button>
             </div>
             <label class="command-search">
               <span class="sr-only">Search commands</span>
@@ -93,20 +111,7 @@
               <input id="commandSearch" type="search" autocomplete="off" placeholder="Try setup, voice or games" />
               <kbd>/</kbd>
             </label>
-            <div class="command-filter-set">
-              <p class="command-filter-set__label" id="commandProductLabel">Show commands for</p>
-              <div class="command-product-filters" role="group" aria-labelledby="commandProductLabel">
-                <button class="is-active" type="button" data-product-filter="all" aria-pressed="true">All products</button>
-                <button type="button" data-product-filter="tts" aria-pressed="false">Vozen TTS</button>
-                <button type="button" data-product-filter="helper" aria-pressed="false">Vozen Helper</button>
-              </div>
-            </div>
-            <div class="command-filter-set">
-              <p class="command-filter-set__label" id="commandCategoryLabel">Filter by category</p>
-              <div class="command-filters" id="commandCategoryFilters" role="group" aria-labelledby="commandCategoryLabel">
-                <button class="is-active" type="button" data-filter="all" aria-pressed="true">All categories</button>
-              </div>
-            </div>
+            <div class="command-filters" id="commandFilters" role="group" aria-label="Command filters"></div>
             <p class="command-results" id="commandResults" aria-live="polite">Showing all commands</p>
           </div>
         </div>
@@ -119,7 +124,7 @@
               <p class="command-finder__kicker">Full catalogue</p>
               <h2 id="catalogueTitle">Explore every command</h2>
             </div>
-            <p>Choose a category above or scan the complete Rust command set below</p>
+            <p id="catalogueNote">Choose a category above or scan the complete TTS command set below.</p>
           </div>
 
           <div class="commands-layout">
@@ -163,6 +168,6 @@
     <script defer src="../js/i18n-v41.js"></script>
     <script defer src="../js/main-v51.js"></script>
     <script defer src="../js/motion-v1.js"></script>
-    <script defer src="../js/commands-v1.js?v=product-filter-v1"></script>
+    <script defer src="../js/commands-v1.js?v=product-picker-v2"></script>
   </body>
 </html>
