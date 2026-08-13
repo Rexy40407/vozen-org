@@ -19,6 +19,11 @@
   var DASHBOARD_AUTH_KEY = "vozen.dashboardAuth";
   var STATE_KEY = "vozen.oauthstate";
   var RETURN_KEY = "vozen.returnTo";
+  var INVITE_PENDING_KEY = "vozen.ttsInvitePending";
+  var INVITE_BASELINE_KEY = "vozen.ttsInviteBaseline";
+  var INVITE_POLL_ATTEMPTS = 8;
+  var INVITE_POLL_DELAY_MS = 1500;
+  var INVITE_PERMISSIONS = "326420745216";
   var LS_LANG = "vozen.lang";
 
   var workspaceRoot = document.getElementById("dashRoot");
@@ -324,6 +329,44 @@
       return false;
     }
   }
+  function setInvitePending(guilds) {
+    try {
+      sessionStorage.setItem(INVITE_PENDING_KEY, "1");
+      sessionStorage.setItem(
+        INVITE_BASELINE_KEY,
+        JSON.stringify(
+          (guilds || []).map(function (g) {
+            return String(g.id);
+          }),
+        ),
+      );
+    } catch (e) {}
+  }
+  function inviteIsPending() {
+    try {
+      return sessionStorage.getItem(INVITE_PENDING_KEY) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+  function invitedGuild(guilds) {
+    var baseline = [];
+    try {
+      baseline = JSON.parse(sessionStorage.getItem(INVITE_BASELINE_KEY) || "[]");
+    } catch (e) {}
+    if (!Array.isArray(baseline)) baseline = [];
+    for (var i = 0; i < (guilds || []).length; i++) {
+      var guild = guilds[i];
+      if (baseline.indexOf(String(guild.id)) === -1) return guild;
+    }
+    return null;
+  }
+  function clearInvitePending() {
+    try {
+      sessionStorage.removeItem(INVITE_PENDING_KEY);
+      sessionStorage.removeItem(INVITE_BASELINE_KEY);
+    } catch (e) {}
+  }
   function authHeaders() {
     return { Authorization: "Bearer " + token() };
   }
@@ -358,6 +401,30 @@
     u.searchParams.set("redirect_uri", REDIRECT);
     u.searchParams.set("response_type", "token");
     u.searchParams.set("scope", "identify guilds");
+    u.searchParams.set("state", state);
+    location.href = u.toString();
+  }
+
+  function addServer() {
+    var state;
+    try {
+      state = randState();
+    } catch (e) {
+      alert(t("dashboard.secureTokenError"));
+      return;
+    }
+    setInvitePending(workspaceState.guilds || []);
+    try {
+      sessionStorage.setItem(STATE_KEY, state);
+      sessionStorage.setItem(RETURN_KEY, "/dashboard");
+      sessionStorage.setItem(DASHBOARD_AUTH_KEY, "1");
+    } catch (e) {}
+    var u = new URL("https://discord.com/oauth2/authorize");
+    u.searchParams.set("client_id", CLIENT_ID);
+    u.searchParams.set("permissions", INVITE_PERMISSIONS);
+    u.searchParams.set("redirect_uri", REDIRECT);
+    u.searchParams.set("response_type", "token");
+    u.searchParams.set("scope", "bot applications.commands identify guilds");
     u.searchParams.set("state", state);
     location.href = u.toString();
   }
@@ -505,11 +572,20 @@
             esc(t("dashboard.retry")) +
             "</button>"
           : "") +
+        (opts.addServer
+          ? '<button type="button" class="' +
+            BTN +
+            '" id="dashAddServer" style="margin-top:16px">Add a server</button>'
+          : "") +
         "</div>",
     );
     if (opts.retry) {
       var r = document.getElementById("dashRetry");
       if (r) r.addEventListener("click", opts.onRetry || login);
+    }
+    if (opts.addServer) {
+      var add = document.getElementById("dashAddServer");
+      if (add) add.addEventListener("click", addServer);
     }
     // Keep semantic keys so a language change can also translate loading/error/empty states.
     onLang = function () {
@@ -580,7 +656,7 @@
         esc(t("dashboard.pickHint")) +
         '</p><div class="dash-picker__list">' +
         cards +
-        "</div></div>",
+        '</div><div class="dash-picker__actions"><div class="dash-picker__actions-copy"><strong>Add Vozen to another server</strong><span>Install Vozen TTS in a server you manage. Discord will return you here when it is ready.</span></div><button type="button" class="dash-picker__add" id="dashAddServer">Add a server</button></div></div>',
     );
     var btns = root.querySelectorAll(".dash-server");
     function onPick(ev) {
@@ -595,6 +671,8 @@
       var g = guilds[i];
       wireIconFallback(btns[i].querySelector(".dash-server__img"), g && g.name, "dash-server__ph");
     }
+    var add = document.getElementById("dashAddServer");
+    if (add) add.addEventListener("click", addServer);
     onLang = function () {
       renderPicker(guilds);
     };
@@ -1153,23 +1231,13 @@
     };
   }
 
-  function boot() {
-    showPickerShell();
-    var tok = token();
-    if (!tok) {
-      renderLogin("");
-      return;
-    }
-    // A token created by /account has `identify email`, not `guilds`. Re-authorize once for the
-    // panel instead of sending it to the dashboard API and misleadingly displaying "expired".
-    if (!hasDashboardAuth()) {
-      login();
-      return;
-    }
+  function loadGuilds(attempt) {
+    var pollAttempt = Number(attempt) || 0;
     renderMessage("dashboard.loading", "");
     fetchWithTimeout(API + "/api/dashboard/guilds", { headers: authHeaders() })
       .then(function (res) {
         if (res.status === 401) {
+          clearInvitePending();
           clearToken();
           renderLogin("dashboard.expired");
           return null;
@@ -1183,8 +1251,22 @@
       .then(function (data) {
         if (!data) return;
         var guilds = data.guilds || [];
+        var pendingInvite = inviteIsPending();
+        var added = pendingInvite ? invitedGuild(guilds) : null;
+        if (pendingInvite && !added && pollAttempt < INVITE_POLL_ATTEMPTS) {
+          window.setTimeout(function () {
+            loadGuilds(pollAttempt + 1);
+          }, INVITE_POLL_DELAY_MS);
+          return;
+        }
+        clearInvitePending();
         if (!guilds.length) {
-          renderMessage("dashboard.none", "dashboard.noneHint");
+          renderMessage("dashboard.none", "dashboard.noneHint", { addServer: true });
+          return;
+        }
+        if (added) {
+          workspaceState.dirty = false;
+          loadForm(added, guilds);
           return;
         }
         renderPicker(guilds);
@@ -1192,6 +1274,22 @@
       .catch(function () {
         renderMessage("dashboard.error", "", { retry: true, onRetry: boot });
       });
+  }
+
+  function boot() {
+    showPickerShell();
+    var tok = token();
+    if (!tok) {
+      renderLogin("");
+      return;
+    }
+    // A token created by /account has `identify email`, not `guilds`. Re-authorize once for the
+    // panel instead of sending it to the dashboard API and misleadingly displaying "expired".
+    if (!hasDashboardAuth()) {
+      login();
+      return;
+    }
+    loadGuilds(0);
   }
 
   window.addEventListener("vozen:languagechange", function () {
