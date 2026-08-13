@@ -2805,7 +2805,7 @@ function App() {
   if (status === 'loading')
     return (
       <div className="workspace-standalone workspace-app workspace-standalone--helper">
-        <WorkspaceTopbar product="Helper" />
+        <EcosystemTopbar />
         <main className="workspace-standalone__content" role="status" aria-live="polite" aria-busy="true">
           <div className="workspace-standalone__state">
             <div className="loader" />
@@ -2849,20 +2849,7 @@ function App() {
               : 'server-specific configuration with simple and advanced options.';
   return (
     <div className="shell panel-shell workspace-app workspace-shell workspace-shell--helper">
-      <div className="workspace-topbar" aria-label="Vozen product navigation">
-        <a className="workspace-topbar__brand" href="/" aria-label="Vozen home">
-          <span className="workspace-mark" aria-hidden="true">✦</span>
-          <span>Vozen</span>
-        </a>
-        <span className="workspace-topbar__product">Helper</span>
-        <nav className="workspace-topbar__nav" aria-label="Products">
-          <a href="/dashboard">Vozen TTS</a>
-          <a href="/panel/helper-tracker/" aria-current="page">Vozen Helper</a>
-          <a href="/docs/">Docs</a>
-          <a href="/premium">Premium</a>
-        </nav>
-        <a className="workspace-topbar__account" href="/account/">Account</a>
-      </div>
+      <EcosystemTopbar />
       <aside className="sidebar panel-sidebar workspace-sidebar">
         <div className="logo panel-logo workspace-sidebar__product">
           <span className="workspace-sidebar__product-mark" aria-hidden="true">✦</span>
@@ -3546,21 +3533,37 @@ function PremiumCard({ icon, title, text }: { icon: string; title: string; text:
   );
 }
 
-function WorkspaceTopbar({ product = 'Helper' }: { product?: string }) {
+function EcosystemTopbar() {
   return (
-    <header className="workspace-topbar workspace-standalone__topbar" aria-label="Vozen product navigation">
-      <a className="workspace-topbar__brand" href="/" aria-label="Vozen home">
-        <span className="workspace-mark" aria-hidden="true">✦</span>
-        <span>Vozen</span>
-      </a>
-      <span className="workspace-topbar__product">{product}</span>
-      <nav className="workspace-topbar__nav" aria-label="Products">
-        <a href="/dashboard">Vozen TTS</a>
-        <a href="/panel/helper-tracker/" aria-current={product === 'Helper' ? 'page' : undefined}>Vozen Helper</a>
-        <a href="/docs/">Docs</a>
-        <a href="/premium">Premium</a>
-      </nav>
-      <a className="workspace-topbar__account" href="/account/">Account</a>
+    <header className="workspace-global-nav workspace-standalone__topbar" aria-label="Vozen ecosystem navigation">
+      <div className="workspace-global-nav__inner">
+        <a className="workspace-global-nav__brand" href="/" aria-label="Vozen ecosystem home">
+          <span className="workspace-global-nav__mark" aria-hidden="true">
+            <img src="/assets/vozen-ecosystem-icon.png" alt="" />
+          </span>
+          <span className="workspace-global-nav__word">Vozen</span>
+          <span className="workspace-global-nav__product">Ecosystem</span>
+        </a>
+        <nav className="workspace-global-nav__links" aria-label="Vozen products">
+          <a href="/tts/">Vozen TTS</a>
+          <a href="/helper/" aria-current="page">Vozen Helper</a>
+          <a href="/docs/">Docs</a>
+          <a href="/commands/">Commands</a>
+          <span aria-disabled="true">Premium</span>
+        </nav>
+        <div className="workspace-global-nav__actions">
+          <a className="workspace-global-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noreferrer" aria-label="Vozen on GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 .6a11.4 11.4 0 0 0-3.61 22.21c.57.1.78-.25.78-.55v-2.02c-3.17.69-3.84-1.34-3.84-1.34-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.02 1.75 2.67 1.25 3.32.96.1-.74.4-1.25.72-1.54-2.53-.29-5.19-1.27-5.19-5.64 0-1.25.45-2.27 1.19-3.07-.12-.3-.52-1.46.11-3.03 0 0 .97-.31 3.15 1.17A10.9 10.9 0 0 1 12 6.2c.98 0 1.97.13 2.89.38 2.18-1.48 3.15-1.17 3.15-1.17.63 1.57.23 2.73.11 3.03.74.8 1.19 1.82 1.19 3.07 0 4.38-2.67 5.35-5.21 5.63.41.36.77 1.07.77 2.16v3.2c0 .3.2.66.79.55A11.4 11.4 0 0 0 12 .6Z" />
+            </svg>
+          </a>
+          <span className="workspace-global-nav__language" aria-label="Site language: English">
+            <span className="workspace-global-nav__language-flag" aria-hidden="true">🇬🇧</span>
+            <span>English</span>
+          </span>
+          <a className="workspace-global-nav__account" href="/account/" aria-label="Open Vozen account">Account</a>
+        </div>
+      </div>
     </header>
   );
 }
@@ -3577,7 +3580,7 @@ function ServerPicker({
   const manageableGuilds = guilds.filter((guild) => guild.canManage);
   return (
     <div className="workspace-standalone workspace-app workspace-standalone--helper">
-      <WorkspaceTopbar product="Helper" />
+      <EcosystemTopbar />
       <main className="helper-server-picker workspace-standalone__content" aria-labelledby="server-picker-title">
       <a className="workspace-exit workspace-standalone__exit" href="/account/">
         ← Exit to account
@@ -3649,7 +3652,7 @@ function AuthScreen({
   const visibleError = /unauthenticated|API 401/i.test(error) ? '' : error;
   return (
     <div className="workspace-standalone workspace-app workspace-standalone--helper">
-      <WorkspaceTopbar product="Helper" />
+      <EcosystemTopbar />
       <main className="auth-shell workspace-standalone__content" aria-labelledby="auth-title">
       <a className="workspace-exit workspace-standalone__exit" href="/account/">
         ← Exit to account
