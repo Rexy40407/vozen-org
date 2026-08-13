@@ -579,6 +579,60 @@ body.page-dashboard.workspace-page--tts .tts-workspace__main > .dash-root {
   min-height: 100%;
 }
 
+/* Server selection is a calm, single-purpose screen. It intentionally sits
+   outside the product workspace so people choose a server before seeing the
+   dashboard sidebar and settings surface. */
+body.page-dashboard.workspace-page--tts .tts-picker-page {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: clamp(48px, 9vh, 108px) clamp(24px, 5vw, 88px) 72px;
+  background: radial-gradient(circle at 8% 0, rgba(145, 167, 255, .14), transparent 34rem), var(--workspace-bg);
+}
+
+body.page-dashboard.workspace-page--tts .tts-picker-page[hidden],
+body.page-dashboard.workspace-page--tts .tts-workspace[hidden] {
+  display: none;
+}
+
+body.page-dashboard.workspace-page--tts .tts-picker-page > .dash-root {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+}
+
+body.page-dashboard.workspace-page--tts .tts-picker-page__back {
+  width: min(100%, 1080px);
+  margin: 0 auto 18px;
+}
+
+body.page-dashboard.workspace-page--tts .tts-picker-page .dash-picker {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(32px, 4vw, 52px);
+  border-radius: 22px;
+  background: rgba(23, 22, 19, .76);
+}
+
+body.page-dashboard.workspace-page--tts .tts-picker-page .dash-picker h2 {
+  font-size: clamp(36px, 4vw, 56px) !important;
+  line-height: 1.02;
+}
+
+body.page-dashboard.workspace-page--tts .tts-picker-page .dash-picker__list {
+  gap: 12px;
+  margin-top: 32px;
+}
+
+body.page-dashboard.workspace-page--tts .tts-picker-page .dash-server {
+  min-height: 72px;
+  padding: 14px 16px;
+}
+
 body.page-dashboard.workspace-page--tts > footer,
 body.page-dashboard.workspace-page--tts .site-footer {
   display: none;
@@ -687,6 +741,14 @@ body.page-dashboard.workspace-page--tts .dash-form {
 }
 
 @media (max-width: 760px) {
+  body.page-dashboard.workspace-page--tts .tts-picker-page {
+    padding: 28px 16px 48px;
+  }
+
+  body.page-dashboard.workspace-page--tts .tts-picker-page .dash-picker {
+    padding: 28px 20px;
+  }
+
   body.page-dashboard.workspace-page--tts .tts-workspace__main {
     overflow-y: auto;
   }

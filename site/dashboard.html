@@ -22,7 +22,7 @@
 
     <link rel="stylesheet" href="css/main-v43.css" />
     <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v9" />
-    <link rel="stylesheet" href="css/workspace-v1.css?v=tts-flat-form-3" />
+    <link rel="stylesheet" href="css/workspace-v1.css?v=tts-server-picker-1" />
   </head>
   <body class="page-dashboard workspace-page workspace-page--tts" data-i18n-document-title="dashboard.documentTitle">
     <!-- grain overlay -->
@@ -113,7 +113,11 @@
             <p data-i18n="dashboard.subtitle">Configure Vozen on your servers — no slash commands needed</p>
           </header>
 
-          <div class="tts-workspace" id="ttsWorkspace">
+          <div class="tts-picker-page" id="ttsPickerPage" hidden>
+            <div class="dash-root" id="dashPickerRoot" aria-live="polite"></div>
+          </div>
+
+          <div class="tts-workspace" id="ttsWorkspace" hidden>
             <aside class="workspace-sidebar tts-workspace__sidebar" aria-label="Vozen TTS navigation">
               <div class="workspace-sidebar__product">
                 <span class="workspace-sidebar__product-mark" aria-hidden="true">T</span>
@@ -136,7 +140,7 @@
               </div>
             </aside>
             <div class="tts-workspace__main">
-              <!-- Filled by dashboard-v8.js (login / server selector / form). -->
+              <!-- Filled by dashboard-v8.js after a server is selected. -->
               <div class="dash-root" id="dashRoot" aria-live="polite"></div>
             </div>
           </div>

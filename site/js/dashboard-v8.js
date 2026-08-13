@@ -21,8 +21,26 @@
   var RETURN_KEY = "vozen.returnTo";
   var LS_LANG = "vozen.lang";
 
-  var root = document.getElementById("dashRoot");
-  if (!root) return;
+  var workspaceRoot = document.getElementById("dashRoot");
+  var pickerRoot = document.getElementById("dashPickerRoot");
+  var pickerPage = document.getElementById("ttsPickerPage");
+  var ttsWorkspace = document.getElementById("ttsWorkspace");
+  var root = workspaceRoot;
+  if (!root || !pickerRoot || !pickerPage || !ttsWorkspace) return;
+
+  function showPickerShell() {
+    root = pickerRoot;
+    pickerPage.hidden = false;
+    ttsWorkspace.hidden = true;
+    document.body.classList.add("tts-picker-mode");
+  }
+
+  function showWorkspaceShell() {
+    root = workspaceRoot;
+    pickerPage.hidden = true;
+    ttsWorkspace.hidden = false;
+    document.body.classList.remove("tts-picker-mode");
+  }
 
   // The dashboard keeps navigation client-side so existing API contracts and deep
   // links remain untouched. This small state object also gives Overview a truthful
@@ -85,6 +103,7 @@
       renderPicker(workspaceState.guilds || []);
       return;
     }
+    showWorkspaceShell();
     var cfg = workspaceState.data.config;
     var hasChannel = !!cfg.ttsChannelId;
     var voice = cfg.defaultVoice || "Not selected";
@@ -123,6 +142,7 @@
       renderPicker(workspaceState.guilds || []);
       return;
     }
+    showWorkspaceShell();
     renderForm(workspaceState.guild, workspaceState.data.config, workspaceState.guilds, workspaceState.data, false);
   }
 
@@ -400,6 +420,8 @@
       }
       var main = document.querySelector(".tts-workspace__main");
       if (main) main.scrollTop = 0;
+      var picker = document.getElementById("ttsPickerPage");
+      if (picker) picker.scrollTop = 0;
       window.scrollTo(0, 0);
     };
     if (window.requestAnimationFrame) window.requestAnimationFrame(moveFocus);
@@ -407,6 +429,7 @@
   }
 
   function renderLogin(msgKey) {
+    showPickerShell();
     var msg = msgKey ? t(msgKey) : "";
     view(
       '<div style="' +
@@ -491,6 +514,7 @@
   }
 
   function renderPicker(guilds) {
+    showPickerShell();
     var pendingView = workspaceState.view || "overview";
     workspaceState.guild = null;
     workspaceState.guilds = guilds || [];
@@ -518,6 +542,7 @@
       })
       .join("");
     view(
+      '<div class="tts-picker-page__back"><a class="dash-exit" href="/account/">← Back to account</a></div>' +
       '<div class="dash-picker"><h2 style="margin:0 0 6px;font-size:1.25rem">' +
         esc(t("dashboard.pick")) +
         '</h2><p style="' +
@@ -663,6 +688,7 @@
   }
 
   function loadForm(guild, guilds) {
+    showWorkspaceShell();
     workspaceState.dirty = false;
     workspaceState.guild = guild;
     workspaceState.guilds = guilds || [];
@@ -1093,6 +1119,7 @@
   }
 
   function boot() {
+    showPickerShell();
     var tok = token();
     if (!tok) {
       renderLogin("");
