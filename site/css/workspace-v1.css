@@ -517,6 +517,73 @@ body.page-dashboard.workspace-page--tts .account-shell {
   width: 100%;
 }
 
+/* The TTS dashboard is an application viewport: the shell stays in place
+   while only the selected workspace pane owns the scroll position. */
+body.page-dashboard.workspace-page--tts {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.page-dashboard.workspace-page--tts > main {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.page-dashboard.workspace-page--tts > main > .account-section {
+  height: 100%;
+  min-height: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+body.page-dashboard.workspace-page--tts .account-shell {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body.page-dashboard.workspace-page--tts .tts-workspace {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+body.page-dashboard.workspace-page--tts .tts-workspace__sidebar {
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+body.page-dashboard.workspace-page--tts .tts-workspace__main {
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+body.page-dashboard.workspace-page--tts .tts-workspace__main > .dash-root {
+  min-height: 100%;
+}
+
+body.page-dashboard.workspace-page--tts > footer,
+body.page-dashboard.workspace-page--tts .site-footer {
+  display: none;
+}
+
 .tts-workspace__sidebar {
   grid-column: 1;
   grid-row: 1;
@@ -583,6 +650,16 @@ body.page-dashboard.workspace-page--tts .dash-root {
 }
 
 @media (max-width: 860px) {
+  body.page-dashboard.workspace-page--tts .tts-workspace {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  body.page-dashboard.workspace-page--tts .tts-workspace__sidebar {
+    height: auto;
+    max-height: none;
+    overflow: hidden;
+  }
+
   .tts-workspace { grid-template-columns: 1fr; }
   .tts-workspace__sidebar {
     grid-column: 1;
@@ -595,6 +672,10 @@ body.page-dashboard.workspace-page--tts .dash-root {
 }
 
 @media (max-width: 760px) {
+  body.page-dashboard.workspace-page--tts .tts-workspace__main {
+    overflow-y: auto;
+  }
+
   .tts-workspace { margin-top: 12px; border-radius: 12px; }
   .tts-workspace__sidebar { position: static; }
   .tts-workspace__sidebar .workspace-sidebar__product,
@@ -730,9 +811,24 @@ body.page-dashboard.workspace-page--tts .dash-root {
   margin: 0 0 30px;
   padding: 0 0 28px;
   border: 0;
-  border-bottom: 1px solid var(--workspace-border);
+  border-bottom: 0;
   border-radius: 0;
   background: transparent;
+}
+
+/* Quick Setup is part of the main surface, not a card nested inside it. */
+body.page-dashboard.workspace-page--tts .workspace-quick-intro,
+body.page-dashboard.workspace-page--tts .workspace-quick-intro::before,
+body.page-dashboard.workspace-page--tts .workspace-quick-intro::after {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.page-dashboard.workspace-page--tts .workspace-quick-intro {
+  margin-bottom: 28px !important;
+  padding-bottom: 24px !important;
 }
 
 .workspace-page--tts .dash-head {
