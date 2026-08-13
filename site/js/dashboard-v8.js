@@ -26,7 +26,36 @@
   var pickerPage = document.getElementById("ttsPickerPage");
   var ttsWorkspace = document.getElementById("ttsWorkspace");
   var root = workspaceRoot;
-  if (!root || !pickerRoot || !pickerPage || !ttsWorkspace) return;
+  if (!root || !pickerRoot || !pickerPage || !ttsWorkspace) {
+    var bootFallback = document.getElementById("ttsBootFallback");
+    if (bootFallback) bootFallback.hidden = false;
+    return;
+  }
+
+  var REQUEST_TIMEOUT_MS = 15000;
+
+  function fetchWithTimeout(url, options, timeoutMs) {
+    var requestOptions = options || {};
+    var controller = typeof window.AbortController === "function" ? new window.AbortController() : null;
+    var timer = null;
+    if (controller) requestOptions.signal = controller.signal;
+    var timeout = Number(timeoutMs) || REQUEST_TIMEOUT_MS;
+    var request = window.fetch(url, requestOptions);
+    if (!request || typeof request.then !== "function") return request;
+    timer = window.setTimeout(function () {
+      if (controller) controller.abort();
+    }, timeout);
+    return request.then(
+      function (response) {
+        if (timer) window.clearTimeout(timer);
+        return response;
+      },
+      function (error) {
+        if (timer) window.clearTimeout(timer);
+        throw error;
+      },
+    );
+  }
 
   function showPickerShell() {
     root = pickerRoot;
@@ -480,7 +509,7 @@
     );
     if (opts.retry) {
       var r = document.getElementById("dashRetry");
-      if (r) r.addEventListener("click", login);
+      if (r) r.addEventListener("click", opts.onRetry || login);
     }
     // Keep semantic keys so a language change can also translate loading/error/empty states.
     onLang = function () {
@@ -698,7 +727,7 @@
     workspaceState.pendingView = null;
     setTtsView(requestedView, false);
     renderMessage("dashboard.loading", "");
-    fetch(API + "/api/dashboard/guild/" + guild.id, { headers: authHeaders() })
+    fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id, { headers: authHeaders() })
       .then(function (res) {
         if (res.status === 401) {
           clearToken();
@@ -710,7 +739,10 @@
           return null;
         }
         if (!res.ok) {
-          renderMessage("dashboard.error", "");
+          renderMessage("dashboard.error", "", {
+            retry: true,
+            onRetry: function () { loadForm(guild, guilds); },
+          });
           return null;
         }
         return res.json();
@@ -723,7 +755,10 @@
         }
       })
       .catch(function () {
-        renderMessage("dashboard.error", "");
+        renderMessage("dashboard.error", "", {
+          retry: true,
+          onRetry: function () { loadForm(guild, guilds); },
+        });
       });
   }
 
@@ -1132,7 +1167,7 @@
       return;
     }
     renderMessage("dashboard.loading", "");
-    fetch(API + "/api/dashboard/guilds", { headers: authHeaders() })
+    fetchWithTimeout(API + "/api/dashboard/guilds", { headers: authHeaders() })
       .then(function (res) {
         if (res.status === 401) {
           clearToken();
@@ -1140,7 +1175,7 @@
           return null;
         }
         if (!res.ok) {
-          renderMessage("dashboard.error", "", { retry: true });
+          renderMessage("dashboard.error", "", { retry: true, onRetry: boot });
           return null;
         }
         return res.json();
@@ -1155,7 +1190,7 @@
         renderPicker(guilds);
       })
       .catch(function () {
-        renderMessage("dashboard.error", "", { retry: true });
+        renderMessage("dashboard.error", "", { retry: true, onRetry: boot });
       });
   }
 

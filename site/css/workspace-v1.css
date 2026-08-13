@@ -604,6 +604,42 @@ body.page-dashboard.workspace-page--tts .tts-picker-page > .dash-root {
   margin: 0 auto;
 }
 
+/* Keep a useful first paint if the dashboard script is delayed or blocked. The
+   client replaces this block with the real login/server state as soon as it
+   starts, but a blank page is never an acceptable loading state. */
+.tts-boot-fallback {
+  width: min(100%, 680px);
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 52px);
+  border: 1px solid var(--workspace-border);
+  border-radius: 20px;
+  background: var(--workspace-surface-soft);
+  box-shadow: var(--workspace-shadow);
+}
+
+.tts-boot-fallback__eyebrow {
+  margin: 0 0 12px;
+  color: var(--workspace-tts);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.tts-boot-fallback h2 {
+  margin: 0 0 10px;
+  color: var(--workspace-copy);
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+
+.tts-boot-fallback p:not(.tts-boot-fallback__eyebrow) {
+  max-width: 48ch;
+  margin: 0 0 22px;
+  color: var(--workspace-muted);
+  line-height: 1.55;
+}
+
 body.page-dashboard.workspace-page--tts .tts-picker-page__back {
   width: min(100%, 1080px);
   margin: 0 auto 18px;
