@@ -3533,7 +3533,115 @@ function PremiumCard({ icon, title, text }: { icon: string; title: string; text:
   );
 }
 
+type EcosystemAccount = {
+  id?: string;
+  username?: string;
+  avatar?: string | null;
+  avatarDecorationAsset?: string | null;
+  avatar_decoration_asset?: string | null;
+  avatarDecorationData?: { asset?: string | null } | null;
+  avatar_decoration_data?: { asset?: string | null } | null;
+};
+
+const ecosystemUkFlag = String.fromCodePoint(0x1f1ec, 0x1f1e7);
+
+function readCachedEcosystemAccount(): EcosystemAccount | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem('vozen.navuser');
+    const parsed = raw ? JSON.parse(raw) : null;
+    // The public navigation stores `{ user }`, while a few older account
+    // restores wrote the user object directly. Accept both shapes so the
+    // product header never falls back to a generic account after a valid
+    // session is restored.
+    const account = parsed?.user ?? parsed;
+    return account && typeof account.username === 'string' ? account : null;
+  } catch {
+    return null;
+  }
+}
+
+function discordAvatarUrl(account: EcosystemAccount): string | null {
+  const id = String(account.id ?? '');
+  const avatar = String(account.avatar ?? '');
+  if (!/^\d{16,22}$/.test(id) || !/^(?:a_)?[A-Za-z0-9_]{1,128}$/.test(avatar)) {
+    return null;
+  }
+  const extension = avatar.startsWith('a_') ? 'gif' : 'png';
+  return `https://cdn.discordapp.com/avatars/${id}/${avatar}.${extension}?size=96`;
+}
+
+function discordDecorationUrl(account: EcosystemAccount): string | null {
+  const asset = String(
+    account.avatarDecorationAsset
+      ?? account.avatar_decoration_asset
+      ?? account.avatarDecorationData?.asset
+      ?? account.avatar_decoration_data?.asset
+      ?? '',
+  );
+  return /^[A-Za-z0-9_]{1,128}$/.test(asset)
+    ? `https://cdn.discordapp.com/avatar-decoration-presets/${asset}.png?size=96`
+    : null;
+}
+
+function EcosystemAccountAvatar({
+  src,
+  initial,
+}: {
+  src: string | null;
+  initial: string;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
+  if (!src || failed) {
+    return <span className="workspace-global-nav__account-avatar--fallback">{initial}</span>;
+  }
+
+  return (
+    <img
+      className="workspace-global-nav__account-avatar"
+      src={src}
+      alt=""
+      width="24"
+      height="24"
+      referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 function EcosystemTopbar() {
+  const [account, setAccount] = useState<EcosystemAccount | null>(() => readCachedEcosystemAccount());
+
+  useEffect(() => {
+    // Account login writes this cache before navigating to a product. Refresh
+    // after mount and on session/page updates so a restored Discord profile is
+    // reflected without requiring a full reload.
+    const refresh = () => setAccount(readCachedEcosystemAccount());
+    refresh();
+    const restoreTimer = window.setTimeout(refresh, 150);
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === 'vozen.navuser' || event.key === 'vozen.dtoken') refresh();
+    };
+    const onPageShow = () => refresh();
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('pageshow', onPageShow);
+    return () => {
+      window.clearTimeout(restoreTimer);
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('pageshow', onPageShow);
+    };
+  }, []);
+
+  const username = account?.username?.trim() || '';
+  const initial = username.slice(0, 1).toUpperCase() || 'V';
+  const avatar = account ? discordAvatarUrl(account) : null;
+  const decoration = account ? discordDecorationUrl(account) : null;
+
   return (
     <header className="workspace-global-nav workspace-standalone__topbar" aria-label="Vozen ecosystem navigation">
       <div className="workspace-global-nav__inner">
@@ -3558,10 +3666,28 @@ function EcosystemTopbar() {
             </svg>
           </a>
           <span className="workspace-global-nav__language" aria-label="Site language: English">
-            <span className="workspace-global-nav__language-flag" aria-hidden="true">🇬🇧</span>
+            <span className="workspace-global-nav__language-flag" aria-hidden="true">{ecosystemUkFlag}</span>
             <span>English</span>
+            <svg className="workspace-global-nav__language-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
           </span>
-          <a className="workspace-global-nav__account" href="/account/" aria-label="Open Vozen account">Account</a>
+          {account ? (
+            <a className="workspace-global-nav__account" href="/account/" aria-label={`Open ${username}'s Vozen account`}>
+              <span className="workspace-global-nav__account-avatar-wrap" aria-hidden="true">
+                <EcosystemAccountAvatar src={avatar} initial={initial} />
+                {decoration ? <img className="workspace-global-nav__account-avatar-decoration" src={decoration} alt="" width="32" height="32" referrerPolicy="no-referrer" onError={(event) => { event.currentTarget.hidden = true; }} /> : null}
+              </span>
+              <span>{username}</span>
+            </a>
+          ) : (
+            <a className="workspace-global-nav__account workspace-global-nav__account--login" href="/account/" aria-label="Log in to Vozen">
+              <svg viewBox="0 0 24 18" aria-hidden="true">
+                <path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2-1-2-2.3 0-1.24.88-2.28 2-2.28s2.02 1.04 2 2.28c0 1.26-.9 2.3-2 2.3Z" />
+              </svg>
+              <span>Log in</span>
+            </a>
+          )}
         </div>
       </div>
     </header>

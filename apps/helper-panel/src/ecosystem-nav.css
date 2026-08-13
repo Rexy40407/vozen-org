@@ -1,17 +1,51 @@
 /*
- * The Helper is an application inside the Vozen ecosystem.  Keep this header
+ * The Helper is an application inside the Vozen ecosystem. Keep this header
  * scoped to the app so legacy workspace/sidebar rules cannot change its
  * geometry or typography on a particular route.
+ *
+ * These are the same self-hosted families used by the public Vozen shell.
+ * Keeping the font source local prevents a fallback from changing the brand
+ * wordmark width and throwing the navigation off-centre while the page loads.
  */
+@font-face {
+  font-family: "Twemoji Country Flags";
+  src: url("/assets/fonts/TwemojiCountryFlags.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+1F1E6-1F1FF;
+}
+
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 400 800;
+  src: url("/assets/fonts/outfit-400-latin.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Unbounded";
+  font-style: normal;
+  font-weight: 500 800;
+  src: url("/assets/fonts/unbounded-500-latin.woff2") format("woff2");
+  font-display: swap;
+}
+
 .workspace-global-nav {
   --ecosystem-nav-border: rgba(91, 116, 151, .28);
   --ecosystem-nav-muted: #a8b4ce;
   --ecosystem-nav-copy: #f5f7ff;
   --ecosystem-nav-aqua: #36d9c8;
   --ecosystem-nav-violet: #86a4ff;
+  font-family: "Outfit", system-ui, sans-serif;
+  line-height: 1;
   display: block;
   box-sizing: border-box;
+  /* Reset the legacy global `header` rule from styles.css. */
+  align-items: center;
+  justify-content: initial;
+  gap: 0;
   margin: 0;
+  padding: 0;
   grid-column: 1 / -1;
   grid-row: 1;
   position: sticky;
@@ -25,18 +59,26 @@
   color: var(--ecosystem-nav-copy);
 }
 
+.workspace-global-nav *,
+.workspace-global-nav *::before,
+.workspace-global-nav *::after {
+  box-sizing: border-box;
+}
+
 .workspace-global-nav__inner {
   width: min(1280px, calc(100% - 56px));
   height: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 28px;
+  justify-content: space-between;
+  gap: 0;
 }
 
 .workspace-global-nav__brand {
   display: inline-flex;
   align-items: center;
+  gap: 11px;
   flex: 0 0 auto;
   min-height: 52px;
   color: var(--ecosystem-nav-copy);
@@ -59,20 +101,24 @@
   display: block;
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
+  /* The source asset includes transparent padding. Match the public nav's
+     crop so the gradient mark fills the frame instead of leaving a halo. */
+  transform: scale(1.34);
 }
 
 .workspace-global-nav__word {
-  margin-left: 12px;
-  font-family: "Space Grotesk", "Outfit", system-ui, sans-serif;
+  margin-left: 0;
+  font-family: "Unbounded", "Outfit", system-ui, sans-serif;
   font-size: 29px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -.055em;
 }
 
 .workspace-global-nav__product {
-  margin-left: 14px;
+  margin-left: 0;
   padding-left: 14px;
   border-left: 1px solid var(--ecosystem-nav-border);
   color: var(--ecosystem-nav-muted);
@@ -84,9 +130,8 @@
 .workspace-global-nav__links {
   display: flex;
   align-items: center;
-  gap: 26px;
+  gap: 36px;
   min-width: 0;
-  margin-left: auto;
   white-space: nowrap;
 }
 
@@ -97,7 +142,7 @@
   align-items: center;
   min-height: 52px;
   color: var(--ecosystem-nav-muted);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   text-decoration: none;
   transition: color .18s ease;
@@ -129,8 +174,7 @@
   display: flex;
   align-items: center;
   flex: 0 0 auto;
-  gap: 14px;
-  margin-left: 4px;
+  gap: 16px;
 }
 
 .workspace-global-nav__github {
@@ -151,8 +195,8 @@
 }
 
 .workspace-global-nav__github svg {
-  width: 21px;
-  height: 21px;
+  width: 23px;
+  height: 23px;
   fill: currentColor;
 }
 
@@ -160,18 +204,19 @@
   min-height: 42px;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 0 14px;
+  gap: 9px;
+  padding: 0 15px;
   border: 1px solid var(--ecosystem-nav-border);
   border-radius: 999px;
   color: var(--ecosystem-nav-copy);
   background: rgba(16, 26, 42, .66);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .workspace-global-nav__language-flag {
+  font-family: "Twemoji Country Flags", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -182,26 +227,102 @@
 }
 
 .workspace-global-nav__account {
-  min-width: 94px;
+  min-width: 0;
   min-height: 52px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 17px;
-  border: 1px solid rgba(142, 229, 210, .3);
+  gap: 9px;
+  padding: 0 22px 0 10px;
+  border: 1px solid rgba(184, 194, 226, .22);
   border-radius: 999px;
   color: var(--ecosystem-nav-copy);
-  background: rgba(21, 42, 52, .72);
-  font-size: 14px;
-  font-weight: 750;
+  background: rgba(255, 255, 255, .06);
+  font-size: 17px;
+  font-weight: 700;
   text-decoration: none;
   transition: color .18s ease, border-color .18s ease, background .18s ease;
 }
 
+.workspace-global-nav__account > span:last-child {
+  max-width: 132px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-global-nav__account-avatar-wrap {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace-global-nav__account-avatar,
+.workspace-global-nav__account-avatar--fallback {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .34);
+  background: linear-gradient(135deg, #86a4ff, #36d9c8);
+  color: #07111c;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.workspace-global-nav__account-avatar {
+  max-width: none;
+}
+
+.workspace-global-nav__account-avatar-decoration {
+  position: absolute;
+  inset: -4px;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  max-width: none;
+}
+
+.workspace-global-nav__language-chevron {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+}
+
 .workspace-global-nav__account:hover,
 .workspace-global-nav__account:focus-visible {
-  border-color: var(--ecosystem-nav-aqua);
-  background: rgba(35, 89, 91, .62);
+  border-color: rgba(184, 194, 226, .42);
+  background: rgba(255, 255, 255, .1);
+}
+
+.workspace-global-nav__account--login {
+  padding-inline: 22px;
+  border-color: transparent;
+  background: linear-gradient(110deg, #637cff, #36d3c4);
+  box-shadow: 0 12px 28px rgba(66, 137, 255, .2);
+}
+
+.workspace-global-nav__account--login:hover,
+.workspace-global-nav__account--login:focus-visible {
+  border-color: transparent;
+  background: linear-gradient(110deg, #738aff, #45ddcb);
+  color: #fff;
+  box-shadow: 0 14px 32px rgba(66, 137, 255, .28);
+}
+
+.workspace-global-nav__account--login svg {
+  width: 18px;
+  height: 14px;
+  flex: 0 0 18px;
+  fill: currentColor;
 }
 
 .workspace-global-nav a:focus-visible {
@@ -235,13 +356,18 @@
   .workspace-global-nav__github { display: none; }
   .workspace-global-nav__language { display: none; }
   .workspace-global-nav__account { min-width: 78px; min-height: 44px; padding-inline: 12px; }
+  .workspace-global-nav__account { gap: 6px; font-size: 13px; }
+  .workspace-global-nav__account-avatar,
+  .workspace-global-nav__account-avatar--fallback,
+  .workspace-global-nav__account-avatar-wrap { width: 22px; height: 22px; flex-basis: 22px; }
+  .workspace-global-nav__account-avatar-decoration { width: 29px; height: 29px; inset: -3px; }
 }
 
 @media (max-width: 520px) {
   .workspace-global-nav { height: 76px; min-height: 76px; }
   .workspace-global-nav__inner { height: 76px; }
   .workspace-global-nav__mark { width: 44px; height: 44px; flex-basis: 44px; border-radius: 13px; }
-  .workspace-global-nav__word { margin-left: 8px; font-size: 22px; }
+  .workspace-global-nav__word { margin-left: 0; font-size: 22px; }
   .workspace-global-nav__links { gap: 12px; }
   .workspace-global-nav__links a:nth-child(n+4),
   .workspace-global-nav__links span { display: none; }
