@@ -1948,6 +1948,65 @@ function quickSetupDraft(
   };
 }
 
+function WorkspaceSkeleton() {
+  const pulse = (className: string) => <span className={`helper-skeleton__pulse ${className}`} aria-hidden="true" />;
+  return (
+    <div className="workspace-standalone workspace-app workspace-standalone--helper workspace-loading">
+      <EcosystemTopbar />
+      <main className="workspace-standalone__content" role="status" aria-live="polite" aria-busy="true">
+        <span className="helper-skeleton__sr">Preparing your workspace. Checking your session and server access.</span>
+        <div className="helper-skeleton">
+          <aside className="helper-skeleton__sidebar" aria-hidden="true">
+            {pulse('helper-skeleton__product-mark')}
+            {pulse('helper-skeleton__server-label')}
+            {pulse('helper-skeleton__server-select')}
+            <div className="helper-skeleton__nav">
+              {[0, 1, 2, 3, 4, 5].map((item) => (
+                <span className="helper-skeleton__nav-row" key={item}>
+                  {pulse('helper-skeleton__nav-icon')}
+                  {pulse('helper-skeleton__nav-copy')}
+                </span>
+              ))}
+            </div>
+          </aside>
+          <section className="helper-skeleton__main" aria-hidden="true">
+            {pulse('helper-skeleton__eyebrow')}
+            {pulse('helper-skeleton__heading')}
+            {pulse('helper-skeleton__subheading')}
+            <div className="helper-skeleton__hero">
+              <div className="helper-skeleton__hero-copy">
+                {pulse('helper-skeleton__hero-title')}
+                {pulse('helper-skeleton__hero-line')}
+                {pulse('helper-skeleton__hero-button')}
+              </div>
+              <div className="helper-skeleton__hero-list">
+                {[0, 1, 2].map((item) => (
+                  <span className="helper-skeleton__hero-row" key={item}>
+                    {pulse('helper-skeleton__hero-number')}
+                    {pulse('helper-skeleton__hero-row-copy')}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="helper-skeleton__metrics">
+              {[0, 1, 2, 3].map((item) => pulse('helper-skeleton__metric'))}
+            </div>
+            <div className="helper-skeleton__cards">
+              {[0, 1, 2].map((item) => (
+                <span className="helper-skeleton__card" key={item}>
+                  {pulse('helper-skeleton__card-icon')}
+                  {pulse('helper-skeleton__card-title')}
+                  {pulse('helper-skeleton__card-copy')}
+                </span>
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
+
 function App() {
   const [youtubeSubscriptions, setYoutubeSubscriptions] = useState<YouTubeSubscription[]>([]);
   const [rssSubscriptions, setRssSubscriptions] = useState<RssSubscription[]>([]);
@@ -2802,19 +2861,7 @@ function App() {
       setMessage('Guided setup remains available in the sidebar.');
     }
   }
-  if (status === 'loading')
-    return (
-      <div className="workspace-standalone workspace-app workspace-standalone--helper">
-        <EcosystemTopbar />
-        <main className="workspace-standalone__content" role="status" aria-live="polite" aria-busy="true">
-          <div className="workspace-standalone__state">
-            <div className="loader" />
-            <h1>Preparing your workspace</h1>
-            <p>Checking your session and server access.</p>
-          </div>
-        </main>
-      </div>
-    );
+  if (status === 'loading') return <WorkspaceSkeleton />;
   if ((status === 'auth' || status === 'error') && !me)
     return (
       <AuthScreen

@@ -593,6 +593,63 @@
     };
   }
 
+  // Keep the dashboard shell useful while a request is in flight.  This is
+  // deliberately shaped like the final picker/form instead of showing a
+  // generic spinner, so the transition does not make the page jump.
+  function renderSkeleton(kind) {
+    var picker = kind === "picker";
+    var label = picker ? "Loading available servers" : "Loading server settings";
+    var pulse = function (extra) {
+      return '<span class="dash-skeleton__pulse' + (extra ? " " + extra : "") + '" aria-hidden="true"></span>';
+    };
+    var html = picker
+      ? '<div class="dash-skeleton dash-skeleton--picker" role="status" aria-live="polite" aria-busy="true" aria-label="' +
+        esc(label) +
+        '"><span class="dash-skeleton__sr">' +
+        esc(label) +
+        '</span><div class="dash-skeleton__picker-title">' +
+        pulse("dash-skeleton__pulse--title") +
+        pulse("dash-skeleton__pulse--copy") +
+        '</div><div class="dash-skeleton__picker-list">' +
+        [0, 1, 2, 3].map(function () {
+          return '<div class="dash-skeleton__server">' +
+            pulse("dash-skeleton__pulse--avatar") +
+            pulse("dash-skeleton__pulse--server-name") +
+            pulse("dash-skeleton__pulse--arrow") +
+            '</div>';
+        }).join("") +
+        '</div><div class="dash-skeleton__picker-action">' +
+        pulse("dash-skeleton__pulse--action-copy") +
+        pulse("dash-skeleton__pulse--action-button") +
+        '</div></div>'
+      : '<div class="dash-skeleton dash-skeleton--workspace" role="status" aria-live="polite" aria-busy="true" aria-label="' +
+        esc(label) +
+        '"><span class="dash-skeleton__sr">' +
+        esc(label) +
+        '</span><div class="dash-skeleton__workspace-head">' +
+        pulse("dash-skeleton__pulse--avatar") +
+        pulse("dash-skeleton__pulse--workspace-name") +
+        pulse("dash-skeleton__pulse--button") +
+        '</div><div class="dash-skeleton__workspace-intro">' +
+        pulse("dash-skeleton__pulse--eyebrow") +
+        pulse("dash-skeleton__pulse--heading") +
+        pulse("dash-skeleton__pulse--heading-short") +
+        pulse("dash-skeleton__pulse--intro-copy") +
+        '</div><div class="dash-skeleton__steps">' +
+        [0, 1, 2, 3].map(function () {
+          return '<div class="dash-skeleton__step">' + pulse("dash-skeleton__pulse--step-number") + pulse("dash-skeleton__pulse--step-copy") + '</div>';
+        }).join("") +
+        '</div><div class="dash-skeleton__settings">' +
+        [0, 1, 2, 3, 4].map(function () {
+          return '<div class="dash-skeleton__setting"><span>' + pulse("dash-skeleton__pulse--setting-title") + pulse("dash-skeleton__pulse--setting-copy") + '</span>' + pulse("dash-skeleton__pulse--toggle") + '</div>';
+        }).join("") +
+        '</div></div>';
+    view(html);
+    onLang = function () {
+      renderSkeleton(kind);
+    };
+  }
+
   /* CDN de ícones da Discord (img-src já permite cdn.discordapp.com no CSP).
      Ícones animados têm hash "a_..." e servem-se como .gif. */
   function guildIconUrl(g) {
@@ -804,7 +861,7 @@
     var requestedView = workspaceState.pendingView || (workspaceState.view === "overview" ? "quick" : workspaceState.view);
     workspaceState.pendingView = null;
     setTtsView(requestedView, false);
-    renderMessage("dashboard.loading", "");
+    renderSkeleton("workspace");
     fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id, { headers: authHeaders() })
       .then(function (res) {
         if (res.status === 401) {
@@ -1233,7 +1290,7 @@
 
   function loadGuilds(attempt) {
     var pollAttempt = Number(attempt) || 0;
-    renderMessage("dashboard.loading", "");
+    renderSkeleton("picker");
     fetchWithTimeout(API + "/api/dashboard/guilds", { headers: authHeaders() })
       .then(function (res) {
         if (res.status === 401) {

@@ -22,7 +22,7 @@
 
     <link rel="stylesheet" href="css/main-v43.css" />
     <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v9" />
-    <link rel="stylesheet" href="css/workspace-v1.css?v=tts-add-server-1" />
+    <link rel="stylesheet" href="css/workspace-v1.css?v=tts-skeleton-1" />
   </head>
   <body class="page-dashboard workspace-page workspace-page--tts" data-i18n-document-title="dashboard.documentTitle">
     <!-- grain overlay -->
@@ -115,11 +115,23 @@
 
           <div class="tts-picker-page" id="ttsPickerPage">
             <div class="dash-root" id="dashPickerRoot" aria-live="polite">
-              <div class="tts-boot-fallback" id="ttsBootFallback" role="status" aria-live="polite">
-                <p class="tts-boot-fallback__eyebrow">VOZEN TTS</p>
-                <h2>Loading your server settings</h2>
-                <p>Preparing the server picker. If this takes too long, return to your account and try again.</p>
-                <a class="dash-exit" href="/account/">Back to account</a>
+              <div class="tts-boot-fallback dash-skeleton dash-skeleton--picker" id="ttsBootFallback" role="status" aria-live="polite" aria-busy="true" aria-label="Loading available servers">
+                <span class="dash-skeleton__sr">Loading available servers</span>
+                <div class="dash-skeleton__picker-title" aria-hidden="true">
+                  <span class="dash-skeleton__pulse dash-skeleton__pulse--eyebrow"></span>
+                  <span class="dash-skeleton__pulse dash-skeleton__pulse--heading"></span>
+                  <span class="dash-skeleton__pulse dash-skeleton__pulse--copy"></span>
+                </div>
+                <div class="dash-skeleton__picker-list" aria-hidden="true">
+                  <span class="dash-skeleton__server"><span class="dash-skeleton__pulse dash-skeleton__pulse--avatar"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--server-name"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--arrow"></span></span>
+                  <span class="dash-skeleton__server"><span class="dash-skeleton__pulse dash-skeleton__pulse--avatar"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--server-name"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--arrow"></span></span>
+                  <span class="dash-skeleton__server"><span class="dash-skeleton__pulse dash-skeleton__pulse--avatar"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--server-name"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--arrow"></span></span>
+                  <span class="dash-skeleton__server"><span class="dash-skeleton__pulse dash-skeleton__pulse--avatar"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--server-name"></span><span class="dash-skeleton__pulse dash-skeleton__pulse--arrow"></span></span>
+                </div>
+                <div class="dash-skeleton__picker-action" aria-hidden="true">
+                  <span class="dash-skeleton__pulse dash-skeleton__pulse--action-copy"></span>
+                  <span class="dash-skeleton__pulse dash-skeleton__pulse--action-button"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -194,6 +206,6 @@
     <script defer src="js/i18n-v41.js"></script>
     <script defer src="js/main-v51.js"></script>
     <script defer src="js/motion-v1.js"></script>
-    <script defer src="js/dashboard-v8.js?v=tts-add-server-1"></script>
+    <script defer src="js/dashboard-v8.js?v=tts-skeleton-1"></script>
   </body>
 </html>
