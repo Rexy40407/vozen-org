@@ -596,7 +596,7 @@ body.page-dashboard.workspace-page--tts .site-footer {
   grid-column: 2;
   grid-row: 1;
   min-width: 0;
-  padding: 28px clamp(20px, 3vw, 42px) 44px;
+  padding: clamp(34px, 4vw, 58px) clamp(28px, 4.5vw, 72px) 72px;
   background: radial-gradient(circle at 100% 0, rgba(145, 167, 255, .1), transparent 32rem), var(--workspace-bg);
 }
 
@@ -613,12 +613,27 @@ body.page-dashboard.workspace-page--tts .dash-root {
   max-width: none;
 }
 
-.workspace-page--tts .dash-picker,
-.workspace-page--tts .dash-form {
+.workspace-page--tts .dash-picker {
   max-width: 920px;
   margin: 0 auto;
   padding: clamp(24px, 3vw, 36px);
   border-radius: 20px;
+}
+
+/* The selected-server form is the workspace itself. The legacy dashboard
+   injects a second, lighter panel surface on .dash-form; keeping that surface
+   here makes the TTS page look like a window inside another window. Let the
+   outer workspace provide the single frame and use the available width for
+   the server header, setup guide and settings. */
+body.page-dashboard.workspace-page--tts .dash-form {
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .workspace-page--tts .dash-picker {
@@ -827,14 +842,24 @@ body.page-dashboard.workspace-page--tts .workspace-quick-intro::after {
 }
 
 body.page-dashboard.workspace-page--tts .workspace-quick-intro {
-  margin-bottom: 28px !important;
-  padding-bottom: 24px !important;
+  margin-bottom: 44px !important;
+  padding-bottom: 34px !important;
 }
 
 .workspace-page--tts .dash-head {
-  margin-bottom: 28px;
-  padding-bottom: 18px;
+  margin-bottom: 36px !important;
+  padding-bottom: 24px !important;
   border-bottom: 1px solid var(--workspace-border);
+}
+
+body.page-dashboard.workspace-page--tts .dash-form .dash-sec {
+  margin-top: 42px !important;
+}
+
+body.page-dashboard.workspace-page--tts .dash-form .dash-row {
+  gap: 22px !important;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
 }
 
 .workspace-quick-intro h1 {
