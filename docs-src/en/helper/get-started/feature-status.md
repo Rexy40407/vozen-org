@@ -1,8 +1,8 @@
 ﻿---
-title: Feature status
+title: Understanding feature status
 description: Read maturity and availability badges correctly.
 ---
-# Feature status
+# Understanding feature status
 
 **Available** means a registered adapter is exposed for configuration. **Beta** means the feature is usable but has narrower guarantees or provider limits. **Unavailable** means a provider, review, contract, or other prerequisite prevents activation. The page may still describe the planned experience.
 

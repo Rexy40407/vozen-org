@@ -47,6 +47,7 @@ jobs:
           npm run docs:test
           npm run docs:links
           npm run docs:a11y
+          npm run site:check
       - name: Build Helper panel
         run: |
           npm ci --prefix apps/helper-panel

@@ -24,6 +24,142 @@
   var root = document.getElementById("dashRoot");
   if (!root) return;
 
+  // The dashboard keeps navigation client-side so existing API contracts and deep
+  // links remain untouched. This small state object also gives Overview a truthful
+  // summary instead of inventing usage metrics.
+  var workspaceState = { guild: null, guilds: [], data: null, view: "overview", pendingView: null, dirty: false };
+  var TTS_VIEWS = { overview: true, quick: true, reading: true, community: true, profiles: true, limits: true };
+
+  function viewFromHash() {
+    var raw = String(window.location.hash || "").replace(/^#\/?/, "");
+    var name = raw.split(/[/?#]/)[0];
+    return TTS_VIEWS[name] ? name : "overview";
+  }
+
+  function syncTtsHash(viewName, mode) {
+    if (!mode || !window.history || !window.history.pushState) return;
+    var next = viewName === "overview" ? "" : "#/" + viewName;
+    if (window.location.hash === next) return;
+    var url = window.location.pathname + window.location.search + next;
+    if (mode === "push") window.history.pushState({ ttsView: viewName }, "", url);
+    else window.history.replaceState({ ttsView: viewName }, "", url);
+  }
+
+  function setTtsView(viewName, historyMode) {
+    workspaceState.view = TTS_VIEWS[viewName] ? viewName : "overview";
+    syncTtsHash(workspaceState.view, historyMode);
+    var buttons = document.querySelectorAll("[data-tts-view]");
+    for (var i = 0; i < buttons.length; i++) {
+      var active = buttons[i].getAttribute("data-tts-view") === workspaceState.view;
+      if (active) buttons[i].setAttribute("aria-current", "page");
+      else buttons[i].removeAttribute("aria-current");
+    }
+  }
+
+  function confirmTtsDiscard() {
+    if (!workspaceState.dirty) return true;
+    return window.confirm("You have unsaved changes. Leave this view without saving?");
+  }
+
+  window.addEventListener("beforeunload", function (event) {
+    if (!workspaceState.dirty) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
+
+  function updateTtsServerLabel() {
+    var label = document.getElementById("ttsCurrentServer");
+    if (!label) return;
+    label.textContent = workspaceState.guild
+      ? workspaceState.guild.name
+      : "Choose a server to begin.";
+  }
+
+  function boolLabel(value) {
+    return value ? "On" : "Off";
+  }
+
+  function renderTtsOverview() {
+    if (!workspaceState.guild || !workspaceState.data || !workspaceState.data.config) {
+      setTtsView("overview", false);
+      renderPicker(workspaceState.guilds || []);
+      return;
+    }
+    var cfg = workspaceState.data.config;
+    var hasChannel = !!cfg.ttsChannelId;
+    var voice = cfg.defaultVoice || "Not selected";
+    var locale = cfg.locale || "Default locale";
+    setTtsView("overview", false);
+    view(
+      '<div class="workspace-heading">' +
+        '<p class="workspace-heading__eyebrow">Vozen TTS · Overview</p>' +
+        '<h1>Make every channel easy to hear.</h1>' +
+        '<p>See what is ready on <strong>' + esc(workspaceState.guild.name) + '</strong>, then complete the next small step.</p>' +
+      '</div>' +
+      '<div class="workspace-overview-grid">' +
+        '<section class="workspace-card workspace-checklist" aria-labelledby="ttsReadyTitle">' +
+          '<div><p class="workspace-heading__eyebrow">Readiness</p><h2 id="ttsReadyTitle">Your voice setup</h2></div>' +
+          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>Reading channel</strong><span>' + esc(hasChannel ? "Configured and ready to read." : "Choose a channel in Quick Setup.") + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>Voice</strong><span>' + esc(voice + " · " + locale) + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>Safety</strong><span>Auto-read ' + esc(boolLabel(cfg.autoread)) + ' · Anti-spam ' + esc(boolLabel(cfg.antispam)) + '</span></div></div>' +
+          '<div><button class="workspace-button" type="button" data-tts-view="quick">Continue setup <span aria-hidden="true">→</span></button></div>' +
+        '</section>' +
+        '<aside class="workspace-card workspace-card--soft workspace-checklist" aria-labelledby="ttsSummaryTitle">' +
+          '<div><p class="workspace-heading__eyebrow">Server snapshot</p><h2 id="ttsSummaryTitle">' + esc(workspaceState.guild.name) + '</h2></div>' +
+          '<div class="workspace-checklist__item"><div><strong>Text in voice</strong><span>' + esc(boolLabel(cfg.textInVoice)) + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><div><strong>Read bot messages</strong><span>' + esc(boolLabel(cfg.readBots)) + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><div><strong>Recording</strong><span>No recording is enabled by this dashboard.</span></div></div>' +
+        '</aside>' +
+      '</div>'
+    );
+    var next = root.querySelector('[data-tts-view="quick"]');
+    if (next) next.addEventListener("click", function () { navigateTtsView("quick"); });
+    onLang = renderTtsOverview;
+  }
+
+  function renderCurrentTtsView() {
+    if (workspaceState.view === "overview") return renderTtsOverview();
+    if (!workspaceState.guild || !workspaceState.data || !workspaceState.data.config) {
+      renderPicker(workspaceState.guilds || []);
+      return;
+    }
+    renderForm(workspaceState.guild, workspaceState.data.config, workspaceState.guilds, workspaceState.data, false);
+  }
+
+  function navigateTtsView(viewName) {
+    var next = TTS_VIEWS[viewName] ? viewName : "overview";
+    if (next !== workspaceState.view && !confirmTtsDiscard()) return;
+    if (next !== workspaceState.view) workspaceState.dirty = false;
+    setTtsView(next, "push");
+    renderCurrentTtsView();
+  }
+
+  function bindTtsNavigation() {
+    var buttons = document.querySelectorAll("[data-tts-view]");
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener("click", function (event) {
+        var viewName = event.currentTarget.getAttribute("data-tts-view") || "overview";
+        navigateTtsView(viewName);
+      });
+    }
+  }
+
+  workspaceState.view = viewFromHash();
+  window.addEventListener("popstate", function () {
+    var previous = workspaceState.view;
+    var next = viewFromHash();
+    if (next !== previous && !confirmTtsDiscard()) {
+      syncTtsHash(previous, "replace");
+      return;
+    }
+    workspaceState.dirty = false;
+    workspaceState.view = next;
+    setTtsView(workspaceState.view, false);
+    renderCurrentTtsView();
+  });
+
+  bindTtsNavigation();
+
   /* Re-localização ao vivo: main-v39 anuncia `vozen:languagechange` depois de atualizar
      texto, atributos e título. Cada vista regista aqui o seu relocalizador; no formulário
      ele atua in-place para não tocar nos inputs nem no estado por guardar. */
@@ -235,7 +371,8 @@
     ".dash-sel{max-width:180px;padding:9px 30px 9px 11px;cursor:pointer;-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url(\"" + SEL_ARROW + "\");background-repeat:no-repeat;background-position:right 10px center}",
     ".dash-num:focus,.dash-sel:focus{outline:none;border-color:var(--aqua,#38e0c8)}",
     /* barra de guardar */
-    ".dash-savebar{display:flex;align-items:center;gap:14px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line-2,#23233a)}",
+    ".dash-savebar{display:flex;align-items:center;gap:14px;max-height:0;overflow:hidden;opacity:0;pointer-events:none;margin-top:0;padding-top:0;border-top:1px solid transparent;transition:max-height .18s ease,opacity .18s ease,margin-top .18s ease,padding-top .18s ease,border-color .18s ease}",
+    ".dash-savebar--visible{max-height:110px;opacity:1;pointer-events:auto;margin-top:22px;padding-top:18px;border-top-color:var(--line-2,#23233a)}",
     ".dash-save[disabled]{opacity:.45;cursor:not-allowed}",
     ".dash-status{font-size:.9rem;color:var(--text-2,#9a9ab0)}",
     ".dash-status--ok{color:var(--aqua,#38e0c8)}",
@@ -246,7 +383,7 @@
     ".dash-profile-field .dash-sel,.dash-profile-field .dash-num{width:100%;max-width:none;text-align:left;box-sizing:border-box}",
     ".dash-profile-actions{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}",
     /* mobile: barra de guardar colada ao fundo (forms longos) */
-    "@media(max-width:720px){.dash-savebar{position:sticky;bottom:0;margin:22px -22px -22px;padding:14px 22px;background:var(--panel-2,#171613);border-top:1px solid var(--line-2,#23233a)}.dash-sel{max-width:150px}.dash-profiles__grid{grid-template-columns:1fr}.dash-server{grid-template-columns:38px minmax(0,1fr) auto;gap:11px;padding-left:11px;padding-right:11px}.dash-server__img,.dash-server__ph{width:38px;height:38px}}",
+    "@media(max-width:720px){.dash-savebar--visible{position:sticky;bottom:0;margin:22px -22px -22px;padding:14px 22px;background:var(--panel-2,#171613);border-top:1px solid var(--line-2,#23233a)}.dash-sel{max-width:150px}.dash-profiles__grid{grid-template-columns:1fr}.dash-server{grid-template-columns:38px minmax(0,1fr) auto;gap:11px;padding-left:11px;padding-right:11px}.dash-server__img,.dash-server__ph{width:38px;height:38px}}",
     "@media(prefers-reduced-motion:reduce){.dash-server,.dash-sw__tr,.dash-sw__tr::after,.dash-num,.dash-sel{transition:none}}",
   ].join("\n");
   var styleEl = document.createElement("style");
@@ -255,6 +392,18 @@
 
   function view(html) {
     root.innerHTML = html;
+    var moveFocus = function () {
+      var heading = root.querySelector("h1, h2");
+      if (heading) {
+        if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
+        try { heading.focus({ preventScroll: true }); } catch (e) { heading.focus(); }
+      }
+      var main = document.querySelector(".tts-workspace__main");
+      if (main) main.scrollTop = 0;
+      window.scrollTo(0, 0);
+    };
+    if (window.requestAnimationFrame) window.requestAnimationFrame(moveFocus);
+    else moveFocus();
   }
 
   function renderLogin(msgKey) {
@@ -342,6 +491,13 @@
   }
 
   function renderPicker(guilds) {
+    var pendingView = workspaceState.view || "overview";
+    workspaceState.guild = null;
+    workspaceState.guilds = guilds || [];
+    workspaceState.data = null;
+    workspaceState.pendingView = pendingView;
+    updateTtsServerLabel();
+    setTtsView("overview", false);
     var cards = guilds
       .map(function (g, i) {
         var url = guildIconUrl(g);
@@ -375,7 +531,10 @@
     var btns = root.querySelectorAll(".dash-server");
     function onPick(ev) {
       var g = guilds[Number(ev.currentTarget.getAttribute("data-i"))];
-      if (g) loadForm(g, guilds);
+      if (g && confirmTtsDiscard()) {
+        workspaceState.dirty = false;
+        loadForm(g, guilds);
+      }
     }
     for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", onPick);
@@ -504,6 +663,14 @@
   }
 
   function loadForm(guild, guilds) {
+    workspaceState.dirty = false;
+    workspaceState.guild = guild;
+    workspaceState.guilds = guilds || [];
+    workspaceState.data = null;
+    updateTtsServerLabel();
+    var requestedView = workspaceState.pendingView || (workspaceState.view === "overview" ? "quick" : workspaceState.view);
+    workspaceState.pendingView = null;
+    setTtsView(requestedView, false);
     renderMessage("dashboard.loading", "");
     fetch(API + "/api/dashboard/guild/" + guild.id, { headers: authHeaders() })
       .then(function (res) {
@@ -523,7 +690,11 @@
         return res.json();
       })
       .then(function (data) {
-        if (data && data.config) renderForm(guild, data.config, guilds, data, false);
+        if (data && data.config) {
+          workspaceState.data = data;
+          updateTtsServerLabel();
+          renderCurrentTtsView();
+        }
       })
       .catch(function () {
         renderMessage("dashboard.error", "");
@@ -700,7 +871,21 @@
   }
 
   function renderForm(guild, cfg, guilds, meta, saved) {
-    var sections = sectionsFor(meta);
+    setTtsView(workspaceState.view === "overview" ? "quick" : workspaceState.view, false);
+    var allSections = sectionsFor(meta);
+    var sectionIdsByView = {
+      reading: ["reading", "voice"],
+      community: ["community"],
+      limits: ["limits"],
+    };
+    var requestedSections = sectionIdsByView[workspaceState.view];
+    var sections = requestedSections
+      ? allSections.filter(function (section) { return requestedSections.indexOf(section.id) !== -1; })
+      : allSections;
+    // Channel Profiles is an intentional deep-dive view. Keep it out of the
+    // guided setup so the first-run path stays focused and scannable; the
+    // existing editor remains available from its dedicated sidebar item.
+    var showProfiles = workspaceState.view === "profiles";
     // Baseline para dirty-tracking: o botão só fica ativo quando algo muda.
     var baseline = {};
     eachField(sections, function (key) {
@@ -722,18 +907,33 @@
       );
     }).join("");
 
+    var quickIntro = workspaceState.view === "quick"
+      ? '<section class="workspace-quick-intro" aria-labelledby="ttsQuickTitle">' +
+        '<p class="workspace-heading__eyebrow">Quick Setup</p>' +
+        '<h1 id="ttsQuickTitle">Set up Vozen TTS in a few calm steps.</h1>' +
+        '<p>Choose where Vozen reads, how it sounds, and what it should ignore. Nothing is published until you choose <strong>Review &amp; Save</strong>.</p>' +
+        '<ol class="workspace-quick-intro__steps">' +
+          '<li><b>1</b><span><strong>Reading channel</strong><small>Where messages are heard.</small></span></li>' +
+          '<li><b>2</b><span><strong>Voice and language</strong><small>Pick a clear default voice.</small></span></li>' +
+          '<li><b>3</b><span><strong>Reading rules</strong><small>Control bots, voice text and rate limits.</small></span></li>' +
+          '<li><b>4</b><span><strong>Review &amp; Save</strong><small>Apply one safe patch to this server.</small></span></li>' +
+        '</ol>' +
+      '</section>'
+      : "";
+
     var savebar =
-      '<div class="dash-savebar"><button type="button" class="' +
+      '<div class="dash-savebar" id="dashSavebar"><button type="button" class="' +
       BTN +
       ' dash-save" id="dashSave" disabled>' +
       esc(t("dashboard.save")) +
-      '</button><span class="dash-status" id="dashStatus" aria-live="polite"></span></div>';
+      '</button><button type="button" class="btn btn--ghost dash-discard" id="dashDiscard" disabled>Discard</button><span class="dash-status" id="dashStatus" aria-live="polite"></span></div>';
 
     view(
       '<div class="dash-form">' +
         headHtml(guild) +
+        quickIntro +
         sectionsHtml +
-        profileEditorHtml(meta) +
+        (showProfiles ? profileEditorHtml(meta) : "") +
         savebar +
         "</div>",
     );
@@ -741,6 +941,8 @@
 
     var formEl = root.querySelector(".dash-form");
     var saveBtn = document.getElementById("dashSave");
+    var discardBtn = document.getElementById("dashDiscard");
+    var savebarEl = document.getElementById("dashSavebar");
     var statusEl = document.getElementById("dashStatus");
     wireProfileEditor(guild, guilds, meta);
 
@@ -759,18 +961,28 @@
     }
     function refresh() {
       var n = countChanges();
+      workspaceState.dirty = n > 0;
       saveBtn.disabled = n === 0;
+      discardBtn.disabled = n === 0;
+      if (savebarEl) savebarEl.classList.toggle("dash-savebar--visible", n > 0 || !!saved);
       saveBtn.textContent =
         n === 0
-          ? t("dashboard.save")
+          ? (workspaceState.view === "quick" ? "Review & Save" : t("dashboard.save"))
           : n === 1
-            ? t("dashboard.save1")
-            : t("dashboard.saveN").replace("{n}", n);
+            ? (workspaceState.view === "quick" ? "Review & Save · 1 change" : t("dashboard.save1"))
+            : (workspaceState.view === "quick" ? "Review & Save · " + n + " changes" : t("dashboard.saveN").replace("{n}", n));
       if (n > 0) setStatus(""); // limpa "Guardado ✓" assim que se volta a mexer
     }
 
     document.getElementById("dashBack").addEventListener("click", function () {
+      if (!confirmTtsDiscard()) return;
+      workspaceState.dirty = false;
       renderPicker(guilds);
+    });
+    discardBtn.addEventListener("click", function () {
+      if (!workspaceState.dirty) return;
+      workspaceState.dirty = false;
+      renderForm(guild, cfg, guilds, meta, false);
     });
     // Listeners no próprio form (substituído a cada render -> morrem com ele; sem leaks).
     formEl.addEventListener("input", refresh);
@@ -787,6 +999,10 @@
 
     saveBtn.addEventListener("click", function () {
       if (saveBtn.disabled) return;
+      if (workspaceState.view === "quick" && !window.confirm("Review and save these changes to this server?")) {
+        refresh();
+        return;
+      }
       var patch = {};
       eachField(sections, function (key) {
         var v = domValue(key);
@@ -821,7 +1037,12 @@
         })
         .then(function (data) {
           // Rebuild the controls and dirty baseline from the authoritative server response.
-          if (data && data.config) renderForm(guild, data.config, guilds, data, true);
+          if (data && data.config) {
+            workspaceState.dirty = false;
+            workspaceState.data = data;
+            workspaceState.guild = guild;
+            renderForm(guild, data.config, guilds, data, true);
+          }
         })
         .catch(function () {
           setStatus(t("dashboard.saveFail"), "err");

@@ -34,8 +34,41 @@ module.exports = function (eleventyConfig) {
     const siteRoot = `${helperRoot}../../`;
     const canonicalPath = (`/docs/helper/${helperOutput.replace(/index\.html$/, '')}`).replace(/\/+/g, '/');
     const escape = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    const title = escape(this.data?.title || 'Vozen Helper documentation');
-    const description = escape(this.data?.description || 'Original documentation for configuring Vozen Helper.');
+    const pageData = this.page?.data || this.data || {};
+    const stripMarkup = value => String(value || '')
+      .replace(/<[^>]*>/g, '')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\s+/g, ' ')
+      .trim();
+    const heading = stripMarkup(content.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]);
+    const rawTitle = pageData.title && pageData.title !== 'Vozen Helper documentation'
+      ? pageData.title
+      : heading || 'Vozen Helper documentation';
+    const rawDescription = pageData.description && pageData.description !== 'Original documentation for configuring Vozen Helper.'
+      ? pageData.description
+      : `Learn how to configure ${rawTitle} in Vozen Helper, check requirements, and recover safely.`;
+    const pathTitle = canonicalPath.includes('/status/features/')
+      ? 'Feature maturity and availability'
+      : canonicalPath.includes('/get-started/feature-status/')
+        ? 'Understanding feature status'
+        : null;
+    const pageTitle = pathTitle || (canonicalPath.includes('/modules/') ? `${rawTitle} module` : rawTitle);
+    const title = escape(pageTitle);
+    const description = escape(rawDescription);
+    const canonical = `https://vozen.org${canonicalPath}`;
+    const structuredData = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: rawTitle,
+      description: rawDescription,
+      url: canonical,
+      isPartOf: { '@type': 'WebSite', name: 'Vozen', url: 'https://vozen.org/' },
+      publisher: { '@type': 'Organization', name: 'Vozen', url: 'https://vozen.org/' },
+    });
     const localContent = content
       .replaceAll('href="/docs/helper/', `href="${helperRoot}`)
       .replaceAll('src="/docs/helper/', `src="${helperRoot}`)
@@ -50,7 +83,21 @@ module.exports = function (eleventyConfig) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="${description}">
-    <link rel="canonical" href="https://vozen.org${canonicalPath}">
+    <link rel="canonical" href="${canonical}">
+    <meta property="og:site_name" content="Vozen">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="${canonical}">
+    <meta property="og:title" content="${title} - Vozen Helper">
+    <meta property="og:description" content="${description}">
+    <meta property="og:image" content="https://vozen.org/assets/og-image.png">
+    <meta property="og:image:alt" content="Vozen">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title} - Vozen Helper">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
+    <meta name="robots" content="index,follow">
+    <link rel="icon" href="${siteRoot}favicon.svg" type="image/svg+xml">
+    <script type="application/ld+json">${structuredData}</script>
     <title>${title} - Vozen Helper</title>
     <link rel="stylesheet" href="${helperRoot}assets/docs.css?v=ecosystem-nav-v12">
     <link rel="stylesheet" href="${docsRoot}shared/docs-shell.css?v=ecosystem-nav-v12">

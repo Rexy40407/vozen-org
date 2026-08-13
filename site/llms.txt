@@ -1,0 +1,18 @@
+# Vozen
+
+> Vozen builds focused tools for Discord communities, including Vozen TTS and Vozen Helper.
+
+## Public products
+
+- [Vozen TTS](https://vozen.org/tts/): voice and reading tools for Discord channels.
+- [Vozen Helper](https://vozen.org/helper/): moderation, community, support and server-operation tools.
+- [Vozen Helper documentation](https://vozen.org/docs/helper/): public setup and troubleshooting guides.
+
+## Account and support
+
+- [Account](https://vozen.org/account/): manage signed-in product access.
+- [Support server](https://discord.gg/4kYw2WUbNN): community support and product help.
+- [Privacy policy](https://vozen.org/privacy.html)
+- [Terms of service](https://vozen.org/terms.html)
+
+Vozen does not publish private account, guild, user or billing data in this file.

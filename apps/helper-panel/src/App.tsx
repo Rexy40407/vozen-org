@@ -2804,12 +2804,15 @@ function App() {
   }
   if (status === 'loading')
     return (
-      <div className="center" role="status" aria-live="polite" aria-busy="true">
-        <a className="panel-state-exit" href="/account/">
-          ← Exit to account
-        </a>
-        <div className="loader" />
-        <p>Preparing your workspace…</p>
+      <div className="workspace-standalone workspace-app workspace-standalone--helper">
+        <WorkspaceTopbar product="Helper" />
+        <main className="workspace-standalone__content" role="status" aria-live="polite" aria-busy="true">
+          <div className="workspace-standalone__state">
+            <div className="loader" />
+            <h1>Preparing your workspace</h1>
+            <p>Checking your session and server access.</p>
+          </div>
+        </main>
       </div>
     );
   if ((status === 'auth' || status === 'error') && !me)
@@ -2845,17 +2848,31 @@ function App() {
               ? 'Create the level card with your server identity.'
               : 'server-specific configuration with simple and advanced options.';
   return (
-    <div className="shell panel-shell">
-      <aside className="sidebar panel-sidebar">
-        <div className="logo panel-logo">
-          <span>✦</span>
+    <div className="shell panel-shell workspace-app workspace-shell workspace-shell--helper">
+      <div className="workspace-topbar" aria-label="Vozen product navigation">
+        <a className="workspace-topbar__brand" href="/" aria-label="Vozen home">
+          <span className="workspace-mark" aria-hidden="true">✦</span>
+          <span>Vozen</span>
+        </a>
+        <span className="workspace-topbar__product">Helper</span>
+        <nav className="workspace-topbar__nav" aria-label="Products">
+          <a href="/dashboard">Vozen TTS</a>
+          <a href="/panel/helper-tracker/" aria-current="page">Vozen Helper</a>
+          <a href="/docs/">Docs</a>
+          <a href="/premium">Premium</a>
+        </nav>
+        <a className="workspace-topbar__account" href="/account/">Account</a>
+      </div>
+      <aside className="sidebar panel-sidebar workspace-sidebar">
+        <div className="logo panel-logo workspace-sidebar__product">
+          <span className="workspace-sidebar__product-mark" aria-hidden="true">✦</span>
           <div>
             <strong>VOZEN</strong>
             <small>HELPER PANEL</small>
           </div>
         </div>
-        <div className="workspace panel-workspace">
-          <small>Current server</small>
+        <div className="workspace panel-workspace workspace-sidebar__section">
+          <small className="workspace-sidebar__label">Current server</small>
           <select
             aria-label="Current server"
             value={currentGuild?.id ?? ''}
@@ -2867,9 +2884,9 @@ function App() {
               </option>
             ))}
           </select>
-          <p>Changes are isolated to this server.</p>
+          <p className="workspace-sidebar__hint">Changes are isolated to this server.</p>
         </div>
-        <nav className="panel-nav" aria-label="Main navigation">
+        <nav className="panel-nav workspace-sidebar__nav" aria-label="Main navigation">
           {pages.map((item) => (
             <button
               key={item.id}
@@ -2894,14 +2911,16 @@ function App() {
             </button>
           ))}
         </nav>
-        <a className="panel-account-link" href="/account/">
-          ← Exit to account
-        </a>
-        <div className="runtime">
-          <i /> {localPreviewMode ? 'Local preview' : 'Synced with Rust'}
+        <div className="workspace-sidebar__footer">
+          <a className="panel-account-link workspace-exit" href="/account/">
+            ← Exit to account
+          </a>
+          <div className="runtime workspace-sync">
+            {localPreviewMode ? 'Local preview' : 'Synced with Rust'}
+          </div>
         </div>
       </aside>
-      <main className="main panel-main" aria-labelledby="route-heading">
+      <main className="main panel-main workspace-main" aria-labelledby="route-heading">
         <header className="panel-header">
           <div>
             <small className="eyebrow">{currentGuild?.name ?? 'WORKSPACE'} · HELPER</small>
@@ -3527,6 +3546,25 @@ function PremiumCard({ icon, title, text }: { icon: string; title: string; text:
   );
 }
 
+function WorkspaceTopbar({ product = 'Helper' }: { product?: string }) {
+  return (
+    <header className="workspace-topbar workspace-standalone__topbar" aria-label="Vozen product navigation">
+      <a className="workspace-topbar__brand" href="/" aria-label="Vozen home">
+        <span className="workspace-mark" aria-hidden="true">✦</span>
+        <span>Vozen</span>
+      </a>
+      <span className="workspace-topbar__product">{product}</span>
+      <nav className="workspace-topbar__nav" aria-label="Products">
+        <a href="/dashboard">Vozen TTS</a>
+        <a href="/panel/helper-tracker/" aria-current={product === 'Helper' ? 'page' : undefined}>Vozen Helper</a>
+        <a href="/docs/">Docs</a>
+        <a href="/premium">Premium</a>
+      </nav>
+      <a className="workspace-topbar__account" href="/account/">Account</a>
+    </header>
+  );
+}
+
 function ServerPicker({
   guilds,
   selectedGuildId,
@@ -3538,8 +3576,10 @@ function ServerPicker({
 }) {
   const manageableGuilds = guilds.filter((guild) => guild.canManage);
   return (
-    <main className="helper-server-picker" aria-labelledby="server-picker-title">
-      <a className="helper-server-picker__exit" href="/account/">
+    <div className="workspace-standalone workspace-app workspace-standalone--helper">
+      <WorkspaceTopbar product="Helper" />
+      <main className="helper-server-picker workspace-standalone__content" aria-labelledby="server-picker-title">
+      <a className="workspace-exit workspace-standalone__exit" href="/account/">
         ← Exit to account
       </a>
       <section className="helper-server-picker__surface">
@@ -3592,7 +3632,8 @@ function ServerPicker({
           </section>
         )}
       </section>
-    </main>
+      </main>
+    </div>
   );
 }
 
@@ -3607,8 +3648,10 @@ function AuthScreen({
 }) {
   const visibleError = /unauthenticated|API 401/i.test(error) ? '' : error;
   return (
-    <main className="auth-shell" aria-labelledby="auth-title">
-      <a className="auth-account-exit" href="/account/">
+    <div className="workspace-standalone workspace-app workspace-standalone--helper">
+      <WorkspaceTopbar product="Helper" />
+      <main className="auth-shell workspace-standalone__content" aria-labelledby="auth-title">
+      <a className="workspace-exit workspace-standalone__exit" href="/account/">
         ← Exit to account
       </a>
       <div className="auth-brand">
@@ -3641,7 +3684,8 @@ function AuthScreen({
           Access is protected and only shows servers where you have management permission.
         </small>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }
 

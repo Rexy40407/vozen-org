@@ -22,8 +22,9 @@
 
     <link rel="stylesheet" href="css/main-v43.css" />
     <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v9" />
+    <link rel="stylesheet" href="css/workspace-v1.css" />
   </head>
-  <body class="page-dashboard" data-i18n-document-title="dashboard.documentTitle">
+  <body class="page-dashboard workspace-page workspace-page--tts" data-i18n-document-title="dashboard.documentTitle">
     <!-- grain overlay -->
     <div class="grain" aria-hidden="true"></div>
     <!-- atmospheric glow orbs -->
@@ -112,8 +113,33 @@
             <p data-i18n="dashboard.subtitle">Configure Vozen on your servers — no slash commands needed</p>
           </header>
 
-          <!-- Preenchido por dashboard.js (login / seletor de servidor / form). -->
-          <div class="dash-root" id="dashRoot" aria-live="polite"></div>
+          <div class="tts-workspace" id="ttsWorkspace">
+            <aside class="workspace-sidebar tts-workspace__sidebar" aria-label="Vozen TTS navigation">
+              <div class="workspace-sidebar__product">
+                <span class="workspace-sidebar__product-mark" aria-hidden="true">T</span>
+                <div><strong>Vozen TTS</strong><small>VOICE TOOLKIT</small></div>
+              </div>
+              <div class="workspace-sidebar__section">
+                <span class="workspace-sidebar__label">Current server</span>
+                <p class="workspace-sidebar__hint" id="ttsCurrentServer">Choose a server to begin.</p>
+              </div>
+              <nav class="workspace-sidebar__nav" aria-label="Dashboard views">
+                <button type="button" data-tts-view="overview" aria-current="page"><span class="workspace-sidebar__nav-icon">⌂</span>Overview</button>
+                <button type="button" data-tts-view="quick"><span class="workspace-sidebar__nav-icon">✦</span>Quick Setup</button>
+                <button type="button" data-tts-view="reading"><span class="workspace-sidebar__nav-icon">◉</span>Reading &amp; Voice</button>
+                <button type="button" data-tts-view="community"><span class="workspace-sidebar__nav-icon">✧</span>Community</button>
+                <button type="button" data-tts-view="profiles"><span class="workspace-sidebar__nav-icon">▦</span>Channel Profiles</button>
+                <button type="button" data-tts-view="limits"><span class="workspace-sidebar__nav-icon">◌</span>Access &amp; Limits</button>
+              </nav>
+              <div class="workspace-sidebar__footer">
+                <a class="workspace-exit" href="/account/">← Exit to account</a>
+              </div>
+            </aside>
+            <div class="tts-workspace__main">
+              <!-- Filled by dashboard-v8.js (login / server selector / form). -->
+              <div class="dash-root" id="dashRoot" aria-live="polite"></div>
+            </div>
+          </div>
         </div>
       </section>
     </main>

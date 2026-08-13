@@ -1,5 +1,5 @@
 ﻿---
-title: Privacy and data
+title: Privacy and data policy
 ---
 # Privacy and data
 
