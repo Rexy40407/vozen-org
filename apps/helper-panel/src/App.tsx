@@ -121,6 +121,8 @@ const pages = [
   { id: 'activity', label: 'Activity', icon: '◷', hint: 'Server history' },
   { id: 'rank-card', label: 'XP card', icon: '▣', hint: 'Levels and identity' },
 ] as const;
+const HELPER_INVITE_HREF =
+  'https://discord.com/oauth2/authorize?client_id=1526211106081734666&permissions=1099780071606&scope=bot%20applications.commands';
 const categories: { id: Category; label: string }[] = [
   { id: 'all', label: 'All' },
   { id: 'protection', label: 'Protection' },
@@ -2899,10 +2901,10 @@ function App() {
       <EcosystemTopbar />
       <aside className="sidebar panel-sidebar workspace-sidebar">
         <div className="logo panel-logo workspace-sidebar__product">
-          <span className="workspace-sidebar__product-mark" aria-hidden="true">✦</span>
+          <span className="workspace-sidebar__product-mark" aria-hidden="true">H</span>
           <div>
-            <strong>VOZEN</strong>
-            <small>HELPER PANEL</small>
+            <strong>Vozen Helper</strong>
+            <small>SERVER TOOLKIT</small>
           </div>
         </div>
         <div className="workspace panel-workspace workspace-sidebar__section">
@@ -2918,6 +2920,15 @@ function App() {
               </option>
             ))}
           </select>
+          <a
+            className="helper-sidebar-add"
+            href={HELPER_INVITE_HREF}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span aria-hidden="true">+</span>
+            Add a server
+          </a>
           <p className="workspace-sidebar__hint">Changes are isolated to this server.</p>
         </div>
         <nav className="panel-nav workspace-sidebar__nav" aria-label="Main navigation">
@@ -2955,21 +2966,23 @@ function App() {
         </div>
       </aside>
       <main className="main panel-main workspace-main" aria-labelledby="route-heading">
-        <header className="panel-header">
-          <div>
-            <small className="eyebrow">{currentGuild?.name ?? 'WORKSPACE'} · HELPER</small>
-            <h1 id="route-heading" data-route-heading tabIndex={-1}>{title}</h1>
-            <p className="subtitle">{subtitle}</p>
-          </div>
-          <div className="header-state">
-            <span className="status-dot" />{' '}
-            {dirty
-              ? 'Unpublished draft'
-              : localPreviewMode
-                ? 'Demo mode'
-                : 'Fully synced'}
-          </div>
-        </header>
+        {route.page !== 'overview' && (
+          <header className="panel-header">
+            <div>
+              <small className="eyebrow">{currentGuild?.name ?? 'WORKSPACE'} · HELPER</small>
+              <h1 id="route-heading" data-route-heading tabIndex={-1}>{title}</h1>
+              <p className="subtitle">{subtitle}</p>
+            </div>
+            <div className="header-state">
+              <span className="status-dot" />{' '}
+              {dirty
+                ? 'Unpublished draft'
+                : localPreviewMode
+                  ? 'Demo mode'
+                  : 'Fully synced'}
+            </div>
+          </header>
+        )}
         {message && (
           <div className="toast panel-toast" role="status">
             {message}
@@ -2992,6 +3005,7 @@ function App() {
             stats={stats}
             quota={quota}
             cases={cases}
+            guildName={currentGuild?.name ?? 'your server'}
             onOpen={navigate}
           />
         )}
@@ -3755,59 +3769,67 @@ function ServerPicker({
     <div className="workspace-standalone workspace-app workspace-standalone--helper">
       <EcosystemTopbar />
       <main className="helper-server-picker workspace-standalone__content" aria-labelledby="server-picker-title">
-      <a className="workspace-exit workspace-standalone__exit" href="/account/">
-        ← Exit to account
-      </a>
-      <section className="helper-server-picker__surface">
-        <small className="eyebrow">HELPER WORKSPACE</small>
-        <h1 id="server-picker-title" data-route-heading tabIndex={-1}>
-          Pick a server
-        </h1>
-        <p className="helper-server-picker__intro">
-          Choose a server where you manage Vozen Helper. We will open that server&apos;s dashboard
-          next.
-        </p>
-        <div className="helper-server-picker__heading">
-          <div>
-            <b>Your servers</b>
-            <small>Only servers you can manage are shown.</small>
-          </div>
-          <span aria-label={`${manageableGuilds.length} available servers`}>
-            {manageableGuilds.length}
-          </span>
+        <a className="helper-server-picker__back" href="/account/">
+          ← Back to account
+        </a>
+        <div className="helper-server-picker__heading-block">
+          <small className="eyebrow">DASHBOARD</small>
+          <h1 id="server-picker-title" data-route-heading tabIndex={-1}>
+            Server settings
+          </h1>
+          <p>Configure Vozen Helper on your servers - no slash commands needed</p>
         </div>
-        {manageableGuilds.length ? (
-          <div className="helper-server-picker__list">
-            {manageableGuilds.map((guild) => (
-              <button
-                className="helper-server-picker__server"
-                key={guild.id}
-                type="button"
-                onClick={() => onSelect(guild.id)}
-              >
-                <span className="helper-server-picker__initial" aria-hidden="true">
-                  {guild.name.trim().slice(0, 2).toUpperCase() || 'VH'}
-                </span>
-                <span className="helper-server-picker__copy">
-                  <strong>{guild.name}</strong>
-                  <small>
-                    {guild.id === selectedGuildId ? 'Current workspace' : 'Open Helper dashboard'}
-                  </small>
-                </span>
-                <span className="helper-server-picker__arrow" aria-hidden="true">
-                  →
-                </span>
-              </button>
-            ))}
+        <section className="helper-server-picker__surface">
+          <div className="helper-server-picker__surface-heading">
+            <div>
+              <h2>Pick a server</h2>
+              <p>Servers where you&apos;re an admin and Vozen Helper is added</p>
+            </div>
+            <span className="helper-server-picker__count" aria-label={`${manageableGuilds.length} available servers`}>
+              {manageableGuilds.length}
+            </span>
           </div>
-        ) : (
-          <section className="helper-server-picker__empty" aria-live="polite">
-            <h2>No manageable servers found</h2>
-            <p>Return to your account, refresh the Discord connection, then try again.</p>
-            <a href="/account/">Return to account</a>
-          </section>
-        )}
-      </section>
+          {manageableGuilds.length ? (
+            <div className="helper-server-picker__list">
+              {manageableGuilds.map((guild) => (
+                <button
+                  className={`helper-server-picker__server${guild.id === selectedGuildId ? ' is-current' : ''}`}
+                  key={guild.id}
+                  type="button"
+                  onClick={() => onSelect(guild.id)}
+                >
+                  <span className="helper-server-picker__initial" aria-hidden="true">
+                    {guild.name.trim().slice(0, 2).toUpperCase() || 'VH'}
+                  </span>
+                  <span className="helper-server-picker__copy">
+                    <strong>{guild.name}</strong>
+                  </span>
+                  <span className="helper-server-picker__arrow" aria-hidden="true">
+                    ›
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <section className="helper-server-picker__empty" aria-live="polite">
+              <h2>No manageable servers found</h2>
+              <p>Return to your account, refresh the Discord connection, then try again.</p>
+              <a href="/account/">Return to account</a>
+            </section>
+          )}
+          <a
+            className="helper-server-picker__add"
+            href={HELPER_INVITE_HREF}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>
+              <strong>Add Vozen Helper to another server</strong>
+              <small>Invite the bot, then come back here to configure it.</small>
+            </span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </section>
       </main>
     </div>
   );
@@ -3870,54 +3892,97 @@ function Overview({
   stats,
   quota,
   cases,
+  guildName,
   onOpen,
 }: {
   features: Feature[];
   stats: { totalCases: number };
   quota: { plan: string; limits: Record<string, number>; usage: Record<string, number> };
   cases: CaseRecord[];
+  guildName: string;
   onOpen: (path: string) => void;
 }) {
   const enabled = features.filter((feature) => feature.enabled).length;
+  const protection = features.find((feature) => feature.key === 'protection.antispam');
+  const welcome = features.find((feature) => feature.key === 'support.welcome');
+  const levels = features.find((feature) => feature.key === 'community.levels');
+  const readiness = [
+    {
+      label: 'Protection',
+      detail: protection?.enabled ? 'Active and protecting your server.' : 'Ready to configure.',
+      done: Boolean(protection?.enabled),
+      path: '#/config/protection.antispam',
+    },
+    {
+      label: 'Welcome flow',
+      detail: welcome?.enabled ? 'New members receive the configured welcome.' : 'Ready to configure.',
+      done: Boolean(welcome?.enabled),
+      path: '#/config/support.welcome',
+    },
+    {
+      label: 'Community',
+      detail: levels?.enabled ? 'Levels and rewards are enabled.' : 'Ready to configure.',
+      done: Boolean(levels?.enabled),
+      path: '#/config/community.levels',
+    },
+  ];
   return (
     <>
-      <section className="welcome card">
-        <div>
-          <small className="eyebrow">COMMAND CENTER</small>
-          <h2>Your server, under control.</h2>
-          <p>
-            See what needs attention and configure Helper in simple steps. Every change stays
-            connected to your server.
-          </p>
-          <button type="button" className="primary" onClick={() => onOpen('#/features')}>
-            Configure Helper
-          </button>
+      <section className="helper-overview" aria-labelledby="route-heading">
+        <div className="helper-overview__intro">
+          <small className="eyebrow">VOZEN HELPER · OVERVIEW</small>
+          <h1 id="route-heading" data-route-heading tabIndex={-1}>
+            Run your server with confidence.
+          </h1>
+          <p>See what is ready on {guildName} and complete the next small step.</p>
         </div>
-        <div className="setup-steps">
-          <button type="button" onClick={() => onOpen('#/config/protection.antispam')}>
-            <span>1</span>
-            <div>
-              <b>Protect the server</b>
-              <small>{enabled} active features</small>
+        <div className="helper-overview__grid">
+          <section className="helper-overview__readiness">
+            <small className="eyebrow">READINESS</small>
+            <h2>Your server setup</h2>
+            <div className="helper-overview__checklist">
+              {readiness.map((item) => (
+                <button
+                  type="button"
+                  className="helper-overview__check"
+                  key={item.label}
+                  onClick={() => onOpen(item.path)}
+                >
+                  <span className={item.done ? 'is-done' : ''} aria-hidden="true">
+                    {item.done ? '✓' : '•'}
+                  </span>
+                  <span>
+                    <strong>{item.label}</strong>
+                    <small>{item.detail}</small>
+                  </span>
+                  <b aria-hidden="true">›</b>
+                </button>
+              ))}
             </div>
-            <em>›</em>
-          </button>
-          <button type="button" onClick={() => onOpen('#/config/support.welcome')}>
-            <span>2</span>
-            <div>
-              <b>Welcome new members</b>
-              <small>Message and initial role</small>
+            <button
+              type="button"
+              className="primary helper-overview__continue"
+              onClick={() => onOpen('#/quick-setup')}
+            >
+              Continue setup <span aria-hidden="true">→</span>
+            </button>
+          </section>
+          <aside className="helper-overview__snapshot">
+            <small className="eyebrow">SERVER SNAPSHOT</small>
+            <h2>{guildName}</h2>
+            <div className="helper-overview__snapshot-item">
+              <strong>Active modules</strong>
+              <span>{enabled}</span>
             </div>
-            <em>›</em>
-          </button>
-          <button type="button" onClick={() => onOpen('#/config/community.levels')}>
-            <span>3</span>
-            <div>
-              <b>Bring your community to life</b>
-              <small>Levels, XP, and rewards</small>
+            <div className="helper-overview__snapshot-item">
+              <strong>Moderation cases</strong>
+              <span>{stats.totalCases}</span>
             </div>
-            <em>›</em>
-          </button>
+            <div className="helper-overview__snapshot-item">
+              <strong>Recent events</strong>
+              <span>{cases.length}</span>
+            </div>
+          </aside>
         </div>
       </section>
       <div className="metrics">
