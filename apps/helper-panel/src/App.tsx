@@ -3672,7 +3672,7 @@ function EcosystemTopbar() {
     refresh();
     const restoreTimer = window.setTimeout(refresh, 150);
     const onStorage = (event: StorageEvent) => {
-      if (event.key === 'vozen.navuser' || event.key === 'vozen.dtoken') refresh();
+      if (event.key === 'vozen.navuser' || event.key === 'vozen.ecosystem.dtoken') refresh();
     };
     const onPageShow = () => refresh();
     window.addEventListener('storage', onStorage);

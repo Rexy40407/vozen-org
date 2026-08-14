@@ -9,10 +9,21 @@
    por addEventListener; CSS injetado num <style> (style-src tem 'unsafe-inline'). */
 (function () {
   "use strict";
-  var CLIENT_ID = "1523826014935842997";
+  // Product identity: this application is used only to invite Vozen TTS. Login uses the
+  // separate Vozen Ecosystem OAuth application configured by oauth-config.js.
+  var TTS_CLIENT_ID = "1523826014935842997";
+  var ECOSYSTEM_OAUTH = window.VOZEN_ECOSYSTEM_OAUTH || {};
+  var ECOSYSTEM_CLIENT_ID = typeof ECOSYSTEM_OAUTH.clientId === "string" ? ECOSYSTEM_OAUTH.clientId.trim() : "";
   var API = "https://api.vozen.org";
-  var REDIRECT = new URL("/account", location.href).href;
-  var TOK_KEY = "vozen.dtoken";
+  var REDIRECT =
+    typeof ECOSYSTEM_OAUTH.redirectUri === "string" && ECOSYSTEM_OAUTH.redirectUri
+      ? ECOSYSTEM_OAUTH.redirectUri
+      : new URL("/account/", location.href).href;
+  var TTS_REDIRECT =
+    typeof ECOSYSTEM_OAUTH.ttsRedirectUri === "string" && ECOSYSTEM_OAUTH.ttsRedirectUri
+      ? ECOSYSTEM_OAUTH.ttsRedirectUri
+      : new URL("/dashboard/", location.href).href;
+  var TOK_KEY = "vozen.ecosystem.dtoken";
   // The account flow requests `identify email`; the dashboard flow requests `identify guilds`.
   // Keep an ownership marker so an account-only token triggers dashboard consent instead of
   // being sent to /api/dashboard and misleadingly displayed as an expired login.
@@ -79,7 +90,7 @@
   // The dashboard keeps navigation client-side so existing API contracts and deep
   // links remain untouched. This small state object also gives Overview a truthful
   // summary instead of inventing usage metrics.
-  var workspaceState = { guild: null, guilds: [], data: null, view: "overview", pendingView: null, dirty: false };
+  var workspaceState = { guild: null, guilds: [], data: null, view: "overview", pendingView: null, dirty: false, requestSeq: 0 };
   var TTS_VIEWS = { overview: true, quick: true, reading: true, community: true, profiles: true, limits: true };
 
   function viewFromHash() {
@@ -119,12 +130,61 @@
     event.returnValue = "";
   });
 
+  function renderTtsServerPicker() {
+    var select = document.getElementById("ttsServerSelect");
+    var add = document.getElementById("ttsSidebarAddServer");
+    if (!select) return;
+    var guilds = Array.isArray(workspaceState.guilds) ? workspaceState.guilds : [];
+    select.innerHTML = "";
+    if (!guilds.length) {
+      var empty = document.createElement("option");
+      empty.value = "";
+      empty.textContent = "No servers available";
+      select.appendChild(empty);
+      select.disabled = true;
+    } else {
+      for (var i = 0; i < guilds.length; i++) {
+        var guild = guilds[i] || {};
+        var option = document.createElement("option");
+        option.value = String(guild.id || "");
+        option.textContent = String(guild.name || "Unnamed server");
+        option.selected = !!workspaceState.guild && String(workspaceState.guild.id) === option.value;
+        select.appendChild(option);
+      }
+      select.disabled = false;
+    }
+    if (add && add.getAttribute("data-bound") !== "true") {
+      add.setAttribute("data-bound", "true");
+      add.addEventListener("click", function () {
+        if (!confirmTtsDiscard()) return;
+        workspaceState.dirty = false;
+        addServer();
+      });
+    }
+    if (select.getAttribute("data-bound") !== "true") {
+      select.setAttribute("data-bound", "true");
+      select.addEventListener("change", function (event) {
+        var targetId = String(event.currentTarget.value || "");
+        var target = workspaceState.guilds.filter(function (guild) {
+          return guild && String(guild.id) === targetId;
+        })[0];
+        if (!target || (workspaceState.guild && String(workspaceState.guild.id) === targetId)) {
+          renderTtsServerPicker();
+          return;
+        }
+        if (!confirmTtsDiscard()) {
+          renderTtsServerPicker();
+          return;
+        }
+        workspaceState.dirty = false;
+        workspaceState.pendingView = workspaceState.view;
+        loadForm(target, workspaceState.guilds);
+      });
+    }
+  }
+
   function updateTtsServerLabel() {
-    var label = document.getElementById("ttsCurrentServer");
-    if (!label) return;
-    label.textContent = workspaceState.guild
-      ? workspaceState.guild.name
-      : "Choose a server to begin.";
+    renderTtsServerPicker();
   }
 
   function boolLabel(value) {
@@ -384,6 +444,10 @@
       .join("");
   }
   function login() {
+    if (!ECOSYSTEM_CLIENT_ID || ECOSYSTEM_CLIENT_ID === "YOUR_CLIENT_ID") {
+      renderLogin("dashboard.oauthNotConfigured");
+      return;
+    }
     var state;
     try {
       state = randState();
@@ -397,7 +461,7 @@
       sessionStorage.setItem(DASHBOARD_AUTH_KEY, "1");
     } catch (e) {}
     var u = new URL("https://discord.com/oauth2/authorize");
-    u.searchParams.set("client_id", CLIENT_ID);
+    u.searchParams.set("client_id", ECOSYSTEM_CLIENT_ID);
     u.searchParams.set("redirect_uri", REDIRECT);
     u.searchParams.set("response_type", "token");
     u.searchParams.set("scope", "identify guilds");
@@ -420,9 +484,11 @@
       sessionStorage.setItem(DASHBOARD_AUTH_KEY, "1");
     } catch (e) {}
     var u = new URL("https://discord.com/oauth2/authorize");
-    u.searchParams.set("client_id", CLIENT_ID);
+    u.searchParams.set("client_id", TTS_CLIENT_ID);
     u.searchParams.set("permissions", INVITE_PERMISSIONS);
-    u.searchParams.set("redirect_uri", REDIRECT);
+    // Adding a server is a TTS product flow. Keep the product token on the
+    // TTS dashboard; the Ecosystem application is reserved for site login.
+    u.searchParams.set("redirect_uri", TTS_REDIRECT);
     u.searchParams.set("response_type", "token");
     u.searchParams.set("scope", "bot applications.commands identify guilds");
     u.searchParams.set("state", state);
@@ -526,7 +592,9 @@
 
   function renderLogin(msgKey) {
     showPickerShell();
-    var msg = msgKey ? t(msgKey) : "";
+    var msg = msgKey === "dashboard.oauthNotConfigured"
+      ? "Vozen Ecosystem login is not configured yet. Please try again after the site administrator completes the Discord setup."
+      : msgKey ? t(msgKey) : "";
     view(
       '<div style="' +
         CARD +
@@ -676,6 +744,7 @@
   }
 
   function renderPicker(guilds) {
+    workspaceState.requestSeq += 1;
     showPickerShell();
     var pendingView = workspaceState.view || "overview";
     workspaceState.guild = null;
@@ -852,6 +921,7 @@
   }
 
   function loadForm(guild, guilds) {
+    var requestId = ++workspaceState.requestSeq;
     showWorkspaceShell();
     workspaceState.dirty = false;
     workspaceState.guild = guild;
@@ -864,6 +934,7 @@
     renderSkeleton("workspace");
     fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id, { headers: authHeaders() })
       .then(function (res) {
+        if (requestId !== workspaceState.requestSeq) return null;
         if (res.status === 401) {
           clearToken();
           renderLogin("dashboard.expired");
@@ -883,6 +954,7 @@
         return res.json();
       })
       .then(function (data) {
+        if (requestId !== workspaceState.requestSeq) return;
         if (data && data.config) {
           workspaceState.data = data;
           updateTtsServerLabel();
@@ -890,6 +962,7 @@
         }
       })
       .catch(function () {
+        if (requestId !== workspaceState.requestSeq) return;
         renderMessage("dashboard.error", "", {
           retry: true,
           onRetry: function () { loadForm(guild, guilds); },

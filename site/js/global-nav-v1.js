@@ -5,7 +5,7 @@
   const hosts = document.querySelectorAll("[data-vozen-nav]");
   const cachedAccount = () => {
     try {
-      if (!sessionStorage.getItem("vozen.dtoken")) return null;
+      if (!sessionStorage.getItem("vozen.ecosystem.dtoken")) return null;
       const raw = sessionStorage.getItem("vozen.navuser");
       const parsed = raw ? JSON.parse(raw) : null;
       return parsed && parsed.user && typeof parsed.user.username === "string" ? parsed.user : null;

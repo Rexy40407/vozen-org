@@ -5,9 +5,9 @@
   "use strict";
 
   /* ── config ──────────────────────────────────────────────
-     CLIENT_ID é público (está em qualquer link de convite).
+     TTS_CLIENT_ID é público (está em qualquer link de convite).
      SUPPORT_URL é o convite do servidor de suporte do Vozen. */
-  const CLIENT_ID = "1523826014935842997";
+  const TTS_CLIENT_ID = "1523826014935842997";
   const INVITE_PERMISSIONS = "326420745216"; // Connect+Speak+ViewChannel+SendMessages+ReadMessageHistory+EmbedLinks + threads dos jogos (CreatePublicThreads+SendMessagesInThreads+ManageThreads)
   const SUPPORT_URL = "https://discord.gg/4kYw2WUbNN"; // servidor de suporte do Vozen
   // Painel Premium: base HTTPS da API do bot (GET /api/me/premium). VAZIO => o painel fica
@@ -19,11 +19,11 @@
   const BILLING_INTENT_KEY = "vozen.billingIntent";
   const ACTIVATION_INTENT_TTL_MS = 5 * 60 * 1000;
   const INVITE_URL =
-    CLIENT_ID && CLIENT_ID !== "YOUR_CLIENT_ID"
-      ? `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=${INVITE_PERMISSIONS}&scope=bot%20applications.commands`
+    TTS_CLIENT_ID && TTS_CLIENT_ID !== "YOUR_CLIENT_ID"
+      ? `https://discord.com/oauth2/authorize?client_id=${TTS_CLIENT_ID}&permissions=${INVITE_PERMISSIONS}&scope=bot%20applications.commands`
       : "#";
   const TOPGG_URL =
-    CLIENT_ID && CLIENT_ID !== "YOUR_CLIENT_ID" ? `https://top.gg/bot/${CLIENT_ID}/vote` : "#";
+    TTS_CLIENT_ID && TTS_CLIENT_ID !== "YOUR_CLIENT_ID" ? `https://top.gg/bot/${TTS_CLIENT_ID}/vote` : "#";
 
   // Forma do Ref de encomenda do Ko-fi, como aparece no recibo por email: `Ref: S-M1X823C9FW`.
   // Nao e um codigo que possamos aceitar — o webhook do Ko-fi nao envia este campo — mas e a unica
@@ -653,12 +653,46 @@
      fragment (#access_token), guardamo-lo em sessionStorage, limpamos o fragment, e
      chamamos GET {API_BASE}/api/me/premium. A API valida o token na Discord e devolve só
      o estado DESTE utilizador. Escondido enquanto PREMIUM_API_BASE estiver vazio. */
-  const TOK_KEY = "vozen.dtoken";
+  // Keep the site session separate from legacy TTS sessions.  Discord access
+  // tokens are opaque to the browser, so sharing one key could make an old
+  // TTS login look like a valid Ecosystem login and restart the OAuth loop.
+  const TOK_KEY = "vozen.ecosystem.dtoken";
+  const LEGACY_TOK_KEY = "vozen.dtoken";
   const STATE_KEY = "vozen.oauthstate";
   const NAV_USER_KEY = "vozen.navuser";
-  const OAUTH_REDIRECT = new URL("/account", location.href).href;
+  const ECOSYSTEM_OAUTH = window.VOZEN_ECOSYSTEM_OAUTH || {};
+  const ECOSYSTEM_CLIENT_ID = typeof ECOSYSTEM_OAUTH.clientId === "string" ? ECOSYSTEM_OAUTH.clientId.trim() : "";
+  const OAUTH_REDIRECT =
+    typeof ECOSYSTEM_OAUTH.redirectUri === "string" && ECOSYSTEM_OAUTH.redirectUri
+      ? ECOSYSTEM_OAUTH.redirectUri
+      : new URL("/account/", location.href).href;
   const BILLING_OAUTH_REDIRECT = new URL("/", location.href).href;
+
+  // The account, TTS dashboard and Helper panel use the Ecosystem session key above.
+  // When the site switches OAuth applications, discard any token issued for the previous
+  // TTS client so it cannot send the browser back through the old consent screen or keep
+  // the account flow in a redirect loop.
+  const OAUTH_CLIENT_KEY = "vozen.oauth.client";
+  function resetStaleOAuthSession() {
+    if (!ECOSYSTEM_CLIENT_ID) return;
+    try {
+      // Never allow the old shared TTS key to participate in the Ecosystem
+      // flow.  It is safe to remove because the new key above is independent.
+      sessionStorage.removeItem(LEGACY_TOK_KEY);
+      if (sessionStorage.getItem(OAUTH_CLIENT_KEY) !== ECOSYSTEM_CLIENT_ID) {
+        sessionStorage.removeItem(TOK_KEY);
+        sessionStorage.removeItem(NAV_USER_KEY);
+        sessionStorage.removeItem(STATE_KEY);
+        sessionStorage.removeItem("vozen.returnTo");
+      }
+      sessionStorage.setItem(OAUTH_CLIENT_KEY, ECOSYSTEM_CLIENT_ID);
+    } catch {
+      // Storage can be unavailable in private browsing; the normal OAuth flow still works.
+    }
+  }
+  resetStaleOAuthSession();
   let panelState = { mode: "hidden" };
+  let oauthReturnMessage = "";
   let activationResume = { kind: "none" };
 
   // Billing ships independently from the long-lived i18n bundle. Keep a small English fallback
@@ -755,6 +789,13 @@
   }
 
   function login(options = {}) {
+    if (!ECOSYSTEM_CLIENT_ID || ECOSYSTEM_CLIENT_ID === "YOUR_CLIENT_ID") {
+      const message = "Vozen Ecosystem login is not configured yet. Please try again after the site administrator completes the Discord setup.";
+      oauthReturnMessage = message;
+      if (IS_ACCOUNT) setPanel({ mode: "anon", message });
+      else window.location.href = "/account/";
+      return null;
+    }
     let state;
     let nonce;
     try {
@@ -795,7 +836,7 @@
       }
     } catch {}
     const u = new URL("https://discord.com/oauth2/authorize");
-    u.searchParams.set("client_id", CLIENT_ID);
+    u.searchParams.set("client_id", ECOSYSTEM_CLIENT_ID);
     u.searchParams.set("redirect_uri", options && options.billing === true ? BILLING_OAUTH_REDIRECT : OAUTH_REDIRECT);
     u.searchParams.set("response_type", "token");
     u.searchParams.set("scope", "identify email guilds");
@@ -809,6 +850,7 @@
       sessionStorage.removeItem(TOK_KEY);
       sessionStorage.removeItem(NAV_USER_KEY);
       sessionStorage.removeItem(ACTIVATION_INTENT_KEY);
+      sessionStorage.removeItem(STATE_KEY);
     } catch {}
     if (IS_ACCOUNT) {
       window.location.href = "/";
@@ -837,7 +879,8 @@
     if (!location.hash || location.hash.length < 2) return null;
     const p = new URLSearchParams(location.hash.slice(1));
     const tok = p.get("access_token");
-    if (!tok) return null;
+    const isOAuthResponse = p.has("access_token") || p.has("error") || p.has("error_description") || p.has("state");
+    if (!isOAuthResponse) return null;
     const st = p.get("state");
     let expected = null;
     try {
@@ -845,9 +888,20 @@
       sessionStorage.removeItem(STATE_KEY);
     } catch {}
     history.replaceState(null, "", location.pathname + location.search); // fragment fora do URL
+    if (p.has("error")) {
+      oauthReturnMessage = "Discord authorization was cancelled or rejected. Select Log in to try again.";
+      return null;
+    }
+    if (!tok) {
+      oauthReturnMessage = "Discord did not return a login token. Select Log in to try again.";
+      return null;
+    }
     // CSRF: exige um `state` guardado que bata certo. Sem ele (ou diferente) => descarta o
     // token — nunca aceitamos um fragment que não conseguimos verificar como nosso.
-    if (!expected || st !== expected) return null;
+    if (!expected || st !== expected) {
+      oauthReturnMessage = "This login response expired or was not started by Vozen. Select Log in to try again.";
+      return null;
+    }
     return { token: tok, state: st };
   }
 
@@ -904,6 +958,9 @@
       });
       return;
     }
+    // Always consume and clean an OAuth response before checking the API flag. Otherwise a
+    // valid callback can leave the token fragment in the URL and the page can appear to loop.
+    const fromHash = readTokenFromHash();
     if (!PREMIUM_API_BASE) {
       // Backend ainda não está no ar: na página da conta mostramos "em breve"
       // (nunca disparamos o OAuth, senão o redirect não registado dava erro no
@@ -911,7 +968,6 @@
       setPanel(IS_ACCOUNT ? { mode: "soon" } : { mode: "hidden" });
       return;
     }
-    const fromHash = readTokenFromHash();
     if (fromHash) {
       try {
         sessionStorage.setItem(TOK_KEY, fromHash.token);
@@ -944,7 +1000,7 @@
     const tok = storedToken();
     if (!tok) {
       if (IS_ACCOUNT) {
-        login();
+        setPanel({ mode: "anon", message: oauthReturnMessage });
         return;
       }
       setPanel({ mode: "hidden" });
@@ -961,10 +1017,10 @@
           sessionStorage.removeItem(NAV_USER_KEY);
         } catch {}
         if (IS_ACCOUNT) {
-          login();
+          setPanel({ mode: "anon", message: "Your Discord session expired. Select Log in to reconnect." });
           return;
         }
-        setPanel({ mode: "anon" });
+        setPanel({ mode: "anon", message: "Your Discord session expired. Select Log in to reconnect." });
         return;
       }
       if (!res.ok) throw new Error("http " + res.status);
@@ -1715,7 +1771,9 @@
       // Estado dormente da página da conta: backend ainda não configurado.
       body = `<p class="ppanel__meta">${t("panel.soon")}</p>`;
     } else if (panelState.mode === "anon") {
-      body = `<div class="ppanel__anon"><button type="button" class="btn--discord" id="ppLogin">${DISCORD_MARK}<span>${t("panel.login")}</span></button><p class="ppanel__meta">${t("panel.noneSub")}</p></div>`;
+      const authMessage = panelState.message || oauthReturnMessage;
+      const authHint = authMessage ? `<p class="ppanel__meta ppanel__authhint">${esc(authMessage)}</p>` : "";
+      body = `<div class="ppanel__anon"><button type="button" class="btn--discord" id="ppLogin">${DISCORD_MARK}<span>${t("panel.login")}</span></button><p class="ppanel__meta">${t("panel.noneSub")}</p>${authHint}</div>`;
     } else if (panelState.mode === "loading") {
       body = `<div class="ppanel__loading" aria-label="${esc(t("panel.loading"))}"><span class="ppanel__skel ppanel__skel--lg"></span><span class="ppanel__skel"></span><span class="ppanel__skel ppanel__skel--sm"></span></div>`;
     } else if (panelState.mode === "error") {
@@ -1806,7 +1864,7 @@
   if (navLoginBtn) {
     navLoginBtn.addEventListener("click", () => {
       if (!IS_ACCOUNT) {
-        if (storedToken() || !PREMIUM_API_BASE) window.location.href = "/account";
+        if (storedToken() || !PREMIUM_API_BASE) window.location.href = "/account/";
         else login();
         return;
       }

@@ -326,7 +326,7 @@ const base =
   'https://api.vozen.org/rust';
 let sessionBearer: string | null = null;
 const OAUTH_RETURN_HASH_KEY = 'vh_oauth_return_hash';
-const VOZEN_ACCOUNT_TOKEN_KEY = 'vozen.dtoken';
+const VOZEN_ACCOUNT_TOKEN_KEY = 'vozen.ecosystem.dtoken';
 let vozenAccountBootstrapAttempted = false;
 
 function isSafePanelHash(value: string): boolean {

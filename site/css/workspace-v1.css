@@ -339,6 +339,10 @@
   gap: 8px;
 }
 
+.workspace-sidebar__server-picker {
+  gap: 8px;
+}
+
 .workspace-sidebar__server,
 .workspace-sidebar select,
 .workspace-sidebar input {
@@ -350,6 +354,44 @@
   background: var(--workspace-surface);
   padding: 0 12px;
   font: inherit;
+}
+
+.workspace-sidebar__server-select {
+  min-height: var(--workspace-control);
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+.workspace-sidebar__server-select:focus-visible,
+.workspace-sidebar__add-server:focus-visible {
+  outline: 2px solid var(--workspace-aqua);
+  outline-offset: 2px;
+}
+
+.workspace-sidebar__server-select:disabled {
+  cursor: not-allowed;
+  opacity: .68;
+}
+
+.workspace-sidebar__add-server {
+  width: 100%;
+  min-height: var(--workspace-control);
+  padding: 0 12px;
+  border: 1px solid var(--workspace-border);
+  border-radius: 10px;
+  color: var(--workspace-aqua);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.workspace-sidebar__add-server:hover {
+  color: var(--workspace-copy);
+  border-color: rgba(142, 229, 210, .4);
+  background: var(--workspace-surface);
 }
 
 .workspace-sidebar__hint {
@@ -1156,8 +1198,10 @@ body.page-dashboard.workspace-page--tts .dash-form {
   .tts-workspace { margin-top: 12px; border-radius: 12px; }
   .tts-workspace__sidebar { position: static; }
   .tts-workspace__sidebar .workspace-sidebar__product,
-  .tts-workspace__sidebar .workspace-sidebar__section,
   .tts-workspace__sidebar .workspace-sidebar__footer { display: none; }
+  .tts-workspace__sidebar .workspace-sidebar__section { display: grid; padding: 10px 10px 0; }
+  .tts-workspace__sidebar .workspace-sidebar__server-select,
+  .tts-workspace__sidebar .workspace-sidebar__add-server { max-width: 320px; }
   .tts-workspace__sidebar .workspace-sidebar__nav { display: flex; padding: 10px; overflow-x: auto; }
   .tts-workspace__sidebar .workspace-sidebar__nav button { width: auto; flex: 0 0 auto; white-space: nowrap; }
   .tts-workspace__sidebar .workspace-sidebar__nav-icon { display: none; }
