@@ -748,6 +748,68 @@
     }
   }
 
+  // The account page is the single sign-in surface for the Vozen ecosystem.
+  // Establish the same-site Helper cookie before sending someone into the
+  // dashboard so the panel does not ask for a second Discord login.
+  let helperSessionBridgePromise = null;
+  async function bootstrapHelperSession(token = storedToken()) {
+    if (!token || !PREMIUM_API_BASE) return false;
+    if (helperSessionBridgePromise) return helperSessionBridgePromise;
+
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = controller ? window.setTimeout(() => controller.abort(), 5000) : 0;
+    helperSessionBridgePromise = fetch(PREMIUM_API_BASE + "/rust/api/session/vozen", {
+      method: "POST",
+      cache: "no-store",
+      credentials: "include",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+      ...(controller ? { signal: controller.signal } : {}),
+    })
+      .then((response) => response.ok)
+      .catch(() => false)
+      .finally(() => {
+        if (timer) window.clearTimeout(timer);
+      });
+
+    return helperSessionBridgePromise;
+  }
+
+  let helperSessionHandoffWired = false;
+  function wireHelperSessionHandoff() {
+    if (!IS_ACCOUNT || helperSessionHandoffWired) return;
+    helperSessionHandoffWired = true;
+
+    document.addEventListener(
+      "click",
+      (event) => {
+        const target =
+          event.target instanceof Element
+            ? event.target.closest('a[href*="/panel/helper"], a[href*="/helper/"]')
+            : null;
+        if (
+          !target ||
+          event.defaultPrevented ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return;
+        }
+
+        const token = storedToken();
+        if (!token) return;
+
+        event.preventDefault();
+        const href = target.href;
+        void bootstrapHelperSession(token).finally(() => window.location.assign(href));
+      },
+      { capture: true },
+    );
+  }
+
   function cachedNavData() {
     if (!storedToken()) return null;
     try {
@@ -972,6 +1034,7 @@
       try {
         sessionStorage.setItem(TOK_KEY, fromHash.token);
       } catch {}
+      await bootstrapHelperSession(fromHash.token);
       let billingReturn = false;
       try { billingReturn = !!sessionStorage.getItem(BILLING_INTENT_KEY); } catch {}
       if (PAYMENTS_ENABLED && !IS_PREMIUM && billingReturn) {
@@ -1006,6 +1069,7 @@
       setPanel({ mode: "hidden" });
       return;
     }
+    await bootstrapHelperSession(tok);
     setPanel({ mode: "loading" });
     try {
       const res = await fetch(PREMIUM_API_BASE + "/api/me/premium", {
@@ -2228,6 +2292,7 @@
   applyLang(lang);
   runChat();
   initHear();
+  wireHelperSessionHandoff();
   loadPanel();
 })();
 

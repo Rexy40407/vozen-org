@@ -2047,8 +2047,6 @@ function App() {
     'loading',
   );
   const [message, setMessage] = useState('');
-  const [authError, setAuthError] = useState('');
-  const [authLoading, setAuthLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Category>('all');
   const [detailLoading, setDetailLoading] = useState(false);
@@ -2209,18 +2207,6 @@ function App() {
     }
     window.location.hash = '#/quick-setup';
   }, [route.page, quickSetup]);
-  async function startLogin() {
-    setAuthLoading(true);
-    setAuthError('');
-    try {
-      await api.startOAuth();
-    } catch (cause) {
-      setAuthError(
-        cause instanceof Error ? cause.message : 'Could not start Discord sign-in.',
-      );
-      setAuthLoading(false);
-    }
-  }
   useEffect(() => {
     if (!localPreviewMode) {
       void api
@@ -2867,9 +2853,11 @@ function App() {
   if ((status === 'auth' || status === 'error') && !me)
     return (
       <AuthScreen
-        error={status === 'auth' ? authError : message}
-        loading={authLoading}
-        onLogin={() => void startLogin()}
+        error={
+          status === 'auth'
+            ? 'Open your Vozen account to restore the shared session, then return to Helper.'
+            : message
+        }
       />
     );
   if (route.page === 'servers')
@@ -3835,15 +3823,7 @@ function ServerPicker({
   );
 }
 
-function AuthScreen({
-  error,
-  loading,
-  onLogin,
-}: {
-  error: string;
-  loading: boolean;
-  onLogin: () => void;
-}) {
+function AuthScreen({ error }: { error: string }) {
   const visibleError = /unauthenticated|API 401/i.test(error) ? '' : error;
   return (
     <div className="workspace-standalone workspace-app workspace-standalone--helper">
@@ -3861,25 +3841,23 @@ function AuthScreen({
       </div>
       <section className="auth-card card">
         <div className="auth-icon">✦</div>
-        <small className="eyebrow">ACESSO safe</small>
-        <h1 id="auth-title">Sign in to your dashboard</h1>
-        <p>Use your Discord account to manage the Helper and configure your servers.</p>
-        <button
-          type="button"
-          className="primary auth-button"
-          onClick={onLogin}
-          disabled={loading}
-          aria-busy={loading}
-        >
-          {loading ? 'Connecting to Discord…' : 'Continue with Discord'}
-        </button>
+        <small className="eyebrow">ACCOUNT SESSION</small>
+        <h1 id="auth-title">Return to your account</h1>
+        <p>
+          Vozen uses one account session for TTS and Helper. Return to your account to restore
+          access, then open Helper again.
+        </p>
+        <a className="primary auth-button" href="/account/">
+          Return to account
+        </a>
         {visibleError && (
           <p className="auth-error" role="alert">
             {visibleError}
           </p>
         )}
         <small className="auth-note">
-          Access is protected and only shows servers where you have management permission.
+          Already signed in? Open Helper from your account page so the shared session can be
+          restored.
         </small>
       </section>
       </main>
