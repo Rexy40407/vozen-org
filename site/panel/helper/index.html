@@ -3,11 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="refresh" content="0; url=/panel/helper-tracker/" />
     <title>Opening Vozen Helper</title>
     <script>
-      window.location.replace('/panel/helper-tracker/');
+      const incomingHash = window.location.hash || '';
+      const safeHash = /^#\/(?:servers|config\/[A-Za-z0-9._~-]+)$/.test(incomingHash)
+        ? incomingHash
+        : '';
+      window.location.replace('/panel/helper-tracker/' + safeHash);
     </script>
+    <noscript><meta http-equiv="refresh" content="0; url=/panel/helper-tracker/" /></noscript>
   </head>
   <body>
     <p>Opening Vozen Helper...</p>

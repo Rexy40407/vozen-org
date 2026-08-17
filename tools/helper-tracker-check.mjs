@@ -8,7 +8,11 @@ const [legacyEntry, ignore] = await Promise.all([
 
 assert.match(ignore, /site\/panel\/helper-tracker\//);
 assert.doesNotMatch(ignore, /^site\/panel\/helper\/$/m);
-assert.match(legacyEntry, /location\.replace\('\/panel\/helper-tracker\/'\)/);
+assert.match(
+  legacyEntry,
+  /location\.replace\('\/panel\/helper-tracker\/'\s*\+\s*safeHash\)/,
+  'the compatibility route must preserve only the allow-listed product hash',
+);
 assert.match(legacyEntry, /http-equiv="refresh"/);
 assert.doesNotMatch(legacyEntry, /href="\/panel\/helper-tracker\//);
 

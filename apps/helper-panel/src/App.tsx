@@ -2851,15 +2851,7 @@ function App() {
   }
   if (status === 'loading') return <WorkspaceSkeleton />;
   if ((status === 'auth' || status === 'error') && !me)
-    return (
-      <AuthScreen
-        error={
-          status === 'auth'
-            ? 'Open your Vozen account to restore the shared session, then return to Helper.'
-            : message
-        }
-      />
-    );
+    return <AuthScreen />;
   if (route.page === 'servers')
     return (
       <ServerPicker
@@ -3823,46 +3815,16 @@ function ServerPicker({
   );
 }
 
-function AuthScreen({ error }: { error: string }) {
-  const visibleError = /unauthenticated|API 401/i.test(error) ? '' : error;
-  return (
-    <div className="workspace-standalone workspace-app workspace-standalone--helper">
-      <EcosystemTopbar />
-      <main className="auth-shell workspace-standalone__content" aria-labelledby="auth-title">
-      <a className="workspace-exit workspace-standalone__exit" href="/account/">
-        ← Exit to account
-      </a>
-      <div className="auth-brand">
-        <span>✦</span>
-        <div>
-          <strong>VOZEN</strong>
-          <small>HELPER PANEL</small>
-        </div>
-      </div>
-      <section className="auth-card card">
-        <div className="auth-icon">✦</div>
-        <small className="eyebrow">ACCOUNT SESSION</small>
-        <h1 id="auth-title">Return to your account</h1>
-        <p>
-          Vozen uses one account session for TTS and Helper. Return to your account to restore
-          access, then open Helper again.
-        </p>
-        <a className="primary auth-button" href="/account/">
-          Return to account
-        </a>
-        {visibleError && (
-          <p className="auth-error" role="alert">
-            {visibleError}
-          </p>
-        )}
-        <small className="auth-note">
-          Already signed in? Open Helper from your account page so the shared session can be
-          restored.
-        </small>
-      </section>
-      </main>
-    </div>
-  );
+function AuthScreen() {
+  useEffect(() => {
+    if (!window.location.pathname.startsWith('/account')) {
+      window.location.replace('/account/');
+    }
+  }, []);
+
+  // Authentication belongs to the account surface. Keep the product shell
+  // quiet while the redirect happens instead of presenting a second login UI.
+  return <WorkspaceSkeleton />;
 }
 
 function Overview({

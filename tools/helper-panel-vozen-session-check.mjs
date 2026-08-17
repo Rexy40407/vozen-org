@@ -8,7 +8,7 @@ const [api, app] = await Promise.all([
 
 assert.match(
   api,
-  /const VOZEN_ACCOUNT_TOKEN_KEY = 'vozen\.dtoken';/,
+  /const VOZEN_ACCOUNT_TOKEN_KEY = 'vozen\.ecosystem\.dtoken';/,
   'the Helper must reuse the first-party Vozen account session',
 );
 assert.match(

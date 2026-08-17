@@ -390,21 +390,25 @@ export function apiUrl(path: string): string {
 
 function vozenAccountToken(): string | null {
   try {
-    const token = sessionStorage.getItem(VOZEN_ACCOUNT_TOKEN_KEY)?.trim() ?? '';
-    return /^[A-Za-z0-9._~-]{20,4096}$/.test(token) ? token : null;
+    const value =
+      sessionStorage.getItem(VOZEN_ACCOUNT_TOKEN_KEY) ?? sessionStorage.getItem('vozen.dtoken');
+    return value && /^[A-Za-z0-9._~-]{20,4096}$/.test(value) ? value : null;
   } catch {
     return null;
   }
 }
 
-// The token stays in same-origin sessionStorage, is sent once in a request
-// body over HTTPS, then the API replaces it with an HttpOnly Helper cookie.
-// It is deliberately never appended to a URL or persisted by this panel.
+// Exchange the account's Discord token for the signed Helper session cookie.
+// The raw token is sent once in an HTTPS request body and is never used as a
+// Helper API bearer because the Rust API only accepts its own signed sessions.
 export async function bootstrapVozenAccountSession(): Promise<boolean> {
   if (vozenAccountBootstrapAttempted) return false;
   vozenAccountBootstrapAttempted = true;
   const token = vozenAccountToken();
   if (!token) return false;
+  // A fresh first-party account exchange must win over any stale legacy
+  // Helper bearer left in this tab from an earlier OAuth flow.
+  persistSessionBearer(null);
   try {
     const response = await fetch(apiUrl('/api/session/vozen'), {
       method: 'POST',
@@ -438,11 +442,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   });
   if (!response.ok) {
-    if (response.status === 401) persistSessionBearer(null);
     const payload = (await response.json().catch(() => ({}))) as {
       message?: string;
       code?: string;
     };
+    if (response.status === 401) persistSessionBearer(null);
     throw new Error(payload.message ?? payload.code ?? `API ${response.status}`);
   }
   return (await response.json()) as T;
@@ -992,7 +996,7 @@ export const api = {
     try {
       sessionStorage.setItem('vh_oauth_verifier', verifier);
     } catch {
-  /* optional storage */
+      /* optional storage */
     }
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
     const challenge = btoa(String.fromCharCode(...new Uint8Array(digest)))

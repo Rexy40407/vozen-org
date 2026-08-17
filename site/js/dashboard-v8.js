@@ -51,7 +51,9 @@
   var REQUEST_TIMEOUT_MS = 15000;
 
   function fetchWithTimeout(url, options, timeoutMs) {
-    var requestOptions = options || {};
+    // Product dashboards share the ecosystem session cookie. Keep the legacy
+    // bearer header optional for existing sessions, but never omit cookies.
+    var requestOptions = Object.assign({ credentials: "include" }, options || {});
     var controller = typeof window.AbortController === "function" ? new window.AbortController() : null;
     var timer = null;
     if (controller) requestOptions.signal = controller.signal;
@@ -371,7 +373,11 @@
   }
   function token() {
     try {
-      return sessionStorage.getItem(TOK_KEY);
+      return (
+        sessionStorage.getItem(TOK_KEY) ||
+        sessionStorage.getItem("vozen.ecosystem.dtoken") ||
+        sessionStorage.getItem("vozen.dtoken")
+      );
     } catch (e) {
       return null;
     }
@@ -428,7 +434,8 @@
     } catch (e) {}
   }
   function authHeaders() {
-    return { Authorization: "Bearer " + token() };
+    var value = token();
+    return value ? { Authorization: "Bearer " + value } : {};
   }
 
   /* ── OAuth: pede identify+guilds via o redirect /account; volta a /dashboard ── */
@@ -591,32 +598,17 @@
   }
 
   function renderLogin(msgKey) {
-    showPickerShell();
-    var msg = msgKey === "dashboard.oauthNotConfigured"
-      ? "Vozen Ecosystem login is not configured yet. Please try again after the site administrator completes the Discord setup."
-      : msgKey ? t(msgKey) : "";
-    view(
-      '<div style="' +
-        CARD +
-        '">' +
-        (msg ? '<p style="color:var(--amber,#e6b34d);margin:0 0 12px">' + esc(msg) + "</p>" : "") +
-        '<h2 style="margin:0 0 6px;font-size:1.25rem">' +
-        esc(t("dashboard.loginTitle")) +
-        '</h2><p style="' +
-        MUTED +
-        ';margin:0 0 18px">' +
-        esc(t("dashboard.loginSub")) +
-        '</p><button type="button" class="' +
-        BTN +
-        '" id="dashLogin">' +
-        esc(t("dashboard.loginBtn")) +
-        "</button></div>",
-    );
-    var b = document.getElementById("dashLogin");
-    if (b) b.addEventListener("click", login);
-    onLang = function () {
-      renderLogin(msgKey);
-    };
+    // The account page is the only authentication surface. Product routes
+    // redirect there and reuse its shared session instead of showing a second
+    // Discord login card inside the dashboard.
+    if (!window.location.pathname.startsWith("/account")) {
+      window.location.replace("/account/");
+      return;
+    }
+    // Authentication belongs exclusively to /account. This function is kept
+    // as a compatibility guard for stale dashboard bundles, but never renders
+    // a second login card inside a product workspace.
+    return;
   }
 
   function renderMessage(titleKey, hintKey, opts) {
@@ -649,7 +641,7 @@
     );
     if (opts.retry) {
       var r = document.getElementById("dashRetry");
-      if (r) r.addEventListener("click", opts.onRetry || login);
+      if (r) r.addEventListener("click", opts.onRetry || boot);
     }
     if (opts.addServer) {
       var add = document.getElementById("dashAddServer");
@@ -1408,17 +1400,8 @@
 
   function boot() {
     showPickerShell();
-    var tok = token();
-    if (!tok) {
-      renderLogin("");
-      return;
-    }
-    // A token created by /account has `identify email`, not `guilds`. Re-authorize once for the
-    // panel instead of sending it to the dashboard API and misleadingly displaying "expired".
-    if (!hasDashboardAuth()) {
-      login();
-      return;
-    }
+    // Authentication belongs to /account. The TTS dashboard must consume the
+    // shared HttpOnly ecosystem session instead of opening a second OAuth flow.
     loadGuilds(0);
   }
 
