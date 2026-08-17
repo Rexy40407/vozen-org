@@ -913,6 +913,7 @@
         method: "POST",
         cache: "no-store",
         credentials: "include",
+        keepalive: true,
         headers: { Accept: "application/json" },
       }).catch(() => {});
     }
