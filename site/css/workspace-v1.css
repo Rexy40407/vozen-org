@@ -603,9 +603,24 @@ body.page-dashboard.workspace-page--tts .tts-workspace {
 body.page-dashboard.workspace-page--tts .tts-workspace__sidebar {
   min-height: 0;
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
+}
+
+/* Keep the account exit visible like the Helper workspace. Only the middle
+   navigation scrolls when the viewport is too short for every destination. */
+body.page-dashboard.workspace-page--tts .tts-workspace__sidebar .workspace-sidebar__nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(166, 181, 206, .52) transparent;
+}
+
+body.page-dashboard.workspace-page--tts .tts-workspace__sidebar .workspace-sidebar__footer {
+  flex: 0 0 auto;
 }
 
 body.page-dashboard.workspace-page--tts .tts-workspace__main {
