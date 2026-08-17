@@ -1,33 +1,25 @@
 /* Vozen — dashboard web de configuração da guild.
-   OAuth: reutiliza o redirect /account (o único registado no portal) com scope
-   `identify guilds`; o main.js guarda o token no sessionStorage e salta de volta a
-   /dashboard (via `vozen.returnTo`). Aqui lemos o token e falamos com a API do bot
-   (/api/dashboard/*). A autorização real (MANAGE_GUILD + bot presente) é no servidor.
+   A conta Vozen trata do login e guarda o token OAuth no sessionStorage; o dashboard
+   usa-o apenas no pedido autenticado à API TTS (/api/dashboard/*). O Helper usa,
+   em paralelo, o cookie HttpOnly da sessão partilhada. A autorização real
+   (MANAGE_GUILD + bot presente) é no servidor.
    HUD v5: formulário agrupado por secções (Reading/Voice/Community/Limits), toggle
    switches em vez de checkboxes nativas, campo de língua (locale — a API já o aceita),
    e save com estado (só ativo quando há alterações). CSP: zero handlers inline, tudo
    por addEventListener; CSS injetado num <style> (style-src tem 'unsafe-inline'). */
 (function () {
   "use strict";
-  // Product identity: this application is used only to invite Vozen TTS. Login uses the
-  // separate Vozen Ecosystem OAuth application configured by oauth-config.js.
+  // Product identity: this application is used only to invite Vozen TTS. The account
+  // page owns ecosystem login; this bundle only starts the add-server invite flow.
   var TTS_CLIENT_ID = "1523826014935842997";
-  var ECOSYSTEM_OAUTH = window.VOZEN_ECOSYSTEM_OAUTH || {};
-  var ECOSYSTEM_CLIENT_ID = typeof ECOSYSTEM_OAUTH.clientId === "string" ? ECOSYSTEM_OAUTH.clientId.trim() : "";
+  var OAUTH_CONFIG = window.VOZEN_ECOSYSTEM_OAUTH || {};
   var API = "https://api.vozen.org";
-  var REDIRECT =
-    typeof ECOSYSTEM_OAUTH.redirectUri === "string" && ECOSYSTEM_OAUTH.redirectUri
-      ? ECOSYSTEM_OAUTH.redirectUri
-      : new URL("/account/", location.href).href;
   var TTS_REDIRECT =
-    typeof ECOSYSTEM_OAUTH.ttsRedirectUri === "string" && ECOSYSTEM_OAUTH.ttsRedirectUri
-      ? ECOSYSTEM_OAUTH.ttsRedirectUri
+    typeof OAUTH_CONFIG.ttsRedirectUri === "string" && OAUTH_CONFIG.ttsRedirectUri
+      ? OAUTH_CONFIG.ttsRedirectUri
       : new URL("/dashboard/", location.href).href;
   var TOK_KEY = "vozen.ecosystem.dtoken";
-  // The account flow requests `identify email`; the dashboard flow requests `identify guilds`.
-  // Keep an ownership marker so an account-only token triggers dashboard consent instead of
-  // being sent to /api/dashboard and misleadingly displayed as an expired login.
-  var DASHBOARD_AUTH_KEY = "vozen.dashboardAuth";
+  var LEGACY_TOK_KEY = "vozen.dtoken";
   var STATE_KEY = "vozen.oauthstate";
   var RETURN_KEY = "vozen.returnTo";
   var INVITE_PENDING_KEY = "vozen.ttsInvitePending";
@@ -374,9 +366,7 @@
   function token() {
     try {
       return (
-        sessionStorage.getItem(TOK_KEY) ||
-        sessionStorage.getItem("vozen.ecosystem.dtoken") ||
-        sessionStorage.getItem("vozen.dtoken")
+        sessionStorage.getItem(TOK_KEY) || sessionStorage.getItem(LEGACY_TOK_KEY)
       );
     } catch (e) {
       return null;
@@ -385,15 +375,8 @@
   function clearToken() {
     try {
       sessionStorage.removeItem(TOK_KEY);
-      sessionStorage.removeItem(DASHBOARD_AUTH_KEY);
+      sessionStorage.removeItem(LEGACY_TOK_KEY);
     } catch (e) {}
-  }
-  function hasDashboardAuth() {
-    try {
-      return sessionStorage.getItem(DASHBOARD_AUTH_KEY) === "1";
-    } catch (e) {
-      return false;
-    }
   }
   function setInvitePending(guilds) {
     try {
@@ -438,7 +421,6 @@
     return value ? { Authorization: "Bearer " + value } : {};
   }
 
-  /* ── OAuth: pede identify+guilds via o redirect /account; volta a /dashboard ── */
   function randState() {
     var a = new Uint8Array(16);
     var c = window.crypto || window.msCrypto;
@@ -449,31 +431,6 @@
         return b.toString(16).padStart(2, "0");
       })
       .join("");
-  }
-  function login() {
-    if (!ECOSYSTEM_CLIENT_ID || ECOSYSTEM_CLIENT_ID === "YOUR_CLIENT_ID") {
-      renderLogin("dashboard.oauthNotConfigured");
-      return;
-    }
-    var state;
-    try {
-      state = randState();
-    } catch (e) {
-      alert(t("dashboard.secureTokenError"));
-      return;
-    }
-    try {
-      sessionStorage.setItem(STATE_KEY, state);
-      sessionStorage.setItem(RETURN_KEY, "/dashboard");
-      sessionStorage.setItem(DASHBOARD_AUTH_KEY, "1");
-    } catch (e) {}
-    var u = new URL("https://discord.com/oauth2/authorize");
-    u.searchParams.set("client_id", ECOSYSTEM_CLIENT_ID);
-    u.searchParams.set("redirect_uri", REDIRECT);
-    u.searchParams.set("response_type", "token");
-    u.searchParams.set("scope", "identify guilds");
-    u.searchParams.set("state", state);
-    location.href = u.toString();
   }
 
   function addServer() {
@@ -488,7 +445,6 @@
     try {
       sessionStorage.setItem(STATE_KEY, state);
       sessionStorage.setItem(RETURN_KEY, "/dashboard");
-      sessionStorage.setItem(DASHBOARD_AUTH_KEY, "1");
     } catch (e) {}
     var u = new URL("https://discord.com/oauth2/authorize");
     u.searchParams.set("client_id", TTS_CLIENT_ID);
