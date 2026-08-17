@@ -33,10 +33,11 @@
     var(--helper-bg);
 }
 
-/* Match the TTS picker backdrop exactly on the Helper entry screen. The
- * regular Helper dashboard keeps its blue product theme; only this shared
- * server-selection surface uses the TTS charcoal canvas and violet wash. */
-.workspace-standalone--helper-picker {
+/* Match the TTS picker backdrop exactly on the Helper entry screen. Paint it
+ * on the document canvas so the constrained content column can never create
+ * a different-coloured rectangle behind the picker. */
+html:has(.workspace-standalone--helper-picker),
+body:has(.workspace-standalone--helper-picker) {
   --text-0: #f6f7fe;
   --text-1: #a3a9c4;
   --text-2: #6b7192;
@@ -47,6 +48,19 @@
     radial-gradient(110% 75% at 92% 2%, rgba(46, 230, 200, .16), transparent 50%),
     radial-gradient(90% 65% at 50% 118%, rgba(154, 164, 255, .14), transparent 60%);
   background-attachment: fixed;
+}
+
+body:has(.workspace-standalone--helper-picker) #root,
+.workspace-standalone--helper-picker,
+.helper-server-picker.workspace-standalone__content {
+  background: transparent !important;
+}
+
+.workspace-standalone--helper-picker {
+  --text-0: #f6f7fe;
+  --text-1: #a3a9c4;
+  --text-2: #6b7192;
+  --aqua: #2ee6c8;
 }
 
 .workspace-shell.workspace-shell--helper {
@@ -927,6 +941,13 @@
 }
 
 .helper-server-picker .dash-picker__add:active { transform: translateY(0); }
+
+/* The public TTS dashboard uses a 110% desktop presence scale. Applying that
+ * scale to the Helper picker content reproduces the same physical type,
+ * control and card dimensions while leaving the shared navigation unchanged. */
+@media (min-width: 1101px) {
+  .helper-server-picker.workspace-standalone__content { zoom: 1.1; }
+}
 
 @media (max-width: 1528px) {
   .workspace-shell.workspace-shell--helper { width: calc(100% - 32px); }

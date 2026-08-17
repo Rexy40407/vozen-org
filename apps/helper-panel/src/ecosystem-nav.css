@@ -66,9 +66,8 @@
 }
 
 .workspace-global-nav__inner {
-  /* Match the public TTS shell. A wider Helper-only header makes the logo
-     hug the viewport edge and shifts the visual centre of the page. */
-  width: min(1120px, calc(100% - 48px));
+  /* Same desktop width as the public TTS ecosystem navigation. */
+  width: min(1280px, calc(100% - 56px));
   height: 100%;
   margin: 0 auto;
   display: flex;
