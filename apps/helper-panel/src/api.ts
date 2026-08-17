@@ -390,8 +390,7 @@ export function apiUrl(path: string): string {
 
 function vozenAccountToken(): string | null {
   try {
-    const value =
-      sessionStorage.getItem(VOZEN_ACCOUNT_TOKEN_KEY) ?? sessionStorage.getItem('vozen.dtoken');
+    const value = sessionStorage.getItem(VOZEN_ACCOUNT_TOKEN_KEY);
     return value && /^[A-Za-z0-9._~-]{20,4096}$/.test(value) ? value : null;
   } catch {
     return null;

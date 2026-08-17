@@ -37,6 +37,11 @@ assert.doesNotMatch(
   /window\.location[^\n]*vozen\.dtoken/,
   'an OAuth token must never be placed in browser navigation state',
 );
+assert.doesNotMatch(
+  api,
+  /sessionStorage\.getItem\(['"]vozen\.dtoken['"]\)/,
+  'the Helper bridge must not accept the legacy token key',
+);
 assert.match(
   app,
   /await api\.bootstrapVozenAccountSession\(\);/,

@@ -1031,7 +1031,7 @@
         return;
       }
       status.textContent = "Saving…";
-      fetch(API + "/api/dashboard/guild/" + guild.id + "/profile/" + channel.value, {
+      fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id + "/profile/" + channel.value, {
         method: "POST",
         headers: Object.assign({ "Content-Type": "application/json" }, authHeaders()),
         body: JSON.stringify(profileBody()),
@@ -1050,7 +1050,7 @@
     remove.addEventListener("click", function () {
       if (!channel.value || !selectedProfile()) return;
       status.textContent = "Deleting…";
-      fetch(API + "/api/dashboard/guild/" + guild.id + "/profile/" + channel.value, {
+      fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id + "/profile/" + channel.value, {
         method: "DELETE",
         headers: authHeaders(),
       })
@@ -1230,7 +1230,7 @@
       saveBtn.disabled = true;
       saveBtn.textContent = t("dashboard.saving");
       setStatus("");
-      fetch(API + "/api/dashboard/guild/" + guild.id, {
+      fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id, {
         method: "POST",
         headers: Object.assign({ "Content-Type": "application/json" }, authHeaders()),
         body: JSON.stringify(patch),
