@@ -41,7 +41,12 @@
   --text-1: #a3a9c4;
   --text-2: #6b7192;
   --aqua: #2ee6c8;
-  background: radial-gradient(circle at 8% 0, rgba(145, 167, 255, .14), transparent 34rem), var(--workspace-bg);
+  background-color: #05060f;
+  background-image:
+    radial-gradient(120% 85% at 12% -12%, rgba(102, 114, 255, .24), transparent 52%),
+    radial-gradient(110% 75% at 92% 2%, rgba(46, 230, 200, .16), transparent 50%),
+    radial-gradient(90% 65% at 50% 118%, rgba(154, 164, 255, .14), transparent 60%);
+  background-attachment: fixed;
 }
 
 .workspace-shell.workspace-shell--helper {
@@ -707,6 +712,8 @@
 
 .helper-server-picker__heading-block h1 {
   color: var(--text-0, var(--helper-copy));
+  font-family: "Unbounded", "Outfit", system-ui, sans-serif;
+  font-weight: 700;
 }
 
 .helper-server-picker__heading-block p {
@@ -749,6 +756,8 @@
 .helper-server-picker .dash-picker h2 {
   margin: 0 0 6px;
   color: var(--text-1, #f3f0ec);
+  font-family: "Unbounded", "Outfit", system-ui, sans-serif;
+  font-weight: 700;
   font-size: clamp(32px, 3.4vw, 42px);
   line-height: 1.05;
   letter-spacing: -.04em;
