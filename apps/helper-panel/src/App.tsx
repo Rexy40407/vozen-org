@@ -3893,7 +3893,7 @@ function ServerPicker({
 }) {
   const manageableGuilds = guilds.filter((guild) => guild.canManage);
   return (
-    <div className="workspace-standalone workspace-app workspace-standalone--helper">
+    <div className="workspace-standalone workspace-app workspace-standalone--helper workspace-standalone--helper-picker">
       <EcosystemTopbar />
       <main className="helper-server-picker workspace-standalone__content" aria-labelledby="server-picker-title">
         <div className="tts-picker-page__back">
