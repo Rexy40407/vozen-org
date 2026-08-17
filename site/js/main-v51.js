@@ -908,8 +908,18 @@
   }
 
   function logout() {
+    if (PREMIUM_API_BASE) {
+      void fetch(PREMIUM_API_BASE + "/rust/api/logout", {
+        method: "POST",
+        cache: "no-store",
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      }).catch(() => {});
+    }
     try {
       sessionStorage.removeItem(TOK_KEY);
+      sessionStorage.removeItem(LEGACY_TOK_KEY);
+      sessionStorage.removeItem("vozen.dashboardAuth");
       sessionStorage.removeItem(NAV_USER_KEY);
       sessionStorage.removeItem(ACTIVATION_INTENT_KEY);
       sessionStorage.removeItem(STATE_KEY);

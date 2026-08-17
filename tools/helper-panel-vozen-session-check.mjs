@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [api, app] = await Promise.all([
+const [api, app, main] = await Promise.all([
   readFile(new URL('../apps/helper-panel/src/api.ts', import.meta.url), 'utf8'),
   readFile(new URL('../apps/helper-panel/src/App.tsx', import.meta.url), 'utf8'),
+  readFile(new URL('../site/js/main-v51.js', import.meta.url), 'utf8'),
 ]);
 
 assert.match(
@@ -40,6 +41,11 @@ assert.match(
   app,
   /await api\.bootstrapVozenAccountSession\(\);/,
   'the panel must bootstrap the shared session before loading protected data',
+);
+assert.match(
+  main,
+  /\/rust\/api\/logout/,
+  'the account logout must revoke the shared Helper session cookie',
 );
 
 console.log('Helper panel Vozen session contract passed.');
