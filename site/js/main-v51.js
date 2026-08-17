@@ -36,6 +36,18 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  async function fetchWithTimeout(url, options, timeoutMs = 10000) {
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = controller ? window.setTimeout(() => controller.abort(), timeoutMs) : 0;
+    try {
+      return await fetch(url, {
+        ...(options || {}),
+        ...(controller ? { signal: controller.signal } : {}),
+      });
+    } finally {
+      if (timer) window.clearTimeout(timer);
+    }
+  }
   // Página dedicada da conta (account.html). Só aí o painel Premium é o conteúdo
   // principal — e mostra o estado "em breve" enquanto o backend não está no ar.
   const IS_ACCOUNT = document.body.classList.contains("page-account");
@@ -500,7 +512,7 @@
         body: JSON.stringify(checkoutRequestBody()),
       });
       const payload = await res.json().catch(() => ({}));
-      if (res.status === 401) { try { sessionStorage.removeItem(TOK_KEY); } catch {} setBillingPhase("auth"); return; }
+      if (res.status === 401) { clearAuthCache(); setBillingPhase("auth"); return; }
       if (!res.ok || !payload.url) throw new Error("hosted checkout unavailable");
       window.location.assign(payload.url);
     } catch { showBillingError(t("billing.hostedUnavailable")); }
@@ -597,7 +609,7 @@
       });
       const payload = await res.json().catch(() => ({}));
       if (res.status === 401) {
-        try { sessionStorage.removeItem(TOK_KEY); } catch {}
+        clearAuthCache();
         setBillingPhase("auth");
         const authStatus = document.getElementById("vozenBillingAuthStatus");
         if (authStatus) authStatus.textContent = t("claim.loginAgain");
@@ -650,12 +662,12 @@
 
   /* ── Painel Premium (login com Discord + estado da conta) ─────────────
      OAuth2 implicit (scopes identify + email): 100% client-side, sem segredo. O token vem no
-     fragment (#access_token), guardamo-lo em sessionStorage, limpamos o fragment, e
-     chamamos GET {API_BASE}/api/me/premium. A API valida o token na Discord e devolve só
-     o estado DESTE utilizador. Escondido enquanto PREMIUM_API_BASE estiver vazio. */
-  // Keep the site session separate from legacy TTS sessions.  Discord access
-  // tokens are opaque to the browser, so sharing one key could make an old
-  // TTS login look like a valid Ecosystem login and restart the OAuth loop.
+     fragment (#access_token), limpamos o fragment e guardamos a sessão na aba. A API valida
+     o token na Discord e devolve só o estado DESTE utilizador. Escondido enquanto
+     PREMIUM_API_BASE estiver vazio. */
+  // Keep the site session separate from legacy TTS sessions. The token stays
+  // in sessionStorage; BroadcastChannel synchronizes already-open Vozen tabs
+  // without making the credential persistent in localStorage.
   const TOK_KEY = "vozen.ecosystem.dtoken";
   const LEGACY_TOK_KEY = "vozen.dtoken";
   const STATE_KEY = "vozen.oauthstate";
@@ -673,6 +685,65 @@
   // TTS client so it cannot send the browser back through the old consent screen or keep
   // the account flow in a redirect loop.
   const OAUTH_CLIENT_KEY = "vozen.oauth.client";
+  const AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
+  let authChannel = null;
+  function readSessionValue(key) {
+    try {
+      return sessionStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+  function writeSessionValue(key, value) {
+    try {
+      if (value == null) sessionStorage.removeItem(key);
+      else sessionStorage.setItem(key, value);
+    } catch {}
+  }
+  function publishAuth(message) {
+    try {
+      authChannel?.postMessage(message);
+    } catch {}
+  }
+  function validSharedToken(value) {
+    return typeof value === "string" && /^[A-Za-z0-9._~-]{20,4096}$/.test(value);
+  }
+  function initAuthChannel() {
+    if (typeof BroadcastChannel !== "function") return;
+    try {
+      authChannel = new BroadcastChannel(AUTH_CHANNEL_NAME);
+      authChannel.addEventListener("message", (event) => {
+        const message = event.data;
+        if (!message || typeof message.type !== "string") return;
+        if (message.type === "request") {
+          const token = storedToken();
+          if (token) {
+            publishAuth({ type: "session", token, nav: readSessionValue(NAV_USER_KEY) });
+          }
+          return;
+        }
+        if (message.type === "session" && validSharedToken(message.token)) {
+          writeSessionValue(TOK_KEY, message.token);
+          if (typeof message.nav === "string") writeSessionValue(NAV_USER_KEY, message.nav);
+          window.dispatchEvent(new Event("vozen:authsync"));
+          return;
+        }
+        if (message.type === "profile") {
+          writeSessionValue(NAV_USER_KEY, typeof message.nav === "string" ? message.nav : null);
+          window.dispatchEvent(new Event("vozen:authsync"));
+          return;
+        }
+        if (message.type === "logout") {
+          writeSessionValue(TOK_KEY, null);
+          writeSessionValue(NAV_USER_KEY, null);
+          window.dispatchEvent(new Event("vozen:authsync"));
+        }
+      });
+      publishAuth({ type: "request" });
+    } catch {
+      authChannel = null;
+    }
+  }
   function resetStaleOAuthSession() {
     if (!ECOSYSTEM_CLIENT_ID) return;
     try {
@@ -741,11 +812,18 @@
     '<svg viewBox="0 0 24 18" width="20" height="15" aria-hidden="true" fill="currentColor"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg>';
 
   function storedToken() {
-    try {
-      return sessionStorage.getItem(TOK_KEY);
-    } catch {
-      return null;
-    }
+    return readSessionValue(TOK_KEY);
+  }
+  function setStoredToken(token) {
+    writeSessionValue(TOK_KEY, token);
+    publishAuth({ type: "session", token });
+  }
+  function clearAuthCache() {
+    writeSessionValue(TOK_KEY, null);
+    writeSessionValue(LEGACY_TOK_KEY, null);
+    writeSessionValue("vozen.dashboardAuth", null);
+    writeSessionValue(NAV_USER_KEY, null);
+    publishAuth({ type: "logout" });
   }
 
   // The account page is the single sign-in surface for the Vozen ecosystem.
@@ -777,7 +855,7 @@
 
   let helperSessionHandoffWired = false;
   function wireHelperSessionHandoff() {
-    if (!IS_ACCOUNT || helperSessionHandoffWired) return;
+    if (helperSessionHandoffWired) return;
     helperSessionHandoffWired = true;
 
     document.addEventListener(
@@ -813,7 +891,7 @@
   function cachedNavData() {
     if (!storedToken()) return null;
     try {
-      const data = JSON.parse(sessionStorage.getItem(NAV_USER_KEY) || "null");
+      const data = JSON.parse(readSessionValue(NAV_USER_KEY) || "null");
       return data && data.user ? data : null;
     } catch {
       return null;
@@ -823,9 +901,11 @@
   function cacheNavData(data) {
     try {
       if (data && data.user) {
-        sessionStorage.setItem(NAV_USER_KEY, JSON.stringify({ user: data.user }));
+        const nav = JSON.stringify({ user: data.user });
+        writeSessionValue(NAV_USER_KEY, nav);
+        publishAuth({ type: "profile", nav });
       } else {
-        sessionStorage.removeItem(NAV_USER_KEY);
+        writeSessionValue(NAV_USER_KEY, null);
       }
     } catch {}
   }
@@ -917,14 +997,10 @@
         headers: { Accept: "application/json" },
       }).catch(() => {});
     }
-    try {
-      sessionStorage.removeItem(TOK_KEY);
-      sessionStorage.removeItem(LEGACY_TOK_KEY);
-      sessionStorage.removeItem("vozen.dashboardAuth");
-      sessionStorage.removeItem(NAV_USER_KEY);
-      sessionStorage.removeItem(ACTIVATION_INTENT_KEY);
-      sessionStorage.removeItem(STATE_KEY);
-    } catch {}
+    clearAuthCache();
+    writeSessionValue(ACTIVATION_INTENT_KEY, null);
+    writeSessionValue(STATE_KEY, null);
+    publishAuth({ type: "logout" });
     if (IS_ACCOUNT) {
       window.location.href = "/";
       return;
@@ -1013,6 +1089,17 @@
     renderPanel();
   }
 
+  window.addEventListener("vozen:authsync", () => {
+    const token = storedToken();
+    if (!token) {
+      if (IS_ACCOUNT) setPanel({ mode: "anon", message: "Your Discord session ended in another tab." });
+      else renderNavLogin(null);
+      return;
+    }
+    renderNavLogin(cachedNavData());
+    if (IS_ACCOUNT) void loadPanel();
+  });
+
   async function loadPanel() {
     if (IS_ACCOUNT_PREVIEW) {
       setPanel({
@@ -1042,10 +1129,7 @@
       return;
     }
     if (fromHash) {
-      try {
-        sessionStorage.setItem(TOK_KEY, fromHash.token);
-      } catch {}
-      await bootstrapHelperSession(fromHash.token);
+      setStoredToken(fromHash.token);
       let billingReturn = false;
       try { billingReturn = !!sessionStorage.getItem(BILLING_INTENT_KEY); } catch {}
       if (PAYMENTS_ENABLED && !IS_PREMIUM && billingReturn) {
@@ -1080,17 +1164,14 @@
       setPanel({ mode: "hidden" });
       return;
     }
-    await bootstrapHelperSession(tok);
     setPanel({ mode: "loading" });
     try {
-      const res = await fetch(PREMIUM_API_BASE + "/api/me/premium", {
+      const res = await fetchWithTimeout(PREMIUM_API_BASE + "/api/me/premium", {
+        cache: "no-store",
         headers: { Authorization: "Bearer " + tok },
       });
       if (res.status === 401) {
-        try {
-          sessionStorage.removeItem(TOK_KEY);
-          sessionStorage.removeItem(NAV_USER_KEY);
-        } catch {}
+        clearAuthCache();
         if (IS_ACCOUNT) {
           setPanel({ mode: "anon", message: "Your Discord session expired. Select Log in to reconnect." });
           return;
@@ -1449,10 +1530,7 @@
         return;
       }
       if (res.status === 401) {
-        try {
-          sessionStorage.removeItem(TOK_KEY);
-          sessionStorage.removeItem(NAV_USER_KEY);
-        } catch {}
+        clearAuthCache();
         setClaimAction(t("claim.loginAgain"), t("panel.login"), () =>
           login({ resumeActivation: true }),
         );
@@ -1839,7 +1917,7 @@
       return;
     }
     el.hidden = false;
-    if (IS_ACCOUNT && panelState.mode !== "anon") unlockAccountPage();
+    if (IS_ACCOUNT) unlockAccountPage();
     const head = `<div class="ppanel__head"><span class="ppanel__title">💎 ${t("account.membershipStatus")}</span></div>`;
     let body = "";
     if (panelState.mode === "soon") {
@@ -2303,6 +2381,7 @@
   applyLang(lang);
   runChat();
   initHear();
+  initAuthChannel();
   wireHelperSessionHandoff();
   loadPanel();
 })();

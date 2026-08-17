@@ -1,6 +1,7 @@
 /* Vozen — dashboard web de configuração da guild.
-   A conta Vozen trata do login e guarda o token OAuth no sessionStorage; o dashboard
-   usa-o apenas no pedido autenticado à API TTS (/api/dashboard/*). O Helper usa,
+  A conta Vozen trata do login e guarda o token OAuth no sessionStorage; as abas Vozen
+  sincronizam-no em memória pelo BroadcastChannel. O dashboard usa-o apenas no pedido
+  autenticado à API TTS (/api/dashboard/*). O Helper usa,
    em paralelo, o cookie HttpOnly da sessão partilhada. A autorização real
    (MANAGE_GUILD + bot presente) é no servidor.
    HUD v5: formulário agrupado por secções (Reading/Voice/Community/Limits), toggle
@@ -19,6 +20,7 @@
       ? OAUTH_CONFIG.ttsRedirectUri
       : new URL("/dashboard/", location.href).href;
   var TOK_KEY = "vozen.ecosystem.dtoken";
+  var AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
   var LEGACY_TOK_KEY = "vozen.dtoken";
   var STATE_KEY = "vozen.oauthstate";
   var RETURN_KEY = "vozen.returnTo";
@@ -34,6 +36,7 @@
   var pickerPage = document.getElementById("ttsPickerPage");
   var ttsWorkspace = document.getElementById("ttsWorkspace");
   var root = workspaceRoot;
+  var authChannel = null;
   if (!root || !pickerRoot || !pickerPage || !ttsWorkspace) {
     var bootFallback = document.getElementById("ttsBootFallback");
     if (bootFallback) bootFallback.hidden = false;
@@ -377,6 +380,37 @@
       sessionStorage.removeItem(TOK_KEY);
       sessionStorage.removeItem(LEGACY_TOK_KEY);
     } catch (e) {}
+    try {
+      if (authChannel) authChannel.postMessage({ type: "logout" });
+    } catch (e) {}
+  }
+  function waitForSharedSession() {
+    if (token() || typeof BroadcastChannel !== "function") return Promise.resolve();
+    return new Promise(function (resolve) {
+      var settled = false;
+      var finish = function () {
+        if (settled) return;
+        settled = true;
+        if (authChannel) {
+          try { authChannel.close(); } catch (e) {}
+          authChannel = null;
+        }
+        resolve();
+      };
+      try {
+        authChannel = new BroadcastChannel(AUTH_CHANNEL_NAME);
+        authChannel.addEventListener("message", function (event) {
+          var message = event.data;
+          if (!message || message.type !== "session" || typeof message.token !== "string") return;
+          try { sessionStorage.setItem(TOK_KEY, message.token); } catch (e) {}
+          finish();
+        });
+        authChannel.postMessage({ type: "request" });
+        window.setTimeout(finish, 250);
+      } catch (e) {
+        finish();
+      }
+    });
   }
   function setInvitePending(guilds) {
     try {
@@ -1354,10 +1388,11 @@
       });
   }
 
-  function boot() {
+  async function boot() {
     showPickerShell();
     // Authentication belongs to /account. The TTS dashboard must consume the
     // shared HttpOnly ecosystem session instead of opening a second OAuth flow.
+    await waitForSharedSession();
     loadGuilds(0);
   }
 

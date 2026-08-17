@@ -11,6 +11,7 @@
     "helper-tracker:check": "node tools/helper-tracker-check.mjs",
     "helper-panel:redirect-check": "node tools/helper-panel-redirect-check.mjs",
     "helper-panel:vozen-session-check": "node tools/helper-panel-vozen-session-check.mjs",
+    "auth-session:check": "node tools/auth-session-check.mjs",
     "build": "npm run docs:build"
   },
   "devDependencies": {

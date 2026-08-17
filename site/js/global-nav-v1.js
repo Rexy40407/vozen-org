@@ -3,10 +3,24 @@
   "use strict";
 
   const hosts = document.querySelectorAll("[data-vozen-nav]");
+  const AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
+  const readSession = (key) => {
+    try {
+      return sessionStorage.getItem(key);
+    } catch (_) {
+      return null;
+    }
+  };
+  const writeSession = (key, value) => {
+    try {
+      if (value == null) sessionStorage.removeItem(key);
+      else sessionStorage.setItem(key, value);
+    } catch (_) {}
+  };
   const cachedAccount = () => {
     try {
-      if (!sessionStorage.getItem("vozen.ecosystem.dtoken")) return null;
-      const raw = sessionStorage.getItem("vozen.navuser");
+      if (!readSession("vozen.ecosystem.dtoken")) return null;
+      const raw = readSession("vozen.navuser");
       const parsed = raw ? JSON.parse(raw) : null;
       return parsed && parsed.user && typeof parsed.user.username === "string" ? parsed.user : null;
     } catch (_) {
@@ -120,13 +134,40 @@
     </header>`;
   });
 
-  const account = cachedAccount();
-  if (account) {
+  const renderDocsAccount = () => {
+    const account = cachedAccount();
     document.querySelectorAll("[data-vozen-docs-login]").forEach((link) => {
+      if (!account) {
+        link.classList.remove("docs-ecosystem-nav__login--account");
+        link.removeAttribute("aria-label");
+        link.innerHTML = `${discordIcon}<span>Log in</span>`;
+        return;
+      }
       const username = escapeHtml(account.username);
       link.classList.add("docs-ecosystem-nav__login--account");
       link.setAttribute("aria-label", `Open ${account.username}'s Vozen account`);
       link.innerHTML = `${discordAvatarMarkup(account)}<span>${username}</span>`;
     });
+  };
+  renderDocsAccount();
+  if (typeof BroadcastChannel === "function") {
+    try {
+      const channel = new BroadcastChannel(AUTH_CHANNEL_NAME);
+      channel.addEventListener("message", (event) => {
+        const message = event.data;
+        if (!message || typeof message.type !== "string") return;
+        if (message.type === "session" && typeof message.token === "string") {
+          writeSession("vozen.ecosystem.dtoken", message.token);
+          if (typeof message.nav === "string") writeSession("vozen.navuser", message.nav);
+        } else if (message.type === "profile") {
+          writeSession("vozen.navuser", typeof message.nav === "string" ? message.nav : null);
+        } else if (message.type === "logout") {
+          writeSession("vozen.ecosystem.dtoken", null);
+          writeSession("vozen.navuser", null);
+        }
+        renderDocsAccount();
+      });
+      channel.postMessage({ type: "request" });
+    } catch (_) {}
   }
 })();

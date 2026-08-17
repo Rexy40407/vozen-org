@@ -327,6 +327,7 @@ const base =
 let sessionBearer: string | null = null;
 const OAUTH_RETURN_HASH_KEY = 'vh_oauth_return_hash';
 const VOZEN_ACCOUNT_TOKEN_KEY = 'vozen.ecosystem.dtoken';
+const AUTH_CHANNEL_NAME = 'vozen.ecosystem.auth.v1';
 let vozenAccountBootstrapAttempted = false;
 
 function isSafePanelHash(value: string): boolean {
@@ -397,13 +398,58 @@ function vozenAccountToken(): string | null {
   }
 }
 
+async function requestSharedVozenAccountToken(): Promise<string | null> {
+  const current = vozenAccountToken();
+  if (current || typeof BroadcastChannel !== 'function') return current;
+  return new Promise((resolve) => {
+    let settled = false;
+    let channel: BroadcastChannel | null = null;
+    const finish = (token: string | null) => {
+      if (settled) return;
+      settled = true;
+      if (channel) {
+        try {
+          channel.close();
+        } catch {
+          /* optional */
+        }
+      }
+      resolve(token);
+    };
+    try {
+      channel = new BroadcastChannel(AUTH_CHANNEL_NAME);
+      channel.addEventListener('message', (event) => {
+        const message = event.data as { type?: string; token?: unknown };
+        if (
+          message?.type !== 'session' ||
+          typeof message.token !== 'string' ||
+          !/^[A-Za-z0-9._~-]{20,4096}$/.test(message.token)
+        ) {
+          return;
+        }
+        try {
+          sessionStorage.setItem(VOZEN_ACCOUNT_TOKEN_KEY, message.token);
+        } catch {
+          /* optional */
+        }
+        window.dispatchEvent(new Event('vozen:authsync'));
+        finish(message.token);
+      });
+      channel.postMessage({ type: 'request' });
+      window.setTimeout(() => finish(null), 250);
+    } catch {
+      finish(null);
+    }
+  });
+}
+
 // Exchange the account's Discord token for the signed Helper session cookie.
 // The raw token is sent once in an HTTPS request body and is never used as a
 // Helper API bearer because the Rust API only accepts its own signed sessions.
 export async function bootstrapVozenAccountSession(): Promise<boolean> {
   if (vozenAccountBootstrapAttempted) return false;
   vozenAccountBootstrapAttempted = true;
-  const token = vozenAccountToken();
+  const token = await requestSharedVozenAccountToken();
   if (!token) return false;
   // A fresh first-party account exchange must win over any stale legacy
   // Helper bearer left in this tab from an earlier OAuth flow.

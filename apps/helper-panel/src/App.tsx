@@ -3668,12 +3668,15 @@ function EcosystemTopbar() {
     const onStorage = (event: StorageEvent) => {
       if (event.key === 'vozen.navuser' || event.key === 'vozen.ecosystem.dtoken') refresh();
     };
+    const onAuthSync = () => refresh();
     const onPageShow = () => refresh();
     window.addEventListener('storage', onStorage);
+    window.addEventListener('vozen:authsync', onAuthSync);
     window.addEventListener('pageshow', onPageShow);
     return () => {
       window.clearTimeout(restoreTimer);
       window.removeEventListener('storage', onStorage);
+      window.removeEventListener('vozen:authsync', onAuthSync);
       window.removeEventListener('pageshow', onPageShow);
     };
   }, []);
