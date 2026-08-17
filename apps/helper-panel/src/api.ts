@@ -517,16 +517,6 @@ async function meOrBootstrap(): Promise<Me> {
     return await request<Me>('/api/me');
   } catch (cause) {
     if (!(cause instanceof ApiError) || cause.status !== 401) throw cause;
-  }
-
-  // The account page started a keepalive handoff before navigation. Give it a
-  // short head start before a second exchange so normal opens validate with
-  // Discord once, while a race still recovers within a fixed deadline.
-  await new Promise<void>((resolve) => window.setTimeout(resolve, 700));
-  try {
-    return await request<Me>('/api/me');
-  } catch (cause) {
-    if (!(cause instanceof ApiError) || cause.status !== 401) throw cause;
     const restored = await bootstrapVozenAccountSession();
     if (!restored) throw cause;
     return request<Me>('/api/me');

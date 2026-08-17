@@ -2080,60 +2080,63 @@ function App() {
       setStatus('ready');
       return;
     }
+    let cancelled = false;
     void (async () => {
-      return Promise.all([
-      api.meOrBootstrap(),
-      api.guilds().catch(() => {
+      // The server picker only needs the signed session and the user's guilds.
+      // Establish those first, then let the full dashboard hydrate in the
+      // background. Previously all protected endpoints raced the session
+      // exchange and kept the picker on its loading screen unnecessarily.
+      const nextMe = await api.meOrBootstrap();
+      const nextGuilds = await api.guilds().catch(() => {
         setMessage('Could not load your servers. Return to your account and try again.');
         return { guilds: [] };
-      }),
-      api.features().catch(() => {
-        // Do not present stale/demo state as the real guild catalogue.  Keep
-        // the topics discoverable, but make every state explicitly blocked so
-        // a failed API request cannot lead to a misleading publish action.
-        setMessage('Feature state is unavailable until the Rust API reconnects.');
-        return { guildId: '', features: unavailableFeatureCatalogue() };
-      }),
-      api.stats().catch(() => ({ totalCases: 0, guildId: '' })),
-      api.cases().catch(() => ({ cases: [] })),
-      api.audit().catch(() => ({ events: [] })),
-      api.activity().catch(() => ({ activity: [] })),
-      api.quotas().catch(() => ({ plan: 'Free', limits: {}, usage: {} })),
-      api.rankCard().catch(() => ({ guildId: '', config: defaultRankCard })),
-      ]);
-    })()
-      .then(
-        ([
-          nextMe,
-          nextGuilds,
-          nextFeatures,
-          nextStats,
-          nextCases,
-          nextAudit,
-          nextActivity,
-          nextQuota,
-          nextRank,
-        ]) => {
-          setMe(nextMe);
-          setGuilds(nextGuilds.guilds);
-          setFeatures(nextFeatures.features.map(presentFeature));
-          setStats(nextStats);
-          setCases(nextCases.cases);
-          setAudit(nextAudit.events);
-          setActivity(nextActivity.activity);
-          setQuota(nextQuota);
-          setRankConfig(nextRank.config);
-          setSavedRankConfig(nextRank.config);
-          restoreOAuthReturnHash();
-          setStatus('ready');
-        },
-      )
-      .catch((cause: unknown) => {
-        setMessage(cause instanceof Error ? cause.message : 'Could not load the dashboard.');
-        setStatus('error');
       });
+      if (cancelled) return;
+
+      setMe(nextMe);
+      setGuilds(nextGuilds.guilds);
+      restoreOAuthReturnHash();
+      setStatus('ready');
+
+      if (parseRoute(window.location.hash).page === 'servers') return;
+
+      const [nextFeatures, nextStats, nextCases, nextAudit, nextActivity, nextQuota, nextRank] =
+        await Promise.all([
+          api.features().catch(() => {
+            // Do not present stale/demo state as the real guild catalogue. Keep
+            // the topics discoverable, but make every state explicitly blocked
+            // so a failed API request cannot lead to a misleading publish action.
+            setMessage('Feature state is unavailable until the Rust API reconnects.');
+            return { guildId: '', features: unavailableFeatureCatalogue() };
+          }),
+          api.stats().catch(() => ({ totalCases: 0, guildId: '' })),
+          api.cases().catch(() => ({ cases: [] })),
+          api.audit().catch(() => ({ events: [] })),
+          api.activity().catch(() => ({ activity: [] })),
+          api.quotas().catch(() => ({ plan: 'Free', limits: {}, usage: {} })),
+          api.rankCard().catch(() => ({ guildId: '', config: defaultRankCard })),
+        ]);
+      if (cancelled) return;
+
+      setFeatures(nextFeatures.features.map(presentFeature));
+      setStats(nextStats);
+      setCases(nextCases.cases);
+      setAudit(nextAudit.events);
+      setActivity(nextActivity.activity);
+      setQuota(nextQuota);
+      setRankConfig(nextRank.config);
+      setSavedRankConfig(nextRank.config);
+    })().catch((cause: unknown) => {
+      if (cancelled) return;
+      setMessage(cause instanceof Error ? cause.message : 'Could not load the dashboard.');
+      setStatus('error');
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
   useEffect(() => {
+    if (!me || route.page === 'servers') return;
     const guildId = me?.guildId ?? 'demo';
     if (localPreviewMode) {
       try {
@@ -2194,7 +2197,7 @@ function App() {
     ).then((entries) => {
       setQuickSetupDefaults(Object.fromEntries(entries) as QuickSetupFeatureDefaults);
     });
-  }, [me?.guildId, guilds]);
+  }, [me?.guildId, guilds, route.page]);
   useEffect(() => {
     if (route.page !== 'overview' || !quickSetup || quickSetup.status !== 'not_started') return;
     const key = `vh_quick_setup_intro_${quickSetup.guildId}`;
@@ -2207,7 +2210,7 @@ function App() {
     window.location.hash = '#/quick-setup';
   }, [route.page, quickSetup]);
   useEffect(() => {
-    if (!localPreviewMode) {
+    if (!localPreviewMode && me && route.page !== 'servers') {
       void api
         .youtubeSubscriptions()
         .then((result) => setYoutubeSubscriptions(result.subscriptions))
@@ -2229,7 +2232,7 @@ function App() {
           .catch(() => undefined);
       });
     }
-  }, []);
+  }, [me?.guildId, route.page]);
   useEffect(() => {
     if (route.page !== 'detail' || !route.key) return;
     setDetailLoading(true);
@@ -2876,8 +2879,9 @@ function App() {
               ? 'Create the level card with your server identity.'
               : 'server-specific configuration with simple and advanced options.';
   return (
-    <div className="shell panel-shell workspace-app workspace-shell workspace-shell--helper">
+    <div className="workspace-app workspace-app--helper">
       <EcosystemTopbar />
+      <div className="shell panel-shell workspace-shell workspace-shell--helper">
       <aside className="sidebar panel-sidebar workspace-sidebar">
         <div className="logo panel-logo workspace-sidebar__product">
           <span className="workspace-sidebar__product-mark" aria-hidden="true">H</span>
@@ -3057,6 +3061,7 @@ function App() {
             />
           ))}
       </main>
+      </div>
     </div>
   );
 }
@@ -3806,7 +3811,7 @@ function ServerPicker({
               <strong>Add Vozen Helper to another server</strong>
               <small>Invite the bot, then come back here to configure it.</small>
             </span>
-            <span aria-hidden="true">↗</span>
+            <span className="helper-server-picker__add-action">Add a server</span>
           </a>
         </section>
       </main>

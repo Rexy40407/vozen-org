@@ -39,6 +39,11 @@ assert.match(
 );
 assert.doesNotMatch(
   api,
+  /setTimeout\(resolve, 700\)/,
+  'the Helper must not delay every cold session before restoring the account handoff',
+);
+assert.doesNotMatch(
+  api,
   /\/api\/session\/vozen[^\n]*[?&]token=/,
   'an OAuth token must never be placed in a URL',
 );
@@ -56,6 +61,11 @@ assert.match(
   app,
   /api\.meOrBootstrap\(\)/,
   'the panel must reuse or restore the shared session before loading protected data',
+);
+assert.match(
+  app,
+  /if \(parseRoute\(window\.location\.hash\)\.page === 'servers'\) return;/,
+  'the server picker must become ready before loading dashboard-only data',
 );
 assert.doesNotMatch(
   app,
