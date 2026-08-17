@@ -932,6 +932,120 @@ body:has(.workspace-standalone--helper-picker) #root,
 
 .helper-server-picker .dash-picker__add:active { transform: translateY(0); }
 
+/* Quick Setup keeps its current type scale and saves height through layout.
+ * The completion summary and the next-step panel sit side by side on desktop,
+ * so the complete state fits in the workspace without an internal scroll. */
+.workspace-shell--helper .quick-setup-page {
+  gap: 16px;
+}
+
+.workspace-shell--helper .quick-setup-hero {
+  min-height: 330px;
+  padding: 32px;
+}
+
+.workspace-shell--helper .quick-setup-form,
+.workspace-shell--helper .quick-setup-aside {
+  padding: 20px;
+}
+
+.workspace-shell--helper .setup-progress {
+  padding: 6px;
+}
+
+.workspace-shell--helper .progress-step {
+  min-height: 44px;
+  padding: 9px 11px;
+}
+
+.workspace-shell--helper .setup-choice {
+  min-height: 44px;
+  padding: 11px 12px;
+}
+
+.workspace-shell--helper .quick-setup-aside {
+  gap: 10px;
+}
+
+.workspace-shell--helper .quick-setup-complete {
+  width: 100%;
+  max-width: 980px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto;
+  column-gap: 24px;
+  row-gap: 4px;
+  align-items: center;
+  justify-items: stretch;
+  padding: 28px 30px;
+  text-align: left;
+}
+
+.workspace-shell--helper .quick-setup-complete > .success-mark {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  justify-self: end;
+  width: 52px;
+  height: 52px;
+  margin-right: 4px;
+}
+
+.workspace-shell--helper .quick-setup-complete > .eyebrow {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+}
+
+.workspace-shell--helper .quick-setup-complete > h2 {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 2px 0 4px;
+}
+
+.workspace-shell--helper .quick-setup-complete > p {
+  grid-column: 2;
+  grid-row: 3;
+  align-self: start;
+  max-width: 590px;
+  line-height: 1.5;
+}
+
+.workspace-shell--helper .setup-summary {
+  grid-column: 1;
+  grid-row: 4;
+  align-self: start;
+  width: 100%;
+  margin: 16px 0 0;
+}
+
+.workspace-shell--helper .setup-summary > div {
+  min-height: 48px;
+  padding: 9px 12px;
+}
+
+.workspace-shell--helper .premium-panel {
+  grid-column: 2;
+  grid-row: 4;
+  align-self: start;
+  margin: 16px 0 0;
+  padding: 0 0 0 24px;
+  border-top: 0;
+  border-left: 1px solid var(--line);
+}
+
+.workspace-shell--helper .premium-panel h3 {
+  margin: 6px 0 10px;
+}
+
+.workspace-shell--helper .premium-grid {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.workspace-shell--helper .premium-card {
+  gap: 5px;
+  padding: 11px;
+}
+
 /* The public TTS dashboard uses a 110% desktop presence scale. Applying that
  * scale to the Helper picker content reproduces the same physical type,
  * control and card dimensions while leaving the shared navigation unchanged. */
@@ -949,6 +1063,30 @@ body:has(.workspace-standalone--helper-picker) #root,
   .workspace-shell--helper .workspace-global-nav__links,
   .workspace-standalone--helper .workspace-global-nav__links { gap: 20px; }
   .helper-overview__grid { grid-template-columns: 1fr; }
+  .workspace-shell--helper .quick-setup-complete {
+    grid-template-columns: 52px minmax(0, 1fr);
+    padding: 24px;
+  }
+  .workspace-shell--helper .quick-setup-complete > .success-mark {
+    grid-column: 1;
+    justify-self: start;
+    margin-right: 0;
+  }
+  .workspace-shell--helper .quick-setup-complete > .eyebrow,
+  .workspace-shell--helper .quick-setup-complete > h2,
+  .workspace-shell--helper .quick-setup-complete > p { grid-column: 2; }
+  .workspace-shell--helper .setup-summary {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+  .workspace-shell--helper .premium-panel {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    margin-top: 12px;
+    padding: 18px 0 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
 }
 
 @media (max-width: 720px) {
@@ -980,6 +1118,18 @@ body:has(.workspace-standalone--helper-picker) #root,
   .workspace-shell--helper .workspace-main { width: 100%; padding: 28px 18px 70px; }
   .workspace-shell--helper .panel-header { display: block; margin-bottom: 26px; }
   .workspace-shell--helper .panel-header .header-state { display: inline-flex; margin-top: 17px; }
+  .workspace-shell--helper .quick-setup-hero,
+  .workspace-shell--helper .quick-setup-form,
+  .workspace-shell--helper .quick-setup-aside,
+  .workspace-shell--helper .quick-setup-complete { padding: 19px; }
+  .workspace-shell--helper .quick-setup-complete {
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+  .workspace-shell--helper .quick-setup-complete > .success-mark {
+    width: 44px;
+    height: 44px;
+  }
   .helper-overview { padding: 24px 18px; }
   .helper-overview__intro h1 { font-size: clamp(43px, 12vw, 67px); }
   .helper-overview__readiness, .helper-overview__snapshot { padding: 18px; }
