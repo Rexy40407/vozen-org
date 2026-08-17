@@ -328,7 +328,15 @@ let sessionBearer: string | null = null;
 const OAUTH_RETURN_HASH_KEY = 'vh_oauth_return_hash';
 const VOZEN_ACCOUNT_TOKEN_KEY = 'vozen.ecosystem.dtoken';
 const AUTH_CHANNEL_NAME = 'vozen.ecosystem.auth.v1';
+const SESSION_BRIDGE_TIMEOUT_MS = 6_000;
 let vozenAccountBootstrapAttempted = false;
+
+class ApiError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
 
 function isSafePanelHash(value: string): boolean {
   return (
@@ -454,6 +462,10 @@ export async function bootstrapVozenAccountSession(): Promise<boolean> {
   // A fresh first-party account exchange must win over any stale legacy
   // Helper bearer left in this tab from an earlier OAuth flow.
   persistSessionBearer(null);
+  const controller = typeof AbortController === 'function' ? new AbortController() : null;
+  const timer = controller
+    ? window.setTimeout(() => controller.abort(), SESSION_BRIDGE_TIMEOUT_MS)
+    : null;
   try {
     const response = await fetch(apiUrl('/api/session/vozen'), {
       method: 'POST',
@@ -464,10 +476,13 @@ export async function bootstrapVozenAccountSession(): Promise<boolean> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ token }),
+      ...(controller ? { signal: controller.signal } : {}),
     });
     return response.ok;
   } catch {
     return false;
+  } finally {
+    if (timer) window.clearTimeout(timer);
   }
 }
 
@@ -492,14 +507,36 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       code?: string;
     };
     if (response.status === 401) persistSessionBearer(null);
-    throw new Error(payload.message ?? payload.code ?? `API ${response.status}`);
+    throw new ApiError(payload.message ?? payload.code ?? `API ${response.status}`, response.status);
   }
   return (await response.json()) as T;
+}
+
+async function meOrBootstrap(): Promise<Me> {
+  try {
+    return await request<Me>('/api/me');
+  } catch (cause) {
+    if (!(cause instanceof ApiError) || cause.status !== 401) throw cause;
+  }
+
+  // The account page started a keepalive handoff before navigation. Give it a
+  // short head start before a second exchange so normal opens validate with
+  // Discord once, while a race still recovers within a fixed deadline.
+  await new Promise<void>((resolve) => window.setTimeout(resolve, 700));
+  try {
+    return await request<Me>('/api/me');
+  } catch (cause) {
+    if (!(cause instanceof ApiError) || cause.status !== 401) throw cause;
+    const restored = await bootstrapVozenAccountSession();
+    if (!restored) throw cause;
+    return request<Me>('/api/me');
+  }
 }
 
 export const api = {
   bootstrapVozenAccountSession,
   me: () => request<Me>('/api/me'),
+  meOrBootstrap,
   guilds: () => request<{ guilds: Guild[] }>('/api/guilds'),
   guildContext: () => request<GuildContext>('/api/guild-context'),
   quickSetup: () => request<QuickSetupState>('/api/quick-setup'),

@@ -840,6 +840,9 @@
       method: "POST",
       cache: "no-store",
       credentials: "include",
+      // Navigation is never blocked by this exchange. Keep this small request
+      // alive when the browser supports it so the Helper can reuse the cookie.
+      keepalive: true,
       headers: { Accept: "application/json", "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
       ...(controller ? { signal: controller.signal } : {}),
@@ -880,9 +883,9 @@
         const token = storedToken();
         if (!token) return;
 
-        event.preventDefault();
-        const href = target.href;
-        void bootstrapHelperSession(token).finally(() => window.location.assign(href));
+        // Do not make the account card wait on Discord. The panel checks the
+        // resulting cookie first and uses one bounded fallback only if needed.
+        void bootstrapHelperSession(token);
       },
       { capture: true },
     );

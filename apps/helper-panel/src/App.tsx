@@ -2081,9 +2081,8 @@ function App() {
       return;
     }
     void (async () => {
-      await api.bootstrapVozenAccountSession();
       return Promise.all([
-      api.me(),
+      api.meOrBootstrap(),
       api.guilds().catch(() => {
         setMessage('Could not load your servers. Return to your account and try again.');
         return { guilds: [] };
@@ -3768,9 +3767,6 @@ function ServerPicker({
               <h2>Pick a server</h2>
               <p>Servers where you&apos;re an admin and Vozen Helper is added</p>
             </div>
-            <span className="helper-server-picker__count" aria-label={`${manageableGuilds.length} available servers`}>
-              {manageableGuilds.length}
-            </span>
           </div>
           {manageableGuilds.length ? (
             <div className="helper-server-picker__list">

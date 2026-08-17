@@ -27,6 +27,16 @@ assert.match(
   /credentials: 'include'/,
   'the exchange must establish the HttpOnly Helper cookie',
 );
+assert.match(
+  api,
+  /const SESSION_BRIDGE_TIMEOUT_MS = 6_000;/,
+  'the fallback exchange must have a fixed deadline',
+);
+assert.match(
+  api,
+  /async function meOrBootstrap\(\): Promise<Me>/,
+  'the panel must reuse an existing cookie before exchanging the account token again',
+);
 assert.doesNotMatch(
   api,
   /\/api\/session\/vozen[^\n]*[?&]token=/,
@@ -44,8 +54,13 @@ assert.doesNotMatch(
 );
 assert.match(
   app,
+  /api\.meOrBootstrap\(\)/,
+  'the panel must reuse or restore the shared session before loading protected data',
+);
+assert.doesNotMatch(
+  app,
   /await api\.bootstrapVozenAccountSession\(\);/,
-  'the panel must bootstrap the shared session before loading protected data',
+  'the panel must not duplicate the account handoff before checking its cookie',
 );
 assert.match(
   main,
