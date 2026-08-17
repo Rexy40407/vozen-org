@@ -11,7 +11,12 @@ export type RankCardConfig = {
   avatar_ring_width: number;
 };
 
-export type Guild = { id: string; name: string; canManage: boolean };
+export type Guild = {
+  id: string;
+  name: string;
+  canManage: boolean;
+  iconUrl?: string | null;
+};
 export type Me = { id: string; guildId: string; expiresAt: string; dbOk?: boolean };
 export type Feature = {
   key: string;

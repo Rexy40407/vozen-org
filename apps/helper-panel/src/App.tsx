@@ -3852,6 +3852,36 @@ function EcosystemTopbar() {
   );
 }
 
+function helperGuildInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).slice(0, 2);
+  return parts.map((part) => part.charAt(0)).join('').toUpperCase() || '?';
+}
+
+function HelperGuildAvatar({ guild }: { guild: Guild }) {
+  const [failed, setFailed] = useState(false);
+  const iconUrl = typeof guild.iconUrl === 'string' && guild.iconUrl ? guild.iconUrl : null;
+
+  if (!iconUrl || failed) {
+    return (
+      <span className="dash-server__ph" aria-hidden="true">
+        {helperGuildInitials(guild.name)}
+      </span>
+    );
+  }
+
+  return (
+    <img
+      className="dash-server__img"
+      src={iconUrl}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 function ServerPicker({
   guilds,
   selectedGuildId,
@@ -3866,9 +3896,11 @@ function ServerPicker({
     <div className="workspace-standalone workspace-app workspace-standalone--helper">
       <EcosystemTopbar />
       <main className="helper-server-picker workspace-standalone__content" aria-labelledby="server-picker-title">
-        <a className="helper-server-picker__back" href="/account/">
-          {helperT('helper.backAccount', '← Back to account')}
-        </a>
+        <div className="tts-picker-page__back">
+          <a className="dash-exit" href="/account/">
+            {helperT('helper.backAccount', '← Back to account')}
+          </a>
+        </div>
         <div className="helper-server-picker__heading-block">
           <small className="eyebrow">{helperT('helper.dashboardEyebrow', 'DASHBOARD')}</small>
           <h1 id="server-picker-title" data-route-heading tabIndex={-1}>
@@ -3876,31 +3908,23 @@ function ServerPicker({
           </h1>
           <p>{helperT('helper.serverSettingsSubtitle', 'Configure Vozen Helper on your servers — no slash commands needed')}</p>
         </div>
-        <section className="helper-server-picker__surface">
-          <div className="helper-server-picker__surface-heading">
-            <div>
-              <h2>{helperT('helper.pickServer', 'Pick a server')}</h2>
-              <p>{helperT('helper.pickHint', "Servers where you're an admin and Vozen Helper is added")}</p>
-            </div>
-          </div>
+        <section className="dash-picker">
+          <h2>{helperT('helper.pickServer', 'Pick a server')}</h2>
+          <p className="helper-server-picker__hint">
+            {helperT('helper.pickHint', "Servers where you're an admin and Vozen Helper is added")}
+          </p>
           {manageableGuilds.length ? (
-            <div className="helper-server-picker__list">
+            <div className="dash-picker__list">
               {manageableGuilds.map((guild) => (
                 <button
-                  className={`helper-server-picker__server${guild.id === selectedGuildId ? ' is-current' : ''}`}
+                  className={`dash-server${guild.id === selectedGuildId ? ' is-current' : ''}`}
                   key={guild.id}
                   type="button"
                   onClick={() => onSelect(guild.id)}
                 >
-                  <span className="helper-server-picker__initial" aria-hidden="true">
-                    {guild.name.trim().slice(0, 2).toUpperCase() || 'VH'}
-                  </span>
-                  <span className="helper-server-picker__copy">
-                    <strong>{guild.name}</strong>
-                  </span>
-                  <span className="helper-server-picker__arrow" aria-hidden="true">
-                    ›
-                  </span>
+                  <HelperGuildAvatar guild={guild} />
+                  <span className="dash-server__name">{guild.name}</span>
+                  <span className="dash-server__arrow" aria-hidden="true">›</span>
                 </button>
               ))}
             </div>
@@ -3911,18 +3935,15 @@ function ServerPicker({
               <a href="/account/">{helperT('helper.returnAccount', 'Return to account')}</a>
             </section>
           )}
-          <a
-            className="helper-server-picker__add"
-            href={HELPER_INVITE_HREF}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span>
+          <div className="dash-picker__actions">
+            <div className="dash-picker__actions-copy">
               <strong>{helperT('helper.addAnotherServer', 'Add Vozen Helper to another server')}</strong>
               <small>{helperT('helper.inviteHint', 'Invite the bot, then come back here to configure it.')}</small>
-            </span>
-            <span className="helper-server-picker__add-action">{helperT('helper.addServer', 'Add a server')}</span>
-          </a>
+            </div>
+            <a className="dash-picker__add" href={HELPER_INVITE_HREF} target="_blank" rel="noreferrer">
+              {helperT('helper.addServer', 'Add a server')}
+            </a>
+          </div>
         </section>
       </main>
     </div>
