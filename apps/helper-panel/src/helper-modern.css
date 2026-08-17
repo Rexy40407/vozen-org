@@ -682,7 +682,9 @@
  * The two products have different dashboard content, but server selection is
  * the same task and should feel like one ecosystem surface. */
 .helper-server-picker.workspace-standalone__content {
-  width: min(100%, 1080px);
+  /* Same editorial column as the TTS picker entry screen. */
+  width: min(100%, 960px);
+  padding: clamp(36px, 5vh, 58px) 24px 72px;
 }
 
 .helper-server-picker .tts-picker-page__back {
@@ -711,13 +713,20 @@
 }
 
 .helper-server-picker__heading-block h1 {
+  margin: 8px 0 0;
   color: var(--text-0, var(--helper-copy));
   font-family: "Unbounded", "Outfit", system-ui, sans-serif;
   font-weight: 700;
+  font-size: clamp(42px, 5.5vw, 64px);
+  line-height: .96;
+  letter-spacing: -.055em;
 }
 
 .helper-server-picker__heading-block p {
+  margin: 14px 0 0;
   color: var(--text-1, #a3a9c4);
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 .helper-server-picker .dash-exit {
