@@ -98,43 +98,45 @@ body:has(.workspace-standalone--helper-picker) #root,
   min-width: 0;
   min-height: 0;
   height: 100%;
+  gap: 22px;
+  padding: 24px 18px 18px;
   overflow-y: auto;
   border-right: 1px solid rgba(73, 98, 133, .58);
   background: rgba(5, 11, 21, .86);
 }
 
 .workspace-shell--helper .workspace-sidebar__product {
-  gap: 12px;
-  min-height: 84px;
-  padding: 20px 22px 17px;
-  border-bottom: 1px solid rgba(73, 98, 133, .3);
+  gap: 11px;
+  min-height: 0;
+  padding: 2px 4px 8px;
+  border-bottom: 0;
 }
 
 .workspace-shell--helper .workspace-sidebar__product-mark {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(142, 229, 210, .48);
-  border-radius: 13px;
+  border-radius: 12px;
   color: #08121d;
   background: linear-gradient(145deg, var(--helper-aqua-soft), #6b9dff);
   font-family: "Unbounded", "Vozen Outfit", system-ui, sans-serif;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 800;
   box-shadow: 0 10px 28px rgba(76, 184, 222, .17);
 }
 
 .workspace-shell--helper .workspace-sidebar__product strong {
   color: var(--helper-copy);
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: -.02em;
 }
 
 .workspace-shell--helper .workspace-sidebar__product small {
   display: block;
-  margin-top: 3px;
+  margin-top: 0;
   color: #7889ab;
   font-size: 11px;
   font-weight: 800;
@@ -142,12 +144,13 @@ body:has(.workspace-standalone--helper-picker) #root,
 }
 
 .workspace-shell--helper .workspace-sidebar__section {
-  padding: 23px 18px 8px;
+  gap: 8px;
+  padding: 0;
 }
 
 .workspace-shell--helper .workspace-sidebar__label {
   display: block;
-  margin: 0 5px 9px;
+  margin: 0;
   color: #8193b5;
   font-size: 11px;
   font-weight: 800;
@@ -157,10 +160,10 @@ body:has(.workspace-standalone--helper-picker) #root,
 
 .workspace-shell--helper .workspace-sidebar select {
   width: 100%;
-  min-height: 48px;
-  padding: 0 39px 0 14px;
-  border: 1px solid var(--helper-border);
-  border-radius: 11px;
+  min-height: var(--workspace-control);
+  padding: 0 32px 0 12px;
+  border: 1px solid var(--workspace-border);
+  border-radius: 10px;
   color: var(--helper-copy);
   background-color: #111b2c;
   font-size: 15px;
@@ -168,32 +171,25 @@ body:has(.workspace-standalone--helper-picker) #root,
 }
 
 .helper-sidebar-add {
-  min-height: 44px;
+  min-height: var(--workspace-control);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 9px;
-  padding: 8px 12px;
-  border: 1px solid rgba(56, 216, 199, .46);
+  gap: 0;
+  margin-top: 0;
+  padding: 0 12px;
+  border: 1px solid var(--workspace-border);
   border-radius: 10px;
-  color: var(--helper-aqua-soft);
-  background: rgba(56, 216, 199, .06);
-  font-size: 14px;
-  font-weight: 800;
+  color: var(--workspace-aqua);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
   text-decoration: none;
   transition: color .18s ease, background .18s ease, border-color .18s ease;
 }
 
 .helper-sidebar-add span {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  font-size: 16px;
-  line-height: 1;
+  display: none;
 }
 
 .helper-sidebar-add:hover,
@@ -204,51 +200,48 @@ body:has(.workspace-standalone--helper-picker) #root,
 }
 
 .workspace-shell--helper .workspace-sidebar__hint {
-  margin: 10px 5px 0;
-  color: var(--helper-subtle);
-  font-size: 12px;
-  line-height: 1.45;
+  display: none;
 }
 
 .workspace-shell--helper .workspace-sidebar__nav {
   display: grid;
-  gap: 6px;
-  padding: 15px 18px;
+  gap: 4px;
+  padding: 0;
 }
 
 .workspace-shell--helper .workspace-sidebar__nav .nav {
-  min-height: 52px;
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
+  min-height: var(--workspace-control);
+  display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 0 12px;
   border: 1px solid transparent;
-  border-radius: 11px;
+  border-radius: 10px;
   color: var(--helper-muted);
   background: transparent;
+  font-size: 13px;
+  font-weight: 700;
   text-align: left;
   transition: color .18s ease, border-color .18s ease, background .18s ease;
 }
 
 .workspace-shell--helper .workspace-sidebar__nav .nav > span {
+  width: 24px;
   color: #88a5ff;
-  font-size: 16px;
+  font-size: 13px;
   text-align: center;
 }
 
 .workspace-shell--helper .workspace-sidebar__nav .nav b {
   display: block;
   color: inherit;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .workspace-shell--helper .workspace-sidebar__nav .nav small {
-  display: block;
-  margin-top: 1px;
-  color: var(--helper-subtle);
-  font-size: 11px;
+  display: none;
 }
 
 .workspace-shell--helper .workspace-sidebar__nav .nav:hover,
@@ -265,11 +258,11 @@ body:has(.workspace-standalone--helper-picker) #root,
 
 .workspace-shell--helper .workspace-sidebar__footer {
   margin-top: auto;
-  padding: 18px;
+  padding: 16px 0 0;
 }
 
 .workspace-shell--helper .workspace-sidebar__footer .workspace-exit {
-  min-height: 44px;
+  min-height: var(--workspace-control);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,10 +283,7 @@ body:has(.workspace-standalone--helper-picker) #root,
 }
 
 .workspace-shell--helper .workspace-sync {
-  margin-top: 14px;
-  color: #6e819f;
-  font-size: 12px;
-  text-align: center;
+  display: none;
 }
 
 .workspace-shell--helper .panel-header {
