@@ -1,0 +1,371 @@
+/* Checkout embedded: the payment fields themselves are rendered by Stripe.js. */
+.billing-modal[hidden] {
+  display: none;
+}
+
+.billing-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.billing-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 5, 12, 0.58);
+  backdrop-filter: blur(12px) saturate(0.72);
+  -webkit-backdrop-filter: blur(12px) saturate(0.72);
+}
+
+.billing-modal__dialog {
+  position: relative;
+  width: min(100%, 600px);
+  max-height: min(94vh, 900px);
+  overflow: auto;
+  border: 1px solid rgba(225, 205, 157, 0.2);
+  border-radius: 16px;
+  background: var(--panel, #10121f);
+  box-shadow: 0 28px 100px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.025) inset;
+  color: #f7f8ff;
+  outline: none;
+}
+
+.billing-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 22px 14px;
+}
+
+.billing-modal__eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: #84d8c4;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.billing-modal__head h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 4vw, 1.85rem);
+  letter-spacing: -0.04em;
+}
+
+.billing-modal__head p {
+  margin: 8px 0 0;
+  color: #9aa6bc;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.billing-modal__close {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: #d6deef;
+  cursor: pointer;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.billing-modal__close:hover,
+.billing-modal__close:focus-visible {
+  border-color: rgba(132, 216, 196, 0.55);
+  color: #fff;
+}
+
+.billing-modal__steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px 14px;
+  color: #77849c;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.billing-modal__steps span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.55;
+}
+
+.billing-modal__steps span + span::before {
+  width: 42px;
+  height: 1px;
+  margin-right: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  content: "";
+}
+
+.billing-modal__steps span.is-active {
+  opacity: 1;
+  color: #f7f8ff;
+}
+
+.billing-modal__steps i {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+}
+
+.billing-modal__steps span.is-active i {
+  border-color: #84d8c4;
+  background: rgba(132, 216, 196, 0.15);
+  color: #b9ffed;
+}
+
+.billing-modal__body {
+  min-height: 420px;
+}
+
+.billing-modal__auth,
+.billing-modal__done {
+  display: grid;
+  min-height: 420px;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+}
+
+.billing-modal__auth[hidden],
+.billing-modal__payment[hidden],
+.billing-modal__done[hidden] {
+  display: none;
+}
+
+.billing-modal__auth p,
+.billing-modal__done p {
+  max-width: 38ch;
+  margin: 0;
+  color: #9aa6bc;
+  line-height: 1.55;
+}
+
+.billing-modal__auth .billing-modal__lead {
+  color: #f7f8ff;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.billing-modal__login {
+  min-height: 46px;
+  margin-top: 8px;
+}
+
+.billing-modal__status {
+  min-height: 1.4em;
+  color: #ffc24b !important;
+  font-size: 0.78rem;
+}
+
+.billing-modal__done-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid rgba(46, 230, 200, 0.45);
+  border-radius: 50%;
+  background: rgba(46, 230, 200, 0.12);
+  color: #7cf5e2;
+  font-size: 2rem;
+}
+
+.billing-modal__done h3 {
+  margin: 0;
+  color: #f7f8ff;
+  font-size: 1.3rem;
+}
+
+.billing-modal__checkout {
+  min-height: 0;
+  margin: 0 18px;
+  overflow: visible;
+  border: 1px solid rgba(138, 174, 255, 0.16);
+  border-radius: 12px;
+  background: #0c1220;
+}
+
+.billing-modal__checkout iframe {
+  display: block;
+  width: 100%;
+  min-height: 560px;
+  border: 0;
+}
+
+.billing-modal__loading,
+.billing-modal__error {
+  display: grid;
+  min-height: 420px;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 30px;
+  color: #f7f8ff;
+  text-align: center;
+}
+
+.billing-modal__loading p,
+.billing-modal__error p {
+  margin: 0;
+  color: #aab6ca;
+}
+
+.billing-modal__spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #d7deea;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: billing-spin 0.8s linear infinite;
+}
+
+.billing-modal__error strong {
+  font-size: 1.05rem;
+}
+
+.billing-modal__error-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  justify-self: center;
+  color: #ffc36a;
+  border: 1px solid rgba(255, 195, 106, 0.42);
+  border-radius: 50%;
+  background: rgba(255, 195, 106, 0.11);
+  font-weight: 800;
+}
+
+.billing-modal__trust {
+  margin: 16px 30px 24px;
+  color: #8d9bb2;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.billing-modal__trust span {
+  color: #84d8c4;
+  font-size: 1.1rem;
+  vertical-align: -1px;
+}
+
+@keyframes billing-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .billing-modal {
+    align-items: end;
+    padding: 0;
+  }
+
+  .billing-modal__dialog {
+    max-height: 96vh;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .billing-modal__head,
+  .billing-modal__steps {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .billing-modal__checkout {
+    margin: 0 8px;
+  }
+
+  .billing-modal__trust {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .billing-modal__spinner {
+    animation: none;
+  }
+}
+
+
+/* Stripe custom Checkout: Vozen owns the shell; Stripe owns every payment field. */
+.billing-elements { display: grid; gap: 14px; padding: 18px; }
+.billing-elements__label { color: var(--text-1, #a3a9c4); font-size: .78rem; font-weight: 750; letter-spacing: .02em; }
+.billing-elements__email, .billing-elements__promo input { width: 100%; min-height: 46px; box-sizing: border-box; border: 1px solid var(--line-2, rgba(255,255,255,.16)); border-radius: 10px; background: var(--bg-0, #05060f); color: var(--text-0, #f6f7fe); padding: 0 13px; font: inherit; }
+.billing-elements__email:focus, .billing-elements__promo input:focus { outline: 2px solid rgba(46,230,200,.5); outline-offset: 2px; }
+.billing-elements__express { padding: 4px 0; }
+.billing-elements__express[hidden] { display: none; }
+.billing-elements__or { display: flex; align-items: center; gap: 12px; color: var(--text-2, #6b7192); font-size: .74rem; text-transform: uppercase; letter-spacing: .12em; }
+.billing-elements__or::before, .billing-elements__or::after { height: 1px; flex: 1; background: var(--line, rgba(255,255,255,.08)); content: ""; }
+.billing-elements__promo { display: grid; gap: 7px; }
+.billing-elements__promo > div { display: flex; gap: 8px; }
+.billing-elements__promo button, .billing-modal__hosted { min-height: 42px; border: 1px solid var(--line-2, rgba(255,255,255,.16)); border-radius: 10px; background: transparent; color: var(--aqua-2, #7cf5e2); padding: 0 13px; font: inherit; font-weight: 750; cursor: pointer; }
+.billing-elements__promo button { flex: 0 0 auto; }
+.billing-elements__promo p, .billing-elements__status { min-height: 1.25em; margin: 0; color: var(--text-1, #a3a9c4); font-size: .8rem; }
+.billing-elements__pay { width: 100%; min-height: 50px; margin-top: 4px; }
+.billing-modal__hosted { margin-top: 2px; }
+.billing-modal__error { min-height: 320px; }
+@media (max-width: 600px) { .billing-elements { padding: 14px; } .billing-elements__pay { position: sticky; bottom: 8px; z-index: 1; box-shadow: 0 10px 30px rgba(0,0,0,.34); } }
+
+/* Compact checkout shell: Stripe remains the owner of every payment field. */
+.billing-modal { padding: 16px; }
+.billing-modal__backdrop { background: rgba(3, 5, 12, 0.72); backdrop-filter: blur(14px) saturate(0.76); -webkit-backdrop-filter: blur(14px) saturate(0.76); }
+.billing-modal__dialog {
+  width: min(100%, 432px);
+  max-height: min(calc(100dvh - 32px), 920px);
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  border-color: rgba(132, 216, 196, 0.18);
+  border-radius: 14px;
+  background: #0a0d16;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.62);
+}
+.billing-modal__head { gap: 20px; padding: 20px 22px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+.billing-modal__eyebrow { margin-bottom: 6px; font-size: 0.66rem; letter-spacing: 0.12em; }
+.billing-modal__head h2 { font-size: clamp(1.4rem, 5vw, 1.7rem); letter-spacing: -0.035em; line-height: 1.08; }
+.billing-modal__head p { margin-top: 7px; color: #aeb8c9; font-size: 0.78rem; line-height: 1.4; }
+.billing-modal__close { width: 36px; height: 36px; border-radius: 12px; background: rgba(255, 255, 255, 0.035); font-size: 1.25rem; }
+.billing-modal__steps { display: none; }
+.billing-modal__body { min-height: 400px; }
+.billing-modal__checkout { margin: 0; border: 0; border-radius: 0; background: #0b0d0f; }
+.billing-modal__checkout iframe { min-height: 650px; }
+.billing-modal__trust { margin: 14px 24px 20px; color: #929db0; font-size: 0.74rem; }
+
+@media (max-width: 600px) {
+  .billing-modal__dialog {
+    width: 100%;
+    max-height: 98dvh;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 16px 16px 0 0;
+    scrollbar-gutter: auto;
+  }
+  .billing-modal__head { padding: 18px 18px 16px; }
+  .billing-modal__checkout { margin: 0; }
+  .billing-modal__checkout iframe { min-height: 620px; }
+  .billing-modal__trust { margin-right: 18px; margin-left: 18px; }
+}
+
+@media (min-width: 601px) and (max-height: 760px) {
+  .billing-modal { padding: 8px; }
+  .billing-modal__dialog { max-height: calc(100dvh - 16px); }
+  .billing-modal__head { padding-top: 16px; padding-bottom: 14px; }
+}

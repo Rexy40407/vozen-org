@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Start at the Vozen Docs home and choose the focused guide for Vozen Helper or Vozen TTS."
+    />
+    <link rel="canonical" href="https://vozen.org/docs/" />
+    <title>Vozen Docs — Start here</title>
+    <link rel="stylesheet" href="helper/assets/docs.css" />
+    <link rel="stylesheet" href="shared/docs-shell.css?v=ecosystem-nav-v13" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <script>
+      if (window.location.protocol !== 'file:' && /\/docs\/index\.html$/i.test(window.location.pathname)) {
+        window.location.replace('/docs/' + window.location.search + window.location.hash);
+      }
+    </script>
+      <meta property="og:site_name" content="Vozen">
+      <meta property="og:type" content="website">
+      <meta property="og:url" content="https://vozen.org/docs/">
+      <meta property="og:title" content="Vozen Docs — Start here">
+      <meta property="og:description" content="Start at the Vozen Docs home and choose the focused guide for Vozen Helper or Vozen TTS.">
+      <meta property="og:image" content="https://vozen.org/assets/og-image.png">
+      <meta property="og:image:alt" content="Vozen">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="Vozen Docs — Start here">
+      <meta name="twitter:description" content="Start at the Vozen Docs home and choose the focused guide for Vozen Helper or Vozen TTS.">
+      <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
+      <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Vozen Docs — Start here","description":"Start at the Vozen Docs home and choose the focused guide for Vozen Helper or Vozen TTS.","url":"https://vozen.org/docs/","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
+  </head>
+  <body data-docs-product="docs">
+    <a class="skip-link" href="#main" data-i18n="docs.home.skip">Skip to guides</a>
+    <header class="docs-topbar">
+      <div class="docs-topbar__inner">
+        <a class="docs-topbar__back" data-docs-back href="../index.html">← Go back</a>
+        <span class="docs-topbar__arrow" aria-hidden="true">→</span>
+        <nav aria-label="Documentation products">
+          <ul class="docs-topbar__products">
+            <li>
+              <a class="docs-topbar__link" data-docs-product-link="docs" aria-current="page" href="index.html">Docs</a>
+            </li>
+            <li><span class="docs-topbar__arrow" aria-hidden="true">→</span></li>
+            <li><a class="docs-topbar__link" data-docs-product-link="helper" href="helper/index.html">Vozen Helper</a></li>
+            <li><span class="docs-topbar__arrow" aria-hidden="true">→</span></li>
+            <li><a class="docs-topbar__link" data-docs-product-link="tts" href="tts/index.html">Vozen TTS</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" class="docs-main docs-overview">
+      <p class="eyebrow" data-i18n="docs.home.eyebrow">VOZEN DOCS · START HERE</p>
+      <h1 data-i18n="docs.home.title">Find the right Vozen guide.</h1>
+      <p class="lede" data-i18n="docs.home.lede">
+        These docs explain the public surfaces of the Vozen ecosystem: what each product does,
+        what it needs, and what to expect before you change a Discord server.
+      </p>
+
+      <div class="docs-overview__grid">
+        <a class="docs-overview__card" href="helper/index.html">
+          <p class="eyebrow" data-i18n="docs.home.helperEyebrow">SERVER OPERATIONS</p>
+          <h2>Vozen Helper</h2>
+          <p data-i18n="docs.home.helperCopy">Configure moderation, community, utility and read-only server modules with a clear path from setup to recovery.</p>
+          <span><span data-i18n="docs.home.helperAction">Open Helper docs</span> <b aria-hidden="true">→</b></span>
+        </a>
+        <a class="docs-overview__card docs-overview__card--accent" href="tts/index.html">
+          <p class="eyebrow" data-i18n="docs.home.ttsEyebrow">VOICE TOOLKIT</p>
+          <h2>Vozen TTS</h2>
+          <p data-i18n="docs.home.ttsCopy">Set up voice sessions, languages, voices, files, transcription, translation, Premium limits and public commands.</p>
+          <span><span data-i18n="docs.home.ttsAction">Open TTS docs</span> <b aria-hidden="true">→</b></span>
+        </a>
+      </div>
+
+      <section class="card docs-overview__principles">
+        <p class="eyebrow" data-i18n="docs.home.principlesEyebrow">A SMALL STARTING POINT</p>
+        <h2 data-i18n="docs.home.principlesTitle">How to use these docs</h2>
+        <ol class="docs-overview__steps">
+          <li><strong data-i18n="docs.home.step1Title">Choose a product.</strong><span data-i18n="docs.home.step1Copy">Each guide keeps its search, navigation and technical context focused.</span></li>
+          <li><strong data-i18n="docs.home.step2Title">Start with the outcome.</strong><span data-i18n="docs.home.step2Copy">Follow the shortest path to the server change or voice result you need.</span></li>
+          <li><strong data-i18n="docs.home.step3Title">Preview before publishing.</strong><span data-i18n="docs.home.step3Copy">Use the examples and recovery notes before applying a change in Discord.</span></li>
+        </ol>
+      </section>
+
+      <section class="docs-callout docs-overview__source">
+        <strong data-i18n="docs.home.sourceTitle">Public docs, grounded in the product.</strong>
+        <p data-i18n="docs.home.sourceCopy">
+          The pages describe public behaviour and fictional examples. Contracts and runtime behaviour
+          are the source of truth; private owner operations and real identifiers are intentionally left out.
+        </p>
+      </section>
+    </main>
+    <footer class="docs-footer">
+      <span>Vozen Docs</span>
+      <span><a href="../privacy.html">Privacy</a> · <a href="../terms.html">Terms</a></span>
+    </footer>
+    <script src="shared/docs-shell.js?v=ecosystem-nav-v12"></script>
+  </body>
+</html>
