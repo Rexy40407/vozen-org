@@ -9,7 +9,7 @@
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07070d" />
-    <title>Privacy Policy — Vozen</title>
+    <title data-i18n="legal.privacyTitle">Privacy Policy — Vozen</title>
     <meta name="description" content="What data the Vozen Discord TTS bot stores, why, and how to delete it." />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -45,12 +45,12 @@
       <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
       <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Privacy Policy — Vozen","description":"What data the Vozen Discord TTS bot stores, why, and how to delete it.","url":"https://vozen.org/privacy","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
   </head>
-  <body>
+  <body data-vozen-static-page="privacy">
     <div class="grain" aria-hidden="true"></div>
     <main class="legal">
-      <a class="back" href="/">← Back to Vozen</a>
-      <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: 22 July 2026</p>
+      <a class="back" href="/" data-i18n="legal.back">← Back to Vozen</a>
+      <h1 data-i18n="legal.privacyTitle">Privacy Policy — Vozen</h1>
+      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 22 July 2026</p>
 
       <p>
         Vozen is a text-to-speech (TTS) bot for Discord. This page explains exactly what
@@ -238,5 +238,8 @@
         · <a href="/terms">Terms of Service</a>
       </p>
     </main>
+    <script defer src="js/i18n-v41.js"></script>
+    <script defer src="js/i18n-v42.js"></script>
+    <script defer src="js/static-pages-i18n-v1.js"></script>
   </body>
 </html>

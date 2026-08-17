@@ -30,6 +30,13 @@ import {
   type YouTubeSubscriptionHealth,
 } from './api';
 import { docsProviderStatusUrl, docsTroubleshootingUrl, docsUrlForFeature } from './docs';
+import {
+  helperLocale,
+  helperT,
+  LOCALE_OPTIONS,
+  setHelperLocale,
+  syncHelperDocumentLocale,
+} from './i18n';
 
 const defaultRankCard: RankCardConfig = {
   font: 'system',
@@ -121,6 +128,26 @@ const pages = [
   { id: 'activity', label: 'Activity', icon: '◷', hint: 'Server history' },
   { id: 'rank-card', label: 'XP card', icon: '▣', hint: 'Levels and identity' },
 ] as const;
+const helperPageCopy: Record<string, [string, string]> = {
+  overview: ['dashboard.overview', 'Overview'],
+  'quick-setup': ['dashboard.quickSetup', 'Quick Setup'],
+  features: ['nav.features', 'Features'],
+  activity: ['helper.activity', 'Activity'],
+  'rank-card': ['helper.xpIdentity', 'XP card'],
+};
+function helperPageLabel(id: string, fallback: string): string {
+  return helperT(helperPageCopy[id]?.[0] ?? id, fallback);
+}
+function helperPageHint(id: string, fallback: string): string {
+  const keys: Record<string, string> = {
+    overview: 'helper.overviewHint',
+    'quick-setup': 'helper.quickSetupHint',
+    features: 'helper.featuresHint',
+    activity: 'helper.activityHint',
+    'rank-card': 'helper.rankCardHint',
+  };
+  return helperT(keys[id] ?? id, fallback);
+}
 const HELPER_INVITE_HREF =
   'https://discord.com/oauth2/authorize?client_id=1526211106081734666&permissions=1099780071606&scope=bot%20applications.commands';
 const categories: { id: Category; label: string }[] = [
@@ -133,6 +160,16 @@ const categories: { id: Category; label: string }[] = [
   { id: 'growth', label: 'Growth' },
   { id: 'web3', label: 'Web3' },
 ];
+const categoryTranslationKeys: Record<Category, string> = {
+  all: 'helper.all',
+  protection: 'helper.categoryProtection',
+  community: 'helper.categoryCommunity',
+  management: 'helper.categoryManagement',
+  utility: 'helper.utilities',
+  social: 'helper.socialAlerts',
+  growth: 'helper.categoryGrowth',
+  web3: 'helper.categoryWeb3',
+};
 const demoGuilds: Guild[] = [{ id: 'demo', name: 'Demo server', canManage: true }];
 const demoFeatures: Feature[] = [
   {
@@ -671,6 +708,25 @@ const featureCopy: Record<string, Pick<Feature, 'label' | 'description'>> = {
     description: 'Blocks suspicious links, invites, and phishing patterns.',
   },
 };
+function featureTranslationKey(featureKey: string, part: 'label' | 'description'): string {
+  return `helper.feature.${featureKey}.${part}`;
+}
+function localizedFeature(feature: Feature): Feature {
+  const source = featureCopy[feature.key] ?? feature;
+  return {
+    ...feature,
+    label: helperT(featureTranslationKey(feature.key, 'label'), source.label),
+    description: helperT(
+      featureTranslationKey(feature.key, 'description'),
+      helperT(`helper.feature.category.${feature.category}.description`, source.description),
+    ),
+  };
+}
+function localizedIssue(issue: { code?: string; message?: string }): string {
+  return issue.code
+    ? helperT(`helper.issue.${issue.code}`, issue.message ?? helperT('helper.latestError', 'Latest error'))
+    : issue.message ?? helperT('helper.latestError', 'Latest error');
+}
 function presentFeature(feature: Feature): Feature {
   return featureCopy[feature.key] ? { ...feature, ...featureCopy[feature.key] } : feature;
 }
@@ -1891,6 +1947,18 @@ const quickSetupSteps: Array<{ key: QuickSetupStepKey; label: string; descriptio
   { key: 'moderation', label: 'Basic moderation', description: 'Consistent records and actions.' },
   { key: 'protection', label: 'Automated protection', description: 'Anti-spam and anti-raid profiles.' },
 ];
+const quickSetupTranslationKeys: Record<QuickSetupStepKey, [string, string]> = {
+  welcome: ['helper.quickStepWelcome', 'helper.quickStepWelcomeDesc'],
+  roles: ['helper.quickStepRoles', 'helper.quickStepRolesDesc'],
+  moderation: ['helper.quickStepModeration', 'helper.quickStepModerationDesc'],
+  protection: ['helper.quickStepProtection', 'helper.quickStepProtectionDesc'],
+};
+function quickStepLabel(step: (typeof quickSetupSteps)[number]): string {
+  return helperT(quickSetupTranslationKeys[step.key][0], step.label);
+}
+function quickStepDescription(step: (typeof quickSetupSteps)[number]): string {
+  return helperT(quickSetupTranslationKeys[step.key][1], step.description);
+}
 
 const externalProviderForFeature = (key: string): ExternalProvider | null => {
   if (key === 'social.reddit') return 'reddit';
@@ -1956,7 +2024,7 @@ function WorkspaceSkeleton() {
     <div className="workspace-standalone workspace-app workspace-standalone--helper workspace-loading">
       <EcosystemTopbar />
       <main className="workspace-standalone__content" role="status" aria-live="polite" aria-busy="true">
-        <span className="helper-skeleton__sr">Preparing your workspace. Checking your session and server access.</span>
+        <span className="helper-skeleton__sr">{helperT('helper.loadingWorkspace', 'Preparing your workspace. Checking your session and server access.')}</span>
         <div className="helper-skeleton">
           <aside className="helper-skeleton__sidebar" aria-hidden="true">
             {pulse('helper-skeleton__product-mark')}
@@ -2010,6 +2078,7 @@ function WorkspaceSkeleton() {
 }
 
 function App() {
+  const [, setLocaleRevision] = useState(0);
   const [youtubeSubscriptions, setYoutubeSubscriptions] = useState<YouTubeSubscription[]>([]);
   const [rssSubscriptions, setRssSubscriptions] = useState<RssSubscription[]>([]);
   const [twitchSubscriptions, setTwitchSubscriptions] = useState<TwitchSubscription[]>([]);
@@ -2050,6 +2119,22 @@ function App() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Category>('all');
   const [detailLoading, setDetailLoading] = useState(false);
+
+  useEffect(() => {
+    syncHelperDocumentLocale();
+    const onLanguageChange = () => {
+      syncHelperDocumentLocale();
+      document.title = helperT('helper.documentTitle', 'Vozen Helper — Panel');
+      setLocaleRevision((value) => value + 1);
+    };
+    window.addEventListener('vozen:languagechange', onLanguageChange);
+    window.addEventListener('storage', onLanguageChange);
+    onLanguageChange();
+    return () => {
+      window.removeEventListener('vozen:languagechange', onLanguageChange);
+      window.removeEventListener('storage', onLanguageChange);
+    };
+  }, []);
 
   const navigate = (path: string) => {
     const next = parseRoute(path);
@@ -2106,7 +2191,7 @@ function App() {
             // Do not present stale/demo state as the real guild catalogue. Keep
             // the topics discoverable, but make every state explicitly blocked
             // so a failed API request cannot lead to a misleading publish action.
-            setMessage('Feature state is unavailable until the Rust API reconnects.');
+            setMessage(helperT('helper.featureStateUnavailable', 'Feature state is unavailable until the Rust API reconnects.'));
             return { guildId: '', features: unavailableFeatureCatalogue() };
           }),
           api.stats().catch(() => ({ totalCases: 0, guildId: '' })),
@@ -2128,7 +2213,7 @@ function App() {
       setSavedRankConfig(nextRank.config);
     })().catch((cause: unknown) => {
       if (cancelled) return;
-      setMessage(cause instanceof Error ? cause.message : 'Could not load the dashboard.');
+      setMessage(cause instanceof Error ? cause.message : helperT('helper.dashboardLoadError', 'Could not load the dashboard.'));
       setStatus('error');
     });
     return () => {
@@ -2437,7 +2522,7 @@ function App() {
       if (nextPath) window.location.hash = nextPath;
       window.location.reload();
     } catch (cause) {
-      setMessage(cause instanceof Error ? cause.message : 'Could not switch server.');
+      setMessage(cause instanceof Error ? cause.message : helperT('helper.switchServerError', 'Could not switch server.'));
     }
   }
   async function saveDetail() {
@@ -2487,12 +2572,12 @@ function App() {
       setStatus('ready');
       setMessage(
         localPreviewMode
-          ? 'Preview saved in this browser.'
-          : 'Configuration published to the server.',
+          ? helperT('helper.previewSaved', 'Preview saved in this browser.')
+          : helperT('helper.configurationPublished', 'Configuration published to the server.'),
       );
     } catch (cause) {
       setStatus('error');
-      setMessage(cause instanceof Error ? cause.message : 'Could not save.');
+      setMessage(cause instanceof Error ? cause.message : helperT('helper.saveError', 'Could not save.'));
     }
   }
   async function repairDetail() {
@@ -2512,10 +2597,10 @@ function App() {
         ),
       );
       setStatus('ready');
-      setMessage('The publication was repaired and the new revision was created.');
+      setMessage(helperT('helper.publicationRepaired', 'The publication was repaired and the new revision was created.'));
     } catch (cause) {
       setStatus('error');
-      setMessage(cause instanceof Error ? cause.message : 'Could not repair the publication.');
+      setMessage(cause instanceof Error ? cause.message : helperT('helper.repairError', 'Could not repair the publication.'));
     }
   }
   async function testDetail() {
@@ -2524,16 +2609,16 @@ function App() {
       if (route.key === 'social.youtube') {
         const sourceChannelId = String(detailConfig.sourceChannelId ?? '').trim();
         if (!sourceChannelId) {
-          setMessage('Enter the YouTube channel ID first.');
+          setMessage(helperT('helper.youtubeIdRequired', 'Enter the YouTube channel ID first.'));
           return;
         }
         if (localPreviewMode) {
-          setMessage('YouTube channel validation is available when the dashboard is connected to the API.');
+          setMessage(helperT('helper.youtubeValidationUnavailable', 'YouTube channel validation is available when the dashboard is connected to the API.'));
           return;
         }
         const subscription = youtubeSubscriptions[0];
         if (!subscription) {
-          setMessage('Save the subscription first so the test can be sent to Discord.');
+          setMessage(helperT('helper.saveSubscriptionFirst', 'Save the subscription first so the test can be sent to Discord.'));
           return;
         }
         const result = await api.testYoutubeDelivery(subscription.id, {
@@ -2550,19 +2635,19 @@ function App() {
         });
         setMessage(
           result.delivered
-            ? 'Test message sent to the configured Discord channel. The YouTube cursor was not changed.'
-            : 'The test was not delivered.',
+            ? helperT('helper.youtubeTestSent', 'Test message sent to the configured Discord channel. The YouTube cursor was not changed.')
+            : helperT('helper.testNotDelivered', 'The test was not delivered.'),
         );
         return;
       }
       if (route.key === 'social.rss' || route.key === 'social.podcasts') {
         const feedUrl = String(detailConfig.feedUrl ?? '').trim();
         if (!feedUrl) {
-          setMessage('Enter the RSS/Atom feed URL first.');
+          setMessage(helperT('helper.feedUrlRequired', 'Enter the RSS/Atom feed URL first.'));
           return;
         }
         if (localPreviewMode) {
-          setMessage('Feed validation is available when the dashboard is connected to the API.');
+          setMessage(helperT('helper.feedValidationUnavailable', 'Feed validation is available when the dashboard is connected to the API.'));
           return;
         }
         const subscription = rssSubscriptions[0];
@@ -2584,19 +2669,19 @@ function App() {
         });
         setMessage(
           result.delivered
-            ? 'Test message sent to the configured Discord channel. The feed cursor was not changed.'
-            : 'The test was not delivered.',
+            ? helperT('helper.feedTestSent', 'Test message sent to the configured Discord channel. The feed cursor was not changed.')
+            : helperT('helper.testNotDelivered', 'The test was not delivered.'),
         );
         return;
       }
       if (route.key === 'social.twitch') {
         const login = String(detailConfig.sourceLogin ?? '').trim();
         if (!login) {
-          setMessage('Enter the Twitch channel name first.');
+          setMessage(helperT('helper.twitchNameRequired', 'Enter the Twitch channel name first.'));
           return;
         }
         if (localPreviewMode) {
-          setMessage('Twitch channel validation is available when the dashboard is connected to the API.');
+          setMessage(helperT('helper.twitchValidationUnavailable', 'Twitch channel validation is available when the dashboard is connected to the API.'));
           return;
         }
         const subscription = twitchSubscriptions[0];
@@ -2615,8 +2700,8 @@ function App() {
         });
         setMessage(
           result.delivered
-            ? 'Test message sent to the configured Discord channel. No EventSub event was consumed.'
-            : 'The test was not delivered.',
+            ? helperT('helper.twitchTestSent', 'Test message sent to the configured Discord channel. No EventSub event was consumed.')
+            : helperT('helper.testNotDelivered', 'The test was not delivered.'),
         );
         return;
       }
@@ -2628,16 +2713,16 @@ function App() {
         errors.length
           ? errors.map((issue) => issue.message).join(' ')
           : result.result.effects.length
-            ? `simulation: ${result.result.effects.join(' · ')}${decisionText}`
-            : 'Simulation completed — no real action was applied.',
+            ? `${helperT('helper.simulation', 'simulation')}: ${result.result.effects.join(' · ')}${decisionText}`
+            : helperT('helper.simulationComplete', 'Simulation completed — no real action was applied.'),
       );
     } catch {
       setMessage(
         route.key === 'social.rss' || route.key === 'social.podcasts'
-          ? 'Could not read this feed. Check the URL and try again.'
+          ? helperT('helper.feedReadError', 'Could not read this feed. Check the URL and try again.')
           : route.key === 'social.twitch'
-            ? 'Could not validate the Twitch channel. Check the name and the server credentials.'
-            : 'Simulation is available when the API is connected.',
+            ? helperT('helper.twitchValidationError', 'Could not validate the Twitch channel. Check the name and the server credentials.')
+            : helperT('helper.simulationUnavailable', 'Simulation is available when the API is connected.'),
       );
     }
   }
@@ -2650,12 +2735,12 @@ function App() {
       setStatus('ready');
       setMessage(
         localPreviewMode
-          ? 'Preview saved in this browser.'
-          : 'XP card published in the server.',
+          ? helperT('helper.previewSaved', 'Preview saved in this browser.')
+          : helperT('helper.rankCardPublished', 'XP card published in the server.'),
       );
     } catch (cause) {
       setStatus('error');
-      setMessage(cause instanceof Error ? cause.message : 'Could not publish.');
+      setMessage(cause instanceof Error ? cause.message : helperT('helper.publishError', 'Could not publish.'));
     }
   }
   async function applyQuickSetupStep(
@@ -2802,12 +2887,12 @@ function App() {
       );
       setStatus('ready');
       setMessage(
-        `${quickSetupSteps.find((item) => item.key === step)?.label ?? 'Step'} applied.`,
+        helperT('helper.stepApplied', '{step} applied.', { step: quickStepLabel(quickSetupSteps.find((item) => item.key === step) ?? quickSetupSteps[0]) }),
       );
       return true;
     } catch (cause) {
       setStatus('error');
-      setMessage(cause instanceof Error ? cause.message : 'Could not apply this step.');
+      setMessage(cause instanceof Error ? cause.message : helperT('helper.applyStepError', 'Could not apply this step.'));
       return false;
     }
   }
@@ -2832,7 +2917,7 @@ function App() {
         localStorage.setItem(`vh_quick_setup_${me?.guildId ?? 'demo'}`, JSON.stringify(next));
       return true;
     } catch (cause) {
-      setMessage(cause instanceof Error ? cause.message : 'Could not skip this step.');
+      setMessage(cause instanceof Error ? cause.message : helperT('helper.skipStepError', 'Could not skip this step.'));
       return false;
     }
   }
@@ -2848,7 +2933,7 @@ function App() {
       if (localPreviewMode)
         localStorage.setItem(`vh_quick_setup_${me?.guildId ?? 'demo'}`, JSON.stringify(next));
     } catch {
-      setMessage('Guided setup remains available in the sidebar.');
+      setMessage(helperT('helper.guidedSetupStillAvailable', 'Guided setup remains available in the sidebar.'));
     }
   }
   if (status === 'loading') return <WorkspaceSkeleton />;
@@ -2865,19 +2950,22 @@ function App() {
   const title =
     route.page === 'detail'
       ? (currentFeature?.label ?? 'Configuration')
-      : (pages.find((item) => item.id === route.page)?.label ?? 'Dashboard');
+      : helperPageLabel(
+          route.page,
+          pages.find((item) => item.id === route.page)?.label ?? 'Dashboard',
+        );
   const subtitle =
     route.page === 'overview'
-      ? 'The essentials to get your server ready.'
+      ? helperT('helper.overviewPageSubtitle', 'The essentials to get your server ready.')
       : route.page === 'quick-setup'
-        ? 'Set up the essentials in short steps, with the review before publishing.'
+        ? helperT('helper.quickSetupPageSubtitle', 'Set up the essentials in short steps, with the review before publishing.')
         : route.page === 'features'
-          ? 'Choose the topic to open its full configuration.'
+          ? helperT('helper.featuresPageSubtitle', 'Choose the topic to open its full configuration.')
           : route.page === 'activity'
-            ? 'See what happened and stay in control.'
+            ? helperT('helper.activityPageSubtitle', 'See what happened and stay in control.')
             : route.page === 'rank-card'
-              ? 'Create the level card with your server identity.'
-              : 'server-specific configuration with simple and advanced options.';
+              ? helperT('helper.rankCardPageSubtitle', 'Create the level card with your server identity.')
+              : helperT('helper.detailPageSubtitle', 'Server-specific configuration with simple and advanced options.');
   return (
     <div className="workspace-app workspace-app--helper">
       <EcosystemTopbar />
@@ -2886,14 +2974,14 @@ function App() {
         <div className="logo panel-logo workspace-sidebar__product">
           <span className="workspace-sidebar__product-mark" aria-hidden="true">H</span>
           <div>
-            <strong>Vozen Helper</strong>
-            <small>SERVER TOOLKIT</small>
+            <strong>{helperT('ecosystem.helper', 'Vozen Helper')}</strong>
+            <small>{helperT('helper.helperTag', 'SERVER TOOLKIT')}</small>
           </div>
         </div>
         <div className="workspace panel-workspace workspace-sidebar__section">
-          <small className="workspace-sidebar__label">Current server</small>
-          <select
-            aria-label="Current server"
+            <small className="workspace-sidebar__label">{helperT('helper.currentServer', 'Current server')}</small>
+            <select
+            aria-label={helperT('helper.currentServer', 'Current server')}
             value={currentGuild?.id ?? ''}
             onChange={(event) => void switchGuild(event.target.value)}
           >
@@ -2910,11 +2998,11 @@ function App() {
             rel="noreferrer"
           >
             <span aria-hidden="true">+</span>
-            Add a server
+            {helperT('helper.addServer', 'Add a server')}
           </a>
-          <p className="workspace-sidebar__hint">Changes are isolated to this server.</p>
+          <p className="workspace-sidebar__hint">{helperT('helper.changesIsolated', 'Changes are isolated to this server.')}</p>
         </div>
-        <nav className="panel-nav workspace-sidebar__nav" aria-label="Main navigation">
+        <nav className="panel-nav workspace-sidebar__nav" aria-label={helperT('helper.mainNavigation', 'Main navigation')}>
           {pages.map((item) => (
             <button
               key={item.id}
@@ -2933,18 +3021,18 @@ function App() {
             >
               <span>{item.icon}</span>
               <div>
-                <b>{item.label}</b>
-                <small>{item.hint}</small>
+                <b>{helperPageLabel(item.id, item.label)}</b>
+                <small>{helperPageHint(item.id, item.hint)}</small>
               </div>
             </button>
           ))}
         </nav>
         <div className="workspace-sidebar__footer">
           <a className="panel-account-link workspace-exit" href="/account/">
-            ← Exit to account
+            {helperT('helper.exitAccount', '← Exit to account')}
           </a>
           <div className="runtime workspace-sync">
-            {localPreviewMode ? 'Local preview' : 'Synced with Rust'}
+            {localPreviewMode ? helperT('helper.localPreview', 'Local preview') : helperT('helper.synced', 'Synced with Rust')}
           </div>
         </div>
       </aside>
@@ -2952,34 +3040,34 @@ function App() {
         {route.page !== 'overview' && (
           <header className="panel-header">
             <div>
-              <small className="eyebrow">{currentGuild?.name ?? 'WORKSPACE'} · HELPER</small>
+              <small className="eyebrow">{currentGuild?.name ?? helperT('helper.serverWorkspace', 'WORKSPACE')} · HELPER</small>
               <h1 id="route-heading" data-route-heading tabIndex={-1}>{title}</h1>
               <p className="subtitle">{subtitle}</p>
             </div>
             <div className="header-state">
               <span className="status-dot" />{' '}
               {dirty
-                ? 'Unpublished draft'
+                ? helperT('helper.unpublished', 'Unpublished draft')
                 : localPreviewMode
-                  ? 'Demo mode'
-                  : 'Fully synced'}
+                  ? helperT('helper.demoMode', 'Demo mode')
+                  : helperT('helper.fullySynced', 'Fully synced')}
             </div>
           </header>
         )}
         {message && (
           <div className="toast panel-toast" role="status">
             {message}
-            <button type="button" aria-label="Close" onClick={() => setMessage('')}>
+            <button type="button" aria-label={helperT('helper.close', 'Close')} onClick={() => setMessage('')}>
               ×
             </button>
           </div>
         )}
         {guildContext && !localPreviewMode && guildContext.stale && (
           <div className="toast panel-toast" role="status">
-            Discord context must be refreshed before publishing changes.{' '}
+            {helperT('helper.contextRefresh', 'Discord context must be refreshed before publishing changes.')}{' '}
             {guildContext.bot?.reason === 'discord_bot_member_unavailable'
-              ? 'Could not verify the Helper role and permissions.'
-              : guildContext.message ?? 'Selectors remain available, but preflight is blocked.'}
+              ? helperT('helper.contextVerify', 'Could not verify the Helper role and permissions.')
+              : guildContext.message ?? helperT('helper.contextBlocked', 'Selectors remain available, but preflight is blocked.')}
           </div>
         )}
         {route.page === 'overview' && (
@@ -3032,7 +3120,7 @@ function App() {
           (detailLoading ? (
             <div className="loading-card card">
               <div className="loader" />
-              <span>Loading configuration…</span>
+              <span>{helperT('helper.loadingConfiguration', 'Loading configuration…')}</span>
             </div>
           ) : (
             <FeatureDetail
@@ -3135,28 +3223,30 @@ function QuickSetup({
       <section className="quick-setup-page">
         <div className="quick-setup-hero card">
           <div className="quick-setup-mark">✧</div>
-          <small className="eyebrow">GUIDED SETUP · 2–4 MIN</small>
-          <h2>Get the essentials running.</h2>
+          <small className="eyebrow">{helperT('helper.quickGuidedEyebrow', 'GUIDED SETUP · 2–4 MIN')}</small>
+          <h2>{helperT('helper.quickEssentialsTitle', 'Get the essentials running.')}</h2>
           <p>
-            Choose the basics for your server. Vozen shows each change before applying it and
-            saves your progress for this server.
+            {helperT(
+              'helper.quickEssentialsDescription',
+              'Choose the basics for your server. Vozen shows each change before applying it and saves your progress for this server.',
+            )}
           </p>
           <div className="quick-setup-meta">
             <span>
-              server: <b>{context?.name ?? state.guildId}</b>
+              {helperT('helper.quickServer', 'server')}: <b>{context?.name ?? state.guildId}</b>
             </span>
             <span>
               {context?.capabilities.permissionPreflight
-                ? 'Permissions verified'
-                : 'Permission check pending'}
+                ? helperT('helper.quickPermissionsVerified', 'Permissions verified')
+                : helperT('helper.quickPermissionPending', 'Permission check pending')}
             </span>
           </div>
           <div className="actions">
             <button type="button" className="secondary" onClick={onDismiss}>
-              Not now
+              {helperT('helper.quickNotNow', 'Not now')}
             </button>
             <button type="button" className="primary" onClick={() => setStarted(true)}>
-              Prepare server <span>→</span>
+              {helperT('helper.quickPrepare', 'Prepare server')} <span>→</span>
             </button>
           </div>
         </div>
@@ -3167,11 +3257,13 @@ function QuickSetup({
       <section className="quick-setup-page">
         <div className="quick-setup-complete card">
           <span className="success-mark">✓</span>
-          <small className="eyebrow">SERVER READY</small>
-          <h2>You’re all set.</h2>
+          <small className="eyebrow">{helperT('helper.quickServerReady', 'SERVER READY')}</small>
+          <h2>{helperT('helper.quickAllSet', 'You’re all set.')}</h2>
           <p>
-            Your Quick Setup choices were saved. You can return here whenever you want to review
-            the essentials.
+            {helperT(
+              'helper.quickSaved',
+              'Your Quick Setup choices were saved. You can return here whenever you want to review the essentials.',
+            )}
           </p>
           <div className="setup-summary">
             {state.steps.map((step) => (
@@ -3180,36 +3272,43 @@ function QuickSetup({
                   {step.status === 'applied' ? '✓' : '–'}
                 </span>
                 <div>
-                  <b>{quickSetupSteps.find((item) => item.key === step.key)?.label}</b>
+                  <b>
+                    {(() => {
+                      const item = quickSetupSteps.find((candidate) => candidate.key === step.key);
+                      return item ? quickStepLabel(item) : step.key;
+                    })()}
+                  </b>
                   <small>
-                    {step.status === 'applied' ? 'Applied to server' : 'Skipped in this session'}
+                    {step.status === 'applied'
+                      ? helperT('helper.quickApplied', 'Applied to server')
+                      : helperT('helper.quickSkipped', 'Skipped in this session')}
                   </small>
                 </div>
               </div>
             ))}
           </div>
           <div className="premium-panel">
-            <small className="eyebrow">GO FURTHER</small>
-            <h3>Premium features for the next step</h3>
+            <small className="eyebrow">{helperT('helper.quickGoFurther', 'GO FURTHER')}</small>
+            <h3>{helperT('helper.quickPremiumTitle', 'Premium features for the next step')}</h3>
             <div className="premium-grid">
               <PremiumCard
                 icon="↗"
-                title="Levels & XP"
-                text="Rewards, level announcements, and XP cards."
+                title={helperT('helper.quickLevels', 'Levels & XP')}
+                text={helperT('helper.quickLevelsText', 'Rewards, level announcements, and XP cards.')}
               />
               <PremiumCard
                 icon="□"
-                title="Tickets advanced"
-                text="Teams, transcripts, and SLAs for support."
+                title={helperT('helper.quickTickets', 'Tickets advanced')}
+                text={helperT('helper.quickTicketsText', 'Teams, transcripts, and SLAs for support.')}
               />
               <PremiumCard
                 icon="⌁"
-                title="Automations"
-                text="Connect server events to custom actions."
+                title={helperT('helper.quickAutomations', 'Automations')}
+                text={helperT('helper.quickAutomationsText', 'Connect server events to custom actions.')}
               />
             </div>
             <button type="button" className="secondary" onClick={() => onOpen('#/features')}>
-              View all features
+              {helperT('helper.quickViewAll', 'View all features')}
             </button>
           </div>
         </div>
@@ -3229,16 +3328,16 @@ function QuickSetup({
       <div className="quick-setup-head">
         <div>
           <small className="eyebrow">
-            QUICK SETUP · {index + 1} OF {quickSetupSteps.length}
+            {helperT('helper.quickStep', 'STEP {n}', { n: index + 1 })} · {index + 1} / {quickSetupSteps.length}
           </small>
-          <h2>Configure the essentials for your server.</h2>
-          <p>We apply one step at a time. Going back does not undo published changes.</p>
+          <h2>{helperT('helper.quickConfigureTitle', 'Configure the essentials for your server.')}</h2>
+          <p>{helperT('helper.quickConfigureDescription', 'We apply one step at a time. Going back does not undo published changes.')}</p>
         </div>
           <button type="button" className="link-button" onClick={onDismiss}>
-          Exit for now
+          {helperT('helper.quickExit', 'Exit for now')}
         </button>
       </div>
-      <div className="setup-progress" aria-label="Setup progress">
+      <div className="setup-progress" aria-label={helperT('helper.quickProgress', 'Setup progress')}>
         {quickSetupSteps.map((step, stepIndex) => (
           <button
             key={step.key}
@@ -3257,50 +3356,50 @@ function QuickSetup({
                 ? '✓'
                 : stepIndex + 1}
             </span>
-            <b>{step.label}</b>
+            <b>{quickStepLabel(step)}</b>
           </button>
         ))}
       </div>
       <div className="quick-setup-layout">
         <div className="quick-setup-form card">
-          <small className="eyebrow">STEP {index + 1}</small>
-          <h3>{current.label}</h3>
-          <p className="setup-description">{current.description}</p>
+          <small className="eyebrow">{helperT('helper.quickStep', 'STEP {n}', { n: index + 1 })}</small>
+          <h3>{quickStepLabel(current)}</h3>
+          <p className="setup-description">{quickStepDescription(current)}</p>
           {current.key === 'welcome' && (
             <>
               <div className="choice-grid">
                 <Choice
                   selected={currentConfig.mode === 'recommended'}
-                  title="Recommended message"
-                  text="A short, clear welcome that is ready to use."
+                  title={helperT('helper.quickRecommended', 'Recommended message')}
+                  text={helperT('helper.quickRecommendedText', 'A short, clear welcome that is ready to use.')}
                   onClick={() => patch('mode', 'recommended')}
                 />
                 <Choice
                   selected={currentConfig.mode === 'custom'}
-                  title="Custom message"
-                  text="Write your message and choose the options."
+                  title={helperT('helper.quickCustom', 'Custom message')}
+                  text={helperT('helper.quickCustomText', 'Write your message and choose the options.')}
                   onClick={() => patch('mode', 'custom')}
                 />
                 <Choice
                   selected={currentConfig.mode === 'off'}
-                  title="Disable"
-                  text="Do not publish join messages."
+                  title={helperT('helper.quickDisable', 'Disable')}
+                  text={helperT('helper.quickDisableText', 'Do not publish join messages.')}
                   onClick={() => patch('mode', 'off')}
                 />
               </div>
               {currentConfig.mode !== 'off' && (
                 <>
                   <SelectField
-                    label="join channel"
+                    label={helperT('helper.quickJoinChannel', 'join channel')}
                     value={String(currentConfig.channel ?? '')}
                     options={channels}
-                    placeholder="Choose a channel"
+                    placeholder={helperT('helper.quickChooseChannel', 'Choose a channel')}
                     onChange={(value) => patch('channel', value)}
                   />
                   <label className="field toggle-field">
                     <span>
-                      <b>Create #welcome if it does not exist</b>
-                      <small>Vozen shows the creation in the summary before you confirm.</small>
+                      <b>{helperT('helper.quickCreateWelcome', 'Create #welcome if it does not exist')}</b>
+                      <small>{helperT('helper.quickCreateWelcomeHint', 'Vozen shows the creation in the summary before you confirm.')}</small>
                     </span>
                     <input
                       type="checkbox"
@@ -3310,9 +3409,9 @@ function QuickSetup({
                   </label>
                   <label className="field">
                     <span>
-                      <b>Public message</b>
+                      <b>{helperT('helper.quickPublicMessage', 'Public message')}</b>
                       <small>
-                        Use {`{member}`} and {`{server}`}.
+                        {helperT('helper.quickMessagePlaceholders', 'Use {member} and {server}.')}
                       </small>
                     </span>
                     <textarea
@@ -3328,12 +3427,12 @@ function QuickSetup({
           {current.key === 'roles' && (
             <>
               <div className="template-row">
-                <b>Choose a starting point</b>
+                <b>{helperT('helper.quickStartingPoint', 'Choose a starting point')}</b>
                 <div>
                   {[
-                    ['notifications', 'notifications'],
-                    ['interests', 'Interests'],
-                    ['languages', 'Languages'],
+                    ['notifications', helperT('helper.quickNotifications', 'Notifications')],
+                    ['interests', helperT('helper.quickInterests', 'Interests')],
+                    ['languages', helperT('helper.quickLanguages', 'Languages')],
                   ].map(([id, label]) => (
                     <button
                       type="button"
@@ -3347,16 +3446,16 @@ function QuickSetup({
                 </div>
               </div>
               <SelectField
-                label="panel channel"
+                label={helperT('helper.quickPanelChannel', 'panel channel')}
                 value={String(currentConfig.channel ?? '')}
                 options={channels}
-                placeholder="Choose a channel"
+                placeholder={helperT('helper.quickChooseChannel', 'Choose a channel')}
                 onChange={(value) => patch('channel', value)}
               />
               <label className="field toggle-field">
                 <span>
-                  <b>Create #choose-roles if it does not exist</b>
-                  <small>Roles have no administrative permissions.</small>
+                  <b>{helperT('helper.quickCreateRoles', 'Create #choose-roles if it does not exist')}</b>
+                  <small>{helperT('helper.quickRolesNoAdmin', 'Roles have no administrative permissions.')}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -3366,8 +3465,8 @@ function QuickSetup({
               </label>
               <label className="field">
                 <span>
-                  <b>Role names</b>
-                  <small>Separate names with commas.</small>
+                  <b>{helperT('helper.quickRoleNames', 'Role names')}</b>
+                  <small>{helperT('helper.separateValues', 'Separate multiple values with commas.')}</small>
                 </span>
                 <input
                   value={String(currentConfig.roleNames ?? '')}
@@ -3380,8 +3479,8 @@ function QuickSetup({
             <>
               <label className="field toggle-field">
                 <span>
-                  <b>Require a reason for actions</b>
-                  <small>Help your team keep the audit trail clear and consistent.</small>
+                  <b>{helperT('helper.quickRequireReason', 'Require a reason for actions')}</b>
+                  <small>{helperT('helper.quickReasonHint', 'Help your team keep the audit trail clear and consistent.')}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -3391,8 +3490,8 @@ function QuickSetup({
               </label>
               <label className="field">
                 <span>
-                  <b>Cleanup limit per action</b>
-                  <small>Protects against accidental purges and respects Discord limits.</small>
+                  <b>{helperT('helper.quickCleanupLimit', 'Cleanup limit per action')}</b>
+                  <small>{helperT('helper.quickCleanupHint', 'Protects against accidental purges and respects Discord limits.')}</small>
                 </span>
                 <input
                   type="number"
@@ -3403,8 +3502,7 @@ function QuickSetup({
                 />
               </label>
               <div className="notice">
-                Audit rules and the log channel are configured under Audit &
-                Permissions to avoid duplicate settings.
+                {helperT('helper.quickAuditNotice', 'Audit rules and the log channel are configured under Audit & Permissions to avoid duplicate settings.')}
               </div>
             </>
           )}
@@ -3413,34 +3511,34 @@ function QuickSetup({
               <div className="choice-grid">
                 <Choice
                   selected={currentConfig.profile === 'monitor'}
-                  title="Monitor"
-                  text="Alert the team without punishing members."
+                  title={helperT('helper.quickMonitor', 'Monitor')}
+                  text={helperT('helper.quickMonitorText', 'Alert the team without punishing members.')}
                   onClick={() => patch('profile', 'monitor')}
                 />
                 <Choice
                   selected={currentConfig.profile === 'balanced'}
-                  title="Balanced"
-                  text="Recommended for most servers."
+                  title={helperT('helper.quickBalanced', 'Balanced')}
+                  text={helperT('helper.quickBalancedText', 'Recommended for most servers.')}
                   onClick={() => patch('profile', 'balanced')}
                 />
                 <Choice
                   selected={currentConfig.profile === 'strict'}
-                  title="Hardened"
-                  text="Tighter limits for larger communities."
+                  title={helperT('helper.quickHardened', 'Hardened')}
+                  text={helperT('helper.quickHardenedText', 'Tighter limits for larger communities.')}
                   onClick={() => patch('profile', 'strict')}
                 />
               </div>
               <SelectField
-                label="alert channel"
+                label={helperT('helper.quickAlertChannel', 'alert channel')}
                 value={String(currentConfig.logChannel ?? '')}
                 options={channels}
-                placeholder="Choose a channel"
+                placeholder={helperT('helper.quickChooseChannel', 'Choose a channel')}
                 onChange={(value) => patch('logChannel', value)}
               />
               <label className="field toggle-field">
                 <span>
-                  <b>Create #vozen-alerts if it does not exist</b>
-                  <small>The name is only a suggestion; review it before applying.</small>
+                  <b>{helperT('helper.quickCreateAlerts', 'Create #vozen-alerts if it does not exist')}</b>
+                  <small>{helperT('helper.quickCreateAlertsHint', 'The name is only a suggestion; review it before applying.')}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -3449,36 +3547,36 @@ function QuickSetup({
                 />
               </label>
               <div className="notice">
-                The profile changes anti-spam and anti-raid with transparent, reversible values.
+                {helperT('helper.quickProtectionNotice', 'The profile changes anti-spam and anti-raid with transparent, reversible values.')}
               </div>
             </>
           )}
         </div>
         <aside className="quick-setup-aside card">
-          <small className="eyebrow">BEFORE APPLYING</small>
-          <h3>Preview</h3>
+          <small className="eyebrow">{helperT('helper.quickBeforeApplying', 'BEFORE APPLYING')}</small>
+          <h3>{helperT('helper.quickPreview', 'Preview')}</h3>
           <div className="discord-preview">
             <span className="preview-avatar">✦</span>
             <div>
               <b>
                 {current.key === 'roles'
-                  ? 'Dashboard of choices'
+                  ? helperT('helper.quickDashboardChoices', 'Dashboard of choices')
                   : current.key === 'protection'
-                    ? 'Protection of the server'
+                    ? helperT('helper.quickProtectionServer', 'Protection of the server')
                     : current.key === 'moderation'
-                      ? 'Moderation record'
-                      : 'Welcome to the server'}
+                      ? helperT('helper.quickModerationRecord', 'Moderation record')
+                      : helperT('helper.quickWelcomeServer', 'Welcome to the server')}
               </b>
               <p>
                 {current.key === 'roles'
-                  ? 'Choose the options that fit your community.'
+                  ? helperT('helper.quickDashboardChoicesText', 'Choose the options that fit your community.')
                   : current.key === 'protection'
-                    ? 'Profile ' +
-                      String(currentConfig.profile ?? 'balanced') +
-                      ' · reversible actions.'
+                    ? helperT('helper.quickProfileReversible', 'Profile {profile} · reversible actions.', {
+                        profile: String(currentConfig.profile ?? 'balanced'),
+                      })
                     : current.key === 'moderation'
-                      ? 'The team actions remain logged.'
-                      : String(currentConfig.message ?? 'Your community starts here.')}
+                      ? helperT('helper.quickModerationRecordText', 'The team actions remain logged.')
+                      : String(currentConfig.message ?? helperT('helper.quickCommunityStarts', 'Your community starts here.'))}
               </p>
             </div>
           </div>
@@ -3486,20 +3584,24 @@ function QuickSetup({
             <div className="resource-preview">
               <span>+</span>
               <div>
-                <b>Create {resourceName}</b>
-                <small>It will be confirmed before publishing.</small>
+                <b>{helperT('helper.quickCreateResource', 'Create {resource}', { resource: resourceName })}</b>
+                <small>{helperT('helper.quickConfirmBeforePublishing', 'It will be confirmed before publishing.')}</small>
               </div>
             </div>
           )}
           {roles.length > 0 && current.key === 'roles' && (
-            <small className="muted-note">{roles.length} roles available to reuse.</small>
+            <small className="muted-note">
+              {helperT('helper.quickRolesAvailable', '{n} roles available to reuse.', { n: roles.length })}
+            </small>
           )}
           <div className="sticky-actions">
             <button type="button" className="secondary" onClick={() => void skip()} disabled={applying}>
-              skip
+              {helperT('helper.quickSkip', 'skip')}
             </button>
             <button type="button" className="primary" onClick={() => void apply()} disabled={applying}>
-              {applying ? 'Applying…' : 'Confirm and apply'}
+              {applying
+                ? helperT('helper.quickApplying', 'Applying…')
+                : helperT('helper.quickConfirm', 'Confirm and apply')}
             </button>
           </div>
         </aside>
@@ -3552,8 +3654,8 @@ function SelectField({
         <b>{label}</b>
         <small>
           {options.length
-            ? 'Select an existing resource.'
-            : 'Discord resource data is not available yet.'}
+            ? helperT('helper.selectResource', 'Select an existing resource.')
+            : helperT('helper.resourceUnavailable', 'Discord resource data is not available yet.')}
         </small>
       </span>
       <select value={value} onChange={(event) => onChange(event.target.value)}>
@@ -3573,7 +3675,7 @@ function PremiumCard({ icon, title, text }: { icon: string; title: string; text:
       <span>{icon}</span>
       <b>{title}</b>
       <p>{text}</p>
-      <small>Premium</small>
+      <small>{helperT('helper.premium', 'Premium')}</small>
     </article>
   );
 }
@@ -3661,6 +3763,8 @@ function EcosystemAccountAvatar({
 
 function EcosystemTopbar() {
   const [account, setAccount] = useState<EcosystemAccount | null>(() => readCachedEcosystemAccount());
+  const locale = helperLocale();
+  const localeOption = LOCALE_OPTIONS.find((option) => option.code === locale) ?? LOCALE_OPTIONS[0];
 
   useEffect(() => {
     // Account login writes this cache before navigating to a product. Refresh
@@ -3691,37 +3795,43 @@ function EcosystemTopbar() {
   const decoration = account ? discordDecorationUrl(account) : null;
 
   return (
-    <header className="workspace-global-nav workspace-standalone__topbar" aria-label="Vozen ecosystem navigation">
+    <header className="workspace-global-nav workspace-standalone__topbar" aria-label={helperT('ecosystem.navAria', 'Vozen ecosystem navigation')}>
       <div className="workspace-global-nav__inner">
-        <a className="workspace-global-nav__brand" href="/" aria-label="Vozen ecosystem home">
+        <a className="workspace-global-nav__brand" href="/" aria-label={helperT('ecosystem.homeAria', 'Vozen ecosystem home')}>
           <span className="workspace-global-nav__mark" aria-hidden="true">
             <img src="/assets/vozen-ecosystem-icon.png" alt="" />
           </span>
           <span className="workspace-global-nav__word">Vozen</span>
-          <span className="workspace-global-nav__product">Ecosystem</span>
+          <span className="workspace-global-nav__product">{helperT('ecosystem.ecosystem', 'Ecosystem')}</span>
         </a>
-        <nav className="workspace-global-nav__links" aria-label="Vozen products">
-          <a href="/tts/">Vozen TTS</a>
-          <a href="/helper/" aria-current="page">Vozen Helper</a>
-          <a href="/docs/">Docs</a>
-          <a href="/commands/">Commands</a>
-          <span aria-disabled="true">Premium</span>
+        <nav className="workspace-global-nav__links" aria-label={helperT('ecosystem.productsAria', 'Vozen products')}>
+          <a href="/tts/">{helperT('ecosystem.tts', 'Vozen TTS')}</a>
+          <a href="/helper/" aria-current="page">{helperT('ecosystem.helper', 'Vozen Helper')}</a>
+          <a href="/docs/">{helperT('ecosystem.docs', 'Docs')}</a>
+          <a href="/commands/">{helperT('ecosystem.commands', 'Commands')}</a>
+          <span aria-disabled="true" title={helperT('ecosystem.premiumUnavailable', 'Premium is temporarily unavailable')}>{helperT('helper.premium', 'Premium')}</span>
         </nav>
         <div className="workspace-global-nav__actions">
-          <a className="workspace-global-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noreferrer" aria-label="Vozen on GitHub">
+          <a className="workspace-global-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noreferrer" aria-label={helperT('ecosystem.githubAria', 'Vozen on GitHub')}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 .6a11.4 11.4 0 0 0-3.61 22.21c.57.1.78-.25.78-.55v-2.02c-3.17.69-3.84-1.34-3.84-1.34-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.02 1.75 2.67 1.25 3.32.96.1-.74.4-1.25.72-1.54-2.53-.29-5.19-1.27-5.19-5.64 0-1.25.45-2.27 1.19-3.07-.12-.3-.52-1.46.11-3.03 0 0 .97-.31 3.15 1.17A10.9 10.9 0 0 1 12 6.2c.98 0 1.97.13 2.89.38 2.18-1.48 3.15-1.17 3.15-1.17.63 1.57.23 2.73.11 3.03.74.8 1.19 1.82 1.19 3.07 0 4.38-2.67 5.35-5.21 5.63.41.36.77 1.07.77 2.16v3.2c0 .3.2.66.79.55A11.4 11.4 0 0 0 12 .6Z" />
             </svg>
           </a>
-          <span className="workspace-global-nav__language" aria-label="Site language: English">
-            <span className="workspace-global-nav__language-flag" aria-hidden="true">{ecosystemUkFlag}</span>
-            <span>English</span>
+          <label className="workspace-global-nav__language" aria-label={helperT('ecosystem.siteLanguage', 'Site language')}>
+            <span className="workspace-global-nav__language-flag" aria-hidden="true">{localeOption.flag}</span>
+            <select
+              value={locale}
+              aria-label={helperT('ecosystem.chooseLanguage', 'Choose language')}
+              onChange={(event) => setHelperLocale(event.target.value)}
+            >
+              {LOCALE_OPTIONS.map((option) => <option value={option.code} key={option.code}>{option.name}</option>)}
+            </select>
             <svg className="workspace-global-nav__language-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M6 9l6 6 6-6" />
             </svg>
-          </span>
+          </label>
           {account ? (
-            <a className="workspace-global-nav__account" href="/account/" aria-label={`Open ${username}'s Vozen account`}>
+            <a className="workspace-global-nav__account" href="/account/" aria-label={helperT('ecosystem.accountAria', `Open ${username}'s Vozen account`, { name: username })}>
               <span className="workspace-global-nav__account-avatar-wrap" aria-hidden="true">
                 <EcosystemAccountAvatar src={avatar} initial={initial} />
                 {decoration ? <img className="workspace-global-nav__account-avatar-decoration" src={decoration} alt="" width="32" height="32" referrerPolicy="no-referrer" onError={(event) => { event.currentTarget.hidden = true; }} /> : null}
@@ -3729,11 +3839,11 @@ function EcosystemTopbar() {
               <span>{username}</span>
             </a>
           ) : (
-            <a className="workspace-global-nav__account workspace-global-nav__account--login" href="/account/" aria-label="Log in to Vozen">
+            <a className="workspace-global-nav__account workspace-global-nav__account--login" href="/account/" aria-label={helperT('ecosystem.loginAria', 'Log in to Vozen')}>
               <svg viewBox="0 0 24 18" aria-hidden="true">
                 <path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2-1-2-2.3 0-1.24.88-2.28 2-2.28s2.02 1.04 2 2.28c0 1.26-.9 2.3-2 2.3Z" />
               </svg>
-              <span>Log in</span>
+              <span>{helperT('ecosystem.login', 'Log in')}</span>
             </a>
           )}
         </div>
@@ -3757,20 +3867,20 @@ function ServerPicker({
       <EcosystemTopbar />
       <main className="helper-server-picker workspace-standalone__content" aria-labelledby="server-picker-title">
         <a className="helper-server-picker__back" href="/account/">
-          ← Back to account
+          {helperT('helper.backAccount', '← Back to account')}
         </a>
         <div className="helper-server-picker__heading-block">
-          <small className="eyebrow">DASHBOARD</small>
+          <small className="eyebrow">{helperT('helper.dashboardEyebrow', 'DASHBOARD')}</small>
           <h1 id="server-picker-title" data-route-heading tabIndex={-1}>
-            Server settings
+            {helperT('helper.serverSettings', 'Server settings')}
           </h1>
-          <p>Configure Vozen Helper on your servers - no slash commands needed</p>
+          <p>{helperT('helper.serverSettingsSubtitle', 'Configure Vozen Helper on your servers — no slash commands needed')}</p>
         </div>
         <section className="helper-server-picker__surface">
           <div className="helper-server-picker__surface-heading">
             <div>
-              <h2>Pick a server</h2>
-              <p>Servers where you&apos;re an admin and Vozen Helper is added</p>
+              <h2>{helperT('helper.pickServer', 'Pick a server')}</h2>
+              <p>{helperT('helper.pickHint', "Servers where you're an admin and Vozen Helper is added")}</p>
             </div>
           </div>
           {manageableGuilds.length ? (
@@ -3796,9 +3906,9 @@ function ServerPicker({
             </div>
           ) : (
             <section className="helper-server-picker__empty" aria-live="polite">
-              <h2>No manageable servers found</h2>
-              <p>Return to your account, refresh the Discord connection, then try again.</p>
-              <a href="/account/">Return to account</a>
+              <h2>{helperT('helper.noServers', 'No manageable servers found')}</h2>
+              <p>{helperT('helper.noServersHint', 'Return to your account, refresh the Discord connection, then try again.')}</p>
+              <a href="/account/">{helperT('helper.returnAccount', 'Return to account')}</a>
             </section>
           )}
           <a
@@ -3808,10 +3918,10 @@ function ServerPicker({
             rel="noreferrer"
           >
             <span>
-              <strong>Add Vozen Helper to another server</strong>
-              <small>Invite the bot, then come back here to configure it.</small>
+              <strong>{helperT('helper.addAnotherServer', 'Add Vozen Helper to another server')}</strong>
+              <small>{helperT('helper.inviteHint', 'Invite the bot, then come back here to configure it.')}</small>
             </span>
-            <span className="helper-server-picker__add-action">Add a server</span>
+            <span className="helper-server-picker__add-action">{helperT('helper.addServer', 'Add a server')}</span>
           </a>
         </section>
       </main>
@@ -3852,20 +3962,26 @@ function Overview({
   const levels = features.find((feature) => feature.key === 'community.levels');
   const readiness = [
     {
-      label: 'Protection',
-      detail: protection?.enabled ? 'Active and protecting your server.' : 'Ready to configure.',
+      label: helperT('helper.protection', 'Protection'),
+      detail: protection?.enabled
+        ? helperT('helper.protectionActive', 'Active and protecting your server.')
+        : helperT('helper.readyConfigure', 'Ready to configure.'),
       done: Boolean(protection?.enabled),
       path: '#/config/protection.antispam',
     },
     {
-      label: 'Welcome flow',
-      detail: welcome?.enabled ? 'New members receive the configured welcome.' : 'Ready to configure.',
+      label: helperT('helper.welcomeFlow', 'Welcome flow'),
+      detail: welcome?.enabled
+        ? helperT('helper.welcomeConfigured', 'New members receive the configured welcome.')
+        : helperT('helper.readyConfigure', 'Ready to configure.'),
       done: Boolean(welcome?.enabled),
       path: '#/config/support.welcome',
     },
     {
-      label: 'Community',
-      detail: levels?.enabled ? 'Levels and rewards are enabled.' : 'Ready to configure.',
+      label: helperT('helper.community', 'Community'),
+      detail: levels?.enabled
+        ? helperT('helper.levelsEnabled', 'Levels and rewards are enabled.')
+        : helperT('helper.readyConfigure', 'Ready to configure.'),
       done: Boolean(levels?.enabled),
       path: '#/config/community.levels',
     },
@@ -3874,16 +3990,16 @@ function Overview({
     <>
       <section className="helper-overview" aria-labelledby="route-heading">
         <div className="helper-overview__intro">
-          <small className="eyebrow">VOZEN HELPER · OVERVIEW</small>
+          <small className="eyebrow">{helperT('helper.overviewEyebrow', 'VOZEN HELPER · OVERVIEW')}</small>
           <h1 id="route-heading" data-route-heading tabIndex={-1}>
-            Run your server with confidence.
+            {helperT('helper.overviewTitle', 'Run your server with confidence.')}
           </h1>
-          <p>See what is ready on {guildName} and complete the next small step.</p>
+          <p>{helperT('helper.overviewIntro', 'See what is ready on {name} and complete the next small step.', { name: guildName })}</p>
         </div>
         <div className="helper-overview__grid">
           <section className="helper-overview__readiness">
-            <small className="eyebrow">READINESS</small>
-            <h2>Your server setup</h2>
+            <small className="eyebrow">{helperT('helper.readiness', 'READINESS')}</small>
+            <h2>{helperT('helper.serverSetup', 'Your server setup')}</h2>
             <div className="helper-overview__checklist">
               {readiness.map((item) => (
                 <button
@@ -3908,81 +4024,81 @@ function Overview({
               className="primary helper-overview__continue"
               onClick={() => onOpen('#/quick-setup')}
             >
-              Continue setup <span aria-hidden="true">→</span>
+              {helperT('helper.continueSetup', 'Continue setup')} <span aria-hidden="true">→</span>
             </button>
           </section>
           <aside className="helper-overview__snapshot">
-            <small className="eyebrow">SERVER SNAPSHOT</small>
+            <small className="eyebrow">{helperT('helper.serverSnapshot', 'SERVER SNAPSHOT')}</small>
             <h2>{guildName}</h2>
             <div className="helper-overview__snapshot-item">
-              <strong>Active modules</strong>
+              <strong>{helperT('helper.activeModules', 'Active modules')}</strong>
               <span>{enabled}</span>
             </div>
             <div className="helper-overview__snapshot-item">
-              <strong>Moderation cases</strong>
+              <strong>{helperT('helper.moderationCases', 'Moderation cases')}</strong>
               <span>{stats.totalCases}</span>
             </div>
             <div className="helper-overview__snapshot-item">
-              <strong>Recent events</strong>
+              <strong>{helperT('helper.recentEvents', 'Recent events')}</strong>
               <span>{cases.length}</span>
             </div>
           </aside>
         </div>
       </section>
       <div className="metrics">
-        <Metric value={String(enabled)} label="active features" />
-        <Metric value={String(stats.totalCases)} label="moderation cases" />
-        <Metric value={String(cases.length)} label="recent events" />
-        <Metric value={quota.plan} label="current plan" />
+        <Metric value={String(enabled)} label={helperT('helper.activeFeatures', 'active features')} />
+        <Metric value={String(stats.totalCases)} label={helperT('helper.moderationCases', 'moderation cases')} />
+        <Metric value={String(cases.length)} label={helperT('helper.recentEvents', 'recent events')} />
+        <Metric value={quota.plan} label={helperT('helper.currentPlan', 'current plan')} />
       </div>
       <section className="section-heading">
         <div>
-          <small className="eyebrow">RECOMMENDED</small>
-          <h2>What would you like to do first?</h2>
+          <small className="eyebrow">{helperT('helper.recommended', 'RECOMMENDED')}</small>
+          <h2>{helperT('helper.doFirst', 'What would you like to do first?')}</h2>
         </div>
         <button type="button" className="link-button" onClick={() => onOpen('#/features')}>
-          View everything →
+          {helperT('helper.viewEverything', 'View everything →')}
         </button>
       </section>
       <div className="quick-grid">
         <Quick
           icon="🛡"
-          title="Protect the server"
-          text="Anti-spam, anti-raid, and join protection."
+          title={helperT('helper.protectTitle', 'Protect the server')}
+          text={helperT('helper.protectText', 'Anti-spam, anti-raid, and join protection.')}
           onClick={() => onOpen('#/config/protection.antispam')}
         />
         <Quick
           icon="✦"
-          title="Bring your community to life"
-          text="Levels, suggestions, giveaways, and starboard."
+          title={helperT('helper.communityTitle', 'Bring your community to life')}
+          text={helperT('helper.communityText', 'Levels, suggestions, giveaways, and starboard.')}
           onClick={() => onOpen('#/config/community.levels')}
         />
         <Quick
           icon="▣"
-          title="Create an identity"
-          text="Choose colors, typography, and a safe banner."
+          title={helperT('helper.identityTitle', 'Create an identity')}
+          text={helperT('helper.identityText', 'Choose colors, typography, and a safe banner.')}
           onClick={() => onOpen('#/rank-card')}
         />
       </div>
       <section className="quota card">
         <div>
-          <small className="eyebrow">PLAN LIMITS</small>
-          <h3>Use the Helper with room to grow</h3>
-          <p>The current plan shows limits before an action is blocked.</p>
+          <small className="eyebrow">{helperT('helper.planLimits', 'PLAN LIMITS')}</small>
+          <h3>{helperT('helper.roomToGrow', 'Use the Helper with room to grow')}</h3>
+          <p>{helperT('helper.planHint', 'The current plan shows limits before an action is blocked.')}</p>
         </div>
         <div className="quota-items">
           <Quota
-            label="Workflows"
+            label={helperT('helper.workflows', 'Workflows')}
             used={quota.usage.workflows ?? 0}
             limit={quota.limits.workflows ?? 0}
           />
           <Quota
-            label="Templates"
+            label={helperT('helper.templates', 'Templates')}
             used={quota.usage.templates ?? 0}
             limit={quota.limits.templates ?? 0}
           />
           <Quota
-            label="Role panels"
+            label={helperT('helper.rolePanels', 'Role panels')}
             used={quota.usage.role_panels ?? 0}
             limit={quota.limits.role_panels ?? 0}
           />
@@ -4079,38 +4195,37 @@ function FeatureCatalogue({
     <section>
       <div className="catalog-toolbar">
         <div>
-          <small className="eyebrow">HELPER CATALOG</small>
-          <h2>Choose what your server needs</h2>
+          <small className="eyebrow">{helperT('helper.catalogEyebrow', 'HELPER CATALOG')}</small>
+          <h2>{helperT('helper.catalogTitle', 'Choose what your server needs')}</h2>
           <p>
-            Open a topic to see essential options, advanced settings, and a safe simulation
-            safe.
+            {helperT('helper.catalogIntro', 'Open a topic to see essential options, advanced settings, and a safe simulation.')}
           </p>
         </div>
         <input
           className="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search features…"
-          aria-label="Search features"
+          placeholder={helperT('helper.searchFeatures', 'Search features…')}
+          aria-label={helperT('helper.searchFeaturesAria', 'Search features')}
           autoComplete="off"
         />
       </div>
-      <div className="feature-summary" aria-label="Feature catalogue status">
+      <div className="feature-summary" aria-label={helperT('helper.catalogStatus', 'Feature catalogue status')}>
         <span className="summary-item">
-          <b>{uniqueFeatures.length}</b> modules in the catalog
+          <b>{uniqueFeatures.length}</b> {helperT('helper.modulesInCatalog', 'modules in the catalog')}
         </span>
         <span className="summary-item summary-configurable">
-          <b>{configurableCount}</b> configurable
+          <b>{configurableCount}</b> {helperT('helper.configurable', 'configurable')}
         </span>
         <span className="summary-item summary-ready">
-          <b>{operationalCount}</b> operational
+          <b>{operationalCount}</b> {helperT('helper.operational', 'operational')}
         </span>
         <span className="summary-item summary-beta">
-          <b>{betaCount}</b> in beta
+          <b>{betaCount}</b> {helperT('helper.inBeta', 'in beta')}
         </span>
         {requirementCount > 0 && (
           <span className="summary-item summary-requirements">
-            <b>{requirementCount}</b> await credentials or approval
+            <b>{requirementCount}</b> {helperT('helper.awaitApproval', 'await credentials or approval')}
           </span>
         )}
       </div>
@@ -4123,12 +4238,13 @@ function FeatureCatalogue({
             aria-pressed={filter === category.id}
             onClick={() => setFilter(category.id)}
           >
-            {category.label}
+            {helperT(categoryTranslationKeys[category.id], category.label)}
           </button>
         ))}
       </div>
       <div className="feature-grid">
         {uniqueFeatures.map((feature) => {
+          const translatedFeature = localizedFeature(feature);
           const maturity = feature.maturity ?? (feature.available ? 'operational' : 'planned');
           const configurable = feature.configurable ?? feature.available;
           // A blocked feature may expose a contract so the user can inspect
@@ -4140,22 +4256,22 @@ function FeatureCatalogue({
           const docsUrl = docsUrlForFeature(feature.key);
           const label =
             healthStatus === 'misconfigured'
-              ? 'Check configuration'
+              ? helperT('helper.checkConfiguration', 'Check configuration')
               : healthStatus === 'degraded'
-                ? 'Degraded'
+                ? helperT('helper.degraded', 'Degraded')
                 : healthStatus === 'dependency_down'
-                  ? 'Missing dependency'
+                  ? helperT('helper.missingDependency', 'Missing dependency')
                   : maturity === 'operational'
               ? feature.enabled
-                ? 'Active'
-                : 'Available'
+                ? helperT('helper.active', 'Active')
+                : helperT('helper.available', 'Available')
               : maturity === 'beta'
-                ? 'Beta'
+                ? helperT('helper.beta', 'Beta')
                 : maturity === 'blocked'
-                  ? 'Blocked'
+                  ? helperT('helper.blocked', 'Blocked')
                   : maturity === 'degraded'
-                    ? 'Needs attention'
-                    : 'Planned';
+                    ? helperT('helper.needsAttention', 'Needs attention')
+                    : helperT('helper.planned', 'Planned');
           return (
             <article className="feature card" key={feature.key}>
               <div className="feature-top">
@@ -4178,14 +4294,14 @@ function FeatureCatalogue({
                   {label}
                 </span>
               </div>
-              <h3>{feature.label}</h3>
-              <p>{feature.description}</p>
+              <h3>{translatedFeature.label}</h3>
+              <p>{translatedFeature.description}</p>
               {maturity === 'blocked' && feature.issues?.[0]?.message && (
-                <p className="tip feature-requirement">{feature.issues[0].message}</p>
+                <p className="tip feature-requirement">{localizedIssue(feature.issues[0])}</p>
               )}
               {maturity === 'blocked' && dependencies.length > 0 && (
                 <details className="feature-dependencies">
-                  <summary>Activation requirements</summary>
+                  <summary>{helperT('helper.activationRequirements', 'Activation requirements')}</summary>
                   <ul>
                     {dependencies.slice(0, 4).map((dependency) => (
                       <li key={dependency}>{dependency}</li>
@@ -4200,16 +4316,16 @@ function FeatureCatalogue({
                 onClick={() => onOpen(feature.key)}
               >
                 {feature.key === 'studio.rank_card'
-                  ? 'Customise'
+                  ? helperT('helper.customise', 'Customise')
                   : canConfigure
-                    ? 'configure'
+                    ? helperT('helper.configure', 'Configure')
                     : maturity === 'blocked'
-                      ? 'View requirements'
-                    : 'View plan'}
+                      ? helperT('helper.viewRequirements', 'View requirements')
+                    : helperT('helper.viewPlan', 'View plan')}
               </button>
               {docsUrl && (
                 <a className="link-button feature-doc-link" href={docsUrl} target="_blank" rel="noopener noreferrer">
-                  Learn how this works
+                  {helperT('helper.learn', 'Learn how this works')}
                 </a>
               )}
             </article>
@@ -4217,7 +4333,7 @@ function FeatureCatalogue({
         })}
       </div>
       {!features.length && (
-        <div className="empty card">No features match this filter.</div>
+        <div className="empty card">{helperT('helper.noFeatureMatch', 'No features match this filter.')}</div>
       )}
     </section>
   );
@@ -4260,11 +4376,12 @@ function FeatureDetail({
   saving: boolean;
   onBack: () => void;
 }) {
+  const translatedFeature = feature ? localizedFeature(feature) : undefined;
   const templateOptions: [string, string][] = [
-    ['', 'No template'],
+    ['', helperT('helper.noTemplate', 'No template')],
     ...templates.map((template) => [template.id, `${template.name} (v${template.version})`] as [string, string]),
   ];
-  const sections: SectionSpec[] = schema?.sections.map((section) => ({
+  const rawSections: SectionSpec[] = schema?.sections.map((section) => ({
     ...section,
     fields: section.fields.map((field) => ({
       ...field,
@@ -4272,6 +4389,7 @@ function FeatureDetail({
       options: field.key === 'templateId' ? templateOptions : field.options,
     })),
   })) ?? (localPreviewMode ? spec(feature?.key ?? '') : []);
+  const sections = rawSections.map(localizedSection);
   // Keep blocked providers discoverable, but do not expose a save/enable
   // form that can only fail at publication time. Their detail page is a
   // requirements view until the backend reports a non-blocked maturity.
@@ -4281,20 +4399,20 @@ function FeatureDetail({
     return (
       <section className="detail-page">
         <button type="button" className="back-link" onClick={onBack}>
-          ← Back to features
+          {helperT('helper.backFeatures', '← Back to features')}
         </button>
         <div className="detail-intro card">
           <div>
-            <small className="eyebrow">{feature?.maturity === 'blocked' ? 'REQUISITOS EXTERNOS' : 'ROADMAP'}</small>
-            <h2>{feature?.label ?? 'Feature'}</h2>
-            <p>{feature?.description ?? 'This area is in the Vozen Helper roadmap.'}</p>
+            <small className="eyebrow">{feature?.maturity === 'blocked' ? helperT('helper.externalRequirements', 'EXTERNAL REQUIREMENTS') : helperT('helper.roadmap', 'ROADMAP')}</small>
+            <h2>{translatedFeature?.label ?? helperT('helper.feature', 'Feature')}</h2>
+            <p>{translatedFeature?.description ?? helperT('helper.roadmapDescription', 'This area is in the Vozen Helper roadmap.')}</p>
             <p className="tip">
-              {feature?.issues?.[0]?.message ??
-                'The operational adapter is not available for this server yet. Activation remains unavailable until integration, permissions, and rollback are ready.'}
+              {feature?.issues?.[0] ? localizedIssue(feature.issues[0]) :
+                helperT('helper.activationUnavailable', 'The operational adapter is not available for this server yet. Activation remains unavailable until integration, permissions, and rollback are ready.')}
             </p>
             {feature?.health?.dependencies && feature.health.dependencies.length > 0 && (
               <div className="requirement-list">
-                <strong>What is missing</strong>
+                <strong>{helperT('helper.whatMissing', 'What is missing')}</strong>
                 <ul>
                   {feature.health.dependencies.map((dependency) => (
                     <li key={dependency}>{dependency}</li>
@@ -4305,7 +4423,7 @@ function FeatureDetail({
           </div>
           {docsUrl && (
             <a className="link-button" href={docsUrl} target="_blank" rel="noopener noreferrer">
-              Read the documentation
+              {helperT('helper.readDocumentation', 'Read the documentation')}
             </a>
           )}
         </div>
@@ -4315,20 +4433,19 @@ function FeatureDetail({
     return (
       <section className="detail-page">
         <button type="button" className="back-link" onClick={onBack}>
-          ← Back to features
+          {helperT('helper.backFeatures', '← Back to features')}
         </button>
         <div className="detail-intro card">
           <div>
-            <small className="eyebrow">ADAPTER UNAVAILABLE</small>
-            <h2>{feature?.label ?? 'Feature'}</h2>
+            <small className="eyebrow">{helperT('helper.adapterUnavailable', 'ADAPTER UNAVAILABLE')}</small>
+            <h2>{translatedFeature?.label ?? helperT('helper.feature', 'Feature')}</h2>
             <p>
-              The dashboard did not receive this feature contract. Refresh the page or check the
-              API status before publishing changes.
+              {helperT('helper.contractMissing', 'The dashboard did not receive this feature contract. Refresh the page or check the API status before publishing changes.')}
             </p>
           </div>
           {docsUrl && (
             <a className="link-button" href={docsUrl} target="_blank" rel="noopener noreferrer">
-              Read the documentation
+              {helperT('helper.readDocumentation', 'Read the documentation')}
             </a>
           )}
         </div>
@@ -4337,25 +4454,25 @@ function FeatureDetail({
   return (
     <section className="detail-page">
       <button type="button" className="back-link" onClick={onBack}>
-        ← Back to features
+        {helperT('helper.backFeatures', '← Back to features')}
       </button>
       <div className="detail-intro card">
         <div>
           <small className="eyebrow">
-            CONFIGURATION ·{' '}
+            {helperT('helper.configuration', 'CONFIGURATION')} ·{' '}
             {feature?.category === 'protection'
-              ? 'Protection'
+              ? helperT('helper.protection', 'Protection')
               : feature?.category === 'community'
-                ? 'Community'
-                : 'Management'}
+                ? helperT('helper.community', 'Community')
+                : helperT('helper.management', 'Management')}
           </small>
-          <h2>{feature?.label ?? 'Feature'}</h2>
-          <p>{feature?.description ?? 'Adjust this feature for your server.'}</p>
+          <h2>{translatedFeature?.label ?? helperT('helper.feature', 'Feature')}</h2>
+          <p>{translatedFeature?.description ?? helperT('helper.adjustFeature', 'Adjust this feature for your server.')}</p>
         </div>
         <label className="switch-row">
           <span>
-            <b>{enabled ? 'Active' : 'Disabled'}</b>
-            <small>The Helper applies this configuration on the server.</small>
+            <b>{enabled ? helperT('helper.activeStatus', 'Active') : helperT('helper.disabled', 'Disabled')}</b>
+            <small>{helperT('helper.configurationApplies', 'The Helper applies this configuration on the server.')}</small>
           </span>
           <input
             type="checkbox"
@@ -4365,7 +4482,7 @@ function FeatureDetail({
         </label>
         {docsUrl && (
           <a className="link-button" href={docsUrl} target="_blank" rel="noopener noreferrer">
-            Learn how this works
+            {helperT('helper.learnWorks', 'Learn how this works')}
           </a>
         )}
       </div>
@@ -4405,11 +4522,10 @@ function FeatureDetail({
         </div>
         <aside className="detail-aside card">
           <div>
-            <small className="eyebrow">BEFORE PUBLISHING</small>
-            <h3>Review safely</h3>
+            <small className="eyebrow">{helperT('helper.beforePublishing', 'BEFORE PUBLISHING')}</small>
+            <h3>{helperT('helper.reviewSafely', 'Review safely')}</h3>
             <p>
-              Use the simulation to see what would happen. It never deletes messages or punishes
-              members.
+              {helperT('helper.simulationHint', 'Use the simulation to see what would happen. It never deletes messages or punishes members.')}
             </p>
           </div>
           <button type="button" className="secondary full" onClick={onTest}>
@@ -4417,8 +4533,8 @@ function FeatureDetail({
             feature?.key === 'social.twitch' ||
             feature?.key === 'social.rss' ||
             feature?.key === 'social.podcasts'
-              ? 'Send a test to Discord'
-              : 'Simulate configuration'}
+              ? helperT('helper.sendTest', 'Send a test to Discord')
+              : helperT('helper.simulate', 'Simulate configuration')}
           </button>
           {providerHealth && <ProviderHealthPanel health={providerHealth} />}
           {!localPreviewMode &&
@@ -4426,27 +4542,27 @@ function FeatureDetail({
             feature.health.status !== 'ready' &&
             revision > 0 && (
               <button type="button" className="secondary full" onClick={onRepair} disabled={saving}>
-                Repair publication
+                {helperT('helper.repair', 'Repair publication')}
               </button>
             )}
           <div className="tip">
-            <b>Need help?</b>
+            <b>{helperT('helper.needHelp', 'Need help?')}</b>
             <a className="link-button" href={docsTroubleshootingUrl('missing-permissions')} target="_blank" rel="noopener noreferrer">
-              Why is this permission needed?
+              {helperT('helper.permissionWhy', 'Why is this permission needed?')}
             </a>
             <a className="link-button" href={docsTroubleshootingUrl('restore-configuration')} target="_blank" rel="noopener noreferrer">
-              Rollback instructions
+              {helperT('helper.rollback', 'Rollback instructions')}
             </a>
-            <span>Advanced fields are collapsed to keep the first step simple.</span>
+            <span>{helperT('helper.advancedCollapsed', 'Advanced fields are collapsed to keep the first step simple.')}</span>
           </div>
         </aside>
       </div>
       <div className="sticky-actions">
         <button type="button" className="secondary" onClick={onDiscard} disabled={saving}>
-          Discard
+          {helperT('helper.discard', 'Discard')}
         </button>
         <button type="button" className="primary" onClick={onSave} disabled={saving}>
-          {saving ? 'Saving…' : 'Save changes'}
+          {saving ? helperT('helper.saving', 'Saving…') : helperT('helper.saveChanges', 'Save changes')}
         </button>
       </div>
     </section>
@@ -4455,9 +4571,9 @@ function FeatureDetail({
 
 function ProviderHealthPanel({ health }: { health: ProviderSubscriptionHealth }) {
   const labels: Record<ProviderSubscriptionHealth['status'], string> = {
-    ready: 'Ready',
-    degraded: 'Degraded',
-    dependency_down: 'Dependency unavailable',
+    ready: helperT('helper.providerReady', 'Ready'),
+    degraded: helperT('helper.providerDegraded', 'Degraded'),
+    dependency_down: helperT('helper.providerUnavailable', 'Dependency unavailable'),
   };
   const provider = health.provider === 'rss' ? 'RSS' : health.provider === 'youtube' ? 'YouTube' : 'Twitch';
   const source =
@@ -4475,14 +4591,14 @@ function ProviderHealthPanel({ health }: { health: ProviderSubscriptionHealth })
       <p>
         {health.message ??
           (health.status === 'ready'
-            ? 'The provider responded and this subscription can be tested.'
-            : 'Check the configured credentials and provider.')}
+            ? helperT('helper.providerResponded', 'The provider responded and this subscription can be tested.')
+            : helperT('helper.providerCheck', 'Check the configured credentials and provider.'))}
       </p>
-      {source && <small>Latest source: {source}</small>}
-      {health.failureCount > 0 && <small>Consecutive failures: {health.failureCount}</small>}
-      {health.lastError && <small className="provider-health-error">Latest error: {health.lastError}</small>}
+      {source && <small>{helperT('helper.latestSource', 'Latest source: {source}', { source })}</small>}
+      {health.failureCount > 0 && <small>{helperT('helper.consecutiveFailures', 'Consecutive failures: {count}', { count: health.failureCount })}</small>}
+      {health.lastError && <small className="provider-health-error">{helperT('helper.latestError', 'Latest error: {error}', { error: health.lastError })}</small>}
       <a className="link-button" href={docsProviderStatusUrl()} target="_blank" rel="noopener noreferrer">
-        Provider status
+        {helperT('helper.providerStatus', 'Provider status')}
       </a>
     </div>
   );
@@ -4504,14 +4620,14 @@ function TemplateManager({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const moduleOptions = [
-    ['core', 'Core'],
-    ['security', 'Protection'],
-    ['support', 'Support'],
-    ['events', 'Events'],
-    ['community', 'Community'],
-    ['automate', 'Automation'],
-    ['insights', 'Insights'],
-    ['studio', 'Studio'],
+    ['core', helperT('helper.moduleCore', 'Core')],
+    ['security', helperT('helper.moduleProtection', 'Protection')],
+    ['support', helperT('helper.moduleSupport', 'Support')],
+    ['events', helperT('helper.moduleEvents', 'Events')],
+    ['community', helperT('helper.moduleCommunity', 'Community')],
+    ['automate', helperT('helper.moduleAutomation', 'Automation')],
+    ['insights', helperT('helper.moduleInsights', 'Insights')],
+    ['studio', helperT('helper.moduleStudio', 'Studio')],
   ] as const;
   async function createTemplate() {
     if (localPreviewMode || !name.trim() || busy) return;
@@ -4529,7 +4645,7 @@ function TemplateManager({
       setDescription('');
       setContent('');
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not save the template.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.templateSaveError', 'Could not save the template.'));
     } finally {
       setBusy(false);
     }
@@ -4542,7 +4658,7 @@ function TemplateManager({
       await api.deleteStudioTemplate(id);
       onChange(templates.filter((template) => template.id !== id));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not delete the template.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.templateDeleteError', 'Could not delete the template.'));
     } finally {
       setBusy(false);
     }
@@ -4551,30 +4667,30 @@ function TemplateManager({
     <section className="config-section card">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">REAL SERVER TEMPLATES</small>
-          <h3>Save a reusable server setup</h3>
+          <small className="eyebrow">{helperT('helper.templatesEyebrow', 'REAL SERVER TEMPLATES')}</small>
+          <h3>{helperT('helper.templatesTitle', 'Save a reusable server setup')}</h3>
           <p>
             {localPreviewMode
-              ? 'Connect the panel to a Helper API to create templates for a real guild.'
-              : 'Templates are stored for this guild only. Secrets and tokens are never exported.'}
+              ? helperT('helper.templatesPreviewHint', 'Connect the panel to a Helper API to create templates for a real guild.')
+              : helperT('helper.templatesStoredHint', 'Templates are stored for this guild only. Secrets and tokens are never exported.')}
           </p>
         </div>
       </div>
       <div className="field-grid">
         <label className="field">
-          <span><b>Template name</b><small>Use a clear name your team will recognise.</small></span>
+          <span><b>{helperT('helper.templateName', 'Template name')}</b><small>{helperT('helper.templateNameHint', 'Use a clear name your team will recognise.')}</small></span>
           <input value={name} maxLength={80} onChange={(event) => setName(event.target.value)} />
         </label>
         <label className="field">
-          <span><b>Description</b><small>Optional context for the next administrator.</small></span>
+          <span><b>{helperT('helper.description', 'Description')}</b><small>{helperT('helper.templateDescriptionHint', 'Optional context for the next administrator.')}</small></span>
           <input value={description} maxLength={500} onChange={(event) => setDescription(event.target.value)} />
         </label>
         <label className="field">
-          <span><b>Default message</b><small>Optional content used by welcome, goodbye and guided-channel templates. Supports {'{member}'} and {'{server}'}.</small></span>
+          <span><b>{helperT('helper.defaultMessage', 'Default message')}</b><small>{helperT('helper.defaultMessageHint', 'Optional content used by welcome, goodbye and guided-channel templates. Supports {member} and {server}.')}</small></span>
           <textarea value={content} maxLength={2000} rows={3} onChange={(event) => setContent(event.target.value)} />
         </label>
       </div>
-      <div className="template-module-grid" aria-label="Template modules">
+      <div className="template-module-grid" aria-label={helperT('helper.templateModules', 'Template modules')}>
         {moduleOptions.map(([value, label]) => (
           <label className="toggle-field" key={value}>
             <span><b>{label}</b></span>
@@ -4592,21 +4708,21 @@ function TemplateManager({
         onClick={() => void createTemplate()}
         disabled={localPreviewMode || busy || !name.trim()}
       >
-        {busy ? 'Saving…' : 'Save template'}
+        {busy ? helperT('helper.saving', 'Saving…') : helperT('helper.saveTemplate', 'Save template')}
       </button>
       {error && <p className="tip" role="alert">{error}</p>}
       {templates.length > 0 && (
         <div className="template-list">
           {templates.map((template) => (
             <div className="template-row" key={template.id}>
-              <div><b>{template.name}</b><small>{template.description || 'No description'} · v{template.version}</small></div>
+              <div><b>{template.name}</b><small>{template.description || helperT('helper.noDescription', 'No description')} · v{template.version}</small></div>
               <button
                 type="button"
                 className="ghost"
                 onClick={() => void removeTemplate(template.id)}
                 disabled={localPreviewMode || busy}
               >
-                Delete
+                {helperT('helper.delete', 'Delete')}
               </button>
             </div>
           ))}
@@ -4640,7 +4756,7 @@ function CustomCommandManager({ localPreviewMode }: { localPreviewMode: boolean 
         setEnabled(result.enabled);
       })
       .catch((cause) => {
-        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Could not load custom commands.');
+        if (!cancelled) setError(cause instanceof Error ? cause.message : helperT('helper.commandsLoadError', 'Could not load custom commands.'));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -4675,7 +4791,7 @@ function CustomCommandManager({ localPreviewMode }: { localPreviewMode: boolean 
         : [...current, result.command].sort((a, b) => a.name.localeCompare(b.name)));
       resetForm();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not save the custom command.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.commandSaveError', 'Could not save the custom command.'));
     } finally {
       setBusy(false);
     }
@@ -4690,7 +4806,7 @@ function CustomCommandManager({ localPreviewMode }: { localPreviewMode: boolean 
       setCommands((current) => current.filter((command) => command.name !== commandName));
       if (editingName === commandName) resetForm();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not delete the custom command.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.commandDeleteError', 'Could not delete the custom command.'));
     } finally {
       setBusy(false);
     }
@@ -4700,62 +4816,61 @@ function CustomCommandManager({ localPreviewMode }: { localPreviewMode: boolean 
     <section className="config-section card">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">SERVER RESPONSES</small>
-          <h3>Comandos custom</h3>
+          <small className="eyebrow">{helperT('helper.responsesEyebrow', 'SERVER RESPONSES')}</small>
+          <h3>{helperT('helper.customCommandsTitle', 'Custom commands')}</h3>
           <p>
-            Create simple responses for your server. The prefix and limits are configured above;
-            here you manage the content the Helper actually publishes.
+            {helperT('helper.customCommandsIntro', 'Create simple responses for your server. The prefix and limits are configured above; here you manage the content the Helper actually publishes.')}
           </p>
         </div>
       </div>
       <div className="tip">
-        <b>Available variables</b>
-        <span>{'{user}'}, {'{channel}'}, {'{server}'} and {'{args}'}. global mentions are neutralized by the Helper.</span>
+        <b>{helperT('helper.availableVariables', 'Available variables')}</b>
+        <span>{helperT('helper.variablesHint', '{user}, {channel}, {server} and {args}. Global mentions are neutralized by the Helper.')}</span>
       </div>
       {!localPreviewMode && !loading && !enabled && (
-        <p className="tip" role="status">Enable this feature and save the settings above to manage commands.</p>
+        <p className="tip" role="status">{helperT('helper.enableCommandsHint', 'Enable this feature and save the settings above to manage commands.')}</p>
       )}
-      {loading && <p className="tip" role="status">Loading commands for this server…</p>}
+      {loading && <p className="tip" role="status">{helperT('helper.loadingCommands', 'Loading commands for this server…')}</p>}
       <div className="field-grid">
         <label className="field">
-          <span><b>{editingName ? 'Command name' : 'New command'}</b><small>Use only letters, numbers, hyphens, or underscores. Maximum 32 characters.</small></span>
+          <span><b>{editingName ? helperT('helper.commandName', 'Command name') : helperT('helper.newCommand', 'New command')}</b><small>{helperT('helper.commandNameHint', 'Use only letters, numbers, hyphens, or underscores. Maximum 32 characters.')}</small></span>
           <input
             value={name}
             maxLength={32}
             disabled={Boolean(editingName) || localPreviewMode || busy || !enabled}
             onChange={(event) => setName(event.target.value)}
-            placeholder="rules"
+            placeholder={helperT('helper.commandNamePlaceholder', 'rules')}
           />
         </label>
         <label className="field">
-          <span><b>Response</b><small>Up to {maxResponseLength} characters. The configured prefix will be used in Discord.</small></span>
+          <span><b>{helperT('helper.response', 'Response')}</b><small>{helperT('helper.responseHint', 'Up to {n} characters. The configured prefix will be used in Discord.', { n: maxResponseLength })}</small></span>
           <textarea
             value={content}
             maxLength={maxResponseLength}
             rows={3}
             disabled={localPreviewMode || busy || !enabled}
             onChange={(event) => setContent(event.target.value)}
-            placeholder="View #rules to learn the server rules."
+            placeholder={helperT('helper.responsePlaceholder', 'View #rules to learn the server rules.')}
           />
         </label>
       </div>
       <div className="inline-actions">
         <button type="button" className="secondary" onClick={() => void saveCommand()} disabled={localPreviewMode || busy || !enabled || !name.trim() || !content.trim()}>
-          {busy ? 'Saving…' : editingName ? 'Save command' : 'Add command'}
+          {busy ? helperT('helper.saving', 'Saving…') : editingName ? helperT('helper.saveCommand', 'Save command') : helperT('helper.addCommand', 'Add command')}
         </button>
-        {editingName && <button type="button" className="ghost" onClick={resetForm} disabled={busy}>Cancel edit</button>}
-        <small>{commands.length}/{limit} commands used</small>
+        {editingName && <button type="button" className="ghost" onClick={resetForm} disabled={busy}>{helperT('helper.cancelEdit', 'Cancel edit')}</button>}
+        <small>{helperT('helper.commandsUsed', '{used}/{limit} commands used', { used: commands.length, limit })}</small>
       </div>
       {error && <p className="tip" role="alert">{error}</p>}
-      {!localPreviewMode && !loading && commands.length === 0 && <p className="tip">No commands yet. Add the first one above.</p>}
+      {!localPreviewMode && !loading && commands.length === 0 && <p className="tip">{helperT('helper.noCommands', 'No commands yet. Add the first one above.')}</p>}
       {commands.length > 0 && (
-        <div className="template-list" aria-label="Custom commands">
+        <div className="template-list" aria-label={helperT('helper.customCommandsTitle', 'Custom commands')}>
           {commands.map((command) => (
             <div className="template-row" key={command.name}>
               <div><b>{command.name}</b><small>{command.content}</small></div>
               <div className="inline-actions">
-                <button type="button" className="ghost" onClick={() => beginEdit(command)} disabled={busy}>edit</button>
-                <button type="button" className="ghost" onClick={() => void removeCommand(command.name)} disabled={busy}>delete</button>
+                <button type="button" className="ghost" onClick={() => beginEdit(command)} disabled={busy}>{helperT('helper.edit', 'Edit')}</button>
+                <button type="button" className="ghost" onClick={() => void removeCommand(command.name)} disabled={busy}>{helperT('helper.delete', 'Delete')}</button>
               </div>
             </div>
           ))}
@@ -4789,7 +4904,7 @@ function LeaderboardPreview({
         setIsPublic(result.public);
       })
       .catch((cause) => {
-        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Could not load the leaderboard.');
+        if (!cancelled) setError(cause instanceof Error ? cause.message : helperT('helper.leaderboardLoadError', 'Could not load the leaderboard.'));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -4801,29 +4916,29 @@ function LeaderboardPreview({
     <section className="config-section card">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">XP COMMUNITY</small>
-          <h3>Leaderboard preview</h3>
-          <p>Preview the same opt-out-aware ranking that the Helper publishes with <code>/leaderboard</code>.</p>
+          <small className="eyebrow">{helperT('helper.xpCommunityEyebrow', 'XP COMMUNITY')}</small>
+          <h3>{helperT('helper.leaderboardTitle', 'Leaderboard preview')}</h3>
+          <p>{helperT('helper.leaderboardIntro', 'Preview the same opt-out-aware ranking that the Helper publishes with /leaderboard.')}</p>
         </div>
-        <span className="status-pill">{isPublic ? 'Public' : 'Private'}</span>
+        <span className="status-pill">{isPublic ? helperT('helper.public', 'Public') : helperT('helper.private', 'Private')}</span>
       </div>
       {!localPreviewMode && !enabled && (
-        <p className="tip" role="status">Enable the XP leaderboard and save the settings to publish it in Discord.</p>
+        <p className="tip" role="status">{helperT('helper.enableLeaderboardHint', 'Enable the XP leaderboard and save the settings to publish it in Discord.')}</p>
       )}
-      {loading && <p className="tip" role="status">Loading the latest XP ranking…</p>}
+      {loading && <p className="tip" role="status">{helperT('helper.loadingLeaderboard', 'Loading the latest XP ranking…')}</p>}
       {error && <p className="tip" role="alert">{error}</p>}
       {!loading && enabled && entries.length === 0 && (
-        <p className="tip">No eligible XP data yet. Members can opt out with <code>/leaderboard-privacy</code>.</p>
+        <p className="tip">{helperT('helper.noXpData', 'No eligible XP data yet. Members can opt out with /leaderboard-privacy.')}</p>
       )}
       {entries.length > 0 && (
-        <div className="template-list" aria-label="XP leaderboard preview">
+        <div className="template-list" aria-label={helperT('helper.leaderboardTitle', 'Leaderboard preview')}>
           {entries.map((entry) => (
             <div className="template-row" key={`${entry.userId}-${entry.rank}`}>
               <div>
                 <b>#{entry.rank} · {entry.userId}</b>
                 <small>{entry.xp.toLocaleString()} XP</small>
               </div>
-              <span className="status-pill">{entry.rank <= maxEntries ? 'Included' : 'Hidden'}</span>
+              <span className="status-pill">{entry.rank <= maxEntries ? helperT('helper.included', 'Included') : helperT('helper.hidden', 'Hidden')}</span>
             </div>
           ))}
         </div>
@@ -4854,7 +4969,7 @@ function RemindersManager({
       })
       .catch((cause) => {
         if (!cancelled) {
-          setError(cause instanceof Error ? cause.message : 'Could not load reminders.');
+          setError(cause instanceof Error ? cause.message : helperT('helper.remindersLoadError', 'Could not load reminders.'));
         }
       })
       .finally(() => {
@@ -4871,7 +4986,7 @@ function RemindersManager({
       await api.cancelReminder(id);
       setReminders((current) => current.filter((reminder) => reminder.id !== id));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not cancel the reminder.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.reminderCancelError', 'Could not cancel the reminder.'));
     } finally {
       setBusyAction(null);
     }
@@ -4889,7 +5004,7 @@ function RemindersManager({
           : reminder
       )));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not retry the reminder.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.reminderRetryError', 'Could not retry the reminder.'));
     } finally {
       setBusyAction(null);
     }
@@ -4904,37 +5019,37 @@ function RemindersManager({
     <section className="config-section card">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">SCHEDULED ACTIONS</small>
-          <h3>Pending reminders</h3>
-          <p>See reminders created with <code>/remind</code> and cancel them before they are sent.</p>
+          <small className="eyebrow">{helperT('helper.scheduledActionsEyebrow', 'SCHEDULED ACTIONS')}</small>
+          <h3>{helperT('helper.pendingReminders', 'Pending reminders')}</h3>
+          <p>{helperT('helper.remindersIntro', 'See reminders created with /remind and cancel them before they are sent.')}</p>
         </div>
         <span className="status-pill">
-          {reminders.length} scheduled
-          {statusCounts.dead ? ` · ${statusCounts.dead} failed` : ''}
+          {helperT('helper.scheduledCount', '{n} scheduled', { n: reminders.length })}
+          {statusCounts.dead ? ` · ${helperT('helper.failedCount', '{n} failed', { n: statusCounts.dead })}` : ''}
         </span>
       </div>
       {!localPreviewMode && !enabled && (
-        <p className="tip" role="status">Enable reminders and save the policy before scheduling new messages.</p>
+        <p className="tip" role="status">{helperT('helper.enableRemindersHint', 'Enable reminders and save the policy before scheduling new messages.')}</p>
       )}
-      {loading && <p className="tip" role="status">Loading scheduled reminders…</p>}
+      {loading && <p className="tip" role="status">{helperT('helper.loadingReminders', 'Loading scheduled reminders…')}</p>}
       {error && <p className="tip" role="alert">{error}</p>}
       {!loading && reminders.length === 0 && (
-        <p className="tip">No pending reminders. Members can create one with <code>/remind</code> in Discord.</p>
+        <p className="tip">{helperT('helper.noReminders', 'No pending reminders. Members can create one with /remind in Discord.')}</p>
       )}
       {reminders.length > 0 && (
-        <div className="template-list" aria-label="Pending reminders">
+        <div className="template-list" aria-label={helperT('helper.pendingReminders', 'Pending reminders')}>
           {reminders.map((reminder) => (
             <div className="template-row" key={reminder.id}>
               <div>
                 <b>#{reminder.id} · {new Date(reminder.executeAt).toLocaleString()}</b>
                 <small>
-                  {reminder.text || 'Reminder'}
-                  {reminder.repeat ? ` · repeats ${reminder.repeat}${reminder.remaining == null ? '' : ` (${reminder.remaining} left)`}` : ''}
+                  {reminder.text || helperT('helper.reminder', 'Reminder')}
+                  {reminder.repeat ? ` · ${helperT('helper.repeats', 'repeats {value}', { value: reminder.repeat })}${reminder.remaining == null ? '' : ` (${helperT('helper.leftCount', '{n} left', { n: reminder.remaining })})`}` : ''}
                   {reminder.timezone ? ` · ${reminder.timezone}` : ''}
                 </small>
                 <span className={`status-pill reminder-status-${reminder.status}`}>
-                  {reminder.status === 'dead' ? 'Failed — retry required' : reminder.status}
-                  {reminder.attempts > 0 ? ` · ${reminder.attempts} attempt${reminder.attempts === 1 ? '' : 's'}` : ''}
+                  {reminder.status === 'dead' ? helperT('helper.failedRetryRequired', 'Failed — retry required') : helperT(`helper.reminderStatus.${reminder.status}`, reminder.status)}
+                  {reminder.attempts > 0 ? ` · ${helperT('helper.attemptCount', '{n} attempt(s)', { n: reminder.attempts })}` : ''}
                 </span>
                 {reminder.lastError ? <small className="tip">{reminder.lastError}</small> : null}
               </div>
@@ -4946,7 +5061,7 @@ function RemindersManager({
                     onClick={() => void retry(reminder.id)}
                     disabled={localPreviewMode || !enabled || busyAction !== null}
                   >
-                    {busyAction === `retry:${reminder.id}` ? 'Retrying...' : 'Retry now'}
+                    {busyAction === `retry:${reminder.id}` ? helperT('helper.retrying', 'Retrying…') : helperT('helper.retryNow', 'Retry now')}
                   </button>
                 )}
                 <button
@@ -4955,7 +5070,7 @@ function RemindersManager({
                 onClick={() => void cancel(reminder.id)}
                 disabled={localPreviewMode || !enabled || busyAction !== null}
               >
-                {busyAction === `cancel:${reminder.id}` ? 'Cancelling...' : 'Cancel'}
+                {busyAction === `cancel:${reminder.id}` ? helperT('helper.cancelling', 'Cancelling…') : helperT('helper.cancel', 'Cancel')}
                 </button>
               </div>
             </div>
@@ -4995,7 +5110,7 @@ function WorkflowManager({
         setMaxReplyLength(result.maxReplyLength);
       })
       .catch((cause) => {
-        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Could not load workflows.');
+        if (!cancelled) setError(cause instanceof Error ? cause.message : helperT('helper.workflowsLoadError', 'Could not load workflows.'));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -5009,11 +5124,11 @@ function WorkflowManager({
     const trimmedPayload = payload.trim();
     if (localPreviewMode || busy || !enabled || !trimmedName || !trimmedPayload) return;
     if (action === 'reply' && trimmedPayload.length > maxReplyLength) {
-      setError(`Reply must be ${maxReplyLength} characters or fewer.`);
+      setError(helperT('helper.replyTooLong', 'Reply must be {n} characters or fewer.', { n: maxReplyLength }));
       return;
     }
     if (action === 'react' && (trimmedPayload.length > 16 || /[<>]/.test(trimmedPayload))) {
-      setError('Reactions use one Unicode emoji or a short safe token (maximum 16 characters).');
+      setError(helperT('helper.reactionInvalid', 'Reactions use one Unicode emoji or a short safe token (maximum 16 characters).'));
       return;
     }
     setBusy(true);
@@ -5042,7 +5157,7 @@ function WorkflowManager({
       setCondition('');
       setPayload('');
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not create the workflow.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.workflowCreateError', 'Could not create the workflow.'));
     } finally {
       setBusy(false);
     }
@@ -5058,7 +5173,7 @@ function WorkflowManager({
         item.id === workflow.id ? { ...item, enabled: !item.enabled } : item,
       ));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not update the workflow.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.workflowUpdateError', 'Could not update the workflow.'));
     } finally {
       setBusy(false);
     }
@@ -5072,7 +5187,7 @@ function WorkflowManager({
       await api.deleteWorkflow(workflow.id);
       setWorkflows((current) => current.filter((item) => item.id !== workflow.id));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not delete the workflow.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.workflowDeleteError', 'Could not delete the workflow.'));
     } finally {
       setBusy(false);
     }
@@ -5082,55 +5197,55 @@ function WorkflowManager({
     <section className="config-section card">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">REAL AUTOMATIONS</small>
-          <h3>Workflow builder</h3>
-          <p>Create safe message rules: when text contains a condition, the Helper replies or adds a reaction.</p>
+          <small className="eyebrow">{helperT('helper.realAutomationsEyebrow', 'REAL AUTOMATIONS')}</small>
+          <h3>{helperT('helper.workflowBuilder', 'Workflow builder')}</h3>
+          <p>{helperT('helper.workflowIntro', 'Create safe message rules: when text contains a condition, the Helper replies or adds a reaction.')}</p>
         </div>
       </div>
       {!localPreviewMode && !enabled && (
-        <p className="tip" role="status">Enable this feature and save the settings above to manage automations.</p>
+        <p className="tip" role="status">{helperT('helper.enableAutomationsHint', 'Enable this feature and save the settings above to manage automations.')}</p>
       )}
-      {loading && <p className="tip" role="status">Loading automations for this server…</p>}
+      {loading && <p className="tip" role="status">{helperT('helper.loadingAutomations', 'Loading automations for this server…')}</p>}
       <div className="field-grid">
         <label className="field">
-          <span><b>name</b><small>A short name to find the rule.</small></span>
-          <input value={name} maxLength={50} disabled={localPreviewMode || busy || !enabled} onChange={(event) => setName(event.target.value)} placeholder="welcome-reply" />
+          <span><b>{helperT('helper.workflowName', 'Name')}</b><small>{helperT('helper.workflowNameHint', 'A short name to find the rule.')}</small></span>
+          <input value={name} maxLength={50} disabled={localPreviewMode || busy || !enabled} onChange={(event) => setName(event.target.value)} placeholder={helperT('helper.workflowNamePlaceholder', 'welcome-reply')} />
         </label>
         <label className="field">
-          <span><b>When the message contains</b><small>Plain text, no executable code.</small></span>
-          <input value={condition} maxLength={200} disabled={localPreviewMode || busy || !enabled} onChange={(event) => setCondition(event.target.value)} placeholder="rules" />
+          <span><b>{helperT('helper.whenMessageContains', 'When the message contains')}</b><small>{helperT('helper.conditionHint', 'Plain text, no executable code.')}</small></span>
+          <input value={condition} maxLength={200} disabled={localPreviewMode || busy || !enabled} onChange={(event) => setCondition(event.target.value)} placeholder={helperT('helper.conditionPlaceholder', 'rules')} />
         </label>
         <label className="field">
-          <span><b>Action</b><small>Actions are limited to prevent loops and spam.</small></span>
+          <span><b>{helperT('helper.workflowAction', 'Action')}</b><small>{helperT('helper.actionHint', 'Actions are limited to prevent loops and spam.')}</small></span>
           <select value={action} disabled={localPreviewMode || busy || !enabled} onChange={(event) => setAction(event.target.value as 'reply' | 'react')}>
-            <option value="reply">Reply to the message</option>
-            <option value="react">Add reaction</option>
+            <option value="reply">{helperT('helper.replyToMessage', 'Reply to the message')}</option>
+            <option value="react">{helperT('helper.addReaction', 'Add reaction')}</option>
           </select>
         </label>
         <label className="field">
-          <span><b>{action === 'reply' ? 'response' : 'Emoji/reaction'}</b><small>{action === 'reply' ? `Up to ${maxReplyLength} characters.` : 'Unicode emoji, up to 16 characters; custom emojis remain blocked for security.'}</small></span>
-          <textarea value={payload} maxLength={action === 'reply' ? maxReplyLength : 16} rows={2} disabled={localPreviewMode || busy || !enabled} onChange={(event) => setPayload(event.target.value)} placeholder={action === 'reply' ? 'view #rules for learn the rules.' : '✅'} />
+          <span><b>{action === 'reply' ? helperT('helper.workflowResponse', 'Response') : helperT('helper.emojiReaction', 'Emoji/reaction')}</b><small>{action === 'reply' ? helperT('helper.replyLengthHint', 'Up to {n} characters.', { n: maxReplyLength }) : helperT('helper.emojiHint', 'Unicode emoji, up to 16 characters; custom emojis remain blocked for security.')}</small></span>
+          <textarea value={payload} maxLength={action === 'reply' ? maxReplyLength : 16} rows={2} disabled={localPreviewMode || busy || !enabled} onChange={(event) => setPayload(event.target.value)} placeholder={action === 'reply' ? helperT('helper.workflowResponsePlaceholder', 'View #rules to learn the rules.') : '✅'} />
         </label>
       </div>
       <div className="inline-actions">
         <button type="button" className="secondary" onClick={() => void create()} disabled={localPreviewMode || busy || !enabled || !name.trim() || !payload.trim()}>
-          {busy ? 'Saving…' : 'Add automation'}
+          {busy ? helperT('helper.saving', 'Saving…') : helperT('helper.addAutomation', 'Add automation')}
         </button>
-        <small>{workflows.length}/{limit} automations used</small>
+        <small>{helperT('helper.automationsUsed', '{used}/{limit} automations used', { used: workflows.length, limit })}</small>
       </div>
       {error && <p className="tip" role="alert">{error}</p>}
-      {!localPreviewMode && !loading && workflows.length === 0 && <p className="tip">No automations yet. Add the first one above.</p>}
+      {!localPreviewMode && !loading && workflows.length === 0 && <p className="tip">{helperT('helper.noAutomations', 'No automations yet. Add the first one above.')}</p>}
       {workflows.length > 0 && (
-        <div className="template-list" aria-label="server workflows">
+        <div className="template-list" aria-label={helperT('helper.workflows', 'Workflows')}>
           {workflows.map((workflow) => (
             <div className="template-row" key={workflow.id}>
               <div>
                 <b>{workflow.name}</b>
-                <small>when contains “{workflow.condition || 'any text'}” · {workflow.action === 'react' ? `reacts with ${workflow.payload}` : `replies: ${workflow.payload}`}</small>
+                <small>{helperT('helper.whenContains', 'when contains “{condition}”', { condition: workflow.condition || helperT('helper.anyText', 'any text') })} · {workflow.action === 'react' ? helperT('helper.reactsWith', 'reacts with {value}', { value: workflow.payload }) : helperT('helper.repliesWith', 'replies: {value}', { value: workflow.payload })}</small>
               </div>
               <div className="inline-actions">
-                <button type="button" className="ghost" onClick={() => void toggle(workflow)} disabled={busy || localPreviewMode || !enabled}>{workflow.enabled ? 'Disable' : 'Enable'}</button>
-                <button type="button" className="ghost" onClick={() => void remove(workflow)} disabled={busy || localPreviewMode || !enabled}>delete</button>
+                <button type="button" className="ghost" onClick={() => void toggle(workflow)} disabled={busy || localPreviewMode || !enabled}>{workflow.enabled ? helperT('helper.disableAction', 'Disable') : helperT('helper.enableAction', 'Enable')}</button>
+                <button type="button" className="ghost" onClick={() => void remove(workflow)} disabled={busy || localPreviewMode || !enabled}>{helperT('helper.delete', 'Delete')}</button>
               </div>
             </div>
           ))}
@@ -5160,7 +5275,7 @@ function RolePanelManager({
         if (!cancelled) setPanels(result.panels);
       })
       .catch((cause) => {
-        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Could not load role panels.');
+        if (!cancelled) setError(cause instanceof Error ? cause.message : helperT('helper.rolePanelsLoadError', 'Could not load role panels.'));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -5180,7 +5295,7 @@ function RolePanelManager({
       await api.deleteRolePanel(messageId);
       setPanels((current) => current.filter((panel) => panel.message_id !== messageId));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not delete the role panel.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.rolePanelDeleteError', 'Could not delete the role panel.'));
     } finally {
       setBusy(false);
     }
@@ -5196,7 +5311,7 @@ function RolePanelManager({
         ? { ...panel, message_id: result.messageId }
         : panel));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not repair the role panel.');
+      setError(cause instanceof Error ? cause.message : helperT('helper.rolePanelRepairError', 'Could not repair the role panel.'));
     } finally {
       setBusy(false);
     }
@@ -5206,31 +5321,30 @@ function RolePanelManager({
     <section className="config-section card">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">REAL DISCORD PANELS</small>
-          <h3>Role panel manager</h3>
+          <small className="eyebrow">{helperT('helper.realDiscordPanels', 'REAL DISCORD PANELS')}</small>
+          <h3>{helperT('helper.rolePanelManager', 'Role panel manager')}</h3>
           <p>
-            Saving the configuration publishes a real panel. Here you can confirm where it is,
-            repair a deleted message, or remove it without deleting roles.
+            {helperT('helper.rolePanelIntro', 'Saving the configuration publishes a real panel. Here you can confirm where it is, repair a deleted message, or remove it without deleting roles.')}
           </p>
         </div>
       </div>
-      {loading && <p className="tip" role="status">Loading panels for this server…</p>}
+      {loading && <p className="tip" role="status">{helperT('helper.loadingPanels', 'Loading panels for this server…')}</p>}
       {!localPreviewMode && !loading && panels.length === 0 && (
-        <p className="tip">No panel has been published yet. Choose a channel and roles above, then save.</p>
+        <p className="tip">{helperT('helper.noRolePanel', 'No panel has been published yet. Choose a channel and roles above, then save.')}</p>
       )}
       {panels.length > 0 && (
-        <div className="template-list" aria-label="Role panels">
+        <div className="template-list" aria-label={helperT('helper.rolePanels', 'Role panels')}>
           {panels.map((panel) => (
             <div className="template-row" key={panel.message_id}>
               <div>
-                <b>{panel.title || 'Role panel'}</b>
+                <b>{panel.title || helperT('helper.rolePanelFallback', 'Role panel')}</b>
                 <small>
-                  #{channelName(panel.channel_id) ?? panel.channel_id ?? 'unknown channel'} · {roleNames(panel.role_ids) || 'no roles'} · {panel.selection_mode === 'unique' ? 'one choice' : 'multiple choices'}
+                  #{channelName(panel.channel_id) ?? panel.channel_id ?? helperT('helper.unknownChannel', 'unknown channel')} · {roleNames(panel.role_ids) || helperT('helper.noRoles', 'no roles')} · {panel.selection_mode === 'unique' ? helperT('helper.oneChoice', 'one choice') : helperT('helper.multipleChoices', 'multiple choices')}
                 </small>
               </div>
               <div className="inline-actions">
-                <button type="button" className="ghost" onClick={() => void repair(panel.message_id)} disabled={busy}>Repair</button>
-                <button type="button" className="ghost" onClick={() => void remove(panel.message_id)} disabled={busy}>Delete</button>
+                <button type="button" className="ghost" onClick={() => void repair(panel.message_id)} disabled={busy}>{helperT('helper.repairAction', 'Repair')}</button>
+                <button type="button" className="ghost" onClick={() => void remove(panel.message_id)} disabled={busy}>{helperT('helper.delete', 'Delete')}</button>
               </div>
             </div>
           ))}
@@ -5239,6 +5353,36 @@ function RolePanelManager({
       {error && <p className="tip" role="alert">{error}</p>}
     </section>
   );
+}
+
+function schemaSlug(value: string): string {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '') || 'section';
+}
+
+function localizedField(field: FieldSpec): FieldSpec {
+  const label = helperT(`helper.field.${field.key}.label`, field.label);
+  const help = field.help
+    ? helperT(`helper.field.${field.key}.help`, field.help)
+    : undefined;
+  const options = field.options?.map((entry) => {
+    const [value, fallback] = Array.isArray(entry) ? entry : [entry, entry];
+    return [value, helperT(`helper.option.${field.key}.${value}`, fallback)] as [string, string];
+  });
+  return { ...field, label, help, options };
+}
+
+function localizedSection(section: SectionSpec): SectionSpec {
+  const slug = schemaSlug(section.title);
+  return {
+    ...section,
+    title: helperT(`helper.section.${slug}.title`, section.title),
+    description: helperT(`helper.section.${slug}.description`, section.description),
+    fields: section.fields.map(localizedField),
+  };
 }
 
 function ConfigSection({
@@ -5258,7 +5402,7 @@ function ConfigSection({
     <section className="config-section card">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">CONFIGURATION</small>
+          <small className="eyebrow">{helperT('helper.configuration', 'CONFIGURATION')}</small>
           <h3>{section.title}</h3>
           <p>{section.description}</p>
         </div>
@@ -5277,7 +5421,7 @@ function ConfigSection({
       {advanced.length > 0 && (
         <details className="advanced">
           <summary>
-            Advanced options <span>{advanced.length} settings</span>
+            {helperT('helper.advancedOptions', 'Advanced options')} <span>{advanced.length} {helperT('helper.settings', 'settings')}</span>
           </summary>
           <div className="field-grid">
             {advanced.map((field) => (
@@ -5318,7 +5462,7 @@ function FieldControl({
       <label className="field">
         <span>
           <b>{field.label}</b>
-          <small>{field.help ?? (resourceOptions.length ? 'Select an existing resource.' : 'Discord resource data is not available yet.')}</small>
+          <small>{field.help ?? helperT(resourceOptions.length ? 'helper.selectResourceHelp' : 'helper.resourceUnavailable', resourceOptions.length ? 'Select an existing resource.' : 'Discord resource data is not available yet.')}</small>
         </span>
         <select
           value={multiple ? (Array.isArray(normalized) ? normalized.map(String) : []) : String(normalized)}
@@ -5330,7 +5474,7 @@ function FieldControl({
           }}
           disabled={!context?.capabilities.channelSelectors && (field.kind === 'channel' || field.kind === 'category' || field.kind === 'channels') || !context?.capabilities.roleSelectors && (field.kind === 'role' || field.kind === 'roles')}
         >
-          {!multiple && <option value="">Choose a resource</option>}
+          {!multiple && <option value="">{helperT('helper.chooseResource', 'Choose a resource')}</option>}
           {resourceOptions.map((option) => <option value={option.id} key={option.id}>{field.kind === 'role' || field.kind === 'roles' ? `@${option.name}` : field.kind === 'category' ? `▾ ${option.name}` : `#${option.name}`}</option>)}
         </select>
       </label>
@@ -5368,7 +5512,7 @@ function FieldControl({
       <label className="field">
         <span>
           <b>{field.label}</b>
-          <small>{field.help ?? 'Separate multiple values with commas.'}</small>
+          <small>{field.help ?? helperT('helper.separateValues', 'Separate multiple values with commas.')}</small>
         </span>
         <input
           value={Array.isArray(normalized) ? normalized.join(', ') : String(normalized)}
@@ -5443,17 +5587,17 @@ function Activity({
     <section className="activity">
       <div className="section-heading">
         <div>
-          <small className="eyebrow">TRANSPARENCY</small>
-          <h2>Recent activity</h2>
-          <p>Every action shows what happened without hiding important details.</p>
+          <small className="eyebrow">{helperT('helper.transparency', 'TRANSPARENCY')}</small>
+          <h2>{helperT('helper.activity', 'Recent activity')}</h2>
+          <p>{helperT('helper.activityIntro', 'Every action shows what happened without hiding important details.')}</p>
         </div>
       </div>
       <div className="table card">
         <div className="table-head">
-          <span>Action</span>
-          <span>Target / actor</span>
-          <span>Status</span>
-          <span>Date</span>
+          <span>{helperT('helper.action', 'Action')}</span>
+          <span>{helperT('helper.targetActor', 'Target / actor')}</span>
+          <span>{helperT('helper.status', 'Status')}</span>
+          <span>{helperT('helper.date', 'Date')}</span>
         </div>
         {cases.map((item) => (
           <div className="table-row" key={`case-${item.id}`}>
@@ -5481,12 +5625,12 @@ function Activity({
               <b className="tag">{item.kind.replaceAll('_', ' ')}</b>
             </span>
             <span>{item.user_tag ?? item.user_id}</span>
-            <span>Metadata only · {item.detail}</span>
+            <span>{helperT('helper.metadataOnly', 'Metadata only')} · {item.detail}</span>
             <span>{formatDate(item.created_at)}</span>
           </div>
         ))}
         {!cases.length && !audit.length && !activity.length && (
-          <div className="empty">No activity to show.</div>
+          <div className="empty">{helperT('helper.activityEmpty', 'No activity to show.')}</div>
         )}
       </div>
     </section>
@@ -5498,9 +5642,10 @@ function formatDate(value?: number | string) {
     typeof value === 'number'
       ? new Date(value < 2_000_000_000 ? value * 1000 : value)
       : new Date(value);
+  const locale = helperLocale() === 'pt' ? 'pt-PT' : helperLocale() === 'zh' ? 'zh-TW' : helperLocale();
   return Number.isNaN(date.valueOf())
     ? '—'
-    : date.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' });
+    : date.toLocaleString(locale, { dateStyle: 'short', timeStyle: 'short' });
 }
 
 function RankCardEditor({
@@ -5521,23 +5666,23 @@ function RankCardEditor({
       <div className="card preview-panel panel-preview-panel">
         <div className="card-title">
           <div>
-            <small className="eyebrow">LIVE PREVIEW</small>
-            <h2>This is how it appears in Discord</h2>
+            <small className="eyebrow">{helperT('helper.livePreview', 'LIVE PREVIEW')}</small>
+            <h2>{helperT('helper.rankPreview', 'This is how it appears in Discord')}</h2>
           </div>
-          <span className="live-dot">● live</span>
+          <span className="live-dot">{helperT('helper.live', '● live')}</span>
         </div>
         <RankPreview config={config} />
       </div>
       <div className="card controls panel-controls">
         <div className="card-title">
           <div>
-            <small className="eyebrow">SAFE EDITOR</small>
-            <h2>XP card identity</h2>
-            <p>Use only Vozen-curated banners or a solid color.</p>
+            <small className="eyebrow">{helperT('helper.safeEditor', 'SAFE EDITOR')}</small>
+            <h2>{helperT('helper.xpIdentity', 'XP card identity')}</h2>
+            <p>{helperT('helper.xpIdentityHint', 'Use only Vozen-curated banners or a solid color.')}</p>
           </div>
         </div>
         <label>
-          Font
+          {helperT('helper.font', 'Font')}
           <select value={config.font} onChange={(event) => patch({ font: event.target.value })}>
             <option value="system">System</option>
             <option value="inter">Inter</option>
@@ -5548,19 +5693,19 @@ function RankCardEditor({
           </select>
         </label>
         <ColorField
-          label="Primary color"
+          label={helperT('helper.primaryColor', 'Primary color')}
           value={config.primary_color}
           swatches={swatches}
           onChange={(value) => patch({ primary_color: value, avatar_ring_color: value })}
         />
         <ColorField
-          label="Text color"
+          label={helperT('helper.textColor', 'Text color')}
           value={config.text_color}
           swatches={swatches}
           onChange={(value) => patch({ text_color: value })}
         />
         <label>
-          Overlay opacity <output>{Math.round(config.overlay_opacity * 100)}%</output>
+          {helperT('helper.overlayOpacity', 'Overlay opacity')} <output>{Math.round(config.overlay_opacity * 100)}%</output>
           <input
             type="range"
             min="0"
@@ -5573,10 +5718,10 @@ function RankCardEditor({
         <BackgroundPicker config={config} patch={patch} />
         <div className="actions rank-actions">
           <button type="button" className="secondary" onClick={onReset}>
-            Restore
+            {helperT('helper.restore', 'Restore')}
           </button>
           <button type="button" className="primary" onClick={onSave} disabled={saving}>
-            {saving ? 'Saving…' : 'Save changes'}
+            {saving ? helperT('helper.saving', 'Saving…') : helperT('helper.saveChanges', 'Save changes')}
           </button>
         </div>
       </div>
@@ -5594,8 +5739,8 @@ function BackgroundPicker({
   return (
     <div className="background-picker">
       <div className="field-label">
-        <span>XP card background</span>
-        <small>{preset ? 'Curated banner' : 'Solid colour'}</small>
+        <span>{helperT('helper.xpBackground', 'XP card background')}</span>
+        <small>{preset ? helperT('helper.curatedBanner', 'Curated banner') : helperT('helper.solidColour', 'Solid colour')}</small>
       </div>
       <div className="background-modes">
         <button
@@ -5605,7 +5750,7 @@ function BackgroundPicker({
             patch({ background_preset: null, background_url: null, background_data: null })
           }
         >
-          Solid color
+          {helperT('helper.solidColor', 'Solid color')}
         </button>
         <button
           type="button"
@@ -5618,7 +5763,7 @@ function BackgroundPicker({
             })
           }
         >
-          Banners
+          {helperT('helper.banners', 'Banners')}
         </button>
       </div>
       {preset ? (
@@ -5639,7 +5784,7 @@ function BackgroundPicker({
         </div>
       ) : (
         <ColorField
-          label="Choose a background color"
+          label={helperT('helper.backgroundColor', 'Choose a background color')}
           value={config.background_color}
           swatches={['#101725', '#172033', '#1F2937', '#312E46', '#3B2434', '#243A36']}
           onChange={(value) => patch({ background_color: value })}
@@ -5709,13 +5854,13 @@ function RankPreview({ config }: { config: RankCardConfig }) {
         <div className="rank-top">
           <strong style={{ color: config.text_color }}>Lunara</strong>
           <div>
-            <b style={{ color: config.primary_color }}>Rank #17</b>
-            <b style={{ color: config.text_color }}>Level 8</b>
+            <b style={{ color: config.primary_color }}>{helperT('helper.rank', 'Rank')} #17</b>
+            <b style={{ color: config.text_color }}>{helperT('helper.level', 'Level')} 8</b>
           </div>
         </div>
         <p style={{ color: config.primary_color }}>lunara#4821</p>
         <div className="xp-meta">
-          <span style={{ color: config.text_color }}>429 / 1337 XP</span>
+          <span style={{ color: config.text_color }}>429 / 1337 {helperT('helper.xp', 'XP')}</span>
           <span style={{ color: config.text_color }}>32%</span>
         </div>
         <div className="xp-track">

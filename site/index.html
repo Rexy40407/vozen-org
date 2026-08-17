@@ -17,7 +17,7 @@
       property="og:description"
       content="Voice and server tools, under one name."
     />
-    <title>Vozen — Tools for Discord</title>
+    <title data-i18n="home.documentTitle">Vozen — Tools for Discord</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="css/main-v43.css?v=nav-icons-v2" />
     <link rel="stylesheet" href="css/ecosystem-v1.css?v=icons-v1" />
@@ -30,8 +30,8 @@
       <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
       <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Vozen — Tools for Discord","description":"Vozen makes focused tools for Discord. Meet Vozen TTS and Vozen Helper.","url":"https://vozen.org/","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
   </head>
-  <body>
-    <a class="eco-skip" href="#products">Skip to products</a>
+  <body data-i18n-document-title="home.documentTitle">
+    <a class="eco-skip" href="#products" data-i18n="home.skipProducts">Skip to products</a>
 
     <div data-vozen-nav data-nav-product="Ecosystem"></div>
 
@@ -39,16 +39,16 @@
       <div class="eco-wrap">
         <section class="eco-home-hero" aria-labelledby="eco-title">
           <div class="eco-home-hero__copy">
-            <span class="eco-hero__eyebrow"><i aria-hidden="true"></i> Vozen ecosystem</span>
-            <h1 id="eco-title">One home.<br /><span>Every server tool.</span></h1>
-            <p>A shared platform for the tools that make Discord easier.</p>
+            <span class="eco-hero__eyebrow"><i aria-hidden="true"></i> <span data-i18n="home.eyebrow">Vozen ecosystem</span></span>
+            <h1 id="eco-title"><span data-i18n="home.heroTitle1">One home.</span><br /><span data-i18n="home.heroTitle2">Every server tool.</span></h1>
+            <p data-i18n="home.heroLead">A shared platform for the tools that make Discord easier.</p>
             <div class="eco-home-hero__actions">
-              <a class="eco-home-hero__primary" href="#products">Explore the products <span aria-hidden="true">→</span></a>
-              <a class="eco-home-hero__secondary" href="commands/">View commands</a>
+              <a class="eco-home-hero__primary" href="#products"><span data-i18n="home.exploreProducts">Explore the products</span> <span aria-hidden="true">→</span></a>
+              <a class="eco-home-hero__secondary" href="commands/" data-i18n="home.viewCommands">View commands</a>
             </div>
           </div>
 
-          <div class="eco-home-map" aria-label="Vozen ecosystem map">
+          <div class="eco-home-map" aria-label="Vozen ecosystem map" data-i18n-aria-label="home.mapAria">
             <div class="eco-home-map__glow" aria-hidden="true"></div>
             <svg class="eco-home-map__routes" viewBox="0 0 640 520" aria-hidden="true">
               <circle class="eco-home-orbit-track eco-home-orbit-track--tts" cx="320" cy="260" r="200" />
@@ -59,46 +59,46 @@
               <span class="eco-home-map__node-icon eco-home-map__node-icon--tts" aria-hidden="true">
                 <svg class="eco-tts-icon" viewBox="0 0 64 64"><rect x="10" y="27" width="6" height="10" rx="3" /><rect x="20" y="22" width="6" height="20" rx="3" /><rect x="30" y="18" width="6" height="28" rx="3" /><rect x="40" y="23" width="6" height="18" rx="3" /><rect x="50" y="28" width="4" height="8" rx="2" /></svg>
               </span>
-              <span><strong>Vozen TTS</strong><small>Voice for every channel</small></span>
-              <b>Available</b>
+              <span><strong>Vozen TTS</strong><small data-i18n="home.voiceEveryChannel">Voice for every channel</small></span>
+              <b data-i18n="home.available">Available</b>
             </div>
 
             <div class="eco-home-map__node eco-home-map__node--helper">
               <span class="eco-home-map__node-icon eco-home-map__node-icon--helper" aria-hidden="true">
                 <svg class="eco-helper-character eco-helper-character--classic" viewBox="0 0 64 64"><path d="M32 19v-7" /><circle cx="32" cy="9" r="3" class="white" /><path d="m15 36-6-4m2 0-2 4M49 36l6-4m-2 0 2 4" /><rect x="13" y="20" width="38" height="29" rx="13" class="white" /><rect x="18" y="26" width="28" height="18" rx="8" class="screen" /><circle cx="26" cy="35" r="2.4" class="white" /><circle cx="38" cy="35" r="2.4" class="white" /><path d="M27 39c3 2.5 7 2.5 10 0" /></svg>
               </span>
-              <span><strong>Vozen Helper</strong><small>Operations for your server</small></span>
-              <b>Available</b>
+              <span><strong>Vozen Helper</strong><small data-i18n="home.serverOperations">Operations for your server</small></span>
+              <b data-i18n="home.available">Available</b>
             </div>
 
             <div class="eco-home-map__core" aria-label="Vozen platform core">
               <span class="eco-home-map__ring" aria-hidden="true"></span>
               <span class="eco-home-map__mark" aria-hidden="true"><img class="vozen-ecosystem-icon" src="assets/vozen-ecosystem-icon.png" alt="" /></span>
               <strong>Vozen</strong>
-              <small>one ecosystem</small>
+              <small data-i18n="home.oneEcosystem">one ecosystem</small>
             </div>
           </div>
         </section>
 
-        <section class="eco-products" id="products" aria-label="Vozen products">
+        <section class="eco-products" id="products" aria-label="Vozen products" data-i18n-aria-label="home.productsAria">
           <a class="eco-product eco-product--tts" href="tts/">
             <div class="eco-product__top">
               <span class="eco-product__icon eco-product__icon--tts" aria-hidden="true">
                 <svg class="eco-tts-icon" viewBox="0 0 64 64"><rect x="10" y="27" width="6" height="10" rx="3" /><rect x="20" y="22" width="6" height="20" rx="3" /><rect x="30" y="18" width="6" height="28" rx="3" /><rect x="40" y="23" width="6" height="18" rx="3" /><rect x="50" y="28" width="4" height="8" rx="2" /></svg>
               </span>
               <span class="eco-status eco-status--live">
-                <i aria-hidden="true"></i> Available
+                <i aria-hidden="true"></i> <span data-i18n="home.available">Available</span>
               </span>
             </div>
 
             <div class="eco-product__copy">
               <span class="eco-product__family">Vozen</span>
-              <h2>TTS</h2>
-              <p>Your Discord, spoken.</p>
+              <h2 data-i18n="home.ttsTitle">TTS</h2>
+              <p data-i18n="home.ttsLead">Your Discord, spoken.</p>
             </div>
 
             <span class="eco-product__action">
-              Explore TTS <span aria-hidden="true">→</span>
+              <span data-i18n="home.exploreTts">Explore TTS</span> <span aria-hidden="true">→</span>
             </span>
           </a>
 
@@ -117,18 +117,18 @@
                 </svg>
               </span>
               <span class="eco-status eco-status--live">
-                <i aria-hidden="true"></i> Available
+                <i aria-hidden="true"></i> <span data-i18n="home.available">Available</span>
               </span>
             </div>
 
             <div class="eco-product__copy">
               <span class="eco-product__family">Vozen</span>
-              <h2>Helper</h2>
-              <p>A smarter hand for your server.</p>
+              <h2 data-i18n="home.helperTitle">Helper</h2>
+              <p data-i18n="home.helperLead">A smarter hand for your server.</p>
             </div>
 
             <span class="eco-product__action">
-              Explore Helper <span aria-hidden="true">→</span>
+              <span data-i18n="home.exploreHelper">Explore Helper</span> <span aria-hidden="true">→</span>
             </span>
           </a>
         </section>
@@ -138,14 +138,15 @@
     <footer class="eco-footer">
       <div class="eco-wrap eco-footer__inner">
         <p>© 2026 Vozen</p>
-        <nav class="eco-footer__links" aria-label="Legal">
-          <a href="privacy.html">Privacy</a>
-          <a href="terms.html">Terms</a>
+        <nav class="eco-footer__links" aria-label="Legal" data-i18n-aria-label="home.legal">
+          <a href="privacy.html" data-i18n="foot.privacy">Privacy</a>
+          <a href="terms.html" data-i18n="foot.terms">Terms</a>
         </nav>
       </div>
     </footer>
     <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v11"></script>
     <script defer src="js/i18n-v41.js"></script>
+    <script defer src="js/i18n-v42.js?v=workspace-copy-1"></script>
     <script defer src="js/oauth-config.js?v=ecosystem-oauth-v3"></script>
     <script defer src="js/main-v51.js?oauth=ecosystem-v3&auth-tabs=1&account-fast=1"></script>
   </body>

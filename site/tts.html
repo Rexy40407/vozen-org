@@ -9,7 +9,7 @@
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07070d" />
-    <title>Vozen TTS — 35 Languages, 38 Voices</title>
+    <title data-i18n="tts.documentTitle">Vozen TTS — 35 Languages, 38 Voices</title>
     <meta
       name="description"
       content="Vozen reads Discord chat aloud with 38 neural voices in 35 languages and 16 minigames. The core is free forever. Set up in 30 seconds."
@@ -74,7 +74,7 @@
     }
     </script>
   </head>
-  <body class="tts-page">
+  <body class="tts-page" data-i18n-document-title="tts.documentTitle">
     <!-- grain overlay -->
     <div class="grain" aria-hidden="true"></div>
     <!-- atmospheric glow orbs -->
@@ -199,14 +199,14 @@
             Preview every engine. Piper is free; Kokoro unlocks with Vozen Plus or Premium
           </p>
 
-          <div class="hear__engines" id="hearEngines" role="group" aria-label="Voice engine">
+          <div class="hear__engines" id="hearEngines" role="group" aria-label="Voice engine" data-i18n-aria-label="tts.engineAria">
             <button class="hear__eng is-active" data-engine="google" type="button">Google</button>
             <button class="hear__eng" data-engine="piper" type="button">Piper</button>
-            <button class="hear__eng" data-engine="kokoro" type="button">Kokoro · Premium</button>
+            <button class="hear__eng" data-engine="kokoro" type="button" data-i18n="tts.premiumEngine">Kokoro · Premium</button>
           </div>
 
           <div class="hear__stage" id="hearStage">
-            <button class="hear__btn" id="hearBtn" type="button" aria-label="Play sample" aria-pressed="false">
+            <button class="hear__btn" id="hearBtn" type="button" aria-label="Play sample" data-i18n-aria-label="tts.playSample" aria-pressed="false">
               <svg class="hear__ic hear__ic--play" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
               <svg class="hear__ic hear__ic--pause" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
             </button>
@@ -221,7 +221,7 @@
             </div>
           </div>
 
-          <div class="hear__chips" id="hearChips" role="group" aria-label="Choose a language sample">
+          <div class="hear__chips" id="hearChips" role="group" aria-label="Choose a language sample" data-i18n-aria-label="tts.chooseSample">
             <button class="hear__chip is-active" data-sample="en" type="button"><span>🇬🇧</span> <span class="hear__chip-name">English</span></button>
             <button class="hear__chip" data-sample="pt" type="button"><span>🇵🇹</span> <span class="hear__chip-name">Português</span></button>
             <button class="hear__chip" data-sample="es" type="button"><span>🇪🇸</span> <span class="hear__chip-name">Español</span></button>
@@ -318,28 +318,28 @@
             </article>
 
             <article class="card card--accent reveal">
-              <span class="card__badge">NEW</span>
+              <span class="card__badge" data-i18n="feat.new">NEW</span>
               <span class="card__ic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v12H8l-4 3z"/><path d="M8 9h8M8 13h5"/></svg>
               </span>
-              <h3>Private tools, anywhere</h3>
-              <p>Use <code>/tts-file</code> and <code>/translate text</code>, or right-click a message to translate or transcribe supported Discord audio — privately, without joining a call</p>
+              <h3 data-i18n="feat.10.t">Private tools, anywhere</h3>
+              <p data-i18n="feat.10.d">Use /tts-file and /translate text, or right-click a message to translate or transcribe supported Discord audio — privately, without joining a call</p>
             </article>
 
             <article class="card reveal">
               <span class="card__ic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 14h6"/></svg>
               </span>
-              <h3>Channel profiles</h3>
-              <p>Give each channel its own voice, engine, language, speed, limits and voice-channel binding from the secure server dashboard</p>
+              <h3 data-i18n="feat.11.t">Channel profiles</h3>
+              <p data-i18n="feat.11.d">Give each channel its own voice, engine, language, speed, limits and voice-channel binding from the secure server dashboard</p>
             </article>
 
             <article class="card reveal">
               <span class="card__ic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
               </span>
-              <h3>Favourite voices</h3>
-              <p>Save up to 25 favourites and jump back to your 10 most recently used voices without searching the full library again</p>
+              <h3 data-i18n="feat.12.t">Favourite voices</h3>
+              <p data-i18n="feat.12.d">Save up to 25 favourites and jump back to your 10 most recently used voices without searching the full library again</p>
             </article>
 
             <a
@@ -458,7 +458,7 @@
           <!-- O login/estado da conta vivem agora numa página dedicada (account.html),
                acessível pelo botão "Log in" da navbar. -->
           <div class="price-toolbar reveal">
-            <div class="bill-toggle" role="group" aria-label="Billing period">
+            <div class="bill-toggle" role="group" aria-label="Billing period" data-i18n-aria-label="price.billingPeriod">
               <button type="button" class="bill-toggle__btn is-active" data-bill="month" data-i18n="price.billMonthly">Monthly</button>
               <button type="button" class="bill-toggle__btn" data-bill="year">
                 <span data-i18n="price.billYearly">Yearly</span>
@@ -466,14 +466,14 @@
               </button>
             </div>
           </div>
-          <p class="payments-paused" role="status"><span aria-hidden="true">•</span> Payments are temporarily disabled. Pricing is shown for reference.</p>
-          <div class="bundle-ribbon" role="note" aria-label="Vozen bundle">
-            <span class="bundle-ribbon__eyebrow">VOZEN BUNDLE</span>
+          <p class="payments-paused" role="status"><span aria-hidden="true">•</span> <span data-i18n="price.paused">Payments are temporarily disabled. Pricing is shown for reference.</span></p>
+          <div class="bundle-ribbon" role="note" aria-label="Vozen bundle" data-i18n-aria-label="price.bundleAria">
+            <span class="bundle-ribbon__eyebrow" data-i18n="price.bundleEyebrow">VOZEN BUNDLE</span>
             <div class="bundle-ribbon__copy">
-              <strong>Two bots. One subscription.</strong>
-              <span>Premium TTS and Helper for the communities you select.</span>
+              <strong data-i18n="price.bundleTitle">Two bots. One subscription.</strong>
+              <span data-i18n="price.bundleText">Premium TTS and Helper for the communities you select.</span>
             </div>
-            <span class="bundle-ribbon__value">TTS + HELPER</span>
+            <span class="bundle-ribbon__value" data-i18n="price.bundleValue">TTS + HELPER</span>
           </div>
           <div class="pricing">
             <article class="price-card price-card--free reveal">
@@ -489,7 +489,7 @@
                 <span class="price-line"><b><span class="amt" data-i18n="price.free.price">&#8364;0</span></b></span>
                 <span class="per" data-i18n="price.free.per">forever</span>
               </div>
-              <ul class="ticks price-card__highlights" aria-label="Free plan highlights">
+              <ul class="ticks price-card__highlights" aria-label="Free plan highlights" data-i18n-aria-label="price.freeHighlights">
                 <li data-i18n="price.m.1">38 Piper voices</li>
                 <li data-i18n="price.m.2">35 languages</li>
                 <li data-i18n="price.m.3">Auto-read your channel</li>
@@ -528,10 +528,10 @@
                 <li data-i18n="price.m.12">Wordle game</li>
                 <li data-i18n="price.m.14">/rizz</li>
               </ul>
-              <p class="price-card__note">Digital subscription · no shipping</p>
-              <button class="price-card__buy price-card__buy--disabled" type="button" disabled aria-disabled="true">Payments temporarily disabled</button>
+              <p class="price-card__note" data-i18n="price.digital">Digital subscription · no shipping</p>
+              <button class="price-card__buy price-card__buy--disabled" type="button" disabled aria-disabled="true" data-i18n="price.checkout">Payments temporarily disabled</button>
               <p class="price-card__idnote">
-                <span>Checkout will return when payments are enabled again.</span>              </p>
+                <span data-i18n="price.checkoutLater">Checkout will return when payments are enabled again.</span>              </p>
             </article>
             <article class="price-card price-card--pro reveal">
               <div class="price-card__topline">
@@ -541,7 +541,7 @@
               <h3 data-i18n="price.pro.name">Vozen Premium</h3>
               <p class="price-card__pitch" data-i18n="price.pro.pitch">Unlock the full Vozen experience for everyone in your community</p>
               <!-- Toggle de licenças: a mesma tier muda o número de servidores e o preço. -->
-              <div class="seat-toggle" role="group" aria-label="Servers per subscription">
+              <div class="seat-toggle" role="group" aria-label="Servers per subscription" data-i18n-aria-label="price.serversPerSubscription">
                 <button type="button" class="seat-toggle__btn is-active" data-seats="2" data-i18n="price.pro.seats2">2 servers</button>
                 <button type="button" class="seat-toggle__btn" data-seats="5" data-i18n="price.pro.seats5">5 servers</button>
               </div>
@@ -564,11 +564,11 @@
                 <li data-i18n="price.m.23">Live voice transcription</li>
                 <li data-i18n="price.m.11">Word Chain game</li>
               </ul>
-              <p class="price-card__note note--s2">Digital subscription · no shipping</p>
-              <p class="price-card__note note--s5">Digital subscription · no shipping</p>
-              <button class="price-card__buy price-card__buy--pro price-card__buy--disabled" type="button" disabled aria-disabled="true">Payments temporarily disabled</button>
+              <p class="price-card__note note--s2" data-i18n="price.digital">Digital subscription · no shipping</p>
+              <p class="price-card__note note--s5" data-i18n="price.digital">Digital subscription · no shipping</p>
+              <button class="price-card__buy price-card__buy--pro price-card__buy--disabled" type="button" disabled aria-disabled="true" data-i18n="price.checkout">Payments temporarily disabled</button>
               <p class="price-card__idnote">
-                <span>Checkout will return when payments are enabled again.</span>              </p>
+                <span data-i18n="price.checkoutLater">Checkout will return when payments are enabled again.</span>              </p>
             </article>
             </div>
 
@@ -581,7 +581,7 @@
                 </div>
                 <span class="plan-comparison__checkout" data-i18n="price.checkout">Continue to checkout</span>
               </div>
-              <div class="plan-table-wrap" tabindex="0" aria-label="Plan comparison table">
+              <div class="plan-table-wrap" tabindex="0" aria-label="Plan comparison table" data-i18n-aria-label="price.compareTable">
                 <!-- role=* explícitos: em mobile o CSS usa display:grid nas linhas (blocos
                      verticais + cabeçalho sticky) e isso pode apagar a semântica de tabela
                      nativa; os roles repõem-na para leitores de ecrã. -->
@@ -668,15 +668,15 @@
           <a href="commands/" data-i18n="nav.commands">Commands</a>
           <a href="premium.html#plans" data-i18n="nav.premium">Premium</a>
           <a href="#faq" data-i18n="nav.faq">FAQ</a>
-          <a href="./">Vozen ecosystem</a>
+          <a href="./" data-i18n="ecosystem.name">Vozen ecosystem</a>
           <a href="helper/">Vozen Helper</a>
-          <a href="/status">Status</a>
+          <a href="/status" data-i18n="site.status">Status</a>
         </div>
         <div>
           <h4 data-i18n="foot.community">Community</h4>
           <a href="https://discord.gg/4kYw2WUbNN" class="js-support" data-i18n="foot.support">Support server</a>
           <a href="#" class="js-vote" data-i18n="foot.vote">Vote on top.gg</a>
-          <a href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" data-i18n="site.github">GitHub</a>
         </div>
       </div>
       <div class="wrap foot__base">
@@ -691,6 +691,7 @@
 
     <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v11"></script>
     <script defer src="js/i18n-v41.js?v=payment-element"></script>
+    <script defer src="js/i18n-v42.js?v=workspace-copy-1"></script>
     <script defer src="js/oauth-config.js?v=ecosystem-oauth-v3"></script>
     <script defer src="js/main-v51.js?v=embedded-checkout-v1&oauth=ecosystem-v3&auth-tabs=1&account-fast=1"></script>
     <script defer src="js/motion-v1.js"></script>

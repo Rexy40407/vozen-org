@@ -6,7 +6,7 @@
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07070d" />
-    <title>Premium — Vozen</title>
+    <title data-i18n="premium.documentTitle">Premium — Vozen</title>
     <meta name="description" content="Compare the Vozen plans for your community." />
     <link rel="canonical" href="https://vozen.org/premium" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -32,7 +32,7 @@
   <body class="page-premium">
     <div class="grain" aria-hidden="true"></div>
     <div class="orbs" aria-hidden="true"><span class="orb orb--blurple"></span><span class="orb orb--aqua"></span></div>
-    <a class="skip-link" href="#plans">Skip to plans</a>
+    <a class="skip-link" href="#plans" data-i18n="premium.skip">Skip to plans</a>
 
     <div data-vozen-nav data-nav-root="" data-nav-current="premium" data-nav-product="Ecosystem"></div>
     <header class="nav" id="legacy-nav">
@@ -66,59 +66,59 @@
     <main>
       <section class="premium-hero" aria-labelledby="premiumTitle">
         <div class="wrap premium-hero__inner">
-          <span class="eyebrow eyebrow--amber">Pricing</span>
-          <h1 id="premiumTitle">Choose who gets the upgrade.</h1>
-          <p>Keep the core free, upgrade your personal voice experience, or unlock Premium for every member in your community.</p>
-          <div class="bill-toggle" role="group" aria-label="Billing period">
-            <button class="bill-toggle__btn is-active" type="button" data-period="monthly">Monthly</button>
-            <button class="bill-toggle__btn" type="button" data-period="yearly">Yearly <span>−20%</span></button>
+          <span class="eyebrow eyebrow--amber" data-i18n="premium.pricing">Pricing</span>
+          <h1 id="premiumTitle" data-i18n="premium.title">Choose who gets the upgrade.</h1>
+          <p data-i18n="premium.subtitle">Keep the core free, upgrade your personal voice experience, or unlock Premium for every member in your community.</p>
+          <div class="bill-toggle" role="group" aria-label="Billing period" data-i18n-aria-label="price.billingPeriod">
+            <button class="bill-toggle__btn is-active" type="button" data-period="monthly" data-i18n="price.billMonthly">Monthly</button>
+            <button class="bill-toggle__btn" type="button" data-period="yearly"><span data-i18n="price.billYearly">Yearly</span> <span>−20%</span></button>
           </div>
-          <p class="premium-hero__notice">Payments are temporarily disabled. Pricing is shown for reference.</p>
+          <p class="premium-hero__notice" data-i18n="premium.paymentNotice">Payments are temporarily disabled. Pricing is shown for reference.</p>
         </div>
       </section>
 
       <section class="section section--premium" id="plans" aria-labelledby="plansTitle">
         <div class="wrap">
-          <h2 class="sr-only" id="plansTitle">Vozen plans</h2>
+          <h2 class="sr-only" id="plansTitle" data-i18n="premium.plans">Vozen plans</h2>
           <div class="pricing" id="pricingGrid">
             <article class="price-card price-card--free">
-              <div class="price-card__topline"><span class="price-card__badge price-card__badge--free">✦ forever</span></div>
-              <h3>Free</h3>
-              <p class="price-card__pitch">All the essentials. No card, no trial.</p>
-              <div class="seat-toggle plan-scope plan-scope--free"><span class="seat-toggle__btn is-active">forever</span></div>
-              <div class="price-card__price"><span class="price-line"><b><span class="amt">€0</span></b></span><span class="per">forever</span></div>
-              <ul class="ticks price-card__highlights" aria-label="Free plan highlights">
-                <li>38 Piper voices</li><li>35 languages</li><li>Auto-read your channel</li><li>13 of the 16 games</li><li>Daily talk streaks</li>
+              <div class="price-card__topline"><span class="price-card__badge price-card__badge--free">✦ <span data-i18n="premium.freeBadge">forever</span></span></div>
+              <h3 data-i18n="price.free.name">Free</h3>
+              <p class="price-card__pitch" data-i18n="premium.freePitch">All the essentials. No card, no trial.</p>
+              <div class="seat-toggle plan-scope plan-scope--free"><span class="seat-toggle__btn is-active" data-i18n="price.free.per">forever</span></div>
+              <div class="price-card__price"><span class="price-line"><b><span class="amt" data-i18n="price.free.price">€0</span></b></span><span class="per" data-i18n="price.free.per">forever</span></div>
+              <ul class="ticks price-card__highlights" aria-label="Free plan highlights" data-i18n-aria-label="price.freeHighlights">
+                <li data-i18n="price.m.1">38 Piper voices</li><li data-i18n="price.m.2">35 languages</li><li data-i18n="price.m.3">Auto-read your channel</li><li data-i18n="price.m.5">13 of the 16 games</li><li data-i18n="price.m.20">Daily talk streaks</li>
               </ul>
-              <p class="price-card__note">Core features, free forever</p>
-              <a class="price-card__buy price-card__buy--free js-invite" href="#">Add to Discord</a>
-              <p class="price-card__idnote">All the essentials. No card, no trial.</p>
+              <p class="price-card__note" data-i18n="premium.coreNote">Core features, free forever</p>
+              <a class="price-card__buy price-card__buy--free js-invite" href="#" data-i18n="cta.add">Add to Discord</a>
+              <p class="price-card__idnote" data-i18n="premium.freeIdNote">All the essentials. No card, no trial.</p>
             </article>
 
             <div class="paid-plans">
               <article class="price-card price-card--plus">
-                <div class="price-card__topline"><span class="price-card__badge price-card__badge--plus">✦ PERSONAL</span></div>
-                <h3>Vozen Plus</h3>
-                <p class="price-card__pitch">Your premium voice perks follow you into every server.</p>
-                <div class="seat-toggle plan-scope"><span class="seat-toggle__btn is-active">Goes with you to any server</span></div>
-                <div class="price-card__price"><span class="price-line"><b><span class="amt amt--m">€3.99</span><span class="amt amt--y">€37.99</span></b><s class="was was--y">€47.88</s></span><span class="per per--m">/ month · per user</span><span class="per per--y">/ year · per user</span></div>
-                <ul class="ticks price-card__highlights"><li class="price-card__included-free">Everything in Free</li><li>Kokoro neural engine</li><li>Google HD voices</li><li>All 8 voice effects</li><li>50 personal pronunciations</li><li>Word Chain, Wordle and /rizz</li></ul>
-                <p class="price-card__note">Digital subscription · no shipping</p>
-                <button class="price-card__buy" type="button" data-billing-plan="plus">Continue to checkout</button>
-                <p class="price-card__idnote">Sign in with Discord first. Stripe handles payment details.</p>
+                <div class="price-card__topline"><span class="price-card__badge price-card__badge--plus">✦ <span data-i18n="premium.plusBadge">PERSONAL</span></span></div>
+                <h3 data-i18n="price.plus.name">Vozen Plus</h3>
+                <p class="price-card__pitch" data-i18n="price.plus.pitch">Your premium voice perks follow you into every server.</p>
+                <div class="seat-toggle plan-scope"><span class="seat-toggle__btn is-active" data-i18n="premium.plusScope">Goes with you to any server</span></div>
+                <div class="price-card__price"><span class="price-line"><b><span class="amt amt--m">€3.99</span><span class="amt amt--y">€37.99</span></b><s class="was was--y">€47.88</s></span><span class="per per--m" data-i18n="premium.monthPerUser">/ month · per user</span><span class="per per--y" data-i18n="premium.yearPerUser">/ year · per user</span></div>
+                <ul class="ticks price-card__highlights"><li class="price-card__included-free" data-i18n="price.includesFree">Everything in Free</li><li data-i18n="price.m.21">Kokoro neural engine</li><li data-i18n="price.m.22">Google HD voices</li><li data-i18n="price.m.9">All 8 voice effects</li><li data-i18n="price.m.15">50 personal pronunciations</li><li data-i18n="premium.plusFeatures">Word Chain, Wordle and /rizz</li></ul>
+                <p class="price-card__note" data-i18n="price.digital">Digital subscription · no shipping</p>
+                <button class="price-card__buy" type="button" data-billing-plan="plus" data-i18n="price.checkout">Continue to checkout</button>
+                <p class="price-card__idnote" data-i18n="premium.signInNote">Sign in with Discord first. Stripe handles payment details.</p>
               </article>
 
               <article class="price-card price-card--pro" id="proCard">
-                <div class="price-card__topline"><span class="price-card__badge">💎 PREMIUM</span><span class="price-card__recommended">BEST FOR SERVERS</span></div>
-                <h3>Vozen Premium</h3>
-                <p class="price-card__pitch">Premium TTS and Helper for everyone in each selected server.</p>
-                <aside class="price-card__bundle" aria-label="Premium bundle"><span>VOZEN TTS + VOZEN HELPER</span><strong>Two bots. One subscription.</strong></aside>
-                <div class="seat-toggle" role="group" aria-label="Servers per subscription"><button type="button" class="seat-toggle__btn is-active" data-seats="2">2 servers</button><button type="button" class="seat-toggle__btn" data-seats="5">5 servers</button></div>
-                <div class="price-card__price"><span class="price-line"><b><span class="amt amt--m amt--s2">€6.99</span><span class="amt amt--m amt--s5">€14.99</span><span class="amt amt--y amt--s2">€66.99</span><span class="amt amt--y amt--s5">€133.99</span></b><s class="was was--y was--s2">€83.88</s><s class="was was--y was--s5">€179.88</s></span><span class="per per--m per--s2">/ month · 2 servers</span><span class="per per--m per--s5">/ month · 5 servers</span><span class="per per--y per--s2">/ year · 2 servers</span><span class="per per--y per--s5">/ year · 5 servers</span></div>
-                <ul class="ticks ticks--amber price-card__highlights"><li class="price-card__included-free">Everything in Free</li><li>Premium TTS voices and effects for everyone</li><li>Helper Premium for every selected server</li><li>More panels, workflows, feeds and templates</li><li>Longer audit, analytics and transcript history</li><li>Advanced roles, XP and automation options</li></ul>
-                <p class="price-card__note">Digital subscription · no shipping</p>
-                <button class="price-card__buy price-card__buy--pro" type="button" data-billing-plan="premium">Continue to checkout</button>
-                <p class="price-card__idnote">Sign in with Discord first. Stripe handles payment details.</p>
+                <div class="price-card__topline"><span class="price-card__badge">💎 <span data-i18n="premium.proBadge">PREMIUM</span></span><span class="price-card__recommended" data-i18n="premium.bestForServers">BEST FOR SERVERS</span></div>
+                <h3 data-i18n="price.pro.name">Vozen Premium</h3>
+                <p class="price-card__pitch" data-i18n="premium.premiumPitch">Premium TTS and Helper for everyone in each selected server.</p>
+                <aside class="price-card__bundle" aria-label="Premium bundle" data-i18n-aria-label="premium.bundleAria"><span>VOZEN TTS + VOZEN HELPER</span><strong data-i18n="premium.bundleTitle">Two bots. One subscription.</strong></aside>
+                <div class="seat-toggle" role="group" aria-label="Servers per subscription" data-i18n-aria-label="price.serversPerSubscription"><button type="button" class="seat-toggle__btn is-active" data-seats="2" data-i18n="premium.seat2">2 servers</button><button type="button" class="seat-toggle__btn" data-seats="5" data-i18n="premium.seat5">5 servers</button></div>
+                <div class="price-card__price"><span class="price-line"><b><span class="amt amt--m amt--s2">€6.99</span><span class="amt amt--m amt--s5">€14.99</span><span class="amt amt--y amt--s2">€66.99</span><span class="amt amt--y amt--s5">€133.99</span></b><s class="was was--y was--s2">€83.88</s><s class="was was--y was--s5">€179.88</s></span><span class="per per--m per--s2" data-i18n="premium.monthServers2">/ month · 2 servers</span><span class="per per--m per--s5" data-i18n="premium.monthServers5">/ month · 5 servers</span><span class="per per--y per--s2" data-i18n="premium.yearServers2">/ year · 2 servers</span><span class="per per--y per--s5" data-i18n="premium.yearServers5">/ year · 5 servers</span></div>
+                <ul class="ticks ticks--amber price-card__highlights"><li class="price-card__included-free" data-i18n="price.includesFree">Everything in Free</li><li data-i18n="premium.proFeature1">Premium TTS voices and effects for everyone</li><li data-i18n="premium.proFeature2">Helper Premium for every selected server</li><li data-i18n="premium.proFeature3">More panels, workflows, feeds and templates</li><li data-i18n="premium.proFeature4">Longer audit, analytics and transcript history</li><li data-i18n="premium.proFeature5">Advanced roles, XP and automation options</li></ul>
+                <p class="price-card__note" data-i18n="price.digital">Digital subscription · no shipping</p>
+                <button class="price-card__buy price-card__buy--pro" type="button" data-billing-plan="premium" data-i18n="price.checkout">Continue to checkout</button>
+                <p class="price-card__idnote" data-i18n="premium.signInNote">Sign in with Discord first. Stripe handles payment details.</p>
               </article>
             </div>
           </div>
@@ -126,9 +126,10 @@
       </section>
     </main>
 
-    <footer class="foot"><div class="wrap foot__base"><span>© 2026 Vozen</span><span class="foot__legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></span><span>Not affiliated with Discord</span></div></footer>
+    <footer class="foot"><div class="wrap foot__base"><span>© 2026 Vozen</span><span class="foot__legal"><a href="/privacy" data-i18n="foot.privacy">Privacy</a><a href="/terms" data-i18n="foot.terms">Terms</a></span><span data-i18n="foot.legal">Not affiliated with Discord</span></div></footer>
     <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v11"></script>
     <script defer src="js/i18n-v41.js?v=payment-element"></script>
+    <script defer src="js/i18n-v42.js?v=workspace-copy-1"></script>
     <script defer src="js/oauth-config.js?v=ecosystem-oauth-v3"></script>
     <script defer src="js/main-v51.js?v=embedded-checkout-v1&oauth=ecosystem-v3&auth-tabs=1&account-fast=1"></script>
     <script defer src="js/motion-v1.js"></script>

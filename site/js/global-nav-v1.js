@@ -4,6 +4,63 @@
 
   const hosts = document.querySelectorAll("[data-vozen-nav]");
   const AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
+  const navLocale = () => {
+    try {
+      const value = localStorage.getItem("vozen.lang") || "en";
+      return window.VOZEN_I18N && window.VOZEN_I18N[value] ? value : "en";
+    } catch (_) {
+      return "en";
+    }
+  };
+  const navText = (key, fallback) => {
+    const dictionary = window.VOZEN_I18N || {};
+    return dictionary[navLocale()]?.[key] || dictionary.en?.[key] || fallback || key;
+  };
+  const NAV_LANGUAGES = [
+    ["en", "🇬🇧", "English"],
+    ["pt", "🇵🇹", "Português"],
+    ["fr", "🇫🇷", "Français"],
+    ["es", "🇪🇸", "Español"],
+    ["de", "🇩🇪", "Deutsch"],
+    ["tr", "🇹🇷", "Türkçe"],
+    ["ar", "🇸🇦", "العربية"],
+    ["zh", "🇹🇼", "繁體中文"],
+    ["ru", "🇷🇺", "Русский"],
+    ["ko", "🇰🇷", "한국어"],
+  ];
+  const setNavLocale = (value) => {
+    const locale = NAV_LANGUAGES.some(([code]) => code === value) ? value : "en";
+    try { localStorage.setItem("vozen.lang", locale); } catch (_) {}
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+    window.dispatchEvent(new CustomEvent("vozen:languagechange", { detail: { language: locale } }));
+  };
+  const renderDocsLanguageOptions = () => NAV_LANGUAGES.map(([code, flag, name]) =>
+    `<option value="${code}">${flag} ${name}</option>`).join("");
+  const syncDocsLanguageSelect = () => {
+    const current = navLocale();
+    document.querySelectorAll("[data-vozen-docs-language]").forEach((select) => {
+      select.value = current;
+      select.setAttribute("aria-label", navText("ecosystem.siteLanguage", "Site language"));
+    });
+  };
+  const applyNavTranslations = () => {
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      const key = element.getAttribute("data-i18n");
+      if (key) element.textContent = navText(key, element.textContent);
+    });
+    document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+      const key = element.getAttribute("data-i18n-aria-label");
+      if (key) element.setAttribute("aria-label", navText(key, element.getAttribute("aria-label")));
+    });
+    document.querySelectorAll("[data-i18n-title]").forEach((element) => {
+      const key = element.getAttribute("data-i18n-title");
+      if (key) element.setAttribute("title", navText(key, element.getAttribute("title")));
+    });
+    syncDocsLanguageSelect();
+  };
+  window.addEventListener("vozen:i18nready", applyNavTranslations);
+  window.addEventListener("vozen:languagechange", applyNavTranslations);
   const readSession = (key) => {
     try {
       return sessionStorage.getItem(key);
@@ -75,6 +132,7 @@
     const link = (target) => target ? `${root}${target}` : (root || './');
     const currentClass = (name) => current === name ? " is-current" : "";
     const currentAria = (name) => current === name ? ' aria-current="page"' : "";
+    const productLabel = product === "Ecosystem" ? navText("ecosystem.label", product) : product;
 
     // Documentation has its own shell and typography.  Keep this header
     // deliberately namespaced so public-site navigation rules can never
@@ -82,22 +140,22 @@
     if (docsSurface) {
       host.outerHTML = `<header class="docs-ecosystem-nav">
         <div class="docs-ecosystem-nav__inner">
-          <a class="docs-ecosystem-nav__brand" href="${link('')}" aria-label="Vozen ecosystem home">
+          <a class="docs-ecosystem-nav__brand" href="${link('')}" aria-label="Vozen ecosystem home" data-i18n-aria-label="ecosystem.homeAria">
             <span class="docs-ecosystem-nav__mark" aria-hidden="true"><img src="${link('assets/vozen-ecosystem-icon.png')}" alt="" /></span>
             <span class="docs-ecosystem-nav__word">Vozen</span>
-            <span class="docs-ecosystem-nav__product">Ecosystem</span>
+            <span class="docs-ecosystem-nav__product" data-i18n="ecosystem.label">${escapeHtml(productLabel)}</span>
           </a>
-          <nav class="docs-ecosystem-nav__links" aria-label="Vozen products">
-            <a class="${currentClass('tts').trim()}" href="${link('tts/')}"${currentAria('tts')}>Vozen TTS</a>
-            <a class="${currentClass('helper').trim()}" href="${link('helper/')}"${currentAria('helper')}>Vozen Helper</a>
-            <a class="${currentClass('docs').trim()}" href="${link('docs/')}"${currentAria('docs')}>Docs</a>
-            <a class="${currentClass('commands').trim()}" href="${link('commands/')}"${currentAria('commands')}>Commands</a>
-            <span class="docs-ecosystem-nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable">Premium</span>
+          <nav class="docs-ecosystem-nav__links" aria-label="Vozen products" data-i18n-aria-label="ecosystem.productsAria">
+            <a class="${currentClass('tts').trim()}" href="${link('tts/')}"${currentAria('tts')} data-i18n="ecosystem.tts">Vozen TTS</a>
+            <a class="${currentClass('helper').trim()}" href="${link('helper/')}"${currentAria('helper')} data-i18n="ecosystem.helper">Vozen Helper</a>
+            <a class="${currentClass('docs').trim()}" href="${link('docs/')}"${currentAria('docs')} data-i18n="ecosystem.docs">Docs</a>
+            <a class="${currentClass('commands').trim()}" href="${link('commands/')}"${currentAria('commands')} data-i18n="ecosystem.commands">Commands</a>
+            <span class="docs-ecosystem-nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable" data-i18n-title="ecosystem.premiumUnavailable" data-i18n="nav.premium">Premium</span>
           </nav>
           <div class="docs-ecosystem-nav__actions">
-            <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub">${githubIcon}</a>
-            <span class="docs-ecosystem-nav__language" aria-label="Site language: English"><span class="docs-ecosystem-nav__language-flag" aria-hidden="true">${ukFlag}</span><span>English</span><svg class="docs-ecosystem-nav__language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-            <a class="docs-ecosystem-nav__login" data-vozen-docs-login href="${link('account.html')}">${discordIcon}<span>Log in</span></a>
+            <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub" data-i18n-aria-label="ecosystem.githubAria">${githubIcon}</a>
+            <select class="docs-ecosystem-nav__language" data-vozen-docs-language aria-label="Site language">${renderDocsLanguageOptions()}</select>
+            <a class="docs-ecosystem-nav__login" data-vozen-docs-login href="${link('account.html')}">${discordIcon}<span data-i18n="ecosystem.login">Log in</span></a>
           </div>
         </div>
       </header>`;
@@ -106,32 +164,35 @@
 
     host.outerHTML = `<header class="nav vozen-global-nav" id="nav">
       <div class="wrap nav__inner">
-        <a class="brand" href="${link('')}" aria-label="Vozen ecosystem home">
+        <a class="brand" href="${link('')}" aria-label="Vozen ecosystem home" data-i18n-aria-label="ecosystem.homeAria">
           <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="${link('assets/vozen-ecosystem-icon.png')}" alt="" /></span>
           <span class="brand__word">Vozen</span>
-          <span class="nav__product">${product}</span>
+          <span class="nav__product"${product === "Ecosystem" ? ' data-i18n="ecosystem.label"' : ""}>${escapeHtml(productLabel)}</span>
         </a>
-        <nav class="nav__links" aria-label="Primary">
-          <a class="${currentClass('tts').trim()}" href="${link('tts/')}"${currentAria('tts')}>Vozen TTS</a>
-          <a class="${currentClass('helper').trim()}" href="${link('helper/')}"${currentAria('helper')}>Vozen Helper</a>
-          <a class="${currentClass('docs').trim()}" href="${link('docs/')}"${currentAria('docs')}>Docs</a>
-          <a class="${currentClass('commands').trim()}" href="${link('commands/')}"${currentAria('commands')}>Commands</a>
-          <span class="nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable">Premium</span>
+        <nav class="nav__links" aria-label="Primary" data-i18n-aria-label="ecosystem.productsAria">
+          <a class="${currentClass('tts').trim()}" href="${link('tts/')}"${currentAria('tts')} data-i18n="ecosystem.tts">Vozen TTS</a>
+          <a class="${currentClass('helper').trim()}" href="${link('helper/')}"${currentAria('helper')} data-i18n="ecosystem.helper">Vozen Helper</a>
+          <a class="${currentClass('docs').trim()}" href="${link('docs/')}"${currentAria('docs')} data-i18n="ecosystem.docs">Docs</a>
+          <a class="${currentClass('commands').trim()}" href="${link('commands/')}"${currentAria('commands')} data-i18n="ecosystem.commands">Commands</a>
+          <span class="nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable" data-i18n-title="ecosystem.premiumUnavailable" data-i18n="nav.premium">Premium</span>
         </nav>
         <div class="nav__actions">
-          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" title="Open source on GitHub">${githubIcon}</a>
+          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" data-i18n-aria-label="common.githubLabel" title="Open source on GitHub" data-i18n-title="common.githubTitle">${githubIcon}</a>
           <div class="lang" id="langMenu">
-            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language">
+            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language" data-i18n-aria-label="ecosystem.siteLanguage">
               <span class="lang__flag" id="langBtnFlag">${ukFlag}</span><span class="lang__name" id="langBtnName">English</span>
               <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language"></ul>
+            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language" data-i18n-aria-label="ecosystem.chooseLanguage"></ul>
           </div>
-          <button class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" type="button">${discordIcon}<span data-i18n="nav.login">Log in</span></button>
+          <button class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" type="button">${discordIcon}<span data-i18n="ecosystem.login">Log in</span></button>
           <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
         </div>
       </div>
     </header>`;
+  });
+  document.querySelectorAll("[data-vozen-docs-language]").forEach((select) => {
+    select.addEventListener("change", () => setNavLocale(select.value));
   });
 
   const renderDocsAccount = () => {
@@ -140,7 +201,7 @@
       if (!account) {
         link.classList.remove("docs-ecosystem-nav__login--account");
         link.removeAttribute("aria-label");
-        link.innerHTML = `${discordIcon}<span>Log in</span>`;
+        link.innerHTML = `${discordIcon}<span data-i18n="ecosystem.login">${navText("ecosystem.login", "Log in")}</span>`;
         return;
       }
       const username = escapeHtml(account.username);
@@ -170,4 +231,5 @@
       channel.postMessage({ type: "request" });
     } catch (_) {}
   }
+  window.setTimeout(applyNavTranslations, 0);
 })();

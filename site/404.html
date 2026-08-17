@@ -8,7 +8,7 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'"
     >
-    <title>Page not found — Vozen</title>
+    <title data-i18n="notFound.documentTitle">Page not found — Vozen</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/main-v43.css">
     <style>
@@ -57,21 +57,24 @@
       }
     </style>
   </head>
-  <body>
+  <body data-vozen-static-page="not-found">
     <main class="not-found">
       <section class="not-found__card" aria-labelledby="notFoundTitle">
-        <a class="brand" href="/" aria-label="Vozen home">
+        <a class="brand" href="/" aria-label="Vozen home" data-i18n-aria-label="notFound.homeAria">
           <span class="brand__mark" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span></span>
           <span class="brand__word">Vozen</span>
         </a>
         <div class="not-found__code">ERROR 404</div>
-        <h1 id="notFoundTitle">This page went quiet</h1>
-        <p>The address may have changed, but Vozen is still here. Return home or ask us for help</p>
+        <h1 id="notFoundTitle" data-i18n="notFound.title">This page went quiet</h1>
+        <p data-i18n="notFound.copy">The address may have changed, but Vozen is still here. Return home or ask us for help</p>
         <div class="not-found__actions">
-          <a class="btn btn--primary" href="/">Back to Vozen</a>
-          <a class="btn btn--ghost" href="https://discord.gg/4kYw2WUbNN" target="_blank" rel="noopener noreferrer">Get support</a>
+          <a class="btn btn--primary" href="/" data-i18n="notFound.back">Back to Vozen</a>
+          <a class="btn btn--ghost" href="https://discord.gg/4kYw2WUbNN" target="_blank" rel="noopener noreferrer" data-i18n="notFound.support">Get support</a>
         </div>
       </section>
     </main>
+    <script defer src="/js/i18n-v41.js"></script>
+    <script defer src="/js/i18n-v42.js"></script>
+    <script defer src="/js/static-pages-i18n-v1.js"></script>
   </body>
 </html>

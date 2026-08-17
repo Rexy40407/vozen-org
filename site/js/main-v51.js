@@ -2194,7 +2194,7 @@
       <div class="msg__b">
         <div class="msg__name">${m.name}</div>
         <div class="msg__text">${textHtml}</div>
-        ${speaking ? `<div class="speaking"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span> Vozen is speaking…</div>` : ""}
+        ${speaking ? `<div class="speaking"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span> ${t("tts.speaking", "Vozen is speaking…")}</div>` : ""}
       </div>`;
     return el;
   }
@@ -2206,7 +2206,7 @@
       <div class="msg__av msg__av--v"><span class="eq" style="height:16px"><i></i><i></i><i></i><i></i><i></i></span></div>
       <div class="msg__b">
         <div class="msg__name"><b>Vozen</b><span class="tag">APP</span></div>
-        <div class="speaking"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span> reading it out loud…</div>
+        <div class="speaking"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span> ${t("tts.reading", "reading it out loud…")}</div>
       </div>`;
     return el;
   }

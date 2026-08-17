@@ -215,6 +215,23 @@
   white-space: nowrap;
 }
 
+.workspace-global-nav__language select {
+  max-width: 112px;
+  padding: 0 18px 0 0;
+  border: 0;
+  outline: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
+.workspace-global-nav__language select option {
+  color: #101725;
+  background: #f4f7fb;
+}
+
 .workspace-global-nav__language-flag {
   font-family: "Twemoji Country Flags", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
   display: inline-flex;

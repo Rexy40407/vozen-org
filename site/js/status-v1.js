@@ -5,11 +5,14 @@
   const healthEndpoint = "https://api.vozen.org/health";
   const allowed = new Set(["operational", "degraded", "unavailable"]);
   const componentStates = new Set(["operational", "degraded", "unavailable", "unknown"]);
+  const translate = (key, fallback, variables) => typeof window.VOZEN_PAGE_T === "function"
+    ? window.VOZEN_PAGE_T(key, fallback, variables)
+    : fallback;
   const labels = {
-    operational: "Operational",
-    degraded: "Degraded",
-    unavailable: "Unavailable",
-    unknown: "Not exposed",
+    operational: () => translate("status.operational", "Operational"),
+    degraded: () => translate("status.degraded", "Degraded"),
+    unavailable: () => translate("status.unavailable", "Unavailable"),
+    unknown: () => translate("status.unknown", "Not exposed"),
   };
   const instance = document.getElementById("statusInstance");
   const overall = document.getElementById("statusOverall");
@@ -32,7 +35,7 @@
   }
 
   function stateLabel(state) {
-    return labels[state] || labels.unavailable;
+    return (labels[state] || labels.unavailable)();
   }
 
   function updateClock() {
@@ -52,7 +55,9 @@
     overall.className = "status-badge is-" + state;
     overall.textContent = stateLabel(state);
     services.textContent = stateLabel(state);
-    latency.textContent = Number.isFinite(measuredLatency) ? Math.max(0, Math.round(measuredLatency)) + " ms" : "Unavailable";
+    latency.textContent = Number.isFinite(measuredLatency)
+      ? translate("status.ms", "{n} ms", { n: Math.max(0, Math.round(measuredLatency)) })
+      : translate("status.unavailableValue", "Unavailable");
 
     Object.keys(fields).forEach(function (key, index) {
       const componentState = states[index];
@@ -84,7 +89,9 @@
                 database: "unknown",
                 providers: "unknown",
               },
-              incident: online ? "Detailed component checks are not publicly exposed yet" : "Vozen health check is unavailable",
+              incident: online
+                ? translate("status.incidentDetailed", "Detailed component checks are not publicly exposed yet")
+                : translate("status.incidentUnavailable", "Vozen health check is unavailable"),
             };
           });
       }

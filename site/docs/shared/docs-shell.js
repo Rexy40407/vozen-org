@@ -39,6 +39,23 @@
   const localFile = window.location.protocol === 'file:';
   const docsHome = localFile ? new URL('index.html', docsRoot).href : docsRoot.href;
   const productHome = (folder) => new URL(localFile ? folder + 'index.html' : folder, docsRoot).href;
+  const docsLocale = () => {
+    try {
+      const value = window.localStorage.getItem('vozen.lang') || 'en';
+      return window.VOZEN_I18N && window.VOZEN_I18N[value] ? value : 'en';
+    } catch (_) {
+      return 'en';
+    }
+  };
+  const docsText = (key, fallback, variables) => {
+    const dictionary = window.VOZEN_I18N || {};
+    const locale = docsLocale();
+    let value = dictionary[locale]?.[key] || dictionary.en?.[key] || fallback || key;
+    Object.keys(variables || {}).forEach((name) => {
+      value = value.replace(new RegExp('\\{' + name + '\\}', 'g'), String(variables[name]));
+    });
+    return value;
+  };
 
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -182,14 +199,14 @@
     rememberDocsEntry();
     const returnUrl = readDocsReturnUrl(fallback);
     topbar.innerHTML = '<div class="docs-topbar__inner">' +
-      '<a class="docs-topbar__back" data-docs-back href="' + esc(returnUrl) + '">← Go back</a>' +
+      '<a class="docs-topbar__back" data-docs-back href="' + esc(returnUrl) + '">' + esc(docsText('docs.goBack', '← Go back')) + '</a>' +
       '<span class="docs-topbar__arrow" aria-hidden="true">→</span>' +
-      '<nav aria-label="Documentation products"><ul class="docs-topbar__products">' +
-      '<li><a class="docs-topbar__link" data-docs-product-link="docs" href="' + esc(docsHome) + '">Docs</a></li>' +
+      '<nav aria-label="' + esc(docsText('docs.products', 'Documentation products')) + '"><ul class="docs-topbar__products">' +
+      '<li><a class="docs-topbar__link" data-docs-product-link="docs" href="' + esc(docsHome) + '">' + esc(docsText('ecosystem.docs', 'Docs')) + '</a></li>' +
       '<li><span class="docs-topbar__arrow" aria-hidden="true">→</span></li>' +
-      '<li><a class="docs-topbar__link" data-docs-product-link="helper" href="' + esc(productHome('helper/')) + '">Vozen Helper</a></li>' +
+      '<li><a class="docs-topbar__link" data-docs-product-link="helper" href="' + esc(productHome('helper/')) + '">' + esc(docsText('ecosystem.helper', 'Vozen Helper')) + '</a></li>' +
       '<li><span class="docs-topbar__arrow" aria-hidden="true">→</span></li>' +
-      '<li><a class="docs-topbar__link" data-docs-product-link="tts" href="' + esc(productHome('tts/')) + '">Vozen TTS</a></li>' +
+      '<li><a class="docs-topbar__link" data-docs-product-link="tts" href="' + esc(productHome('tts/')) + '">' + esc(docsText('ecosystem.tts', 'Vozen TTS')) + '</a></li>' +
       '</ul></nav></div>';
 
     topbar.dataset.docsComponent = 'DocsTopbar';
@@ -210,21 +227,21 @@
       sidebar.className = 'docs-sidebar';
       topbar.insertAdjacentElement('afterend', sidebar);
     }
-    sidebar.setAttribute('aria-label', config.label + ' documentation navigation');
-    const searchMarkup = product === 'docs' ? '' : '<form class="docs-search" role="search" aria-label="Search ' + esc(config.label) + ' documentation" data-docs-search>' +
-      '<label class="docs-search__label" for="docs-search-input">Search this product</label>' +
-      '<div class="docs-search__control"><input id="docs-search-input" type="search" autocomplete="off" spellcheck="false" placeholder="Search ' + esc(product === 'tts' ? 'TTS docs' : 'Helper docs') + '" role="combobox" aria-autocomplete="list" aria-controls="docs-search-results" aria-expanded="false"><button class="docs-search__clear" type="button" aria-label="Clear search" hidden>×</button></div>' +
+    sidebar.setAttribute('aria-label', docsText('docs.sidebarLabel', '{product} documentation navigation', { product: config.label }));
+    const searchMarkup = product === 'docs' ? '' : '<form class="docs-search" role="search" aria-label="' + esc(docsText('docs.searchLabel', 'Search {product} documentation', { product: config.label })) + '" data-docs-search>' +
+      '<label class="docs-search__label" for="docs-search-input">' + esc(docsText('docs.searchThisProduct', 'Search this product')) + '</label>' +
+      '<div class="docs-search__control"><input id="docs-search-input" type="search" autocomplete="off" spellcheck="false" placeholder="' + esc(docsText(product === 'tts' ? 'docs.searchTts' : 'docs.searchHelper', product === 'tts' ? 'Search TTS docs' : 'Search Helper docs')) + '" role="combobox" aria-autocomplete="list" aria-controls="docs-search-results" aria-expanded="false"><button class="docs-search__clear" type="button" aria-label="' + esc(docsText('docs.clearSearch', 'Clear search')) + '" hidden>×</button></div>' +
       '<div class="docs-search__status" aria-live="polite" data-state="idle"></div>' +
       '</form>';
-    const searchResultsMarkup = product === 'docs' ? '' : '<div class="docs-search-results" id="docs-search-results" role="listbox" aria-label="Search results" hidden></div>';
+    const searchResultsMarkup = product === 'docs' ? '' : '<div class="docs-search-results" id="docs-search-results" role="listbox" aria-label="' + esc(docsText('docs.searchResults', 'Search results')) + '" hidden></div>';
     const sidebarHome = product === 'docs' ? (localFile ? new URL('index.html', siteRoot).href : siteRoot.href) : docsHome;
-    const sidebarHomeLabel = product === 'docs' ? 'Back to Vozen' : 'Back to Docs';
+    const sidebarHomeLabel = product === 'docs' ? docsText('docs.backToVozen', 'Back to Vozen') : docsText('docs.backToDocs', 'Back to Docs');
     sidebar.innerHTML = '<div class="docs-sidebar__inner">' +
-      '<div class="docs-sidebar__product"><span class="docs-sidebar__product-mark" aria-hidden="true">' + config.mark + '</span><span><strong>' + esc(config.label) + '</strong><small>Documentation</small></span></div>' +
+      '<div class="docs-sidebar__product"><span class="docs-sidebar__product-mark" aria-hidden="true">' + config.mark + '</span><span><strong>' + esc(config.label) + '</strong><small>' + esc(docsText('docs.documentation', 'Documentation')) + '</small></span></div>' +
       searchMarkup +
       searchResultsMarkup +
-      '<nav class="docs-sidebar__tree" aria-label="Documentation sections"><p class="docs-search-empty">Loading navigation…</p></nav>' +
-      '<div class="docs-sidebar__foot"><a href="' + esc(sidebarHome) + '">' + sidebarHomeLabel + '</a><span>' + esc(config.status) + '</span></div>' +
+      '<nav class="docs-sidebar__tree" aria-label="' + esc(docsText('docs.sections', 'Documentation sections')) + '"><p class="docs-search-empty">' + esc(docsText('docs.loadingNavigation', 'Loading navigation…')) + '</p></nav>' +
+      '<div class="docs-sidebar__foot"><a href="' + esc(sidebarHome) + '">' + sidebarHomeLabel + '</a><span>' + esc(docsText('docs.' + product + 'Status', config.status)) + '</span></div>' +
       '</div>';
 
     sidebar.dataset.docsComponent = 'DocsSidebar';
@@ -236,7 +253,7 @@
       toggle = document.createElement('button');
       toggle.className = 'docs-drawer-toggle';
       toggle.type = 'button';
-      toggle.textContent = 'Browse documentation';
+      toggle.textContent = docsText('docs.browse', 'Browse documentation');
       toggle.setAttribute('aria-controls', 'docs-sidebar');
       toggle.setAttribute('aria-expanded', 'false');
       topbar.insertAdjacentElement('afterend', toggle);
@@ -249,7 +266,7 @@
       scrim = document.createElement('button');
       scrim.className = 'docs-sidebar-scrim';
       scrim.type = 'button';
-      scrim.setAttribute('aria-label', 'Close documentation navigation');
+      scrim.setAttribute('aria-label', docsText('docs.closeNavigation', 'Close documentation navigation'));
       document.body.appendChild(scrim);
     }
 
@@ -300,49 +317,49 @@
     const routes = globalThis.VOZEN_HELPER_ROUTES || {};
     const labels = Object.keys(routes).map((key) => ({
       key,
-      title: key.split('.').pop().split('_').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' '),
+      title: docsText(key, key.split('.').pop().split('_').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')),
       route: routes[key],
       maturity: 'catalog'
     }));
-    return [{ label: 'Modules', links: labels }];
+    return [{ label: docsText('docs.modules', 'Modules'), links: labels }];
   }
 
   const helperGuideLinks = [
-    ['Introduction', 'get-started/introduction/index.html'],
-    ['Install the Helper', 'get-started/install/index.html'],
-    ['Quick setup', 'get-started/quick-setup/index.html'],
-    ['Server selection', 'get-started/server-selection/index.html'],
-    ['Feature status', 'get-started/feature-status/index.html']
+    { key: 'docs.introduction', title: 'Introduction', route: 'get-started/introduction/index.html' },
+    { key: 'docs.installHelper', title: 'Install the Helper', route: 'get-started/install/index.html' },
+    { key: 'docs.quickSetup', title: 'Quick setup', route: 'get-started/quick-setup/index.html' },
+    { key: 'docs.serverSelection', title: 'Server selection', route: 'get-started/server-selection/index.html' },
+    { key: 'docs.featureStatus', title: 'Feature status', route: 'get-started/feature-status/index.html' }
   ];
   const helperTaskLinks = [
-    ['Protect a server', 'guides/protect-a-server/index.html'],
-    ['Welcome members', 'guides/welcome/index.html'],
-    ['Build community', 'guides/community/index.html'],
-    ['Manage and automate', 'guides/manage/index.html'],
-    ['Support members', 'guides/support/index.html'],
-    ['Use utilities', 'guides/use/index.html'],
-    ['Understand activity', 'guides/understand/index.html'],
-    ['Personalize the XP card', 'guides/personalize/index.html'],
-    ['Alerts and providers', 'guides/alerts/index.html'],
-    ['Grow the server', 'guides/grow/index.html'],
-    ['Read-only Web3', 'guides/web3/index.html']
+    { key: 'docs.protectServer', title: 'Protect a server', route: 'guides/protect-a-server/index.html' },
+    { key: 'docs.welcomeMembers', title: 'Welcome members', route: 'guides/welcome/index.html' },
+    { key: 'docs.buildCommunity', title: 'Build community', route: 'guides/community/index.html' },
+    { key: 'docs.manageAutomate', title: 'Manage and automate', route: 'guides/manage/index.html' },
+    { key: 'docs.supportMembers', title: 'Support members', route: 'guides/support/index.html' },
+    { key: 'docs.useUtilities', title: 'Use utilities', route: 'guides/use/index.html' },
+    { key: 'docs.understandActivity', title: 'Understand activity', route: 'guides/understand/index.html' },
+    { key: 'docs.personalizeXp', title: 'Personalize the XP card', route: 'guides/personalize/index.html' },
+    { key: 'docs.alertsProviders', title: 'Alerts and providers', route: 'guides/alerts/index.html' },
+    { key: 'docs.growServer', title: 'Grow the server', route: 'guides/grow/index.html' },
+    { key: 'docs.readOnlyWeb3', title: 'Read-only Web3', route: 'guides/web3/index.html' }
   ];
   const helperUtilityLinks = [
-    ['Command reference', 'reference/commands/index.html'],
-    ['Permissions', 'reference/permissions/index.html'],
-    ['Limits', 'reference/limits/index.html'],
-    ['Glossary', 'reference/glossary/index.html'],
-    ['Privacy', 'security/privacy/index.html'],
-    ['Stored data', 'security/stored-data/index.html'],
-    ['Feature status', 'status/features/index.html'],
-    ['Provider status', 'status/providers/index.html']
+    { key: 'docs.commandReference', title: 'Command reference', route: 'reference/commands/index.html' },
+    { key: 'docs.permissions', title: 'Permissions', route: 'reference/permissions/index.html' },
+    { key: 'docs.limits', title: 'Limits', route: 'reference/limits/index.html' },
+    { key: 'docs.glossary', title: 'Glossary', route: 'reference/glossary/index.html' },
+    { key: 'docs.privacy', title: 'Privacy', route: 'security/privacy/index.html' },
+    { key: 'docs.storedData', title: 'Stored data', route: 'security/stored-data/index.html' },
+    { key: 'docs.featureStatus', title: 'Feature status', route: 'status/features/index.html' },
+    { key: 'docs.providerStatus', title: 'Provider status', route: 'status/providers/index.html' }
   ];
   const helperTroubleshootingLinks = [
-    ['Bot not responding', 'troubleshooting/bot-not-responding/index.html'],
-    ['Missing permissions', 'troubleshooting/missing-permissions/index.html'],
-    ['Provider failures', 'troubleshooting/provider-failures/index.html'],
-    ['Role hierarchy', 'troubleshooting/role-hierarchy/index.html'],
-    ['Restore configuration', 'troubleshooting/restore-configuration/index.html']
+    { key: 'docs.botNotResponding', title: 'Bot not responding', route: 'troubleshooting/bot-not-responding/index.html' },
+    { key: 'docs.missingPermissions', title: 'Missing permissions', route: 'troubleshooting/missing-permissions/index.html' },
+    { key: 'docs.providerFailures', title: 'Provider failures', route: 'troubleshooting/provider-failures/index.html' },
+    { key: 'docs.roleHierarchy', title: 'Role hierarchy', route: 'troubleshooting/role-hierarchy/index.html' },
+    { key: 'docs.restoreConfiguration', title: 'Restore configuration', route: 'troubleshooting/restore-configuration/index.html' }
   ];
 
   function helperGroups(manifest) {
@@ -352,23 +369,30 @@
       const feature = featureMap.get(key) || {};
       return { key, title: feature.title || key.split('.').pop().replaceAll('_', ' '), route: routes[key], maturity: feature.maturity || 'catalog' };
     });
-    const links = (items) => items.map(([title, route]) => ({ title, route }));
+    const links = (items) => items.map((item) => ({ title: docsText(item.key, item.title), route: item.route }));
     return [
-      { label: 'Get started', links: links(helperGuideLinks) },
-      { label: 'Task guides', links: links(helperTaskLinks) },
-      { label: 'Modules', links: modules },
-      { label: 'Reference and privacy', links: links(helperUtilityLinks) },
-      { label: 'Troubleshooting', links: links(helperTroubleshootingLinks) }
+      { label: docsText('docs.getStarted', 'Get started'), links: links(helperGuideLinks) },
+      { label: docsText('docs.taskGuides', 'Task guides'), links: links(helperTaskLinks) },
+      { label: docsText('docs.modules', 'Modules'), links: modules },
+      { label: docsText('docs.referencePrivacy', 'Reference and privacy'), links: links(helperUtilityLinks) },
+      { label: docsText('docs.troubleshooting', 'Troubleshooting'), links: links(helperTroubleshootingLinks) }
     ];
   }
 
   function normaliseGroups(manifest) {
     if (product === 'docs') return [
-      { label: 'About the docs', links: [{ title: 'What are the docs?', route: 'index.html' }] },
-      { label: 'Products', links: [{ title: 'Vozen Helper', route: 'helper/index.html' }, { title: 'Vozen TTS', route: 'tts/index.html' }] }
+      { label: docsText('docs.aboutDocs', 'About the docs'), links: [{ title: docsText('docs.whatAreDocs', 'What are the docs?'), route: 'index.html' }] },
+      { label: docsText('docs.products', 'Products'), links: [{ title: 'Vozen Helper', route: 'helper/index.html' }, { title: 'Vozen TTS', route: 'tts/index.html' }] }
     ];
     if (product === 'helper') return helperGroups(manifest);
-    return Array.isArray(manifest?.sections) ? manifest.sections : [];
+    return Array.isArray(manifest?.sections) ? manifest.sections.map((section) => ({
+      ...section,
+      label: docsText('docs.section.' + normalize(section.label).replace(/[^a-z0-9]+/g, '.'), section.label),
+      links: (section.links || []).map((link) => ({
+        ...link,
+        title: docsText('docs.route.' + String(link.route || '').replace(/\/index\.html$/i, '').replace(/[^a-z0-9]+/gi, '.'), link.title)
+      }))
+    })) : [];
   }
 
   const disclosureStorageKey = 'vozen-docs-open-group:' + product;
@@ -435,7 +459,7 @@
     const tree = sidebar.querySelector('.docs-sidebar__tree');
     const current = window.location.pathname;
     if (!groups.length) {
-      tree.innerHTML = '<p class="docs-search-error">Navigation is not available right now.</p>';
+      tree.innerHTML = '<p class="docs-search-error">' + esc(docsText('docs.navigationUnavailable', 'Navigation is not available right now.')) + '</p>';
       return;
     }
     const saved = readDisclosureState();
@@ -448,7 +472,7 @@
       const markup = links.map((link) => {
         const href = docUrl(link.route);
         const active = samePath(href);
-        const status = link.maturity && link.maturity !== 'operational' ? '<small>' + esc(link.maturity) + '</small>' : '';
+        const status = link.maturity && link.maturity !== 'operational' ? '<small>' + esc(docsText('docs.maturity.' + link.maturity, link.maturity)) + '</small>' : '';
         return '<a href="' + esc(href) + '"' + (active ? ' aria-current="page"' : '') + '><span>' + esc(link.title || link.label || 'Documentation') + '</span>' + status + '</a>';
       }).join('');
       const open = index === openIndex;
@@ -555,20 +579,20 @@
       results.hidden = false;
       input.setAttribute('aria-expanded', 'true');
       if (!loaded && !failed) {
-        results.innerHTML = '<p class="docs-search-empty">Loading search index…</p>';
-        setStatus('Loading search index.', 'warning');
+        results.innerHTML = '<p class="docs-search-empty">' + esc(docsText('docs.loadingSearchIndex', 'Loading search index…')) + '</p>';
+        setStatus(docsText('docs.loadingSearchStatus', 'Loading search index.'), 'warning');
         return;
       }
       if (failed) {
-        results.innerHTML = '<p class="docs-search-error">Search data could not be loaded. Reload the page or use the section links.</p>';
-        setStatus('Search unavailable.', 'error');
+        results.innerHTML = '<p class="docs-search-error">' + esc(docsText('docs.searchDataError', 'Search data could not be loaded. Reload the page or use the section links.')) + '</p>';
+        setStatus(docsText('docs.searchUnavailable', 'Search unavailable.'), 'error');
         return;
       }
       latestResults = searchDocuments(documents, query).slice(0, 24);
       activeIndex = -1;
       if (!latestResults.length) {
-        results.innerHTML = '<p class="docs-search-empty">No pages match that search.</p>';
-        setStatus('No results.', 'idle');
+        results.innerHTML = '<p class="docs-search-empty">' + esc(docsText('docs.noPagesMatch', 'No pages match that search.')) + '</p>';
+        setStatus(docsText('docs.noResults', 'No results.'), 'idle');
         return;
       }
       const terms = query.split(/\s+/).filter(Boolean);
@@ -593,7 +617,7 @@
         link.append(title, meta, excerpt);
         results.appendChild(link);
       });
-      setStatus(latestResults.length + (latestResults.length === 1 ? ' result.' : ' results.'), 'idle');
+      setStatus(docsText(latestResults.length === 1 ? 'docs.resultOne' : 'docs.resultMany', latestResults.length === 1 ? '{n} result.' : '{n} results.', { n: latestResults.length }), 'idle');
     };
 
     input.addEventListener('input', render);
@@ -643,7 +667,7 @@
     if (!main.querySelector('.docs-breadcrumbs')) {
       const breadcrumb = document.createElement('nav');
       breadcrumb.className = 'docs-breadcrumbs';
-      breadcrumb.setAttribute('aria-label', 'Breadcrumb');
+      breadcrumb.setAttribute('aria-label', docsText('docs.breadcrumb', 'Breadcrumb'));
       breadcrumb.innerHTML = '<a href="' + esc(new URL('index.html', config.root).href) + '">' + esc(config.label) + ' docs</a><span aria-hidden="true">/</span><span>' + esc(h1.textContent.trim()) + '</span>';
       main.insertBefore(breadcrumb, main.firstChild);
     }
@@ -651,8 +675,8 @@
     if (headings.length > 2 && !main.querySelector('.docs-local-toc')) {
       const toc = document.createElement('nav');
       toc.className = 'docs-local-toc';
-      toc.setAttribute('aria-label', 'On this page');
-      toc.innerHTML = '<strong>On this page</strong><ul>' + headings.map((heading) => {
+      toc.setAttribute('aria-label', docsText('docs.onThisPage', 'On this page'));
+      toc.innerHTML = '<strong>' + esc(docsText('docs.onThisPage', 'On this page')) + '</strong><ul>' + headings.map((heading) => {
         if (!heading.id) heading.id = slugify(heading.textContent);
         return '<li><a href="#' + esc(heading.id) + '">' + esc(heading.textContent.trim()) + '</a></li>';
       }).join('') + '</ul>';
@@ -666,18 +690,46 @@
     if (product !== 'docs' && currentIndex >= 0 && !main.querySelector('.docs-pager')) {
       const pager = document.createElement('nav');
       pager.className = 'docs-pager';
-      pager.setAttribute('aria-label', 'Documentation navigation');
+      pager.setAttribute('aria-label', docsText('docs.navigation', 'Documentation navigation'));
       const previous = links[currentIndex - 1];
       const next = links[currentIndex + 1];
-      pager.innerHTML = (previous ? '<a href="' + esc(previous.href) + '"><small>Previous</small><strong>← ' + esc(previous.textContent.trim()) + '</strong></a>' : '<span></span>') + (next ? '<a class="next" href="' + esc(next.href) + '"><small>Next</small><strong>' + esc(next.textContent.trim()) + ' →</strong></a>' : '<span></span>');
+      pager.innerHTML = (previous ? '<a href="' + esc(previous.href) + '"><small>' + esc(docsText('docs.previous', 'Previous')) + '</small><strong>← ' + esc(previous.textContent.trim()) + '</strong></a>' : '<span></span>') + (next ? '<a class="next" href="' + esc(next.href) + '"><small>' + esc(docsText('docs.next', 'Next')) + '</small><strong>' + esc(next.textContent.trim()) + ' →</strong></a>' : '<span></span>');
       main.appendChild(pager);
     }
+  }
+
+  function translateLegacyChrome() {
+    const locale = docsLocale();
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach((node) => {
+      const key = node.getAttribute('data-i18n');
+      if (key) node.textContent = docsText(key, node.textContent);
+    });
+    document.querySelectorAll('[data-i18n-aria-label]').forEach((node) => {
+      const key = node.getAttribute('data-i18n-aria-label');
+      if (key) node.setAttribute('aria-label', docsText(key, node.getAttribute('aria-label')));
+    });
+    const skip = document.querySelector('.skip-link');
+    if (skip) skip.textContent = docsText('docs.home.skip', docsText('common.skipToContent', 'Skip to content'));
+    document.querySelectorAll('.docs-footer a').forEach((link) => {
+      const path = String(link.getAttribute('href') || '').toLowerCase();
+      if (path.includes('privacy')) link.textContent = docsText('foot.privacy', 'Privacy');
+      if (path.includes('terms')) link.textContent = docsText('foot.terms', 'Terms');
+    });
   }
 
   async function boot() {
     normalisePublicIndexAddress();
     normalisePublicIndexLinks();
     ensureCurrentShellStyles();
+    // Docs pages are static documents, so they do not load the main-site
+    // runtime. Load the shared catalogue here as well; this keeps the docs
+    // shell, search controls and ecosystem header on the same locale contract.
+    await loadScript(new URL('js/i18n-v41.js?v=docs-shell-v1', siteRoot))
+      .then(() => loadScript(new URL('js/i18n-v42.js?v=docs-shell-v1', siteRoot)))
+      .catch(() => undefined);
+    translateLegacyChrome();
     installEcosystemNav();
     document.body.dataset.vozenDocsShell = 'ready';
     document.body.classList.add('docs-shell-active');
@@ -692,5 +744,8 @@
     resources.then(() => addScaffolding(sidebar), () => addScaffolding(sidebar));
   }
 
+  window.addEventListener('vozen:languagechange', () => {
+    if (document.body.dataset.vozenDocsShell === 'ready') window.location.reload();
+  });
   boot();
 })();

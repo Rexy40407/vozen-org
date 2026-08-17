@@ -134,13 +134,94 @@
   let product = "tts";
   let activeFilter = "all";
 
+  const locale = () => {
+    try {
+      const value = localStorage.getItem("vozen.lang") || "en";
+      return window.VOZEN_I18N && window.VOZEN_I18N[value] ? value : "en";
+    } catch (_) { return "en"; }
+  };
+  const interpolate = (value, variables) => String(value).replace(/\{(\w+)\}/g, (_, key) => String(variables?.[key] ?? `{${key}}`));
+  const t = (key, fallback, variables) => {
+    const dictionary = window.VOZEN_I18N || {};
+    const value = dictionary[locale()]?.[key] || dictionary.en?.[key] || fallback || key;
+    return interpolate(value, variables);
+  };
+  const groupKeys = {
+    start: ["commands.groupStart", "Start & voice"],
+    fun: ["commands.groupFun", "Fun & games"],
+    stats: ["commands.groupStats", "Stats & activity"],
+    settings: ["commands.groupSettings", "Settings & privacy"],
+    premium: ["commands.groupPremium", "Premium"],
+    help: ["commands.groupHelp", "Help & community"],
+    protection: ["commands.groupProtection", "Protection"],
+    community: ["commands.groupCommunity", "Community"],
+    support: ["commands.groupSupport", "Support"],
+    management: ["commands.groupManagement", "Management"],
+    utilities: ["commands.groupUtilities", "Utilities"],
+    insights: ["commands.groupInsights", "Insights"],
+  };
+  const genericCategory = (category) => t(`commands.generic.${category}`, "Use {command} to manage this feature.");
+  const localizedAccess = (access) => {
+    const keys = {
+      Free: "commands.freeTag",
+      Premium: "commands.premiumTag",
+      Admin: "commands.adminTag",
+      Moderator: "commands.moderatorTag",
+      "Free + Premium": "commands.freePremiumTag",
+      "Admin + Premium": "commands.adminPremiumTag",
+    };
+    return t(keys[access] || "commands.premiumTag", access);
+  };
+  const localizedCommand = (command) => {
+    if (locale() === "en") return { ...command, access: localizedAccess(command.access) };
+    return {
+      ...command,
+      description: genericCategory(command.category).replace("{command}", command.name),
+      usage: command.usage ? t("commands.usageAvailable", "Options available in Discord.") : "",
+      access: localizedAccess(command.access),
+    };
+  };
+  const applyStaticCopy = () => {
+    const copy = [
+      [".commands-hero .eyebrow", "commands.catalogueEyebrow"],
+      [".commands-hero h1", "commands.heroTitle"],
+      [".commands-hero__lead", "commands.heroLead"],
+      [".command-finder__kicker", "commands.chooseBot"],
+      [".command-finder__intro h2", "commands.exploreTitle"],
+      [".command-finder__intro p:last-child", "commands.exploreSub"],
+      [".command-product-picker", "commands.botAria", "aria-label"],
+      ["[data-command-product=tts] small", "commands.voiceCommunity"],
+      ["[data-command-product=helper] small", "commands.serverOperations"],
+      [".command-search .sr-only", "commands.search"],
+      ["#commandSearch", "commands.searchPlaceholder", "placeholder"],
+      ["#commandFilters", "commands.filters", "aria-label"],
+      [".commands-section__head .command-finder__kicker", "commands.fullCatalogue"],
+      [".commands-aside__block--accent > .command-finder__kicker", "commands.newHere"],
+      [".commands-aside__block:not(.commands-aside__block--accent) > .command-finder__kicker", "commands.readingLabels"],
+      [".commands-legend li:nth-child(1) span:last-child", "commands.freeHelp"],
+      [".commands-legend li:nth-child(2) span:last-child", "commands.premiumHelp"],
+      [".commands-legend li:nth-child(3) span:last-child", "commands.adminHelp"],
+    ];
+    copy.forEach(([selector, key, attribute]) => {
+      const element = document.querySelector(selector);
+      if (!element) return;
+      const value = t(key, element.textContent || element.getAttribute(attribute) || "");
+      if (attribute) element.setAttribute(attribute, value);
+      else element.textContent = value;
+    });
+    document.querySelectorAll(".commands-legend .command-tag").forEach((tag) => {
+      const raw = tag.textContent.trim();
+      tag.textContent = localizedAccess(raw);
+    });
+  };
+
   const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   const tagClass = (tag) => tag.toLowerCase().includes("premium") ? "command-tag--premium" : /admin|moderator/i.test(tag) ? "command-tag--admin" : "command-tag--free";
   const current = () => catalogue[product];
 
   function renderFilters() {
     const item = current();
-    filtersEl.innerHTML = [["all", "All"], ...item.groups.map(([id, title]) => [id, title])]
+    filtersEl.innerHTML = [["all", t("commands.all", "All")], ...item.groups.map(([id, title]) => [id, t(groupKeys[id]?.[0] || id, title)])]
       .map(([id, title], index) => `<button class="${index === 0 ? "is-active" : ""}" type="button" data-filter="${id}" aria-pressed="${index === 0}">${title}</button>`).join("");
     filtersEl.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => {
       activeFilter = button.dataset.filter || "all";
@@ -156,21 +237,30 @@
   function renderAside() {
     const item = current();
     const isTts = product === "tts";
-    asideTitle.textContent = isTts ? "Three steps to voice" : "Three steps to Helper";
-    asideSteps.innerHTML = item.steps.map(([command, copy]) => `<li><code>${escapeHtml(command)}</code><span>${escapeHtml(copy)}</span></li>`).join("");
-    asideCta.textContent = item.action;
+    asideTitle.textContent = isTts ? t("commands.threeStepsTts", "Three steps to voice") : t("commands.threeStepsHelper", "Three steps to Helper");
+    const stepKeys = {
+      "/setup": "commands.step.setup",
+      "/join": "commands.step.join",
+      "/tts": "commands.step.tts",
+      "/help": "commands.step.help",
+      "/anti-raid": "commands.step.antiRaid",
+      "/ticket-panel": "commands.step.ticketPanel",
+    };
+    asideSteps.innerHTML = item.steps.map(([command, copy]) => `<li><code>${escapeHtml(command)}</code><span>${escapeHtml(t(stepKeys[command] || "", copy))}</span></li>`).join("");
+    asideCta.textContent = isTts ? t("commands.addTts", item.action) : t("commands.addHelper", item.action);
     asideCta.href = item.href;
     asideCta.toggleAttribute("target", item.external);
     asideCta.toggleAttribute("rel", item.external);
     if (item.external) asideCta.setAttribute("rel", "noopener noreferrer");
-    asideNote.textContent = item.contract;
+    asideNote.textContent = isTts ? t("commands.contractTts", item.contract) : t("commands.contractHelper", item.contract);
   }
 
   function commandRow(command) {
+    const localized = localizedCommand(command);
     return `<article class="command-row">
-      <div class="command-row__top"><code>${escapeHtml(command.name)}</code><span class="command-tag ${tagClass(command.access)}">${escapeHtml(command.access)}</span></div>
-      <p>${escapeHtml(command.description)}</p>
-      ${command.usage ? `<span class="command-row__usage">${escapeHtml(command.usage)}</span>` : ""}
+      <div class="command-row__top"><code>${escapeHtml(localized.name)}</code><span class="command-tag ${tagClass(command.access)}">${escapeHtml(localized.access)}</span></div>
+      <p>${escapeHtml(localized.description)}</p>
+      ${localized.usage ? `<span class="command-row__usage">${escapeHtml(localized.usage)}</span>` : ""}
     </article>`;
   }
 
@@ -185,15 +275,18 @@
     groupsEl.innerHTML = item.groups.map(([id, title, note]) => {
       const items = visible.filter((command) => command.category === id);
       if (!items.length) return "";
+      const groupTitle = t(groupKeys[id]?.[0] || id, title);
+      const groupNote = t(`commands.group.${id}.note`, note);
       return `<section class="command-group" aria-labelledby="group-${id}">
-        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-${id}">${title}</h3><span class="command-group__count">${items.length}</span></div><p>${note}</p></div></div>
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-${id}">${groupTitle}</h3><span class="command-group__count">${items.length}</span></div><p>${groupNote}</p></div></div>
         <div class="command-list">${items.map(commandRow).join("")}</div>
       </section>`;
     }).join("");
-    const noun = visible.length === 1 ? "command" : "commands";
-    result.textContent = query || activeFilter !== "all" ? `${visible.length} ${noun} match your search.` : `Showing all ${visible.length} ${item.label} commands.`;
+    result.textContent = query || activeFilter !== "all"
+      ? t(visible.length === 1 ? "commands.resultsMatchOne" : "commands.resultsMatchMany", "{n} commands match your search.", { n: visible.length })
+      : t("commands.resultsAll", "Showing all {n} {product} commands.", { n: visible.length, product: item.label });
     document.querySelectorAll(".command-empty").forEach((empty) => empty.remove());
-    if (!visible.length) result.insertAdjacentHTML("afterend", '<p class="command-empty">No commands match that search. Try a shorter word or choose a different category.</p>');
+    if (!visible.length) result.insertAdjacentHTML("afterend", `<p class="command-empty">${escapeHtml(t("commands.noMatch", "No commands match that search. Try a shorter word or choose a different category."))}</p>`);
   }
 
   function setProduct(nextProduct) {
@@ -201,9 +294,9 @@
     activeFilter = "all";
     search.value = "";
     const item = current();
-    search.placeholder = item.search;
-    document.getElementById("catalogueTitle").textContent = `Explore ${item.label} commands`;
-    document.getElementById("catalogueNote").textContent = item.note;
+    search.placeholder = t("commands.searchPlaceholder", item.search);
+    document.getElementById("catalogueTitle").textContent = `${t("commands.exploreEvery", "Explore every")} ${item.label} ${t("commands.commandsWord", "command")}`;
+    document.getElementById("catalogueNote").textContent = t("commands.catalogueNote", item.note);
     productButtons.forEach((button) => {
       const selected = button.dataset.commandProduct === product;
       button.classList.toggle("is-active", selected);
@@ -216,6 +309,7 @@
 
   productButtons.forEach((button) => button.addEventListener("click", () => setProduct(button.dataset.commandProduct)));
   search?.addEventListener("input", render);
+  window.addEventListener("vozen:languagechange", () => { applyStaticCopy(); setProduct(product); });
   document.addEventListener("keydown", (event) => {
     if (event.key === "/" && document.activeElement !== search && !event.metaKey && !event.ctrlKey && !event.altKey) {
       event.preventDefault();
@@ -223,5 +317,6 @@
     }
   });
 
+  applyStaticCopy();
   setProduct(product);
 })();

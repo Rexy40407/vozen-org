@@ -118,7 +118,7 @@
 
   function confirmTtsDiscard() {
     if (!workspaceState.dirty) return true;
-    return window.confirm("You have unsaved changes. Leave this view without saving?");
+    return window.confirm(t("dashboard.unsavedConfirm"));
   }
 
   window.addEventListener("beforeunload", function (event) {
@@ -136,7 +136,7 @@
     if (!guilds.length) {
       var empty = document.createElement("option");
       empty.value = "";
-      empty.textContent = "No servers available";
+      empty.textContent = t("dashboard.noServersAvailable");
       select.appendChild(empty);
       select.disabled = true;
     } else {
@@ -185,7 +185,7 @@
   }
 
   function boolLabel(value) {
-    return value ? "On" : "Off";
+    return value ? t("dashboard.on") : t("dashboard.off");
   }
 
   function renderTtsOverview() {
@@ -197,28 +197,28 @@
     showWorkspaceShell();
     var cfg = workspaceState.data.config;
     var hasChannel = !!cfg.ttsChannelId;
-    var voice = cfg.defaultVoice || "Not selected";
-    var locale = cfg.locale || "Default locale";
+    var voice = cfg.defaultVoice || t("dashboard.notSelected");
+    var locale = cfg.locale || t("dashboard.defaultLocale");
     setTtsView("overview", false);
     view(
       '<div class="workspace-heading">' +
-        '<p class="workspace-heading__eyebrow">Vozen TTS · Overview</p>' +
-        '<h1>Make every channel easy to hear.</h1>' +
-        '<p>See what is ready on <strong>' + esc(workspaceState.guild.name) + '</strong>, then complete the next small step.</p>' +
+        '<p class="workspace-heading__eyebrow">' + esc(t("dashboard.overviewEyebrow")) + '</p>' +
+        '<h1>' + esc(t("dashboard.overviewTitle")) + '</h1>' +
+        '<p>' + esc(t("dashboard.overviewIntro").replace("{name}", workspaceState.guild.name)) + '</p>' +
       '</div>' +
       '<div class="workspace-overview-grid">' +
         '<section class="workspace-card workspace-checklist" aria-labelledby="ttsReadyTitle">' +
-          '<div><p class="workspace-heading__eyebrow">Readiness</p><h2 id="ttsReadyTitle">Your voice setup</h2></div>' +
-          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>Reading channel</strong><span>' + esc(hasChannel ? "Configured and ready to read." : "Choose a channel in Quick Setup.") + '</span></div></div>' +
-          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>Voice</strong><span>' + esc(voice + " · " + locale) + '</span></div></div>' +
-          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>Safety</strong><span>Auto-read ' + esc(boolLabel(cfg.autoread)) + ' · Anti-spam ' + esc(boolLabel(cfg.antispam)) + '</span></div></div>' +
-          '<div><button class="workspace-button" type="button" data-tts-view="quick">Continue setup <span aria-hidden="true">→</span></button></div>' +
+          '<div><p class="workspace-heading__eyebrow">' + esc(t("dashboard.readiness")) + '</p><h2 id="ttsReadyTitle">' + esc(t("dashboard.voiceSetup")) + '</h2></div>' +
+          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>' + esc(t("dashboard.readingChannel")) + '</strong><span>' + esc(hasChannel ? t("dashboard.configuredReady") : t("dashboard.chooseChannelQuick")) + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>' + esc(t("dashboard.voice")) + '</strong><span>' + esc(voice + " · " + locale) + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><span class="workspace-status-dot"></span><div><strong>' + esc(t("dashboard.safety")) + '</strong><span>' + esc(t("dashboard.autoReadStatus").replace("{value}", boolLabel(cfg.autoread)) + " · " + t("dashboard.antiSpamStatus").replace("{value}", boolLabel(cfg.antispam))) + '</span></div></div>' +
+          '<div><button class="workspace-button" type="button" data-tts-view="quick">' + esc(t("dashboard.continueSetup")) + ' <span aria-hidden="true">→</span></button></div>' +
         '</section>' +
         '<aside class="workspace-card workspace-card--soft workspace-checklist" aria-labelledby="ttsSummaryTitle">' +
-          '<div><p class="workspace-heading__eyebrow">Server snapshot</p><h2 id="ttsSummaryTitle">' + esc(workspaceState.guild.name) + '</h2></div>' +
-          '<div class="workspace-checklist__item"><div><strong>Text in voice</strong><span>' + esc(boolLabel(cfg.textInVoice)) + '</span></div></div>' +
-          '<div class="workspace-checklist__item"><div><strong>Read bot messages</strong><span>' + esc(boolLabel(cfg.readBots)) + '</span></div></div>' +
-          '<div class="workspace-checklist__item"><div><strong>Recording</strong><span>No recording is enabled by this dashboard.</span></div></div>' +
+          '<div><p class="workspace-heading__eyebrow">' + esc(t("dashboard.serverSnapshot")) + '</p><h2 id="ttsSummaryTitle">' + esc(workspaceState.guild.name) + '</h2></div>' +
+          '<div class="workspace-checklist__item"><div><strong>' + esc(t("dashboard.textInVoice")) + '</strong><span>' + esc(boolLabel(cfg.textInVoice)) + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><div><strong>' + esc(t("dashboard.readBotMessages")) + '</strong><span>' + esc(boolLabel(cfg.readBots)) + '</span></div></div>' +
+          '<div class="workspace-checklist__item"><div><strong>' + esc(t("dashboard.recording")) + '</strong><span>' + esc(t("dashboard.noRecording")) + '</span></div></div>' +
         '</aside>' +
       '</div>'
     );
@@ -625,7 +625,7 @@
         (opts.addServer
           ? '<button type="button" class="' +
             BTN +
-            '" id="dashAddServer" style="margin-top:16px">Add a server</button>'
+            '" id="dashAddServer" style="margin-top:16px">' + esc(t("dashboard.addServerButton")) + '</button>'
           : "") +
         "</div>",
     );
@@ -648,7 +648,7 @@
   // generic spinner, so the transition does not make the page jump.
   function renderSkeleton(kind) {
     var picker = kind === "picker";
-    var label = picker ? "Loading available servers" : "Loading server settings";
+    var label = picker ? t("dashboard.loadingAvailable") : t("dashboard.loadingSettings");
     var pulse = function (extra) {
       return '<span class="dash-skeleton__pulse' + (extra ? " " + extra : "") + '" aria-hidden="true"></span>';
     };
@@ -755,7 +755,7 @@
       })
       .join("");
     view(
-      '<div class="tts-picker-page__back"><a class="dash-exit" href="/account/">← Back to account</a></div>' +
+      '<div class="tts-picker-page__back"><a class="dash-exit" href="/account/">' + esc(t("dashboard.backAccount")) + '</a></div>' +
       '<div class="dash-picker"><h2 style="margin:0 0 6px;font-size:1.25rem">' +
         esc(t("dashboard.pick")) +
         '</h2><p style="' +
@@ -764,7 +764,7 @@
         esc(t("dashboard.pickHint")) +
         '</p><div class="dash-picker__list">' +
         cards +
-        '</div><div class="dash-picker__actions"><div class="dash-picker__actions-copy"><strong>Add Vozen to another server</strong><span>Install Vozen TTS in a server you manage. Discord will return you here when it is ready.</span></div><button type="button" class="dash-picker__add" id="dashAddServer">Add a server</button></div></div>',
+        '</div><div class="dash-picker__actions"><div class="dash-picker__actions-copy"><strong>' + esc(t("dashboard.addAnotherServer")) + '</strong><span>' + esc(t("dashboard.installAndReturn")) + '</span></div><button type="button" class="dash-picker__add" id="dashAddServer">' + esc(t("dashboard.addServerButton")) + '</button></div></div>',
     );
     var btns = root.querySelectorAll(".dash-server");
     function onPick(ev) {
@@ -835,7 +835,7 @@
     } else if (key === "defaultVoice") {
       opts += '<option value=""' + (val === "" ? " selected" : "") + ">" + esc(t("dashboard.voiceGlobal")) + "</option>";
     } else if (key === "priorityRoleId" || key === "blockedRoleId") {
-      opts += '<option value=""' + (val === null ? " selected" : "") + ">No role</option>";
+      opts += '<option value=""' + (val === null ? " selected" : "") + '>' + esc(t("dashboard.noRole")) + '</option>';
     }
     var options = optionsFor(key, val, meta);
     for (var i = 0; i < options.length; i++) {
@@ -971,7 +971,7 @@
     return (
       '<select class="dash-sel" data-p="' +
       key +
-      '"><option value="">Inherit server setting</option><option value="true">On</option><option value="false">Off</option></select>'
+      '"><option value="">' + esc(t("dashboard.inheritServer")) + '</option><option value="true">' + esc(t("dashboard.on")) + '</option><option value="false">' + esc(t("dashboard.off")) + '</option></select>'
     );
   }
 
@@ -986,8 +986,8 @@
       '<p class="dash-sec__t" id="dashProfilesTitle">' + esc(t("dashboard.sec_voice")) + "</p>" +
       '<p class="dash-row__d">' + esc(t("dashboard.d_ttsChannelId")) + "</p>" +
       '<div class="dash-profiles__grid">' +
-      '<label class="dash-profile-field">Text channel<select class="dash-sel" id="dashProfileChannel">' +
-      profileOptionHtml(channels, "", "Choose a channel") +
+      '<label class="dash-profile-field">' + esc(t("dashboard.readingChannel")) + '<select class="dash-sel" id="dashProfileChannel">' +
+      profileOptionHtml(channels, "", t("dashboard.chooseChannelFirst")) +
       "</select></label>" +
       '<label class="dash-profile-field">' + esc(t("dashboard.f_autoread")) + triStateHtml("autoRead") + "</label>" +
       '<label class="dash-profile-field">' +
@@ -995,22 +995,22 @@
       "</label>" +
       '<label class="dash-profile-field">' + esc(t("dashboard.f_readBots")) + triStateHtml("readBots") + "</label>" +
       '<label class="dash-profile-field">' + esc(t("dashboard.f_defaultVoice")) + '<select class="dash-sel" data-p="defaultVoice">' +
-      profileOptionHtml(voices, "", "Inherit server voice") +
+      profileOptionHtml(voices, "", t("dashboard.inheritVoice")) +
       "</select></label>" +
-      '<label class="dash-profile-field">Engine<select class="dash-sel" data-p="engine"><option value="">Inherit</option><option value="google">Default</option><option value="piper">Piper</option><option value="kokoro">Kokoro (paid)</option><option value="gcloud">Google HD (paid)</option></select></label>' +
+      '<label class="dash-profile-field">' + esc(t("dashboard.engine")) + '<select class="dash-sel" data-p="engine"><option value="">' + esc(t("dashboard.inherit")) + '</option><option value="google">' + esc(t("dashboard.default")) + '</option><option value="piper">Piper</option><option value="kokoro">Kokoro ' + esc(t("dashboard.paid")) + '</option><option value="gcloud">Google HD ' + esc(t("dashboard.paid")) + '</option></select></label>' +
       '<label class="dash-profile-field">' + esc(t("dashboard.f_locale")) + '<select class="dash-sel" data-p="locale">' +
-      profileOptionHtml(locales, "", "Infer from the voice") +
+      profileOptionHtml(locales, "", t("dashboard.inferVoice")) +
       "</select></label>" +
-      '<label class="dash-profile-field">Voice effect<select class="dash-sel" data-p="effect"><option value="">None / personal choice</option><option value="robot">Robot</option><option value="echo">Echo</option><option value="deep">Deep (paid)</option><option value="chipmunk">Chipmunk (paid)</option><option value="radio">Radio (paid)</option><option value="phone">Phone (paid)</option><option value="underwater">Underwater (paid)</option><option value="demon">Demon (paid)</option></select></label>' +
-      '<label class="dash-profile-field">Voice-channel binding<select class="dash-sel" data-p="voiceChannelId">' +
-      profileOptionHtml(voiceChannels, "", "Any active call") +
+      '<label class="dash-profile-field">' + esc(t("dashboard.voiceEffect")) + '<select class="dash-sel" data-p="effect"><option value="">' + esc(t("dashboard.noEffect")) + '</option><option value="robot">Robot</option><option value="echo">Echo</option><option value="deep">Deep ' + esc(t("dashboard.paid")) + '</option><option value="chipmunk">Chipmunk ' + esc(t("dashboard.paid")) + '</option><option value="radio">Radio ' + esc(t("dashboard.paid")) + '</option><option value="phone">Phone ' + esc(t("dashboard.paid")) + '</option><option value="underwater">Underwater ' + esc(t("dashboard.paid")) + '</option><option value="demon">Demon ' + esc(t("dashboard.paid")) + '</option></select></label>' +
+      '<label class="dash-profile-field">' + esc(t("dashboard.voiceBinding")) + '<select class="dash-sel" data-p="voiceChannelId">' +
+      profileOptionHtml(voiceChannels, "", t("dashboard.anyActiveCall")) +
       "</select></label>" +
-      '<label class="dash-profile-field">Speed (0.5–2.0)<input class="dash-num" data-p="speed" type="number" min="0.5" max="2" step="0.05" placeholder="Inherit"></label>' +
-      '<label class="dash-profile-field">' + esc(t("dashboard.f_maxChars")) + '<input class="dash-num" data-p="maxChars" type="number" min="1" max="2000" placeholder="Inherit"></label>' +
+      '<label class="dash-profile-field">' + esc(t("dashboard.speed")) + ' (0.5–2.0)<input class="dash-num" data-p="speed" type="number" min="0.5" max="2" step="0.05" placeholder="' + esc(t("dashboard.inherit")) + '"></label>' +
+      '<label class="dash-profile-field">' + esc(t("dashboard.f_maxChars")) + '<input class="dash-num" data-p="maxChars" type="number" min="1" max="2000" placeholder="' + esc(t("dashboard.inherit")) + '"></label>' +
       "</div>" +
       '<div class="dash-profile-actions"><button type="button" class="' +
       BTN +
-      '" id="dashProfileSave">Save profile</button><button type="button" class="btn btn--ghost" id="dashProfileDelete">Delete profile</button><span class="dash-status" id="dashProfileStatus" aria-live="polite"></span></div></section>'
+      '" id="dashProfileSave">' + esc(t("dashboard.addProfile")) + '</button><button type="button" class="btn btn--ghost" id="dashProfileDelete">' + esc(t("dashboard.deleteProfile")) + '</button><span class="dash-status" id="dashProfileStatus" aria-live="polite"></span></div></section>'
     );
   }
 
@@ -1061,10 +1061,10 @@
     channel.addEventListener("change", loadSelected);
     save.addEventListener("click", function () {
       if (!channel.value) {
-        status.textContent = "Choose a text channel first.";
+        status.textContent = t("dashboard.chooseChannelFirst");
         return;
       }
-      status.textContent = "Saving…";
+      status.textContent = t("dashboard.saving");
       fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id + "/profile/" + channel.value, {
         method: "POST",
         headers: Object.assign({ "Content-Type": "application/json" }, authHeaders()),
@@ -1078,12 +1078,12 @@
           renderForm(guild, data.config, guilds, data, true);
         })
         .catch(function () {
-          status.textContent = "Could not save this profile.";
+          status.textContent = t("dashboard.saveFail");
         });
     });
     remove.addEventListener("click", function () {
       if (!channel.value || !selectedProfile()) return;
-      status.textContent = "Deleting…";
+      status.textContent = t("dashboard.saving");
       fetchWithTimeout(API + "/api/dashboard/guild/" + guild.id + "/profile/" + channel.value, {
         method: "DELETE",
         headers: authHeaders(),
@@ -1093,7 +1093,7 @@
           return loadForm(guild, guilds);
         })
         .catch(function () {
-          status.textContent = "Could not delete this profile.";
+          status.textContent = t("dashboard.saveFail");
         });
     });
     loadSelected();
@@ -1160,14 +1160,14 @@
 
     var quickIntro = workspaceState.view === "quick"
       ? '<section class="workspace-quick-intro" aria-labelledby="ttsQuickTitle">' +
-        '<p class="workspace-heading__eyebrow">Quick Setup</p>' +
-        '<h1 id="ttsQuickTitle">Set up Vozen TTS in a few calm steps.</h1>' +
-        '<p>Choose where Vozen reads, how it sounds, and what it should ignore. Nothing is published until you choose <strong>Review &amp; Save</strong>.</p>' +
+        '<p class="workspace-heading__eyebrow">' + esc(t("dashboard.quickSetupIntro")) + '</p>' +
+        '<h1 id="ttsQuickTitle">' + esc(t("dashboard.quickSetupTitle")) + '</h1>' +
+        '<p>' + esc(t("dashboard.quickSetupDescription")).replace("Review &amp; Save", "<strong>" + esc(t("dashboard.reviewSave")) + "</strong>") + '</p>' +
         '<ol class="workspace-quick-intro__steps">' +
-          '<li><b>1</b><span><strong>Reading channel</strong><small>Where messages are heard.</small></span></li>' +
-          '<li><b>2</b><span><strong>Voice and language</strong><small>Pick a clear default voice.</small></span></li>' +
-          '<li><b>3</b><span><strong>Reading rules</strong><small>Control bots, voice text and rate limits.</small></span></li>' +
-          '<li><b>4</b><span><strong>Review &amp; Save</strong><small>Apply one safe patch to this server.</small></span></li>' +
+          '<li><b>1</b><span><strong>' + esc(t("dashboard.stepReadingChannel")) + '</strong><small>' + esc(t("dashboard.stepReadingChannelHint")) + '</small></span></li>' +
+          '<li><b>2</b><span><strong>' + esc(t("dashboard.stepVoiceLanguage")) + '</strong><small>' + esc(t("dashboard.stepVoiceLanguageHint")) + '</small></span></li>' +
+          '<li><b>3</b><span><strong>' + esc(t("dashboard.stepReadingRules")) + '</strong><small>' + esc(t("dashboard.stepReadingRulesHint")) + '</small></span></li>' +
+          '<li><b>4</b><span><strong>' + esc(t("dashboard.stepReviewSave")) + '</strong><small>' + esc(t("dashboard.stepReviewSaveHint")) + '</small></span></li>' +
         '</ol>' +
       '</section>'
       : "";
@@ -1177,7 +1177,7 @@
       BTN +
       ' dash-save" id="dashSave" disabled>' +
       esc(t("dashboard.save")) +
-      '</button><button type="button" class="btn btn--ghost dash-discard" id="dashDiscard" disabled>Discard</button><span class="dash-status" id="dashStatus" aria-live="polite"></span></div>';
+      '</button><button type="button" class="btn btn--ghost dash-discard" id="dashDiscard" disabled>' + esc(t("dashboard.discard")) + '</button><span class="dash-status" id="dashStatus" aria-live="polite"></span></div>';
 
     view(
       '<div class="dash-form">' +
@@ -1218,10 +1218,10 @@
       if (savebarEl) savebarEl.classList.toggle("dash-savebar--visible", n > 0 || !!saved);
       saveBtn.textContent =
         n === 0
-          ? (workspaceState.view === "quick" ? "Review & Save" : t("dashboard.save"))
+          ? (workspaceState.view === "quick" ? t("dashboard.reviewSave") : t("dashboard.save"))
           : n === 1
-            ? (workspaceState.view === "quick" ? "Review & Save · 1 change" : t("dashboard.save1"))
-            : (workspaceState.view === "quick" ? "Review & Save · " + n + " changes" : t("dashboard.saveN").replace("{n}", n));
+            ? (workspaceState.view === "quick" ? t("dashboard.reviewSaveOne") : t("dashboard.save1"))
+            : (workspaceState.view === "quick" ? t("dashboard.reviewSaveMany").replace("{n}", n) : t("dashboard.saveN").replace("{n}", n));
       if (n > 0) setStatus(""); // limpa "Guardado ✓" assim que se volta a mexer
     }
 
@@ -1250,7 +1250,7 @@
 
     saveBtn.addEventListener("click", function () {
       if (saveBtn.disabled) return;
-      if (workspaceState.view === "quick" && !window.confirm("Review and save these changes to this server?")) {
+      if (workspaceState.view === "quick" && !window.confirm(t("dashboard.reviewConfirm"))) {
         refresh();
         return;
       }

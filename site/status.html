@@ -9,7 +9,7 @@
     <meta name="referrer" content="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07070d" />
-    <title>Vozen service status</title>
+    <title data-i18n="status.documentTitle">Vozen service status</title>
     <meta name="description" content="Live health, latency and system checks for Vozen" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="css/main-v43.css" />
@@ -75,37 +75,40 @@
     <div class="grain" aria-hidden="true"></div>
     <main class="status-page">
       <div class="status-shell">
-        <a class="status-back" href="/">← Back to Vozen</a>
-        <p class="status-kicker">Live system health</p>
-        <h1 class="status-title">Vozen service status</h1>
-        <p class="status-lead">Live health, latency and system checks for the voice bot</p>
-        <p class="status-copy">If a component is degraded, voice playback or command responses may take longer to recover</p>
+        <a class="status-back" href="/" data-i18n="status.back">← Back to Vozen</a>
+        <p class="status-kicker" data-i18n="status.kicker">Live system health</p>
+        <h1 class="status-title" data-i18n="status.title">Vozen service status</h1>
+        <p class="status-lead" data-i18n="status.lead">Live health, latency and system checks for the voice bot</p>
+        <p class="status-copy" data-i18n="status.copy">If a component is degraded, voice playback or command responses may take longer to recover</p>
 
-        <p class="status-updated">Last update: <time id="statusChecked" datetime="">Checking</time></p>
-        <section class="status-summary" aria-label="Status summary">
-          <article class="status-stat"><span class="status-label">System status</span><strong id="statusServices">Checking</strong></article>
-          <article class="status-stat"><span class="status-label">Check latency</span><strong id="statusLatency">—</strong></article>
+        <p class="status-updated"><span data-i18n="status.lastUpdate">Last update:</span> <time id="statusChecked" datetime="" data-i18n="status.checking">Checking</time></p>
+        <section class="status-summary" aria-label="Status summary" data-i18n-aria-label="status.summaryAria">
+          <article class="status-stat"><span class="status-label" data-i18n="status.system">System status</span><strong id="statusServices" data-i18n="status.checking">Checking</strong></article>
+          <article class="status-stat"><span class="status-label" data-i18n="status.latency">Check latency</span><strong id="statusLatency">—</strong></article>
         </section>
 
         <section class="status-instance" id="statusInstance" aria-labelledby="statusInstanceTitle">
           <div class="status-instance-head">
-            <div><span class="status-label">Instance</span><h2 class="status-instance-title" id="statusInstanceTitle">Vozen production</h2></div>
-            <span class="status-badge" id="statusOverall" aria-live="polite">Checking</span>
+            <div><span class="status-label" data-i18n="status.instance">Instance</span><h2 class="status-instance-title" id="statusInstanceTitle" data-i18n="status.production">Vozen production</h2></div>
+            <span class="status-badge" id="statusOverall" aria-live="polite" data-i18n="status.checking">Checking</span>
           </div>
-          <div class="status-checks" aria-label="Vozen component checks">
-            <article class="status-check" id="statusCheckBot"><span class="status-label">Component</span><strong>Discord bot</strong><span id="statusBot">Checking</span></article>
-            <article class="status-check" id="statusCheckDatabase"><span class="status-label">Component</span><strong>Database</strong><span id="statusDatabase">Checking</span></article>
-            <article class="status-check" id="statusCheckProviders"><span class="status-label">Component</span><strong>Voice providers</strong><span id="statusProviders">Checking</span></article>
+          <div class="status-checks" aria-label="Vozen component checks" data-i18n-aria-label="status.componentsAria">
+            <article class="status-check" id="statusCheckBot"><span class="status-label" data-i18n="status.component">Component</span><strong data-i18n="status.discordBot">Discord bot</strong><span id="statusBot" data-i18n="status.checking">Checking</span></article>
+            <article class="status-check" id="statusCheckDatabase"><span class="status-label" data-i18n="status.component">Component</span><strong data-i18n="status.database">Database</strong><span id="statusDatabase" data-i18n="status.checking">Checking</span></article>
+            <article class="status-check" id="statusCheckProviders"><span class="status-label" data-i18n="status.component">Component</span><strong data-i18n="status.providers">Voice providers</strong><span id="statusProviders" data-i18n="status.checking">Checking</span></article>
           </div>
         </section>
 
         <p class="status-incident" id="statusIncident" hidden></p>
         <section class="status-help">
-          <div><h2>Still having issues?</h2><p>Check the quick fixes first, then ask for help in the support server</p></div>
-          <a class="btn btn--ghost" href="https://discord.gg/4kYw2WUbNN" target="_blank" rel="noopener">Get help</a>
+          <div><h2 data-i18n="status.issues">Still having issues?</h2><p data-i18n="status.helpCopy">Check the quick fixes first, then ask for help in the support server</p></div>
+          <a class="btn btn--ghost" href="https://discord.gg/4kYw2WUbNN" target="_blank" rel="noopener" data-i18n="status.getHelp">Get help</a>
         </section>
       </div>
     </main>
+    <script defer src="js/i18n-v41.js"></script>
+    <script defer src="js/i18n-v42.js"></script>
+    <script defer src="js/static-pages-i18n-v1.js"></script>
     <script defer src="js/status-v1.js"></script>
     <script defer src="js/motion-v1.js"></script>
   </body>

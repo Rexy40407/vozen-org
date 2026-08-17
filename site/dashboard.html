@@ -105,7 +105,7 @@
       <section class="section account-section" id="dash">
         <div class="wrap account-shell">
           <div class="dashboard-account-bar">
-            <a class="dashboard-account-exit" href="/account/">← Back to account</a>
+            <a class="dashboard-account-exit" href="/account/" data-i18n="dashboard.backAccount">← Back to account</a>
           </div>
           <header class="account-hero reveal">
             <span class="eyebrow eyebrow--aqua" data-i18n="dashboard.eyebrow">Dashboard</span>
@@ -115,8 +115,8 @@
 
           <div class="tts-picker-page" id="ttsPickerPage">
             <div class="dash-root" id="dashPickerRoot" aria-live="polite">
-              <div class="tts-boot-fallback dash-skeleton dash-skeleton--picker" id="ttsBootFallback" role="status" aria-live="polite" aria-busy="true" aria-label="Loading available servers">
-                <span class="dash-skeleton__sr">Loading available servers</span>
+              <div class="tts-boot-fallback dash-skeleton dash-skeleton--picker" id="ttsBootFallback" role="status" aria-live="polite" aria-busy="true" aria-label="Loading available servers" data-i18n-aria-label="dashboard.loadingAvailable">
+                <span class="dash-skeleton__sr" data-i18n="dashboard.loadingAvailable">Loading available servers</span>
                 <div class="dash-skeleton__picker-title" aria-hidden="true">
                   <span class="dash-skeleton__pulse dash-skeleton__pulse--eyebrow"></span>
                   <span class="dash-skeleton__pulse dash-skeleton__pulse--heading"></span>
@@ -137,28 +137,28 @@
           </div>
 
           <div class="tts-workspace" id="ttsWorkspace" hidden>
-            <aside class="workspace-sidebar tts-workspace__sidebar" aria-label="Vozen TTS navigation">
+            <aside class="workspace-sidebar tts-workspace__sidebar" aria-label="Vozen TTS navigation" data-i18n-aria-label="ecosystem.tts">
               <div class="workspace-sidebar__product">
                 <span class="workspace-sidebar__product-mark" aria-hidden="true">T</span>
                 <div><strong>Vozen TTS</strong><small>VOICE TOOLKIT</small></div>
               </div>
               <div class="workspace-sidebar__section workspace-sidebar__server-picker">
-                <label class="workspace-sidebar__label" for="ttsServerSelect">Current server</label>
+                <label class="workspace-sidebar__label" for="ttsServerSelect" data-i18n="dashboard.currentServer">Current server</label>
                 <select id="ttsServerSelect" class="workspace-sidebar__server-select" aria-label="Current server">
-                  <option value="">Choose a server to begin.</option>
+                  <option value="" data-i18n="dashboard.chooseServer">Choose a server to begin.</option>
                 </select>
-                <button type="button" class="workspace-sidebar__add-server" id="ttsSidebarAddServer">Add a server</button>
+                <button type="button" class="workspace-sidebar__add-server" id="ttsSidebarAddServer" data-i18n="dashboard.addServer">Add a server</button>
               </div>
-              <nav class="workspace-sidebar__nav" aria-label="Dashboard views">
-                <button type="button" data-tts-view="overview" aria-current="page"><span class="workspace-sidebar__nav-icon">⌂</span>Overview</button>
-                <button type="button" data-tts-view="quick"><span class="workspace-sidebar__nav-icon">✦</span>Quick Setup</button>
-                <button type="button" data-tts-view="reading"><span class="workspace-sidebar__nav-icon">◉</span>Reading &amp; Voice</button>
-                <button type="button" data-tts-view="community"><span class="workspace-sidebar__nav-icon">✧</span>Community</button>
-                <button type="button" data-tts-view="profiles"><span class="workspace-sidebar__nav-icon">▦</span>Channel Profiles</button>
-                <button type="button" data-tts-view="limits"><span class="workspace-sidebar__nav-icon">◌</span>Access &amp; Limits</button>
+              <nav class="workspace-sidebar__nav" aria-label="Dashboard views" data-i18n-aria-label="dashboard.dashboardViews">
+                <button type="button" data-tts-view="overview" aria-current="page"><span class="workspace-sidebar__nav-icon">⌂</span><span data-i18n="dashboard.overview">Overview</span></button>
+                <button type="button" data-tts-view="quick"><span class="workspace-sidebar__nav-icon">✦</span><span data-i18n="dashboard.quickSetup">Quick Setup</span></button>
+                <button type="button" data-tts-view="reading"><span class="workspace-sidebar__nav-icon">◉</span><span data-i18n="dashboard.readingVoice">Reading &amp; Voice</span></button>
+                <button type="button" data-tts-view="community"><span class="workspace-sidebar__nav-icon">✧</span><span data-i18n="dashboard.community">Community</span></button>
+                <button type="button" data-tts-view="profiles"><span class="workspace-sidebar__nav-icon">▦</span><span data-i18n="dashboard.channelProfiles">Channel Profiles</span></button>
+                <button type="button" data-tts-view="limits"><span class="workspace-sidebar__nav-icon">◌</span><span data-i18n="dashboard.accessLimits">Access &amp; Limits</span></button>
               </nav>
               <div class="workspace-sidebar__footer">
-                <a class="workspace-exit" href="/account/">← Exit to account</a>
+                <a class="workspace-exit" href="/account/" data-i18n="dashboard.exitAccount">← Exit to account</a>
               </div>
             </aside>
             <div class="tts-workspace__main">
@@ -207,6 +207,7 @@
 
     <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v11"></script>
     <script defer src="js/i18n-v41.js"></script>
+    <script defer src="js/i18n-v42.js?v=workspace-copy-1"></script>
     <script defer src="js/oauth-config.js?v=ecosystem-oauth-v3"></script>
     <script defer src="js/main-v51.js?oauth=ecosystem-v3&auth-tabs=1&account-fast=1"></script>
     <script defer src="js/motion-v1.js"></script>
