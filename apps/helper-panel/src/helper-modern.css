@@ -1057,6 +1057,33 @@ body:has(.workspace-standalone--helper-picker) #root,
   .workspace-shell.workspace-shell--helper { width: calc(100% - 32px); }
 }
 
+/* Feature detail controls --------------------------------------------------
+ * The panel-wide control baseline is deliberately 44px tall for buttons and
+ * selects. A checkbox must opt out of that baseline: otherwise the 42 × 24px
+ * switch is stretched vertically and renders as a round "Active" button.
+ */
+.workspace-shell--helper .switch-row input[type='checkbox'] {
+  flex: 0 0 42px;
+  width: 42px;
+  min-width: 42px;
+  height: 24px;
+  min-height: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Keep feature actions in the document flow. The old sticky bar floated over
+ * the final form controls when the panel scrolled, hiding the content behind
+ * its gradient. Quick Setup retains its own local action layout. */
+.workspace-shell--helper .detail-page > .sticky-actions {
+  position: static;
+  z-index: auto;
+  bottom: auto;
+  margin: 4px 0 0;
+  padding: 18px 0 0;
+  background: none;
+}
+
 @media (max-width: 980px) {
   .workspace-shell.workspace-shell--helper { grid-template-columns: 220px minmax(0, 1fr); }
   .workspace-shell--helper .workspace-main { padding-inline: 28px; }
