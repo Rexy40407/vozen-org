@@ -2975,8 +2975,8 @@ function App() {
           <img
             className="workspace-sidebar__product-mark workspace-sidebar__product-mark--avatar"
             src="https://cdn.discordapp.com/app-icons/1526211106081734666/72971b27343d2f9a82a90e645bda38a8.png?size=128"
-            width={38}
-            height={38}
+            width={44}
+            height={44}
             alt=""
             decoding="async"
           />
