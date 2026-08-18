@@ -1,11 +1,24 @@
 /* Shared marketing navigation for the Vozen ecosystem. */
 
 .vozen-global-nav {
+  --ecosystem-header-height: 92px;
+  --ecosystem-header-width: 1280px;
+  --ecosystem-header-gutter: 56px;
+  height: var(--ecosystem-header-height);
+  min-height: var(--ecosystem-header-height);
   background: transparent;
   border-bottom-color: transparent;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   transition: background-color 240ms ease, border-color 240ms ease, backdrop-filter 240ms ease;
+}
+
+.vozen-global-nav .nav__inner {
+  width: min(var(--ecosystem-header-width), calc(100% - var(--ecosystem-header-gutter)));
+  max-width: none;
+  height: 100%;
+  min-height: 100%;
+  padding: 0;
 }
 
 .vozen-global-nav.is-stuck {
@@ -76,7 +89,7 @@
    measurements everywhere without shrinking the page below it. */
 @media (min-width: 1001px) {
   .vozen-global-nav .nav__inner {
-    width: min(1280px, calc(100% - 56px));
+    width: min(var(--ecosystem-header-width), calc(100% - var(--ecosystem-header-gutter)));
     max-width: none;
     min-height: 92px;
     height: 92px;
@@ -98,6 +111,32 @@
   .vozen-global-nav .nav__gh svg { width: 23px; height: 23px; }
   .vozen-global-nav .lang__btn { gap: 9px; padding: 8px 15px; font-size: 15px; }
   .vozen-global-nav .nav__login { min-height: 52px; padding: 0 22px; font-size: 17px; }
+}
+
+.vozen-global-nav .lang__btn {
+  min-height: 42px;
+  border-color: rgba(255, 255, 255, .08);
+  background: rgba(255, 255, 255, .05);
+  font-weight: 600;
+}
+
+.vozen-global-nav .lang__btn:hover,
+.vozen-global-nav .lang.is-open .lang__btn {
+  border-color: rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .08);
+}
+
+.vozen-global-nav .lang__panel {
+  border-color: rgba(255, 255, 255, .16);
+  background: rgba(28, 32, 52, .96);
+}
+
+@media (max-width: 1000px) {
+  :root { --nav-h: 76px; }
+  .vozen-global-nav {
+    --ecosystem-header-height: 76px;
+    --ecosystem-header-gutter: 32px;
+  }
 }
 
 @media (min-width: 1101px) {
@@ -142,7 +181,16 @@
   }
 }
 
+@media (max-width: 820px) {
+  .vozen-global-nav .lang { display: none; }
+}
+
 @media (max-width: 720px) {
+  :root { --nav-h: 70px; }
+  .vozen-global-nav {
+    --ecosystem-header-height: 70px;
+    --ecosystem-header-gutter: 24px;
+  }
   .vozen-global-nav .nav__product {
     display: none;
   }
