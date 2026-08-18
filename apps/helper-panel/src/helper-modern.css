@@ -1093,6 +1093,55 @@ body:has(.workspace-standalone--helper-picker) #root,
   padding: 11px;
 }
 
+/* Server-scoped Premium gates.  The same state is enforced by the Rust API;
+ * these styles only make the requirement legible before a user opens a card. */
+.workspace-shell--helper .feature .pill.premium-lock {
+  border-color: rgba(245, 193, 87, 0.58);
+  background: rgba(89, 65, 24, 0.35);
+  color: #f6d37e;
+}
+
+.workspace-shell--helper .feature-premium-lock-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  min-height: 36px;
+  margin: 10px 0 0;
+  color: #e4c77f;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.workspace-shell--helper .feature-premium-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-color: rgba(245, 193, 87, 0.55);
+  color: #f5d17b;
+}
+
+.workspace-shell--helper .feature-premium-link:hover {
+  border-color: #f5d17b;
+  background: rgba(89, 65, 24, 0.35);
+  color: #ffe6a3;
+}
+
+.workspace-shell--helper .detail-premium-lock {
+  border-color: rgba(245, 193, 87, 0.42);
+  background: linear-gradient(135deg, rgba(69, 53, 23, 0.32), rgba(16, 27, 43, 0.92));
+}
+
+.workspace-shell--helper .detail-premium-lock__message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  border-color: rgba(245, 193, 87, 0.42);
+  background: rgba(69, 53, 23, 0.28);
+  color: #f2d28a;
+}
+
 /* The public TTS dashboard uses a 110% desktop presence scale. Applying that
  * scale to the Helper picker content reproduces the same physical type,
  * control and card dimensions while leaving the shared navigation unchanged. */

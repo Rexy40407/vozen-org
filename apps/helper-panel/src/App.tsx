@@ -2352,6 +2352,29 @@ function App() {
         setSavedDetailConfig(resolvedConfig);
         setDetailEnabled(result.enabled);
         setDetailRevision(result.revision ?? 0);
+        setFeatures((items) => {
+          const current = items.find((item) => item.key === route.key);
+          const premiumRequired = result.premiumRequired ?? current?.premium_required;
+          const premiumUnlocked = result.premiumUnlocked ?? current?.premium_unlocked;
+          if (
+            !current ||
+            (current.enabled === result.enabled &&
+              current.premium_required === premiumRequired &&
+              current.premium_unlocked === premiumUnlocked)
+          ) {
+            return items;
+          }
+          return items.map((item) =>
+            item.key === route.key
+              ? {
+                  ...item,
+                  enabled: result.enabled,
+                  premium_required: premiumRequired,
+                  premium_unlocked: premiumUnlocked,
+                }
+              : item,
+          );
+        });
       })
       .catch(() => {
         setDetailSchema(null);
@@ -4332,15 +4355,18 @@ function FeatureCatalogue({
           const translatedFeature = localizedFeature(feature);
           const maturity = feature.maturity ?? (feature.available ? 'operational' : 'planned');
           const configurable = feature.configurable ?? feature.available;
+          const premiumLocked = Boolean(feature.premium_required && !feature.premium_unlocked);
           // A blocked feature may expose a contract so the user can inspect
           // its requirements, but it must never look publishable until its
           // external dependency/approval is ready.
-          const canConfigure = configurable && maturity !== 'blocked';
+          const canConfigure = configurable && maturity !== 'blocked' && !premiumLocked;
           const healthStatus = feature.health?.status;
           const dependencies = feature.health?.dependencies ?? [];
           const docsUrl = docsUrlForFeature(feature.key);
           const label =
-            healthStatus === 'misconfigured'
+            premiumLocked
+              ? helperT('helper.premiumRequired', 'Premium required')
+              : healthStatus === 'misconfigured'
               ? helperT('helper.checkConfiguration', 'Check configuration')
               : healthStatus === 'degraded'
                 ? helperT('helper.degraded', 'Degraded')
@@ -4371,6 +4397,8 @@ function FeatureCatalogue({
                   className={
                     feature.enabled && maturity === 'operational'
                       ? 'pill on'
+                      : premiumLocked
+                        ? 'pill premium-lock'
                       : maturity === 'blocked'
                         ? 'pill muted'
                         : 'pill'
@@ -4381,6 +4409,15 @@ function FeatureCatalogue({
               </div>
               <h3>{translatedFeature.label}</h3>
               <p>{translatedFeature.description}</p>
+              {premiumLocked && (
+                <p className="feature-premium-lock-copy">
+                  <span aria-hidden="true">🔒</span>
+                  {helperT(
+                    'helper.premiumRequiredDescription',
+                    'Unlock Vozen Premium for this server to configure it.',
+                  )}
+                </p>
+              )}
               {maturity === 'blocked' && feature.issues?.[0]?.message && (
                 <p className="tip feature-requirement">{localizedIssue(feature.issues[0])}</p>
               )}
@@ -4394,20 +4431,26 @@ function FeatureCatalogue({
                   </ul>
                 </details>
               )}
-              <button
-                type="button"
-                className="secondary full"
-                disabled={!canConfigure && maturity !== 'blocked'}
-                onClick={() => onOpen(feature.key)}
-              >
-                {feature.key === 'studio.rank_card'
-                  ? helperT('helper.customise', 'Customise')
-                  : canConfigure
-                    ? helperT('helper.configure', 'Configure')
-                    : maturity === 'blocked'
-                      ? helperT('helper.viewRequirements', 'View requirements')
-                    : helperT('helper.viewPlan', 'View plan')}
-              </button>
+              {premiumLocked ? (
+                <a className="secondary full feature-premium-link" href="/premium/#plans">
+                  {helperT('helper.viewPremium', 'View Premium')}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className="secondary full"
+                  disabled={!canConfigure && maturity !== 'blocked'}
+                  onClick={() => onOpen(feature.key)}
+                >
+                  {feature.key === 'studio.rank_card'
+                    ? helperT('helper.customise', 'Customise')
+                    : canConfigure
+                      ? helperT('helper.configure', 'Configure')
+                      : maturity === 'blocked'
+                        ? helperT('helper.viewRequirements', 'View requirements')
+                        : helperT('helper.viewPlan', 'View plan')}
+                </button>
+              )}
               {docsUrl && (
                 <a className="link-button feature-doc-link" href={docsUrl} target="_blank" rel="noopener noreferrer">
                   {helperT('helper.learn', 'Learn how this works')}
@@ -4475,11 +4518,37 @@ function FeatureDetail({
     })),
   })) ?? (localPreviewMode ? spec(feature?.key ?? '') : []);
   const sections = rawSections.map(localizedSection);
+  const premiumLocked = Boolean(feature?.premium_required && !feature.premium_unlocked);
   // Keep blocked providers discoverable, but do not expose a save/enable
   // form that can only fail at publication time. Their detail page is a
   // requirements view until the backend reports a non-blocked maturity.
   const configurable = (feature?.configurable ?? true) && feature?.maturity !== 'blocked';
   const docsUrl = docsUrlForFeature(feature?.key);
+  if (premiumLocked)
+    return (
+      <section className="detail-page">
+        <button type="button" className="back-link" onClick={onBack}>
+          {helperT('helper.backFeatures', '← Back to features')}
+        </button>
+        <div className="detail-intro card detail-premium-lock">
+          <div>
+            <small className="eyebrow">{helperT('helper.premiumLockedEyebrow', 'PREMIUM FEATURE')}</small>
+            <h2>{translatedFeature?.label ?? helperT('helper.feature', 'Feature')}</h2>
+            <p>{translatedFeature?.description ?? helperT('helper.adjustFeature', 'Adjust this feature for your server.')}</p>
+            <p className="tip detail-premium-lock__message">
+              <span aria-hidden="true">🔒</span>{' '}
+              {helperT(
+                'helper.premiumLockedDescription',
+                'Premium is required on this server. When a Premium seat is assigned to it, this feature unlocks automatically.',
+              )}
+            </p>
+          </div>
+          <a className="link-button" href="/premium/#plans">
+            {helperT('helper.viewPremium', 'View Premium')}
+          </a>
+        </div>
+      </section>
+    );
   if (!configurable)
     return (
       <section className="detail-page">

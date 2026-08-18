@@ -28,11 +28,13 @@ export type Feature = {
   enabled: boolean;
   maturity?: 'operational' | 'beta' | 'planned' | 'blocked' | 'degraded';
   configurable?: boolean;
+  premium_required?: boolean;
+  premium_unlocked?: boolean;
   config_schema_version?: number;
   configSchemaVersion?: number;
   issues?: Array<{ path: string; code: string; message: string; severity: string }>;
   health?: {
-    status?: 'ready' | 'degraded' | 'misconfigured' | 'dependency_down' | 'disabled';
+    status?: 'ready' | 'degraded' | 'misconfigured' | 'dependency_down' | 'disabled' | 'premium_required';
     operational: boolean;
     adapter?: string | null;
     dependencies?: string[];
@@ -229,8 +231,10 @@ export type FeatureDetail = {
   revision?: number;
   maturity?: Feature['maturity'];
   configurable?: boolean;
+  premiumRequired?: boolean;
+  premiumUnlocked?: boolean;
   health?: {
-    status?: 'ready' | 'degraded' | 'misconfigured' | 'dependency_down' | 'disabled';
+    status?: 'ready' | 'degraded' | 'misconfigured' | 'dependency_down' | 'disabled' | 'premium_required';
     operational: boolean;
     adapter?: string | null;
     dependencies?: string[];
