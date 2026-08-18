@@ -104,7 +104,7 @@
     if (document.querySelector('link[data-vozen-current-docs-shell]')) return;
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
-    stylesheet.href = new URL('docs-shell.css?v=ecosystem-nav-v13', docsRoot).href;
+    stylesheet.href = new URL('docs-shell.css?v=ecosystem-nav-v14', docsRoot).href;
     stylesheet.dataset.vozenCurrentDocsShell = 'true';
     document.head.appendChild(stylesheet);
   }
@@ -127,7 +127,7 @@
     else document.body.insertBefore(host, document.body.querySelector('main'));
 
     const navScript = document.createElement('script');
-    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-nav-v12', siteRoot.href).href;
+    navScript.src = new URL('js/global-nav-v1.js?v=ecosystem-nav-v14', siteRoot.href).href;
     document.body.appendChild(navScript);
   }
 

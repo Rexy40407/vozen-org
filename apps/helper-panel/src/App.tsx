@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import {
   api,
   restoreOAuthReturnHash,
@@ -3761,10 +3761,79 @@ function EcosystemAccountAvatar({
   );
 }
 
-function EcosystemTopbar() {
-  const [account, setAccount] = useState<EcosystemAccount | null>(() => readCachedEcosystemAccount());
+function EcosystemLanguageMenu() {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const locale = helperLocale();
   const localeOption = LOCALE_OPTIONS.find((option) => option.code === locale) ?? LOCALE_OPTIONS[0];
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
+
+  const chooseLocale = (nextLocale: string) => {
+    setHelperLocale(nextLocale);
+    setOpen(false);
+  };
+
+  return (
+    <div
+      className={`workspace-global-nav__language${open ? ' is-open' : ''}`}
+      ref={rootRef}
+    >
+      <button
+        className="workspace-global-nav__language-button"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={helperT('ecosystem.siteLanguage', 'Site language')}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <span className="workspace-global-nav__language-flag" aria-hidden="true">{localeOption.flag}</span>
+        <span className="workspace-global-nav__language-name">{localeOption.name}</span>
+        <svg className="workspace-global-nav__language-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      <ul
+        className="workspace-global-nav__language-panel"
+        role="listbox"
+        aria-label={helperT('ecosystem.chooseLanguage', 'Choose language')}
+      >
+        {LOCALE_OPTIONS.map((option) => {
+          const active = option.code === locale;
+          return (
+            <li role="option" aria-selected={active} key={option.code}>
+              <button
+                className={`workspace-global-nav__language-option${active ? ' is-active' : ''}`}
+                type="button"
+                onClick={() => chooseLocale(option.code)}
+              >
+                <span className="workspace-global-nav__language-flag" aria-hidden="true">{option.flag}</span>
+                <span className="workspace-global-nav__language-option-name">{option.name}</span>
+                <span className="workspace-global-nav__language-check" aria-hidden="true">✓</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function EcosystemTopbar() {
+  const [account, setAccount] = useState<EcosystemAccount | null>(() => readCachedEcosystemAccount());
 
   useEffect(() => {
     // Account login writes this cache before navigating to a product. Refresh
@@ -3817,19 +3886,7 @@ function EcosystemTopbar() {
               <path d="M12 .6a11.4 11.4 0 0 0-3.61 22.21c.57.1.78-.25.78-.55v-2.02c-3.17.69-3.84-1.34-3.84-1.34-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.02 1.75 2.67 1.25 3.32.96.1-.74.4-1.25.72-1.54-2.53-.29-5.19-1.27-5.19-5.64 0-1.25.45-2.27 1.19-3.07-.12-.3-.52-1.46.11-3.03 0 0 .97-.31 3.15 1.17A10.9 10.9 0 0 1 12 6.2c.98 0 1.97.13 2.89.38 2.18-1.48 3.15-1.17 3.15-1.17.63 1.57.23 2.73.11 3.03.74.8 1.19 1.82 1.19 3.07 0 4.38-2.67 5.35-5.21 5.63.41.36.77 1.07.77 2.16v3.2c0 .3.2.66.79.55A11.4 11.4 0 0 0 12 .6Z" />
             </svg>
           </a>
-          <label className="workspace-global-nav__language" aria-label={helperT('ecosystem.siteLanguage', 'Site language')}>
-            <span className="workspace-global-nav__language-flag" aria-hidden="true">{localeOption.flag}</span>
-            <select
-              value={locale}
-              aria-label={helperT('ecosystem.chooseLanguage', 'Choose language')}
-              onChange={(event) => setHelperLocale(event.target.value)}
-            >
-              {LOCALE_OPTIONS.map((option) => <option value={option.code} key={option.code}>{option.name}</option>)}
-            </select>
-            <svg className="workspace-global-nav__language-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </label>
+          <EcosystemLanguageMenu />
           {account ? (
             <a className="workspace-global-nav__account" href="/account/" aria-label={helperT('ecosystem.accountAria', `Open ${username}'s Vozen account`, { name: username })}>
               <span className="workspace-global-nav__account-avatar-wrap" aria-hidden="true">

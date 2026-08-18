@@ -100,7 +100,7 @@ module.exports = function (eleventyConfig) {
     <script type="application/ld+json">${structuredData}</script>
     <title>${title} - Vozen Helper</title>
     <link rel="stylesheet" href="${helperRoot}assets/docs.css?v=ecosystem-nav-v12">
-    <link rel="stylesheet" href="${docsRoot}shared/docs-shell.css?v=ecosystem-nav-v12">
+    <link rel="stylesheet" href="${docsRoot}shared/docs-shell.css?v=ecosystem-nav-v14">
   </head>
   <body data-docs-product="helper">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -125,8 +125,8 @@ module.exports = function (eleventyConfig) {
       <span>Vozen Helper documentation</span>
       <span><a href="${siteRoot}privacy.html">Privacy</a> - <a href="${siteRoot}terms.html">Terms</a></span>
     </footer>
-    <script src="${docsRoot}shared/docs-shell.js?v=ecosystem-nav-v12"></script>
-    <script src="${siteRoot}js/global-nav-v1.js?v=ecosystem-nav-v12"></script>
+    <script src="${docsRoot}shared/docs-shell.js?v=ecosystem-nav-v14"></script>
+    <script src="${siteRoot}js/global-nav-v1.js?v=ecosystem-nav-v14"></script>
   </body>
 </html>`;
   });

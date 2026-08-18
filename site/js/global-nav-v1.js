@@ -36,12 +36,24 @@
     window.dispatchEvent(new CustomEvent("vozen:languagechange", { detail: { language: locale } }));
   };
   const renderDocsLanguageOptions = () => NAV_LANGUAGES.map(([code, flag, name]) =>
-    `<option value="${code}">${flag} ${name}</option>`).join("");
-  const syncDocsLanguageSelect = () => {
+    `<li role="option" aria-selected="false"><button class="docs-ecosystem-nav__language-option" type="button" data-language="${code}"><span class="docs-ecosystem-nav__language-flag" aria-hidden="true">${flag}</span><span class="docs-ecosystem-nav__language-option-name">${escapeHtml(name)}</span><span class="docs-ecosystem-nav__language-check" aria-hidden="true">✓</span></button></li>`).join("");
+  const syncDocsLanguageMenus = () => {
     const current = navLocale();
-    document.querySelectorAll("[data-vozen-docs-language]").forEach((select) => {
-      select.value = current;
-      select.setAttribute("aria-label", navText("ecosystem.siteLanguage", "Site language"));
+    const selected = NAV_LANGUAGES.find(([code]) => code === current) || NAV_LANGUAGES[0];
+    document.querySelectorAll("[data-vozen-docs-language-menu]").forEach((menu) => {
+      const button = menu.querySelector("[data-vozen-docs-language-button]");
+      const panel = menu.querySelector("[data-vozen-docs-language-panel]");
+      const flag = button?.querySelector(".docs-ecosystem-nav__language-flag");
+      const name = button?.querySelector(".docs-ecosystem-nav__language-name");
+      if (flag) flag.textContent = selected[1];
+      if (name) name.textContent = selected[2];
+      button?.setAttribute("aria-label", navText("ecosystem.siteLanguage", "Site language"));
+      panel?.setAttribute("aria-label", navText("ecosystem.chooseLanguage", "Choose language"));
+      menu.querySelectorAll("[data-language]").forEach((option) => {
+        const active = option.getAttribute("data-language") === current;
+        option.classList.toggle("is-active", active);
+        option.closest('[role="option"]')?.setAttribute("aria-selected", String(active));
+      });
     });
   };
   const applyNavTranslations = () => {
@@ -57,7 +69,7 @@
       const key = element.getAttribute("data-i18n-title");
       if (key) element.setAttribute("title", navText(key, element.getAttribute("title")));
     });
-    syncDocsLanguageSelect();
+    syncDocsLanguageMenus();
   };
   window.addEventListener("vozen:i18nready", applyNavTranslations);
   window.addEventListener("vozen:languagechange", applyNavTranslations);
@@ -154,7 +166,13 @@
           </nav>
           <div class="docs-ecosystem-nav__actions">
             <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub" data-i18n-aria-label="ecosystem.githubAria">${githubIcon}</a>
-            <select class="docs-ecosystem-nav__language" data-vozen-docs-language aria-label="Site language">${renderDocsLanguageOptions()}</select>
+            <div class="docs-ecosystem-nav__language" data-vozen-docs-language-menu>
+              <button class="docs-ecosystem-nav__language-button" type="button" data-vozen-docs-language-button aria-haspopup="listbox" aria-expanded="false" aria-label="Site language">
+                <span class="docs-ecosystem-nav__language-flag" aria-hidden="true">${ukFlag}</span><span class="docs-ecosystem-nav__language-name">English</span>
+                <svg class="docs-ecosystem-nav__language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <ul class="docs-ecosystem-nav__language-panel" data-vozen-docs-language-panel role="listbox" tabindex="-1" aria-label="Choose language">${renderDocsLanguageOptions()}</ul>
+            </div>
             <a class="docs-ecosystem-nav__login" data-vozen-docs-login href="${link('account.html')}">${discordIcon}<span data-i18n="ecosystem.login">Log in</span></a>
           </div>
         </div>
@@ -191,9 +209,36 @@
       </div>
     </header>`;
   });
-  document.querySelectorAll("[data-vozen-docs-language]").forEach((select) => {
-    select.addEventListener("change", () => setNavLocale(select.value));
+  document.querySelectorAll("[data-vozen-docs-language-menu]").forEach((menu) => {
+    const button = menu.querySelector("[data-vozen-docs-language-button]");
+    const panel = menu.querySelector("[data-vozen-docs-language-panel]");
+    const close = () => {
+      menu.classList.remove("is-open");
+      button?.setAttribute("aria-expanded", "false");
+    };
+    button?.addEventListener("click", () => {
+      const open = !menu.classList.contains("is-open");
+      menu.classList.toggle("is-open", open);
+      button.setAttribute("aria-expanded", String(open));
+    });
+    panel?.addEventListener("click", (event) => {
+      const option = event.target.closest("[data-language]");
+      if (!option) return;
+      setNavLocale(option.getAttribute("data-language"));
+      close();
+      button?.focus();
+    });
+    document.addEventListener("pointerdown", (event) => {
+      if (!menu.contains(event.target)) close();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.classList.contains("is-open")) {
+        close();
+        button?.focus();
+      }
+    });
   });
+  syncDocsLanguageMenus();
 
   const renderDocsAccount = () => {
     const account = cachedAccount();
