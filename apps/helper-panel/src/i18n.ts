@@ -9,6 +9,7 @@ import '../../../site/js/i18n-v42.js';
 
 export const SUPPORTED_LOCALES = ['en', 'pt', 'fr', 'es', 'de', 'tr', 'ar', 'zh', 'ru', 'ko'] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+export const DEFAULT_LOCALE: SupportedLocale = 'en';
 
 export const LOCALE_OPTIONS: Array<{ code: SupportedLocale; flag: string; name: string }> = [
   { code: 'en', flag: '🇬🇧', name: 'English' },
@@ -33,21 +34,26 @@ declare global {
 
 const LOCALE_KEY = 'vozen.lang';
 
+export function isSupportedLocale(value: unknown): value is SupportedLocale {
+  return typeof value === 'string' && SUPPORTED_LOCALES.includes(value as SupportedLocale);
+}
+
 export function helperLocale(): SupportedLocale {
   try {
     const value = window.localStorage.getItem(LOCALE_KEY);
-    return SUPPORTED_LOCALES.includes(value as SupportedLocale)
-      ? (value as SupportedLocale)
-      : 'en';
+    if (isSupportedLocale(value)) return value;
+    // A previous site version could leave a now-unsupported language in the shared
+    // preference. Normalise it here as well, because the Helper app can load on its
+    // own without the public site's bootstrap script.
+    if (value !== null) window.localStorage.setItem(LOCALE_KEY, DEFAULT_LOCALE);
+    return DEFAULT_LOCALE;
   } catch {
-    return 'en';
+    return DEFAULT_LOCALE;
   }
 }
 
 export function setHelperLocale(value: string): SupportedLocale {
-  const locale = SUPPORTED_LOCALES.includes(value as SupportedLocale)
-    ? (value as SupportedLocale)
-    : 'en';
+  const locale = isSupportedLocale(value) ? value : DEFAULT_LOCALE;
   try {
     window.localStorage.setItem(LOCALE_KEY, locale);
   } catch {
