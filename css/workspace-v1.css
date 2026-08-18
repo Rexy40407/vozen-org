@@ -315,6 +315,13 @@
   font-weight: 800;
 }
 
+.workspace-sidebar__product-mark--avatar {
+  display: block;
+  flex: 0 0 38px;
+  object-fit: cover;
+  padding: 0;
+}
+
 .workspace-sidebar__product strong,
 .workspace-sidebar__product small {
   display: block;
