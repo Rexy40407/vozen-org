@@ -105,6 +105,46 @@ body:has(.workspace-standalone--helper-picker) #root,
   background: rgba(5, 11, 21, .86);
 }
 
+/* Use the same unobtrusive brand scrollbar as the TTS workspace. The Helper
+ * is a separate bundled app, so it does not inherit the public site's global
+ * scrollbar rules. Keep it scoped to the panel rather than styling the whole
+ * document. */
+.workspace-shell--helper .workspace-sidebar,
+.workspace-shell--helper .workspace-main,
+.workspace-shell--helper .workspace-sidebar__nav {
+  scrollbar-width: thin;
+  scrollbar-color: var(--helper-aqua) transparent;
+}
+
+.workspace-shell--helper .workspace-sidebar::-webkit-scrollbar,
+.workspace-shell--helper .workspace-main::-webkit-scrollbar,
+.workspace-shell--helper .workspace-sidebar__nav::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.workspace-shell--helper .workspace-sidebar::-webkit-scrollbar-track,
+.workspace-shell--helper .workspace-main::-webkit-scrollbar-track,
+.workspace-shell--helper .workspace-sidebar__nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.workspace-shell--helper .workspace-sidebar::-webkit-scrollbar-thumb,
+.workspace-shell--helper .workspace-main::-webkit-scrollbar-thumb,
+.workspace-shell--helper .workspace-sidebar__nav::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--helper-violet), var(--helper-aqua));
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
+.workspace-shell--helper .workspace-sidebar::-webkit-scrollbar-thumb:hover,
+.workspace-shell--helper .workspace-main::-webkit-scrollbar-thumb:hover,
+.workspace-shell--helper .workspace-sidebar__nav::-webkit-scrollbar-thumb:hover {
+  border-width: 2px;
+  box-shadow: 0 0 10px rgba(56, 216, 199, .55);
+}
+
 .workspace-shell--helper .workspace-sidebar__product {
   gap: 11px;
   min-height: 0;
