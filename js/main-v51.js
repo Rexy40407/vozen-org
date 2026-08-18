@@ -94,7 +94,8 @@
   // utilizador carrega no toggle EN/PT). Chave nova ("vozen.lang") para ignorar o valor que
   // a versão anterior auto-guardava a partir do navigator — assim toda a gente recomeça em EN.
   const LS_KEY = "vozen.lang";
-  let lang = localStorage.getItem(LS_KEY) || "en";
+  const DEFAULT_LANG = "en";
+  let lang = DEFAULT_LANG;
 
   // Nome de uma língua NA LÍNGUA DO SITE (segue o botão EN/PT). Via Intl.DisplayNames
   // (dados do browser) — sem tabela à mão. PT devolve minúsculas ("inglês"), por isso
@@ -163,6 +164,18 @@
   ];
   const LANG_META = Object.fromEntries(LANG_UI.map(([c, flag, name]) => [c, { flag, name }]));
 
+  // Keep every surface on the same, deliberately small locale contract. Older site versions
+  // stored additional language codes; those are not supported by the current catalogue, so a
+  // returning visitor safely starts in English instead of seeing a mixed-language interface.
+  function isSupportedLanguage(value) {
+    return typeof value === "string" && Object.prototype.hasOwnProperty.call(LANG_META, value);
+  }
+  try {
+    const storedLanguage = localStorage.getItem(LS_KEY);
+    if (isSupportedLanguage(storedLanguage)) lang = storedLanguage;
+    else if (storedLanguage) localStorage.setItem(LS_KEY, DEFAULT_LANG);
+  } catch {}
+
   // Sincroniza o dropdown custom com a língua ativa: trigger (bandeira+nome) e o item ativo.
   function syncLangMenu(code) {
     const m = LANG_META[code];
@@ -179,7 +192,7 @@
   }
 
   function applyLang(l) {
-    lang = DICT[l] ? l : "en";
+    lang = isSupportedLanguage(l) && DICT[l] ? l : DEFAULT_LANG;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     const d = DICT[lang];
