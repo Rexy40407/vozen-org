@@ -2972,7 +2972,14 @@ function App() {
       <div className="shell panel-shell workspace-shell workspace-shell--helper">
       <aside className="sidebar panel-sidebar workspace-sidebar">
         <div className="logo panel-logo workspace-sidebar__product">
-          <span className="workspace-sidebar__product-mark" aria-hidden="true">H</span>
+          <img
+            className="workspace-sidebar__product-mark workspace-sidebar__product-mark--avatar"
+            src="https://cdn.discordapp.com/app-icons/1526211106081734666/72971b27343d2f9a82a90e645bda38a8.png?size=128"
+            width={38}
+            height={38}
+            alt=""
+            decoding="async"
+          />
           <div>
             <strong>{helperT('ecosystem.helper', 'Vozen Helper')}</strong>
             <small>{helperT('helper.helperTag', 'SERVER TOOLKIT')}</small>
