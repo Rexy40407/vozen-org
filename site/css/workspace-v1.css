@@ -636,6 +636,70 @@ body.page-dashboard.workspace-page--tts .tts-workspace__main > .dash-root {
   min-height: 100%;
 }
 
+/* Keep the selected TTS workspace compact like the Helper panel.  The
+   account exit belongs to the sidebar footer, so the desktop shell must be
+   content-sized instead of forcing the entire page into a viewport frame. */
+@media (min-width: 861px) {
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) {
+    height: auto;
+    min-height: 100dvh;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) > main {
+    flex: none;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) > main > .account-section {
+    height: auto;
+    min-height: calc(100dvh - var(--workspace-topbar-height));
+    padding-top: 0 !important;
+    padding-bottom: 64px !important;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) .account-shell {
+    height: auto;
+    min-height: 0;
+    display: block;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) .tts-workspace {
+    flex: none;
+    height: auto;
+    min-height: clamp(700px, calc(100dvh - 170px), 820px);
+    margin-top: 20px;
+    margin-bottom: 56px;
+    grid-template-rows: auto;
+    overflow: hidden;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) .tts-workspace__sidebar {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) .tts-workspace__sidebar .workspace-sidebar__nav {
+    flex: none;
+    overflow: visible;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) .tts-workspace__main {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  body.page-dashboard.workspace-page--tts:not(.tts-picker-mode) .tts-workspace__main > .dash-root {
+    min-height: 0;
+  }
+}
+
 /* Server selection is a calm, single-purpose screen. It intentionally sits
    outside the product workspace so people choose a server before seeing the
    dashboard sidebar and settings surface. */
