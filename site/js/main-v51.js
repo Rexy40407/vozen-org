@@ -686,6 +686,7 @@
   // the account flow in a redirect loop.
   const OAUTH_CLIENT_KEY = "vozen.oauth.client";
   const AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
+  const AUTH_REV_KEY = "vozen.ecosystem.authrev";
   let authChannel = null;
   function readSessionValue(key) {
     try {
@@ -708,6 +709,18 @@
   function validSharedToken(value) {
     return typeof value === "string" && /^[A-Za-z0-9._~-]{20,4096}$/.test(value);
   }
+  function currentAuthRevision() {
+    const revision = Number(readSessionValue(AUTH_REV_KEY));
+    return Number.isSafeInteger(revision) && revision > 0 ? revision : 0;
+  }
+  function nextAuthRevision() {
+    return Math.max(Date.now(), currentAuthRevision() + 1);
+  }
+  function hasOAuthResponseHash() {
+    if (!location.hash || location.hash.length < 2) return false;
+    const params = new URLSearchParams(location.hash.slice(1));
+    return params.has("access_token") || params.has("error") || params.has("state");
+  }
   function initAuthChannel() {
     if (typeof BroadcastChannel !== "function") return;
     try {
@@ -718,28 +731,52 @@
         if (message.type === "request") {
           const token = storedToken();
           if (token) {
-            publishAuth({ type: "session", token, nav: readSessionValue(NAV_USER_KEY) });
+            publishAuth({
+              type: "session",
+              token,
+              nav: readSessionValue(NAV_USER_KEY),
+              revision: currentAuthRevision(),
+            });
           }
           return;
         }
-        if (message.type === "session" && validSharedToken(message.token)) {
+        if (
+          message.type === "session" &&
+          validSharedToken(message.token) &&
+          Number.isSafeInteger(message.revision) &&
+          message.revision > 0 &&
+          message.revision >= currentAuthRevision() &&
+          !hasOAuthResponseHash()
+        ) {
           writeSessionValue(TOK_KEY, message.token);
+          writeSessionValue(AUTH_REV_KEY, String(message.revision));
           if (typeof message.nav === "string") writeSessionValue(NAV_USER_KEY, message.nav);
           window.dispatchEvent(new Event("vozen:authsync"));
           return;
         }
-        if (message.type === "profile") {
+        if (
+          message.type === "profile" &&
+          Number.isSafeInteger(message.revision) &&
+          message.revision > 0 &&
+          message.revision >= currentAuthRevision()
+        ) {
           writeSessionValue(NAV_USER_KEY, typeof message.nav === "string" ? message.nav : null);
           window.dispatchEvent(new Event("vozen:authsync"));
           return;
         }
-        if (message.type === "logout") {
+        if (
+          message.type === "logout" &&
+          Number.isSafeInteger(message.revision) &&
+          message.revision > 0 &&
+          message.revision >= currentAuthRevision()
+        ) {
           writeSessionValue(TOK_KEY, null);
           writeSessionValue(NAV_USER_KEY, null);
+          writeSessionValue(AUTH_REV_KEY, String(message.revision));
           window.dispatchEvent(new Event("vozen:authsync"));
         }
       });
-      publishAuth({ type: "request" });
+      if (!storedToken() && !hasOAuthResponseHash()) publishAuth({ type: "request" });
     } catch {
       authChannel = null;
     }
@@ -754,6 +791,7 @@
         sessionStorage.removeItem(TOK_KEY);
         sessionStorage.removeItem(NAV_USER_KEY);
         sessionStorage.removeItem(STATE_KEY);
+        sessionStorage.removeItem(AUTH_REV_KEY);
         sessionStorage.removeItem("vozen.returnTo");
       }
       sessionStorage.setItem(OAUTH_CLIENT_KEY, ECOSYSTEM_CLIENT_ID);
@@ -814,16 +852,19 @@
   function storedToken() {
     return readSessionValue(TOK_KEY);
   }
-  function setStoredToken(token) {
+  function setStoredToken(token, revision = nextAuthRevision()) {
     writeSessionValue(TOK_KEY, token);
-    publishAuth({ type: "session", token });
+    writeSessionValue(AUTH_REV_KEY, String(revision));
+    publishAuth({ type: "session", token, revision });
   }
   function clearAuthCache() {
+    const revision = nextAuthRevision();
     writeSessionValue(TOK_KEY, null);
     writeSessionValue(LEGACY_TOK_KEY, null);
     writeSessionValue("vozen.dashboardAuth", null);
     writeSessionValue(NAV_USER_KEY, null);
-    publishAuth({ type: "logout" });
+    writeSessionValue(AUTH_REV_KEY, String(revision));
+    publishAuth({ type: "logout", revision });
   }
 
   // The account page is the single sign-in surface for the Vozen ecosystem.
@@ -906,7 +947,7 @@
       if (data && data.user) {
         const nav = JSON.stringify({ user: data.user });
         writeSessionValue(NAV_USER_KEY, nav);
-        publishAuth({ type: "profile", nav });
+        publishAuth({ type: "profile", nav, revision: currentAuthRevision() });
       } else {
         writeSessionValue(NAV_USER_KEY, null);
       }
@@ -1174,7 +1215,8 @@
         headers: { Authorization: "Bearer " + tok },
       });
       if (res.status === 401) {
-        clearAuthCache();
+        if (storedToken() === tok) clearAuthCache();
+        else return;
         if (IS_ACCOUNT) {
           setPanel({ mode: "anon", message: "Your Discord session expired. Select Log in to reconnect." });
           return;

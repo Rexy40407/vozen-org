@@ -12,8 +12,12 @@ const dashboard = read('site/js/dashboard-v8.js');
 const account = read('site/account/index.html');
 
 assert.match(main, /const AUTH_CHANNEL_NAME = ["']vozen\.ecosystem\.auth\.v1["']/);
-assert.match(main, /publishAuth\(\{ type: "request" \}\)/);
+assert.match(main, /const AUTH_REV_KEY = ["']vozen\.ecosystem\.authrev["']/);
+assert.match(main, /if \(!storedToken\(\) && !hasOAuthResponseHash\(\)\)\s*publishAuth\(\{ type: "request" \}\)/);
+assert.match(main, /message\.revision >= currentAuthRevision\(\)/);
+assert.match(main, /Number\.isSafeInteger\(message\.revision\) &&\s*message\.revision > 0/);
 assert.match(main, /setStoredToken\(fromHash\.token\)/);
+assert.match(main, /if \(storedToken\(\) === tok\) clearAuthCache\(\)/);
 assert.doesNotMatch(main, /await bootstrapHelperSession\((?:fromHash\.token|tok)\)/);
 assert.match(main, /fetchWithTimeout\(PREMIUM_API_BASE \+ "\/api\/me\/premium"/);
 assert.doesNotMatch(main, /if \(!IS_ACCOUNT \|\| helperSessionHandoffWired\)/);
@@ -21,7 +25,11 @@ assert.match(main, /keepalive: true/);
 assert.match(main, /void bootstrapHelperSession\(token\);/);
 assert.doesNotMatch(main, /bootstrapHelperSession\(token\)\.finally\(\(\) => window\.location\.assign/);
 assert.match(nav, /new BroadcastChannel\(AUTH_CHANNEL_NAME\)/);
+assert.match(nav, /const AUTH_REV_KEY = ["']vozen\.ecosystem\.authrev["']/);
+assert.match(nav, /message\.revision >= currentAuthRevision\(\)/);
+assert.match(nav, /Number\.isSafeInteger\(message\.revision\) &&\s*message\.revision > 0/);
 assert.match(dashboard, /await waitForSharedSession\(\)/);
 assert.doesNotMatch(account, /data-vozen-stripe/);
+assert.match(account, /main-v51\.js[^"']*auth-race=1/);
 
 console.log('Shared auth and account loading contract passed.');

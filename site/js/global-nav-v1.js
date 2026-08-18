@@ -4,6 +4,7 @@
 
   const hosts = document.querySelectorAll("[data-vozen-nav]");
   const AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
+  const AUTH_REV_KEY = "vozen.ecosystem.authrev";
   const navLocale = () => {
     try {
       const value = localStorage.getItem("vozen.lang") || "en";
@@ -85,6 +86,15 @@
       if (value == null) sessionStorage.removeItem(key);
       else sessionStorage.setItem(key, value);
     } catch (_) {}
+  };
+  const currentAuthRevision = () => {
+    const revision = Number(readSession(AUTH_REV_KEY));
+    return Number.isSafeInteger(revision) && revision > 0 ? revision : 0;
+  };
+  const hasOAuthResponseHash = () => {
+    if (!location.hash || location.hash.length < 2) return false;
+    const params = new URLSearchParams(location.hash.slice(1));
+    return params.has("access_token") || params.has("error") || params.has("state");
   };
   const cachedAccount = () => {
     try {
@@ -262,18 +272,39 @@
       channel.addEventListener("message", (event) => {
         const message = event.data;
         if (!message || typeof message.type !== "string") return;
-        if (message.type === "session" && typeof message.token === "string") {
+        if (
+          message.type === "session" &&
+          typeof message.token === "string" &&
+          Number.isSafeInteger(message.revision) &&
+          message.revision > 0 &&
+          message.revision >= currentAuthRevision() &&
+          !hasOAuthResponseHash()
+        ) {
           writeSession("vozen.ecosystem.dtoken", message.token);
+          writeSession(AUTH_REV_KEY, String(message.revision));
           if (typeof message.nav === "string") writeSession("vozen.navuser", message.nav);
-        } else if (message.type === "profile") {
+        } else if (
+          message.type === "profile" &&
+          Number.isSafeInteger(message.revision) &&
+          message.revision > 0 &&
+          message.revision >= currentAuthRevision()
+        ) {
           writeSession("vozen.navuser", typeof message.nav === "string" ? message.nav : null);
-        } else if (message.type === "logout") {
+        } else if (
+          message.type === "logout" &&
+          Number.isSafeInteger(message.revision) &&
+          message.revision > 0 &&
+          message.revision >= currentAuthRevision()
+        ) {
           writeSession("vozen.ecosystem.dtoken", null);
           writeSession("vozen.navuser", null);
+          writeSession(AUTH_REV_KEY, String(message.revision));
         }
         renderDocsAccount();
       });
-      channel.postMessage({ type: "request" });
+      if (!readSession("vozen.ecosystem.dtoken") && !hasOAuthResponseHash()) {
+        channel.postMessage({ type: "request" });
+      }
     } catch (_) {}
   }
   window.setTimeout(applyNavTranslations, 0);
