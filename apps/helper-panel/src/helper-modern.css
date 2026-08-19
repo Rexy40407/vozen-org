@@ -1114,6 +1114,13 @@ body:has(.workspace-standalone--helper-picker) #root,
   padding-top: 14px;
 }
 
+/* Reserve two readable lines for every catalogue description. This keeps the
+ * primary action on one shared baseline whether the copy wraps or the card is
+ * Premium-gated. Longer translated copy can still grow rather than clipping. */
+.workspace-shell--helper .feature > p:not(.tip) {
+  min-height: 3em;
+}
+
 .workspace-shell--helper .feature .pill.premium-lock {
   display: inline-flex;
   align-items: center;
