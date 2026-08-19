@@ -4404,20 +4404,19 @@ function FeatureCatalogue({
                         : 'pill'
                   }
                 >
+                  {premiumLocked && <span className="premium-lock-icon" aria-hidden="true">🔒</span>}
                   {label}
                 </span>
               </div>
               <h3>{translatedFeature.label}</h3>
-              <p>{translatedFeature.description}</p>
-              {premiumLocked && (
-                <p className="feature-premium-lock-copy">
-                  <span aria-hidden="true">🔒</span>
-                  {helperT(
-                    'helper.premiumRequiredDescription',
-                    'Unlock Vozen Premium for this server to configure it.',
-                  )}
-                </p>
-              )}
+              <p className={premiumLocked ? 'feature-premium-description' : undefined}>
+                {premiumLocked
+                  ? helperT(
+                      'helper.premiumRequiredDescription',
+                      'Unlock Vozen Premium for this server to configure it.',
+                    )
+                  : translatedFeature.description}
+              </p>
               {maturity === 'blocked' && feature.issues?.[0]?.message && (
                 <p className="tip feature-requirement">{localizedIssue(feature.issues[0])}</p>
               )}
