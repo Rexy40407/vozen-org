@@ -1095,6 +1095,20 @@ body:has(.workspace-standalone--helper-picker) #root,
 
 /* Server-scoped Premium gates.  The same state is enforced by the Rust API;
  * these styles only make the requirement legible before a user opens a card. */
+.workspace-app--helper .panel-main .feature-grid,
+.workspace-shell--helper .panel-main .feature-grid {
+  /* Keep the catalogue in a clean grid: a Premium explanation can add copy to
+   * one card, but it must never make that card taller than its neighbours. */
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.workspace-app--helper .panel-main .feature,
+.workspace-shell--helper .panel-main .feature {
+  height: 100%;
+  min-height: 0;
+}
+
 .workspace-shell--helper .feature .pill.premium-lock {
   border-color: rgba(245, 193, 87, 0.58);
   background: rgba(89, 65, 24, 0.35);
