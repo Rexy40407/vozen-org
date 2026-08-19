@@ -148,8 +148,10 @@ function helperPageHint(id: string, fallback: string): string {
   };
   return helperT(keys[id] ?? id, fallback);
 }
-const HELPER_INVITE_HREF =
-  'https://discord.com/oauth2/authorize?client_id=1526211106081734666&permissions=1099780071606&scope=bot%20applications.commands';
+// The lightweight /panel/helper/ hand-off generates a per-install state and
+// sends the user through Discord's callback-capable bot flow before returning
+// them to this panel. Keep every Helper entry point on the same path.
+const HELPER_INVITE_HREF = '/panel/helper/#/servers?add=1';
 const categories: { id: Category; label: string }[] = [
   { id: 'all', label: 'All' },
   { id: 'protection', label: 'Protection' },

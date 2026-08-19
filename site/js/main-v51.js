@@ -20,7 +20,7 @@
   const ACTIVATION_INTENT_TTL_MS = 5 * 60 * 1000;
   const INVITE_URL =
     TTS_CLIENT_ID && TTS_CLIENT_ID !== "YOUR_CLIENT_ID"
-      ? `https://discord.com/oauth2/authorize?client_id=${TTS_CLIENT_ID}&permissions=${INVITE_PERMISSIONS}&scope=bot%20applications.commands`
+      ? "/dashboard.html?add=1"
       : "#";
   const TOPGG_URL =
     TTS_CLIENT_ID && TTS_CLIENT_ID !== "YOUR_CLIENT_ID" ? `https://top.gg/bot/${TTS_CLIENT_ID}/vote` : "#";
