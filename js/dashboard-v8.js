@@ -22,8 +22,7 @@
   var TOK_KEY = "vozen.ecosystem.dtoken";
   var AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
   var LEGACY_TOK_KEY = "vozen.dtoken";
-  var STATE_KEY = "vozen.oauthstate";
-  var RETURN_KEY = "vozen.returnTo";
+  var TTS_INSTALL_STATE_KEY = "vozen.tts.install.state";
   var INVITE_PENDING_KEY = "vozen.ttsInvitePending";
   var INVITE_BASELINE_KEY = "vozen.ttsInviteBaseline";
   var INVITE_POLL_ATTEMPTS = 8;
@@ -450,6 +449,42 @@
       sessionStorage.removeItem(INVITE_BASELINE_KEY);
     } catch (e) {}
   }
+
+  function clearTtsInstallState() {
+    try {
+      sessionStorage.removeItem(TTS_INSTALL_STATE_KEY);
+    } catch (e) {}
+  }
+
+  function cleanTtsInstallQuery() {
+    if (!window.history || typeof window.history.replaceState !== "function") return;
+    var next = new URL(window.location.href);
+    ["add", "code", "state", "guild_id", "permissions", "error", "error_description"].forEach(
+      function (key) {
+        next.searchParams.delete(key);
+      },
+    );
+    window.history.replaceState({}, document.title, next.pathname + next.search + next.hash);
+  }
+
+  function consumeTtsInstallCallback() {
+    var query = new URLSearchParams(window.location.search || "");
+    var code = query.get("code");
+    var state = query.get("state");
+    var error = query.get("error");
+    if (!code && !state && !error) return { received: false, valid: false };
+
+    var expected = null;
+    try {
+      expected = sessionStorage.getItem(TTS_INSTALL_STATE_KEY);
+    } catch (e) {}
+    clearTtsInstallState();
+    cleanTtsInstallQuery();
+
+    // The callback code is never treated as a browser credential. We only use
+    // Discord's successful return plus our one-time state to resume the panel.
+    return { received: true, valid: Boolean(code && !error && expected && state === expected) };
+  }
   function authHeaders() {
     var value = token();
     return value ? { Authorization: "Bearer " + value } : {};
@@ -467,7 +502,7 @@
       .join("");
   }
 
-  function addServer() {
+  function addServer(guilds) {
     var state;
     try {
       state = randState();
@@ -475,10 +510,9 @@
       alert(t("dashboard.secureTokenError"));
       return;
     }
-    setInvitePending(workspaceState.guilds || []);
+    setInvitePending(guilds || workspaceState.guilds || []);
     try {
-      sessionStorage.setItem(STATE_KEY, state);
-      sessionStorage.setItem(RETURN_KEY, "/dashboard");
+      sessionStorage.setItem(TTS_INSTALL_STATE_KEY, state);
     } catch (e) {}
     var u = new URL("https://discord.com/oauth2/authorize");
     u.searchParams.set("client_id", TTS_CLIENT_ID);
@@ -486,8 +520,12 @@
     // Adding a server is a TTS product flow. Keep the product token on the
     // TTS dashboard; the Ecosystem application is reserved for site login.
     u.searchParams.set("redirect_uri", TTS_REDIRECT);
-    u.searchParams.set("response_type", "token");
-    u.searchParams.set("scope", "bot applications.commands identify guilds");
+    u.searchParams.set("response_type", "code");
+    // `identify` enables Discord's callback-capable Advanced Bot Authorization
+    // flow. The dashboard already has the shared Vozen session, so no extra
+    // account scopes or browser token are needed.
+    u.searchParams.set("scope", "bot applications.commands identify");
+    u.searchParams.set("integration_type", "0");
     u.searchParams.set("state", state);
     location.href = u.toString();
   }
@@ -1343,7 +1381,7 @@
     };
   }
 
-  function loadGuilds(attempt) {
+  function loadGuilds(attempt, onReadyForInstall) {
     var pollAttempt = Number(attempt) || 0;
     renderSkeleton("picker");
     fetchWithTimeout(API + "/api/dashboard/guilds", { headers: authHeaders() })
@@ -1367,8 +1405,12 @@
         var added = pendingInvite ? invitedGuild(guilds) : null;
         if (pendingInvite && !added && pollAttempt < INVITE_POLL_ATTEMPTS) {
           window.setTimeout(function () {
-            loadGuilds(pollAttempt + 1);
+            loadGuilds(pollAttempt + 1, onReadyForInstall);
           }, INVITE_POLL_DELAY_MS);
+          return;
+        }
+        if (typeof onReadyForInstall === "function") {
+          onReadyForInstall(guilds);
           return;
         }
         clearInvitePending();
@@ -1393,6 +1435,18 @@
     // Authentication belongs to /account. The TTS dashboard must consume the
     // shared HttpOnly ecosystem session instead of opening a second OAuth flow.
     await waitForSharedSession();
+    if (ttsInstallCallback.received && !ttsInstallCallback.valid) {
+      ttsInstallCallback = { received: false, valid: false };
+      clearInvitePending();
+      renderMessage("dashboard.error", "dashboard.retry", { retry: true, onRetry: boot });
+      return;
+    }
+    if (ttsInstallRequested) {
+      loadGuilds(0, function (guilds) {
+        addServer(guilds);
+      });
+      return;
+    }
     loadGuilds(0);
   }
 
@@ -1400,5 +1454,8 @@
     if (typeof onLang === "function") onLang();
   });
 
+  var ttsInstallCallback = consumeTtsInstallCallback();
+  var ttsInstallRequested = !ttsInstallCallback.received && new URLSearchParams(window.location.search || "").get("add") === "1";
+  if (ttsInstallRequested) cleanTtsInstallQuery();
   boot();
 })();

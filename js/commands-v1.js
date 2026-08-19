@@ -98,8 +98,8 @@
       ],
       steps: [["/setup", "Configure the server once"], ["/join", "Join your current voice channel"], ["/tts", "Say something out loud"]],
       action: "Add Vozen TTS to Discord",
-      href: "https://discord.com/oauth2/authorize?client_id=1523826014935842997&permissions=326420745216&scope=bot%20applications.commands",
-      external: true,
+      href: "/dashboard.html?add=1",
+      external: false,
     },
     helper: {
       label: "Vozen Helper",
