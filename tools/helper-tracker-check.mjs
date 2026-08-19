@@ -26,7 +26,7 @@ assert.match(ignore, /site\/panel\/helper-tracker\//);
 assert.doesNotMatch(ignore, /^site\/panel\/helper\/$/m);
 assert.match(
   legacyEntry,
-  /<script\s+src="\/js\/helper-redirect-v1\.js"><\/script>/,
+  /<script\s+src="\/js\/helper-redirect-v1\.js(?:\?[^\"]*)?"><\/script>/,
   'the compatibility route must load its redirect through the CSP-allowed external script',
 );
 assert.doesNotMatch(legacyEntry, /<script>\s*const incomingHash/);

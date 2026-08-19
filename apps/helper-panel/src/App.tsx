@@ -148,10 +148,10 @@ function helperPageHint(id: string, fallback: string): string {
   };
   return helperT(keys[id] ?? id, fallback);
 }
-// The lightweight /panel/helper/ hand-off generates a per-install state and
-// sends the user through Discord's callback-capable bot flow before returning
-// them to this panel. Keep every Helper entry point on the same path.
-const HELPER_INVITE_HREF = '/panel/helper/#/servers?add=1';
+// Discord only accepts OAuth callback URLs registered on the Helper
+// application. The API owns that callback, validates the installation and
+// then returns the user to this panel with a fresh server-scoped session.
+const HELPER_INVITE_HREF = 'https://api.vozen.org/rust/api/install/start';
 const categories: { id: Category; label: string }[] = [
   { id: 'all', label: 'All' },
   { id: 'protection', label: 'Protection' },
@@ -3026,8 +3026,6 @@ function App() {
           <a
             className="helper-sidebar-add"
             href={HELPER_INVITE_HREF}
-            target="_blank"
-            rel="noreferrer"
           >
             <span aria-hidden="true">+</span>
             {helperT('helper.addServer', 'Add a server')}
@@ -4029,7 +4027,7 @@ function ServerPicker({
               <strong>{helperT('helper.addAnotherServer', 'Add Vozen Helper to another server')}</strong>
               <small>{helperT('helper.inviteHint', 'Invite the bot, then come back here to configure it.')}</small>
             </div>
-            <a className="dash-picker__add" href={HELPER_INVITE_HREF} target="_blank" rel="noreferrer">
+            <a className="dash-picker__add" href={HELPER_INVITE_HREF}>
               {helperT('helper.addServer', 'Add a server')}
             </a>
           </div>

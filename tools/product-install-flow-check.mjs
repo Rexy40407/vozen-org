@@ -7,6 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relative) => readFile(path.join(root, relative), 'utf8');
 const directTtsInvite = 'https://discord.com/oauth2/authorize?client_id=1523826014935842997';
 const directHelperInvite = 'https://discord.com/oauth2/authorize?client_id=1526211106081734666';
+const helperInstallStart = 'https://api.vozen.org/rust/api/install/start';
 
 const [dashboard, helperRedirect, helperPanel, main, commands, ...publicPages] = await Promise.all([
   read('site/js/dashboard-v8.js'),
@@ -25,7 +26,7 @@ const [dashboard, helperRedirect, helperPanel, main, commands, ...publicPages] =
 
 assert.match(main, /\?\s*"\/dashboard\.html\?add=1"/);
 assert.match(commands, /href:\s*"\/dashboard\.html\?add=1"/);
-assert.match(helperPanel, /HELPER_INVITE_HREF\s*=\s*'\/panel\/helper\/#\/servers\?add=1'/);
+assert.equal(helperPanel.includes(helperInstallStart), true);
 
 assert.match(dashboard, /TTS_INSTALL_STATE_KEY/);
 assert.match(dashboard, /u\.searchParams\.set\("response_type", "code"\)/);
@@ -33,14 +34,15 @@ assert.match(dashboard, /u\.searchParams\.set\("scope", "bot applications\.comma
 assert.match(dashboard, /consumeTtsInstallCallback/);
 assert.match(dashboard, /ttsInstallRequested/);
 
-assert.match(helperRedirect, /INSTALL_STATE_KEY/);
-assert.match(helperRedirect, /authorization\.searchParams\.set\("response_type", "code"\)/);
-assert.match(helperRedirect, /authorization\.searchParams\.set\("scope", "bot applications\.commands identify"\)/);
-assert.match(helperRedirect, /window\.location\.replace\("\/panel\/helper-tracker\/#\/servers"\)/);
+assert.match(helperRedirect, /HELPER_INSTALL_URL/);
+assert.match(helperRedirect, /window\.location\.replace\(HELPER_INSTALL_URL\)/);
 
 for (const page of publicPages) {
   assert.equal(page.includes(directTtsInvite), false, 'public page still uses the direct TTS success-page invite');
   assert.equal(page.includes(directHelperInvite), false, 'public page still uses the direct Helper success-page invite');
 }
+
+assert.equal(publicPages[2].includes(helperInstallStart), true);
+assert.equal(publicPages[3].includes(helperInstallStart), true);
 
 console.log('Product install redirect contracts are present.');
