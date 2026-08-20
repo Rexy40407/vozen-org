@@ -2650,7 +2650,7 @@
       ],
       "intents": [],
       "key": "social.rss",
-      "maturity": "beta",
+      "maturity": "operational",
       "panelPath": "/modules/social/rss",
       "permissions": [
         "Send Messages"
@@ -2703,7 +2703,7 @@
       "taskGroup": "alerts",
       "audience": "creators",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Available"
     },
     {
       "adapter": "tiktok_display_api_v1",
@@ -7160,7 +7160,7 @@
       ],
       "intents": [],
       "key": "social.rss",
-      "maturity": "beta",
+      "maturity": "operational",
       "panelPath": "/modules/social/rss",
       "permissions": [
         "Send Messages"
@@ -7213,7 +7213,7 @@
       "taskGroup": "alerts",
       "audience": "creators",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Available"
     },
     "social.tiktok": {
       "adapter": "tiktok_display_api_v1",
@@ -11594,7 +11594,7 @@
           ],
           "intents": [],
           "key": "social.rss",
-          "maturity": "beta",
+          "maturity": "operational",
           "panelPath": "/modules/social/rss",
           "permissions": [
             "Send Messages"
@@ -11647,7 +11647,7 @@
           "taskGroup": "alerts",
           "audience": "creators",
           "available": true,
-          "statusLabel": "Beta"
+          "statusLabel": "Available"
         },
         {
           "adapter": "tiktok_display_api_v1",
