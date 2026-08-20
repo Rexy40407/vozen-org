@@ -5246,6 +5246,20 @@ function RemindersManager({
   );
 }
 
+function isSafeWorkflowReaction(value: string): boolean {
+  const characters = Array.from(value);
+  return characters.length > 0
+    && characters.length <= 16
+    && characters.every((character) => {
+      const codePoint = character.codePointAt(0) ?? 0;
+      return codePoint > 0x7f
+        && !/\s/u.test(character)
+        && character !== '<'
+        && character !== '>'
+        && character !== ':';
+    });
+}
+
 function WorkflowManager({
   enabled,
   localPreviewMode,
@@ -5292,7 +5306,7 @@ function WorkflowManager({
       setError(helperT('helper.replyTooLong', 'Reply must be {n} characters or fewer.', { n: maxReplyLength }));
       return;
     }
-    if (action === 'react' && (trimmedPayload.length > 16 || /[<>]/.test(trimmedPayload))) {
+    if (action === 'react' && !isSafeWorkflowReaction(trimmedPayload)) {
       setError(helperT('helper.reactionInvalid', 'Reactions use one Unicode emoji or a short safe token (maximum 16 characters).'));
       return;
     }
