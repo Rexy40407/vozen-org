@@ -192,7 +192,7 @@
       ],
       "23": [
         2,
-        84
+        83
       ],
       "24": [
         2,
@@ -453,7 +453,7 @@
     },
     "averageFieldLength": [
       2.3181818181818183,
-      71.02272727272724
+      71.01136363636361
     ],
     "storedFields": {
       "0": {
@@ -573,7 +573,7 @@
       },
       "23": {
         "title": "RSS alerts",
-        "text": "RSS alerts module - Vozen Helper Skip to content Vozen Helper Quick Setup Modules Guides Reference Troubleshooting Search documentation SOCIAL-ALERTS - ALERTS RSS alerts Watch a validated RSS or Atom feed with safe polling. Beta Source commit: 4f0dae6cd253ef8677558e5f821b6e114cef8969 START HERE What this does Watch a validated RSS or Atom feed with safe polling. When to use it Use this module when you want a clear, server-scoped way to rss alerts. Start with the recommended setup, then open advanced options only when you know what you need. BEFORE YOU START Requirements Send Messages Dependency: outbound_https Dependency: send_messages CONFIGURE Recommended setup Open the Helper panel for the selected server. Review the permissions and preflight result. Choose the recommended defaults, sim",
+        "text": "RSS alerts module - Vozen Helper Skip to content Vozen Helper Quick Setup Modules Guides Reference Troubleshooting Search documentation SOCIAL-ALERTS - ALERTS RSS alerts Watch a validated RSS or Atom feed with safe polling. Available Source commit: 4f0dae6cd253ef8677558e5f821b6e114cef8969 START HERE What this does Watch a validated RSS or Atom feed with safe polling. When to use it Use this module when you want a clear, server-scoped way to rss alerts. Start with the recommended setup, then open advanced options only when you know what you need. BEFORE YOU START Requirements Send Messages Dependency: outbound_https Dependency: send_messages CONFIGURE Recommended setup Open the Helper panel for the selected server. Review the permissions and preflight result. Choose the recommended defaults",
         "url": "/docs/helper/modules/alerts/rss/"
       },
       "24": {
@@ -8192,7 +8192,6 @@
         {
           "1": {
             "0": 1,
-            "23": 1,
             "25": 1,
             "27": 1,
             "62": 1,
@@ -8846,6 +8845,7 @@
             "20": 1,
             "21": 1,
             "22": 1,
+            "23": 1,
             "24": 1,
             "26": 1,
             "28": 1,
@@ -11747,14 +11747,6 @@
         }
       ],
       [
-        "sim",
-        {
-          "1": {
-            "23": 1
-          }
-        }
-      ],
-      [
         "simple",
         {
           "1": {
@@ -12762,7 +12754,7 @@
     {
       "id": "23",
       "title": "RSS alerts",
-      "text": "RSS alerts module - Vozen Helper Skip to content Vozen Helper Quick Setup Modules Guides Reference Troubleshooting Search documentation SOCIAL-ALERTS - ALERTS RSS alerts Watch a validated RSS or Atom feed with safe polling. Beta Source commit: 4f0dae6cd253ef8677558e5f821b6e114cef8969 START HERE What this does Watch a validated RSS or Atom feed with safe polling. When to use it Use this module when you want a clear, server-scoped way to rss alerts. Start with the recommended setup, then open advanced options only when you know what you need. BEFORE YOU START Requirements Send Messages Dependency: outbound_https Dependency: send_messages CONFIGURE Recommended setup Open the Helper panel for the selected server. Review the permissions and preflight result. Choose the recommended defaults, sim",
+      "text": "RSS alerts module - Vozen Helper Skip to content Vozen Helper Quick Setup Modules Guides Reference Troubleshooting Search documentation SOCIAL-ALERTS - ALERTS RSS alerts Watch a validated RSS or Atom feed with safe polling. Available Source commit: 4f0dae6cd253ef8677558e5f821b6e114cef8969 START HERE What this does Watch a validated RSS or Atom feed with safe polling. When to use it Use this module when you want a clear, server-scoped way to rss alerts. Start with the recommended setup, then open advanced options only when you know what you need. BEFORE YOU START Requirements Send Messages Dependency: outbound_https Dependency: send_messages CONFIGURE Recommended setup Open the Helper panel for the selected server. Review the permissions and preflight result. Choose the recommended defaults",
       "url": "/docs/helper/modules/alerts/rss/"
     },
     {

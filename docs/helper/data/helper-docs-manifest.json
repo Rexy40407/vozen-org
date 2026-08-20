@@ -2500,7 +2500,7 @@
       ],
       "intents": [],
       "key": "social.rss",
-      "maturity": "beta",
+      "maturity": "operational",
       "panelPath": "/modules/social/rss",
       "permissions": [
         "Send Messages"
