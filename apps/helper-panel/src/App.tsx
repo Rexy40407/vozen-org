@@ -30,6 +30,7 @@ import {
   type YouTubeSubscriptionHealth,
 } from './api';
 import { docsProviderStatusUrl, docsTroubleshootingUrl, docsUrlForFeature } from './docs';
+import { createLoadGuard, isAbortError } from './load-lifecycle';
 import {
   helperLocale,
   helperT,
@@ -2097,6 +2098,8 @@ function App() {
   const [features, setFeatures] = useState<Feature[]>(() =>
     localPreviewMode ? demoFeatures.concat(additionalFeatures).map(presentFeature) : [],
   );
+  const featuresRef = useRef(features);
+  featuresRef.current = features;
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [audit, setAudit] = useState<AuditRecord[]>([]);
   const [activity, setActivity] = useState<ActivityRecord[]>([]);
@@ -2167,60 +2170,80 @@ function App() {
       setStatus('ready');
       return;
     }
-    let cancelled = false;
+    const load = createLoadGuard();
     void (async () => {
-      // The server picker only needs the signed session and the user's guilds.
-      // Establish those first, then let the full dashboard hydrate in the
-      // background. Previously all protected endpoints raced the session
-      // exchange and kept the picker on its loading screen unnecessarily.
-      const nextMe = await api.meOrBootstrap();
-      const nextGuilds = await api.guilds().catch(() => {
-        setMessage('Could not load your servers. Return to your account and try again.');
-        return { guilds: [] };
-      });
-      if (cancelled) return;
+      try {
+        // The server picker only needs the signed session and the user's guilds.
+        // Establish those first, then hydrate the full dashboard in the
+        // background. Every request shares this guard so leaving the panel
+        // cannot leave an old response writing into a new route.
+        const nextMe = await api.meOrBootstrap({ signal: load.signal });
+        const nextGuilds = await api.guilds({ signal: load.signal }).catch((cause) => {
+          if (isAbortError(cause) || !load.isCurrent()) throw cause;
+          setMessage('Could not load your servers. Return to your account and try again.');
+          return { guilds: [] };
+        });
+        if (!load.isCurrent()) return;
 
-      setMe(nextMe);
-      setGuilds(nextGuilds.guilds);
-      restoreOAuthReturnHash();
-      setStatus('ready');
+        setMe(nextMe);
+        setGuilds(nextGuilds.guilds);
+        restoreOAuthReturnHash();
+        setStatus('ready');
 
-      if (parseRoute(window.location.hash).page === 'servers') return;
+        if (parseRoute(window.location.hash).page === 'servers') return;
 
-      const [nextFeatures, nextStats, nextCases, nextAudit, nextActivity, nextQuota, nextRank] =
-        await Promise.all([
-          api.features().catch(() => {
-            // Do not present stale/demo state as the real guild catalogue. Keep
-            // the topics discoverable, but make every state explicitly blocked
-            // so a failed API request cannot lead to a misleading publish action.
-            setMessage(helperT('helper.featureStateUnavailable', 'Feature state is unavailable until the Rust API reconnects.'));
-            return { guildId: '', features: unavailableFeatureCatalogue() };
-          }),
-          api.stats().catch(() => ({ totalCases: 0, guildId: '' })),
-          api.cases().catch(() => ({ cases: [] })),
-          api.audit().catch(() => ({ events: [] })),
-          api.activity().catch(() => ({ activity: [] })),
-          api.quotas().catch(() => ({ plan: 'Free', limits: {}, usage: {} })),
-          api.rankCard().catch(() => ({ guildId: '', config: defaultRankCard })),
-        ]);
-      if (cancelled) return;
+        const [nextFeatures, nextStats, nextCases, nextAudit, nextActivity, nextQuota, nextRank] =
+          await Promise.all([
+            api.features({ signal: load.signal }).catch((cause) => {
+              if (isAbortError(cause) || !load.isCurrent()) throw cause;
+              // Do not present stale/demo state as the real guild catalogue. Keep
+              // the topics discoverable, but make every state explicitly blocked
+              // so a failed API request cannot lead to a misleading publish action.
+              setMessage(helperT('helper.featureStateUnavailable', 'Feature state is unavailable until the Rust API reconnects.'));
+              return { guildId: '', features: unavailableFeatureCatalogue() };
+            }),
+            api.stats({ signal: load.signal }).catch((cause) => {
+              if (isAbortError(cause)) throw cause;
+              return { totalCases: 0, guildId: '' };
+            }),
+            api.cases({ signal: load.signal }).catch((cause) => {
+              if (isAbortError(cause)) throw cause;
+              return { cases: [] };
+            }),
+            api.audit({ signal: load.signal }).catch((cause) => {
+              if (isAbortError(cause)) throw cause;
+              return { events: [] };
+            }),
+            api.activity({ signal: load.signal }).catch((cause) => {
+              if (isAbortError(cause)) throw cause;
+              return { activity: [] };
+            }),
+            api.quotas({ signal: load.signal }).catch((cause) => {
+              if (isAbortError(cause)) throw cause;
+              return { plan: 'Free', limits: {}, usage: {} };
+            }),
+            api.rankCard({ signal: load.signal }).catch((cause) => {
+              if (isAbortError(cause)) throw cause;
+              return { guildId: '', config: defaultRankCard };
+            }),
+          ]);
+        if (!load.isCurrent()) return;
 
-      setFeatures(nextFeatures.features.map(presentFeature));
-      setStats(nextStats);
-      setCases(nextCases.cases);
-      setAudit(nextAudit.events);
-      setActivity(nextActivity.activity);
-      setQuota(nextQuota);
-      setRankConfig(nextRank.config);
-      setSavedRankConfig(nextRank.config);
-    })().catch((cause: unknown) => {
-      if (cancelled) return;
-      setMessage(cause instanceof Error ? cause.message : helperT('helper.dashboardLoadError', 'Could not load the dashboard.'));
-      setStatus('error');
-    });
-    return () => {
-      cancelled = true;
-    };
+        setFeatures(nextFeatures.features.map(presentFeature));
+        setStats(nextStats);
+        setCases(nextCases.cases);
+        setAudit(nextAudit.events);
+        setActivity(nextActivity.activity);
+        setQuota(nextQuota);
+        setRankConfig(nextRank.config);
+        setSavedRankConfig(nextRank.config);
+      } catch (cause) {
+        if (!load.isCurrent() || isAbortError(cause)) return;
+        setMessage(cause instanceof Error ? cause.message : helperT('helper.dashboardLoadError', 'Could not load the dashboard.'));
+        setStatus('error');
+      }
+    })();
+    return () => load.dispose();
   }, []);
   useEffect(() => {
     if (!me || route.page === 'servers') return;
@@ -2256,13 +2279,20 @@ function App() {
       });
       return;
     }
+    const load = createLoadGuard();
     void api
-      .quickSetup()
-      .then(setQuickSetup)
-      .catch(() => setQuickSetup(defaultQuickSetupState(guildId)));
+      .quickSetup({ signal: load.signal })
+      .then((result) => {
+        if (load.isCurrent()) setQuickSetup(result);
+      })
+      .catch((cause) => {
+        if (load.isCurrent() && !isAbortError(cause)) setQuickSetup(defaultQuickSetupState(guildId));
+      });
     void api
-      .guildContext()
-      .then(setGuildContext)
+      .guildContext({ signal: load.signal })
+      .then((result) => {
+        if (load.isCurrent()) setGuildContext(result);
+      })
       .catch(() => undefined);
     // Quick Setup is a composition of real feature adapters.  Fetch their
     // defaults from Rust instead of reconstructing a second schema in React.
@@ -2275,15 +2305,18 @@ function App() {
         ['antiSpam', 'protection.antispam'],
       ].map(async ([name, key]) => {
         try {
-          const detail = await api.feature(key);
+          const detail = await api.feature(key, { signal: load.signal });
           return [name, { ...(detail.defaults ?? {}), ...detail.config }] as const;
         } catch {
           return [name, {}] as const;
         }
       }),
     ).then((entries) => {
-      setQuickSetupDefaults(Object.fromEntries(entries) as QuickSetupFeatureDefaults);
+      if (load.isCurrent()) {
+        setQuickSetupDefaults(Object.fromEntries(entries) as QuickSetupFeatureDefaults);
+      }
     });
+    return () => load.dispose();
   }, [me?.guildId, guilds, route.page]);
   useEffect(() => {
     if (route.page !== 'overview' || !quickSetup || quickSetup.status !== 'not_started') return;
@@ -2298,27 +2331,32 @@ function App() {
   }, [route.page, quickSetup]);
   useEffect(() => {
     if (!localPreviewMode && me && route.page !== 'servers') {
+      const load = createLoadGuard();
       void api
-        .youtubeSubscriptions()
-        .then((result) => setYoutubeSubscriptions(result.subscriptions))
+        .youtubeSubscriptions({ signal: load.signal })
+        .then((result) => { if (load.isCurrent()) setYoutubeSubscriptions(result.subscriptions); })
         .catch(() => undefined);
       void api
-        .rssSubscriptions()
-        .then((result) => setRssSubscriptions(result.subscriptions))
+        .rssSubscriptions({ signal: load.signal })
+        .then((result) => { if (load.isCurrent()) setRssSubscriptions(result.subscriptions); })
         .catch(() => undefined);
       void api
-        .twitchSubscriptions()
-        .then((result) => setTwitchSubscriptions(result.subscriptions))
+        .twitchSubscriptions({ signal: load.signal })
+        .then((result) => { if (load.isCurrent()) setTwitchSubscriptions(result.subscriptions); })
         .catch(() => undefined);
       (['reddit', 'x', 'tiktok', 'instagram', 'kick', 'bluesky'] as ExternalProvider[]).forEach((provider) => {
         void api
-          .externalSubscriptions(provider)
-          .then((result) =>
-            setExternalSubscriptions((current) => ({ ...current, [provider]: result.subscriptions })),
-          )
+          .externalSubscriptions(provider, { signal: load.signal })
+          .then((result) => {
+            if (load.isCurrent()) {
+              setExternalSubscriptions((current) => ({ ...current, [provider]: result.subscriptions }));
+            }
+          })
           .catch(() => undefined);
       });
+      return () => load.dispose();
     }
+    return undefined;
   }, [me?.guildId, route.page]);
   useEffect(() => {
     if (route.page !== 'detail' || !route.key) return;
@@ -2336,9 +2374,11 @@ function App() {
       setDetailLoading(false);
       return;
     }
+    const load = createLoadGuard();
     void api
-      .feature(route.key)
+      .feature(route.key, { signal: load.signal })
       .then((result) => {
+        if (!load.isCurrent()) return;
         setDetailSchema(result.schema ?? null);
         const apiDefaults = result.defaults ?? {};
         // The API adapter is the source of truth whenever it exposes a schema.
@@ -2378,15 +2418,19 @@ function App() {
           );
         });
       })
-      .catch(() => {
+      .catch((cause) => {
+        if (!load.isCurrent() || isAbortError(cause)) return;
         setDetailSchema(null);
         setDetailConfig(localPreviewMode ? { ...fallback } : {});
         setSavedDetailConfig(localPreviewMode ? { ...fallback } : {});
-        setDetailEnabled(features.find((item) => item.key === route.key)?.enabled ?? false);
+        setDetailEnabled(featuresRef.current.find((item) => item.key === route.key)?.enabled ?? false);
         setDetailRevision(0);
       })
-      .finally(() => setDetailLoading(false));
-  }, [route.page, route.key, features]);
+      .finally(() => {
+        if (load.isCurrent()) setDetailLoading(false);
+      });
+    return () => load.dispose();
+  }, [route.page, route.key]);
   useEffect(() => {
     if (
       route.page !== 'detail' ||
@@ -2394,10 +2438,14 @@ function App() {
       !['management.templates', 'support.welcome', 'support.welcome_channel'].includes(route.key) ||
       localPreviewMode
     ) return;
+    const load = createLoadGuard();
     void api
-      .studioTemplates()
-      .then((result) => setStudioTemplates(result.templates))
-      .catch(() => setStudioTemplates([]));
+      .studioTemplates({ signal: load.signal })
+      .then((result) => { if (load.isCurrent()) setStudioTemplates(result.templates); })
+      .catch((cause) => {
+        if (load.isCurrent() && !isAbortError(cause)) setStudioTemplates([]);
+      });
+    return () => load.dispose();
   }, [route.page, route.key]);
   useEffect(() => {
     const subscription = route.key === 'social.youtube' ? youtubeSubscriptions[0] : undefined;
@@ -2473,28 +2521,28 @@ function App() {
   useEffect(() => {
     setProviderHealth(null);
     if (localPreviewMode || route.page !== 'detail') return;
-    let cancelled = false;
-    const load = async () => {
+    const load = createLoadGuard();
+    const loadProviderHealth = async () => {
       try {
         let health: ProviderSubscriptionHealth | null = null;
         if (route.key === 'social.youtube' && youtubeSubscriptions[0]) {
-          health = await api.youtubeHealth(youtubeSubscriptions[0].id);
+          health = await api.youtubeHealth(youtubeSubscriptions[0].id, { signal: load.signal });
         } else if (
           (route.key === 'social.rss' || route.key === 'social.podcasts') &&
           rssSubscriptions[0]
         ) {
-          health = await api.rssHealth(rssSubscriptions[0].id);
+          health = await api.rssHealth(rssSubscriptions[0].id, { signal: load.signal });
         } else if (route.key === 'social.twitch' && twitchSubscriptions[0]) {
-          health = await api.twitchHealth(twitchSubscriptions[0].id);
+          health = await api.twitchHealth(twitchSubscriptions[0].id, { signal: load.signal });
         }
-        if (!cancelled) setProviderHealth(health);
-      } catch {
-        if (!cancelled) setProviderHealth(null);
+        if (load.isCurrent()) setProviderHealth(health);
+      } catch (cause) {
+        if (load.isCurrent() && !isAbortError(cause)) setProviderHealth(null);
       }
     };
-    void load();
+    void loadProviderHealth();
     return () => {
-      cancelled = true;
+      load.dispose();
     };
   }, [route.page, route.key, youtubeSubscriptions, rssSubscriptions, twitchSubscriptions]);
   useEffect(() => {

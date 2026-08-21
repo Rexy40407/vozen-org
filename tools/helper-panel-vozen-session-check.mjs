@@ -14,7 +14,7 @@ assert.match(
 );
 assert.match(
   api,
-  /export async function bootstrapVozenAccountSession\(\): Promise<boolean>/,
+  /export async function bootstrapVozenAccountSession\(signal\?: AbortSignal\): Promise<boolean>/,
   'the account-to-Helper bootstrap must be explicit and testable',
 );
 assert.match(
@@ -34,7 +34,7 @@ assert.match(
 );
 assert.match(
   api,
-  /async function meOrBootstrap\(\): Promise<Me>/,
+  /async function meOrBootstrap\(options\?: ReadOptions\): Promise<Me>/,
   'the panel must reuse an existing cookie before exchanging the account token again',
 );
 assert.doesNotMatch(
@@ -59,7 +59,7 @@ assert.doesNotMatch(
 );
 assert.match(
   app,
-  /api\.meOrBootstrap\(\)/,
+  /api\.meOrBootstrap\(\{ signal: load\.signal \}\)/,
   'the panel must reuse or restore the shared session before loading protected data',
 );
 assert.match(

@@ -463,15 +463,27 @@ async function requestSharedVozenAccountToken(): Promise<string | null> {
 // Exchange the account's Discord token for the signed Helper session cookie.
 // The raw token is sent once in an HTTPS request body and is never used as a
 // Helper API bearer because the Rust API only accepts its own signed sessions.
-export async function bootstrapVozenAccountSession(): Promise<boolean> {
+type ReadOptions = { signal?: AbortSignal };
+
+function throwIfAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) {
+    throw new DOMException('The operation was aborted', 'AbortError');
+  }
+}
+
+export async function bootstrapVozenAccountSession(signal?: AbortSignal): Promise<boolean> {
+  throwIfAborted(signal);
   if (vozenAccountBootstrapAttempted) return false;
   vozenAccountBootstrapAttempted = true;
   const token = await requestSharedVozenAccountToken();
+  throwIfAborted(signal);
   if (!token) return false;
   // A fresh first-party account exchange must win over any stale legacy
   // Helper bearer left in this tab from an earlier OAuth flow.
   persistSessionBearer(null);
   const controller = typeof AbortController === 'function' ? new AbortController() : null;
+  const abortParent = () => controller?.abort();
+  signal?.addEventListener('abort', abortParent, { once: true });
   const timer = controller
     ? window.setTimeout(() => controller.abort(), SESSION_BRIDGE_TIMEOUT_MS)
     : null;
@@ -488,10 +500,12 @@ export async function bootstrapVozenAccountSession(): Promise<boolean> {
       ...(controller ? { signal: controller.signal } : {}),
     });
     return response.ok;
-  } catch {
+  } catch (cause) {
+    if (signal?.aborted) throw cause;
     return false;
   } finally {
     if (timer) window.clearTimeout(timer);
+    signal?.removeEventListener('abort', abortParent);
   }
 }
 
@@ -521,24 +535,27 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-async function meOrBootstrap(): Promise<Me> {
+async function meOrBootstrap(options?: ReadOptions): Promise<Me> {
   try {
-    return await request<Me>('/api/me');
+    return await request<Me>('/api/me', options);
   } catch (cause) {
+    if (options?.signal?.aborted || (cause instanceof Error && cause.name === 'AbortError')) {
+      throw cause;
+    }
     if (!(cause instanceof ApiError) || cause.status !== 401) throw cause;
-    const restored = await bootstrapVozenAccountSession();
+    const restored = await bootstrapVozenAccountSession(options?.signal);
     if (!restored) throw cause;
-    return request<Me>('/api/me');
+    return request<Me>('/api/me', options);
   }
 }
 
 export const api = {
   bootstrapVozenAccountSession,
-  me: () => request<Me>('/api/me'),
+  me: (options?: ReadOptions) => request<Me>('/api/me', options),
   meOrBootstrap,
-  guilds: () => request<{ guilds: Guild[] }>('/api/guilds'),
-  guildContext: () => request<GuildContext>('/api/guild-context'),
-  quickSetup: () => request<QuickSetupState>('/api/quick-setup'),
+  guilds: (options?: ReadOptions) => request<{ guilds: Guild[] }>('/api/guilds', options),
+  guildContext: (options?: ReadOptions) => request<GuildContext>('/api/guild-context', options),
+  quickSetup: (options?: ReadOptions) => request<QuickSetupState>('/api/quick-setup', options),
   saveQuickSetupStep: (
     step: QuickSetupStepKey,
     payload: {
@@ -569,31 +586,32 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ guild_id: guildId }),
     }),
-  stats: () => request<{ totalCases: number; guildId: string }>('/api/stats'),
-  leaderboard: () =>
+  stats: (options?: ReadOptions) => request<{ totalCases: number; guildId: string }>('/api/stats', options),
+  leaderboard: (options?: ReadOptions) =>
     request<{
       guildId: string;
       enabled: boolean;
       public: boolean;
       maxEntries: number;
       entries: LeaderboardEntry[];
-    }>('/api/leaderboard'),
-  reminders: () =>
+    }>('/api/leaderboard', options),
+  reminders: (options?: ReadOptions) =>
     request<{ guildId: string; enabled: boolean; reminders: ReminderRecord[] }>(
-      '/api/reminders?limit=100',
+      '/api/reminders?limit=100', options,
     ),
   cancelReminder: (id: number) =>
     request<{ ok: boolean; id: number }>(`/api/reminders/${id}`, { method: 'DELETE' }),
   retryReminder: (id: number) =>
     request<{ ok: boolean; id: number }>(`/api/reminders/${id}/retry`, { method: 'POST' }),
-  cases: () => request<{ cases: CaseRecord[] }>('/api/cases?limit=8'),
-  audit: () => request<{ events: AuditRecord[] }>('/api/audit?limit=12'),
-  activity: () => request<{ activity: ActivityRecord[] }>('/api/activity?limit=24'),
-  quotas: () =>
+  cases: (options?: ReadOptions) => request<{ cases: CaseRecord[] }>('/api/cases?limit=8', options),
+  audit: (options?: ReadOptions) => request<{ events: AuditRecord[] }>('/api/audit?limit=12', options),
+  activity: (options?: ReadOptions) => request<{ activity: ActivityRecord[] }>('/api/activity?limit=24', options),
+  quotas: (options?: ReadOptions) =>
     request<{ plan: string; limits: Record<string, number>; usage: Record<string, number> }>(
       '/api/quotas',
+      options,
     ),
-  modules: () => request<{ modules: string[] }>('/api/modules'),
+  modules: (options?: ReadOptions) => request<{ modules: string[] }>('/api/modules', options),
   customCommands: () =>
     request<{
       guildId: string;
@@ -647,8 +665,8 @@ export const api = {
     request<{ ok: boolean; name: string }>(`/api/custom-commands/${encodeURIComponent(name)}`, {
       method: 'DELETE',
     }),
-  rolePanels: () =>
-    request<{ guildId: string; panels: RolePanelRecord[] }>('/api/role-panels'),
+  rolePanels: (options?: ReadOptions) =>
+    request<{ guildId: string; panels: RolePanelRecord[] }>('/api/role-panels', options),
   createRolePanel: (payload: {
     channel: string;
     title: string;
@@ -687,17 +705,17 @@ export const api = {
       `/api/role-panels/${encodeURIComponent(messageId)}/repair`,
       { method: 'POST' },
     ),
-  features: () => request<{ guildId: string; features: Feature[] }>('/api/config/features'),
+  features: (options?: ReadOptions) => request<{ guildId: string; features: Feature[] }>('/api/config/features', options),
   updateFeature: (key: string, enabled: boolean) =>
     request<{ ok: boolean; enabled: boolean }>('/api/config/features', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, enabled }),
     }),
-  feature: (key: string) =>
-    request<FeatureDetail>(`/api/config/features/${encodeURIComponent(key)}`),
-  featureHealth: (key: string) =>
-    request<FeatureDetail['health']>(`/api/config/features/${encodeURIComponent(key)}/health`),
+  feature: (key: string, options?: ReadOptions) =>
+    request<FeatureDetail>(`/api/config/features/${encodeURIComponent(key)}`, options),
+  featureHealth: (key: string, options?: ReadOptions) =>
+    request<FeatureDetail['health']>(`/api/config/features/${encodeURIComponent(key)}/health`, options),
   featurePreflight: (key: string, config: FeatureConfig, enabled = true) =>
     request<{
       operation: string;
@@ -761,8 +779,8 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ operation, config, enabled }),
     }),
-  youtubeSubscriptions: () =>
-    request<{ guildId: string; subscriptions: YouTubeSubscription[] }>('/api/config/youtube'),
+  youtubeSubscriptions: (options?: ReadOptions) =>
+    request<{ guildId: string; subscriptions: YouTubeSubscription[] }>('/api/config/youtube', options),
   createYoutubeSubscription: (payload: {
     sourceChannelId: string;
     targetChannelId: string;
@@ -806,8 +824,8 @@ export const api = {
         enabled: payload.enabled,
       }),
     }),
-  youtubeHealth: (id: number) =>
-    request<YouTubeSubscriptionHealth>(`/api/config/youtube/${id}/health`),
+  youtubeHealth: (id: number, options?: ReadOptions) =>
+    request<YouTubeSubscriptionHealth>(`/api/config/youtube/${id}/health`, options),
   testYoutubeDelivery: (
     id: number,
     payload: {
@@ -837,8 +855,8 @@ export const api = {
         enabled: payload.enabled,
       }),
     }),
-  rssSubscriptions: () =>
-    request<{ guildId: string; subscriptions: RssSubscription[] }>('/api/config/rss'),
+  rssSubscriptions: (options?: ReadOptions) =>
+    request<{ guildId: string; subscriptions: RssSubscription[] }>('/api/config/rss', options),
   rssPreview: (url: string) =>
     request<{
       provider: string;
@@ -893,8 +911,8 @@ export const api = {
     }),
   deleteRssSubscription: (id: number) =>
     request<{ deleted: boolean; id: number }>(`/api/config/rss/${id}`, { method: 'DELETE' }),
-  rssHealth: (id: number) =>
-    request<RssSubscriptionHealth>(`/api/config/rss/${id}/health`),
+  rssHealth: (id: number, options?: ReadOptions) =>
+    request<RssSubscriptionHealth>(`/api/config/rss/${id}/health`, options),
   testRssDelivery: (
     id: number,
     payload: {
@@ -924,8 +942,8 @@ export const api = {
         enabled: payload.enabled,
       }),
     }),
-  twitchSubscriptions: () =>
-    request<{ guildId: string; subscriptions: TwitchSubscription[] }>('/api/config/twitch'),
+  twitchSubscriptions: (options?: ReadOptions) =>
+    request<{ guildId: string; subscriptions: TwitchSubscription[] }>('/api/config/twitch', options),
   twitchChannel: (login: string) =>
     request<{
       provider: string;
@@ -972,8 +990,8 @@ export const api = {
     }),
   deleteTwitchSubscription: (id: number) =>
     request<{ deleted: boolean; id: number }>(`/api/config/twitch/${id}`, { method: 'DELETE' }),
-  twitchHealth: (id: number) =>
-    request<TwitchSubscriptionHealth>(`/api/config/twitch/${id}/health`),
+  twitchHealth: (id: number, options?: ReadOptions) =>
+    request<TwitchSubscriptionHealth>(`/api/config/twitch/${id}/health`, options),
   testTwitchDelivery: (
     id: number,
     payload: {
@@ -1000,9 +1018,9 @@ export const api = {
         enabled: payload.enabled,
       }),
     }),
-  externalSubscriptions: (provider: ExternalProvider) =>
+  externalSubscriptions: (provider: ExternalProvider, options?: ReadOptions) =>
     request<{ guildId: string; subscriptions: ExternalSubscription[] }>(
-      `/api/config/${provider}`,
+      `/api/config/${provider}`, options,
     ),
   createExternalSubscription: (
     provider: ExternalProvider,
@@ -1047,15 +1065,15 @@ export const api = {
     request<{ deleted: boolean; id: number }>(`/api/config/${provider}/${id}`, {
       method: 'DELETE',
     }),
-  rankCard: () => request<{ guildId: string; config: RankCardConfig }>('/api/studio/rank-card'),
+  rankCard: (options?: ReadOptions) => request<{ guildId: string; config: RankCardConfig }>('/api/studio/rank-card', options),
   saveRankCard: (config: RankCardConfig) =>
     request<{ guildId: string; config: RankCardConfig }>('/api/studio/rank-card', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(config),
     }),
-  studioTemplates: () =>
-    request<{ guildId: string; templates: StudioTemplate[] }>('/api/studio/templates'),
+  studioTemplates: (options?: ReadOptions) =>
+    request<{ guildId: string; templates: StudioTemplate[] }>('/api/studio/templates', options),
   createStudioTemplate: (payload: {
     name: string;
     description: string;
