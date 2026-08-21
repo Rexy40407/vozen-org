@@ -48,6 +48,7 @@ jobs:
           npm ci --prefix apps/helper-panel
           npm run build --prefix apps/helper-panel
           node tools/install-helper-panel.mjs
+          node tools/release-artifact-check.mjs
       - name: Publish site to GitHub Pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

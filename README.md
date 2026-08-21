@@ -26,6 +26,11 @@ python -m http.server 4173 --directory site
 Every push to `main` deploys `site/` through GitHub Pages. The `CNAME` file keeps
 the custom domain on `vozen.org`.
 
+This repository is the sole public-site publisher for `vozen.org`, including
+`/account/` and `/panel/helper-tracker/`. The TTS and Helper runtime
+repositories may build legacy documentation for verification, but must not
+publish a competing Pages artifact for this domain.
+
 ## License
 
 The website files retain the license and notices from the Vozen project. See
