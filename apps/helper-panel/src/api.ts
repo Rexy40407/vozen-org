@@ -201,6 +201,14 @@ export type ExternalSubscription = {
   lastError?: string | null;
 };
 export type ExternalProvider = 'reddit' | 'x' | 'tiktok' | 'instagram' | 'kick' | 'bluesky';
+export type TikTokOAuthStatus = {
+  connected: boolean;
+  openId?: string;
+  displayName?: string;
+  scopes?: string[];
+  accessExpiresAt?: number;
+  updatedAt?: number;
+};
 export type FeatureSchema = {
   version: number;
   source: string;
@@ -1063,6 +1071,16 @@ export const api = {
     }),
   deleteExternalSubscription: (provider: ExternalProvider, id: number) =>
     request<{ deleted: boolean; id: number }>(`/api/config/${provider}/${id}`, {
+      method: 'DELETE',
+    }),
+  tiktokOAuthStatus: (options?: ReadOptions) =>
+    request<TikTokOAuthStatus>('/api/providers/tiktok/oauth/status', options),
+  startTikTokOAuth: () =>
+    request<{ authorization_url: string }>('/api/providers/tiktok/oauth/start', {
+      method: 'POST',
+    }),
+  disconnectTikTokOAuth: () =>
+    request<{ ok: boolean }>('/api/providers/tiktok/oauth/connection', {
       method: 'DELETE',
     }),
   rankCard: (options?: ReadOptions) => request<{ guildId: string; config: RankCardConfig }>('/api/studio/rank-card', options),

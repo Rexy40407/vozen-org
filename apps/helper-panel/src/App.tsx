@@ -4723,6 +4723,7 @@ function FeatureDetail({
           {feature?.key === 'community.role_panels' && (
             <RolePanelManager context={context} localPreviewMode={localPreviewMode} />
           )}
+          {feature?.key === 'social.tiktok' && !localPreviewMode && <TikTokConnection />}
           {sections.map((section) => (
             <ConfigSection
               key={section.title}
@@ -4778,6 +4779,86 @@ function FeatureDetail({
           {saving ? helperT('helper.saving', 'Saving…') : helperT('helper.saveChanges', 'Save changes')}
         </button>
       </div>
+    </section>
+  );
+}
+
+function TikTokConnection() {
+  const [status, setStatus] = useState<Awaited<ReturnType<typeof api.tiktokOAuthStatus>> | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const load = createLoadGuard();
+    void api.tiktokOAuthStatus({ signal: load.signal })
+      .then((value) => {
+        if (load.isCurrent()) setStatus(value);
+      })
+      .catch((cause) => {
+        if (load.isCurrent() && !isAbortError(cause)) {
+          setError(helperT('helper.tiktokStatusError', 'Could not check the TikTok connection.'));
+        }
+      });
+    return load.dispose;
+  }, []);
+
+  async function connect() {
+    setBusy(true);
+    setError('');
+    try {
+      const result = await api.startTikTokOAuth();
+      window.location.assign(result.authorization_url);
+    } catch {
+      setError(helperT('helper.tiktokConnectError', 'Could not start TikTok authorization.'));
+      setBusy(false);
+    }
+  }
+
+  async function disconnect() {
+    setBusy(true);
+    setError('');
+    try {
+      await api.disconnectTikTokOAuth();
+      setStatus({ connected: false });
+    } catch {
+      setError(helperT('helper.tiktokDisconnectError', 'Could not remove the TikTok connection.'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="config-section card">
+      <small className="eyebrow">{helperT('helper.tiktokAccount', 'TIKTOK ACCOUNT')}</small>
+      <h3>
+        {status?.connected
+          ? helperT('helper.tiktokConnected', 'TikTok connected')
+          : helperT('helper.tiktokConnectTitle', 'Connect the account that publishes the videos')}
+      </h3>
+      <p>
+        {status?.connected
+          ? helperT('helper.tiktokMonitoring', 'Monitoring {account}. Tokens are encrypted on the server.', {
+              account: status.displayName || status.openId || 'TikTok',
+            })
+          : helperT(
+              'helper.tiktokReadOnly',
+              'Authorize only your public profile and video list. Helper cannot publish or change content.',
+            )}
+      </p>
+      {error && <p className="tip feature-requirement" role="alert">{error}</p>}
+      {status?.connected ? (
+        <button type="button" className="secondary" onClick={disconnect} disabled={busy}>
+          {busy
+            ? helperT('helper.tiktokDisconnecting', 'Disconnecting…')
+            : helperT('helper.tiktokDisconnect', 'Disconnect TikTok')}
+        </button>
+      ) : (
+        <button type="button" className="primary" onClick={connect} disabled={busy || status === null}>
+          {busy
+            ? helperT('helper.tiktokOpening', 'Opening TikTok…')
+            : helperT('helper.tiktokConnect', 'Connect TikTok')}
+        </button>
+      )}
     </section>
   );
 }
