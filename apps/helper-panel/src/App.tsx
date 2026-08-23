@@ -512,7 +512,7 @@ const additionalFeatures: Feature[] = [
   {
     key: 'social.x',
     label: 'X alerts',
-    description: 'Tracks posts from important community accounts.',
+    description: 'Sends read-only alerts from public X accounts.',
     category: 'social',
     capability: 'alerts',
     available: true,
@@ -1079,7 +1079,7 @@ const additionalSpecs: Record<string, SectionSpec[]> = {
   'social.x': [
     {
       title: 'Tracked account',
-      description: 'Read posts through the official X API when the application is approved.',
+      description: 'Read public posts through the official X API with a valid app bearer token.',
       fields: [
         { key: 'sourceHandle', label: 'X handle', kind: 'text', help: 'example: discord (without @).' },
         { key: 'targetChannelId', label: 'Discord channel', kind: 'channel' },
