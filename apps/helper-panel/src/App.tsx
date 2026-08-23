@@ -4491,7 +4491,7 @@ function FeatureCatalogue({
                 </details>
               )}
               {premiumLocked ? (
-                <a className="secondary full feature-premium-link" href="/premium/#plans">
+                <a className="secondary full feature-premium-link" href="/premium#plans">
                   {helperT('helper.viewPremium', 'View Premium')}
                 </a>
               ) : (
@@ -4602,7 +4602,7 @@ function FeatureDetail({
               )}
             </p>
           </div>
-          <a className="link-button" href="/premium/#plans">
+          <a className="link-button" href="/premium#plans">
             {helperT('helper.viewPremium', 'View Premium')}
           </a>
         </div>
