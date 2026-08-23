@@ -5,8 +5,8 @@ const root = path.resolve('.');
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'docs-data/helper/helper-docs-manifest.json'), 'utf8'));
 const overlays = JSON.parse(fs.readFileSync(path.join(root, 'docs-data/helper/module-overlays.json'), 'utf8'));
 
-if (manifest.features.length !== 52) {
-  throw new Error('Manifest must contain exactly 52 features');
+if (manifest.features.length !== 47) {
+  throw new Error('Manifest must contain exactly 47 active features');
 }
 
 const keys = new Set();

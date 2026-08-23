@@ -12,8 +12,8 @@ const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 const overlays = JSON.parse(fs.readFileSync(overlaysPath, 'utf8'));
 const moduleContent = fs.readFileSync(moduleContentPath, 'utf8');
 
-if (!Array.isArray(manifest.features) || manifest.features.length !== 52) {
-  throw new Error(`Expected exactly 52 features in the helper manifest, got ${manifest.features?.length ?? 0}`);
+if (!Array.isArray(manifest.features) || manifest.features.length !== 47) {
+  throw new Error(`Expected exactly 47 features in the helper manifest, got ${manifest.features?.length ?? 0}`);
 }
 
 fs.rmSync(outputDir, { recursive: true, force: true });

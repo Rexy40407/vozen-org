@@ -1,54 +1,331 @@
 {
-  "protection.antispam": {"slug":"protect/spam","title":"Spam protection","taskGroup":"protect","audience":"server-managers","description":"Stop repeated messages and disruptive bursts with a clear, reviewable policy."},
-  "protection.antiscam": {"slug":"protect/scam","title":"Scam protection","taskGroup":"protect","audience":"server-managers","description":"Identify suspicious links and phishing patterns without pretending to be an antivirus."},
-  "protection.anti_raid": {"slug":"protect/raid","title":"Raid protection","taskGroup":"protect","audience":"server-managers","description":"Respond to unusual join bursts while keeping operators in control."},
-  "protection.join_gate": {"slug":"protect/join-gate","title":"Join gate","taskGroup":"welcome","audience":"server-managers","description":"Give new members a safer, explainable entry path."},
-  "community.levels": {"slug":"roles-and-progression/levels","title":"Levels and XP","taskGroup":"progress","audience":"community-managers","description":"Reward healthy participation with a progression system you can tune."},
-  "community.leaderboard": {"slug":"roles-and-progression/leaderboard","title":"XP leaderboard","taskGroup":"progress","audience":"community-managers","description":"Show community progress with privacy-aware controls."},
-  "community.starboard": {"slug":"community/starboard","title":"Starboard","taskGroup":"community","audience":"community-managers","description":"Highlight messages that the community values."},
-  "community.suggestions": {"slug":"community/suggestions","title":"Suggestions","taskGroup":"community","audience":"community-managers","description":"Collect ideas, votes and decisions in one visible flow."},
-  "community.giveaways": {"slug":"community/giveaways","title":"Giveaways","taskGroup":"community","audience":"community-managers","description":"Run bounded, auditable giveaways with safe entry rules."},
-  "community.role_panels": {"slug":"roles-and-progression/role-panels","title":"Role panels","taskGroup":"progress","audience":"community-managers","description":"Let members choose approved roles through buttons or menus."},
-  "community.events": {"slug":"community/events","title":"Server events","taskGroup":"community","audience":"community-managers","description":"Plan events, registrations and reminders from one workflow."},
-  "community.achievements": {"slug":"roles-and-progression/achievements","title":"Achievements","taskGroup":"progress","audience":"community-managers","description":"Turn meaningful participation into milestones and rewards."},
-  "community.birthdays": {"slug":"welcome/birthdays","title":"Birthdays","taskGroup":"welcome","audience":"community-managers","description":"Celebrate members without requiring a birth year."},
-  "community.economy": {"slug":"community/economy","title":"Community economy","taskGroup":"community","audience":"community-managers","description":"Manage an auditable points economy with bounded rewards."},
-  "support.tickets": {"slug":"support/tickets","title":"Support tickets","taskGroup":"support","audience":"support-teams","description":"Turn member requests into private, trackable support conversations."},
-  "support.welcome": {"slug":"welcome/members","title":"Welcome messages","taskGroup":"welcome","audience":"server-managers","description":"Greet new members with a message, optional DM and safe role assignment."},
-  "support.welcome_channel": {"slug":"welcome/guided-channel","title":"Guided welcome channel","taskGroup":"welcome","audience":"server-managers","description":"Give newcomers rules and first steps in a focused channel."},
-  "management.nickname": {"slug":"management/nickname","title":"Nickname","taskGroup":"manage","audience":"server-managers","description":"Set the name the Helper displays in this server."},
-  "management.workflows": {"slug":"automate/workflows","title":"Automations","taskGroup":"automate","audience":"server-managers","description":"Connect a bounded trigger to an approved response without code."},
-  "management.polls": {"slug":"community/polls","title":"Polls","taskGroup":"community","audience":"community-managers","description":"Ask a focused question and keep its result auditable."},
-  "management.moderation": {"slug":"manage/moderation","title":"Moderation","taskGroup":"manage","audience":"moderators","description":"Apply consistent moderation actions with policy and hierarchy checks."},
-  "management.custom_commands": {"slug":"automate/custom-commands","title":"Custom commands","taskGroup":"automate","audience":"server-managers","description":"Create reusable responses with safe variables and permissions."},
-  "management.audit": {"slug":"manage/audit","title":"Audit and permissions","taskGroup":"manage","audience":"moderators","description":"Understand important changes and why an action was allowed or blocked."},
-  "management.privacy": {"slug":"security/privacy","title":"Privacy and data","taskGroup":"manage","audience":"server-managers","description":"Review, export and remove server data safely."},
-  "management.templates": {"slug":"manage/templates","title":"Templates and import","taskGroup":"manage","audience":"server-managers","description":"Reuse configurations with a visible diff and resource mapping."},
-  "management.invite_tracker": {"slug":"community/invite-tracker","title":"Invite tracker","taskGroup":"community","audience":"community-managers","description":"Understand which invite campaigns bring members to your server."},
-  "utility.help": {"slug":"manage/help","title":"Help and diagnostics","taskGroup":"manage","audience":"everyone","description":"Find the right command, module and next troubleshooting step."},
-  "utility.reminders": {"slug":"automate/reminders","title":"Reminders","taskGroup":"automate","audience":"everyone","description":"Schedule one-off or recurring reminders with an explicit timezone."},
-  "utility.emojis": {"slug":"community/emojis","title":"Emoji management","taskGroup":"community","audience":"server-managers","description":"Review and manage server emojis within Discord limits."},
-  "utility.embeds": {"slug":"automate/embeds","title":"Message and embed builder","taskGroup":"automate","audience":"server-managers","description":"Create bounded messages with a Discord-like preview."},
-  "utility.search": {"slug":"utilities/search","title":"Safe search","taskGroup":"alerts","audience":"everyone","description":"Search only approved providers instead of fetching arbitrary websites."},
-  "utility.temp_channels": {"slug":"community/temporary-channels","title":"Temporary channels","taskGroup":"community","audience":"server-managers","description":"Create voice rooms that clean themselves up after ownership ends."},
-  "insights.stats": {"slug":"activity/statistics-channels","title":"Statistics channels","taskGroup":"activity","audience":"server-managers","description":"Keep counters useful, fresh and clearly labelled."},
-  "studio.rank_card": {"slug":"roles-and-progression/xp-card","title":"XP card","taskGroup":"progress","audience":"community-managers","description":"Personalise the XP card with curated backgrounds, colours and typography."},
-  "social.youtube": {"slug":"alerts/youtube","title":"YouTube alerts","taskGroup":"alerts","audience":"creators","description":"Notify a Discord channel when an approved YouTube source changes."},
-  "social.twitch": {"slug":"alerts/twitch","title":"Twitch alerts","taskGroup":"alerts","audience":"creators","description":"Deliver verified Twitch EventSub notifications with deduplication."},
-  "social.rss": {"slug":"alerts/rss","title":"RSS alerts","taskGroup":"alerts","audience":"creators","description":"Watch a validated RSS or Atom feed with safe polling."},
-  "social.podcasts": {"slug":"alerts/podcasts","title":"Podcast alerts","taskGroup":"alerts","audience":"creators","description":"Reuse feed delivery for new podcast episodes and metadata."},
-  "social.bluesky": {"slug":"alerts/bluesky","title":"Bluesky alerts","taskGroup":"alerts","audience":"creators","description":"Follow approved public Bluesky sources with cursor-aware delivery."},
-  "social.instagram": {"slug":"alerts/instagram","title":"Instagram alerts","taskGroup":"alerts","audience":"creators","description":"Planned support for authorised professional Instagram accounts."},
-  "social.reddit": {"slug":"alerts/reddit","title":"Reddit alerts","taskGroup":"alerts","audience":"creators","description":"Planned support subject to official API and commercial-use approval."},
-  "social.x": {"slug":"alerts/x","title":"X alerts","taskGroup":"alerts","audience":"creators","description":"Planned support through the official X API and its current pricing limits."},
-  "social.tiktok": {"slug":"alerts/tiktok","title":"TikTok alerts","taskGroup":"alerts","audience":"creators","description":"Planned support for creators who authorise the official Display API."},
-  "social.kick": {"slug":"alerts/kick","title":"Kick alerts","taskGroup":"alerts","audience":"creators","description":"Planned support through an approved Kick integration."},
-  "growth.monetization": {"slug":"growth/monetization","title":"Server monetization","taskGroup":"manage","audience":"server-owners","description":"Planned server payments and entitlement delivery with compliance controls."},
-  "web3.nft_stats": {"slug":"web3/nft-statistics","title":"NFT statistics","taskGroup":"web3","audience":"advanced","description":"Planned read-only collection statistics with provider freshness."},
-  "web3.nft_queries": {"slug":"web3/nft-queries","title":"NFT queries","taskGroup":"web3","audience":"advanced","description":"Planned bounded NFT lookups through approved APIs."},
-  "web3.nft_sales": {"slug":"web3/nft-sales","title":"NFT sales and listings","taskGroup":"web3","audience":"advanced","description":"Planned read-only sales and listing alerts with deduplication."},
-  "web3.crypto_stats": {"slug":"web3/crypto-statistics","title":"Crypto statistics","taskGroup":"web3","audience":"advanced","description":"Read-only market data with timestamps and provider health."},
-  "web3.crypto_queries": {"slug":"web3/crypto-queries","title":"Crypto queries","taskGroup":"web3","audience":"advanced","description":"Planned bounded crypto lookups with rate-limit awareness."},
-  "web3.gas_tracker": {"slug":"web3/gas-tracker","title":"Gas tracker","taskGroup":"web3","audience":"advanced","description":"Planned multi-network gas readings with cache and failover."},
-  "web3.gating": {"slug":"web3/wallet-gating","title":"Wallet access","taskGroup":"web3","audience":"advanced","description":"Planned signature-only wallet checks; the Helper will never request a seed phrase."}
+  "protection.antispam": {
+    "slug": "protect/spam",
+    "title": "Spam protection",
+    "taskGroup": "protect",
+    "audience": "server-managers",
+    "description": "Stop repeated messages and disruptive bursts with a clear, reviewable policy."
+  },
+  "protection.antiscam": {
+    "slug": "protect/scam",
+    "title": "Scam protection",
+    "taskGroup": "protect",
+    "audience": "server-managers",
+    "description": "Identify suspicious links and phishing patterns without pretending to be an antivirus."
+  },
+  "protection.anti_raid": {
+    "slug": "protect/raid",
+    "title": "Raid protection",
+    "taskGroup": "protect",
+    "audience": "server-managers",
+    "description": "Respond to unusual join bursts while keeping operators in control."
+  },
+  "protection.join_gate": {
+    "slug": "protect/join-gate",
+    "title": "Join gate",
+    "taskGroup": "welcome",
+    "audience": "server-managers",
+    "description": "Give new members a safer, explainable entry path."
+  },
+  "community.levels": {
+    "slug": "roles-and-progression/levels",
+    "title": "Levels and XP",
+    "taskGroup": "progress",
+    "audience": "community-managers",
+    "description": "Reward healthy participation with a progression system you can tune."
+  },
+  "community.leaderboard": {
+    "slug": "roles-and-progression/leaderboard",
+    "title": "XP leaderboard",
+    "taskGroup": "progress",
+    "audience": "community-managers",
+    "description": "Show community progress with privacy-aware controls."
+  },
+  "community.starboard": {
+    "slug": "community/starboard",
+    "title": "Starboard",
+    "taskGroup": "community",
+    "audience": "community-managers",
+    "description": "Highlight messages that the community values."
+  },
+  "community.suggestions": {
+    "slug": "community/suggestions",
+    "title": "Suggestions",
+    "taskGroup": "community",
+    "audience": "community-managers",
+    "description": "Collect ideas, votes and decisions in one visible flow."
+  },
+  "community.giveaways": {
+    "slug": "community/giveaways",
+    "title": "Giveaways",
+    "taskGroup": "community",
+    "audience": "community-managers",
+    "description": "Run bounded, auditable giveaways with safe entry rules."
+  },
+  "community.role_panels": {
+    "slug": "roles-and-progression/role-panels",
+    "title": "Role panels",
+    "taskGroup": "progress",
+    "audience": "community-managers",
+    "description": "Let members choose approved roles through buttons or menus."
+  },
+  "community.events": {
+    "slug": "community/events",
+    "title": "Server events",
+    "taskGroup": "community",
+    "audience": "community-managers",
+    "description": "Plan events, registrations and reminders from one workflow."
+  },
+  "community.achievements": {
+    "slug": "roles-and-progression/achievements",
+    "title": "Achievements",
+    "taskGroup": "progress",
+    "audience": "community-managers",
+    "description": "Turn meaningful participation into milestones and rewards."
+  },
+  "community.birthdays": {
+    "slug": "welcome/birthdays",
+    "title": "Birthdays",
+    "taskGroup": "welcome",
+    "audience": "community-managers",
+    "description": "Celebrate members without requiring a birth year."
+  },
+  "community.economy": {
+    "slug": "community/economy",
+    "title": "Community economy",
+    "taskGroup": "community",
+    "audience": "community-managers",
+    "description": "Manage an auditable points economy with bounded rewards."
+  },
+  "support.tickets": {
+    "slug": "support/tickets",
+    "title": "Support tickets",
+    "taskGroup": "support",
+    "audience": "support-teams",
+    "description": "Turn member requests into private, trackable support conversations."
+  },
+  "support.welcome": {
+    "slug": "welcome/members",
+    "title": "Welcome messages",
+    "taskGroup": "welcome",
+    "audience": "server-managers",
+    "description": "Greet new members with a message, optional DM and safe role assignment."
+  },
+  "support.welcome_channel": {
+    "slug": "welcome/guided-channel",
+    "title": "Guided welcome channel",
+    "taskGroup": "welcome",
+    "audience": "server-managers",
+    "description": "Give newcomers rules and first steps in a focused channel."
+  },
+  "management.nickname": {
+    "slug": "management/nickname",
+    "title": "Nickname",
+    "taskGroup": "manage",
+    "audience": "server-managers",
+    "description": "Set the name the Helper displays in this server."
+  },
+  "management.workflows": {
+    "slug": "automate/workflows",
+    "title": "Automations",
+    "taskGroup": "automate",
+    "audience": "server-managers",
+    "description": "Connect a bounded trigger to an approved response without code."
+  },
+  "management.polls": {
+    "slug": "community/polls",
+    "title": "Polls",
+    "taskGroup": "community",
+    "audience": "community-managers",
+    "description": "Ask a focused question and keep its result auditable."
+  },
+  "management.moderation": {
+    "slug": "manage/moderation",
+    "title": "Moderation",
+    "taskGroup": "manage",
+    "audience": "moderators",
+    "description": "Apply consistent moderation actions with policy and hierarchy checks."
+  },
+  "management.custom_commands": {
+    "slug": "automate/custom-commands",
+    "title": "Custom commands",
+    "taskGroup": "automate",
+    "audience": "server-managers",
+    "description": "Create reusable responses with safe variables and permissions."
+  },
+  "management.audit": {
+    "slug": "manage/audit",
+    "title": "Audit and permissions",
+    "taskGroup": "manage",
+    "audience": "moderators",
+    "description": "Understand important changes and why an action was allowed or blocked."
+  },
+  "management.privacy": {
+    "slug": "security/privacy",
+    "title": "Privacy and data",
+    "taskGroup": "manage",
+    "audience": "server-managers",
+    "description": "Review, export and remove server data safely."
+  },
+  "management.templates": {
+    "slug": "manage/templates",
+    "title": "Templates and import",
+    "taskGroup": "manage",
+    "audience": "server-managers",
+    "description": "Reuse configurations with a visible diff and resource mapping."
+  },
+  "management.invite_tracker": {
+    "slug": "community/invite-tracker",
+    "title": "Invite tracker",
+    "taskGroup": "community",
+    "audience": "community-managers",
+    "description": "Understand which invite campaigns bring members to your server."
+  },
+  "utility.help": {
+    "slug": "manage/help",
+    "title": "Help and diagnostics",
+    "taskGroup": "manage",
+    "audience": "everyone",
+    "description": "Find the right command, module and next troubleshooting step."
+  },
+  "utility.reminders": {
+    "slug": "automate/reminders",
+    "title": "Reminders",
+    "taskGroup": "automate",
+    "audience": "everyone",
+    "description": "Schedule one-off or recurring reminders with an explicit timezone."
+  },
+  "utility.emojis": {
+    "slug": "community/emojis",
+    "title": "Emoji management",
+    "taskGroup": "community",
+    "audience": "server-managers",
+    "description": "Review and manage server emojis within Discord limits."
+  },
+  "utility.embeds": {
+    "slug": "automate/embeds",
+    "title": "Message and embed builder",
+    "taskGroup": "automate",
+    "audience": "server-managers",
+    "description": "Create bounded messages with a Discord-like preview."
+  },
+  "utility.search": {
+    "slug": "utilities/search",
+    "title": "Safe search",
+    "taskGroup": "alerts",
+    "audience": "everyone",
+    "description": "Search only approved providers instead of fetching arbitrary websites."
+  },
+  "utility.temp_channels": {
+    "slug": "community/temporary-channels",
+    "title": "Temporary channels",
+    "taskGroup": "community",
+    "audience": "server-managers",
+    "description": "Create voice rooms that clean themselves up after ownership ends."
+  },
+  "insights.stats": {
+    "slug": "activity/statistics-channels",
+    "title": "Statistics channels",
+    "taskGroup": "activity",
+    "audience": "server-managers",
+    "description": "Keep counters useful, fresh and clearly labelled."
+  },
+  "studio.rank_card": {
+    "slug": "roles-and-progression/xp-card",
+    "title": "XP card",
+    "taskGroup": "progress",
+    "audience": "community-managers",
+    "description": "Personalise the XP card with curated backgrounds, colours and typography."
+  },
+  "social.youtube": {
+    "slug": "alerts/youtube",
+    "title": "YouTube alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Notify a Discord channel when an approved YouTube source changes."
+  },
+  "social.twitch": {
+    "slug": "alerts/twitch",
+    "title": "Twitch alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Deliver verified Twitch EventSub notifications with deduplication."
+  },
+  "social.rss": {
+    "slug": "alerts/rss",
+    "title": "RSS alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Watch a validated RSS or Atom feed with safe polling."
+  },
+  "social.podcasts": {
+    "slug": "alerts/podcasts",
+    "title": "Podcast alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Reuse feed delivery for new podcast episodes and metadata."
+  },
+  "social.bluesky": {
+    "slug": "alerts/bluesky",
+    "title": "Bluesky alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Follow approved public Bluesky sources with cursor-aware delivery."
+  },
+  "social.instagram": {
+    "slug": "alerts/instagram",
+    "title": "Instagram alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Planned support for authorised professional Instagram accounts."
+  },
+  "social.tiktok": {
+    "slug": "alerts/tiktok",
+    "title": "TikTok alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Planned support for creators who authorise the official Display API."
+  },
+  "social.kick": {
+    "slug": "alerts/kick",
+    "title": "Kick alerts",
+    "taskGroup": "alerts",
+    "audience": "creators",
+    "description": "Planned support through an approved Kick integration."
+  },
+  "growth.monetization": {
+    "slug": "growth/monetization",
+    "title": "Server monetization",
+    "taskGroup": "manage",
+    "audience": "server-owners",
+    "description": "Planned server payments and entitlement delivery with compliance controls."
+  },
+  "web3.crypto_stats": {
+    "slug": "web3/crypto-statistics",
+    "title": "Crypto statistics",
+    "taskGroup": "web3",
+    "audience": "advanced",
+    "description": "Read-only market data with timestamps and provider health."
+  },
+  "web3.crypto_queries": {
+    "slug": "web3/crypto-queries",
+    "title": "Crypto queries",
+    "taskGroup": "web3",
+    "audience": "advanced",
+    "description": "Planned bounded crypto lookups with rate-limit awareness."
+  },
+  "web3.gas_tracker": {
+    "slug": "web3/gas-tracker",
+    "title": "Gas tracker",
+    "taskGroup": "web3",
+    "audience": "advanced",
+    "description": "Planned multi-network gas readings with cache and failover."
+  },
+  "web3.gating": {
+    "slug": "web3/wallet-gating",
+    "title": "Wallet access",
+    "taskGroup": "web3",
+    "audience": "advanced",
+    "description": "Planned signature-only wallet checks; the Helper will never request a seed phrase."
+  }
 }
