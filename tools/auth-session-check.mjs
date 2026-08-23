@@ -20,6 +20,10 @@ assert.match(main, /setStoredToken\(fromHash\.token\)/);
 assert.match(main, /if \(storedToken\(\) === tok\) clearAuthCache\(\)/);
 assert.doesNotMatch(main, /await bootstrapHelperSession\((?:fromHash\.token|tok)\)/);
 assert.match(main, /fetchWithTimeout\(PREMIUM_API_BASE \+ "\/api\/me\/premium"/);
+assert.match(main, /let panelLoadRevision = 0/);
+assert.match(main, /if \(panelState\.mode !== "ok"\) setPanel\(\{ mode: "loading" \}\)/);
+assert.match(main, /loadRevision !== panelLoadRevision \|\| storedToken\(\) !== tok/);
+assert.match(main, /if \(panelState\.mode !== "ok"\) setPanel\(\{ mode: "error" \}\)/);
 assert.doesNotMatch(main, /if \(!IS_ACCOUNT \|\| helperSessionHandoffWired\)/);
 assert.match(main, /keepalive: true/);
 assert.match(main, /void bootstrapHelperSession\(token\);/);
@@ -30,6 +34,6 @@ assert.match(nav, /message\.revision >= currentAuthRevision\(\)/);
 assert.match(nav, /Number\.isSafeInteger\(message\.revision\) &&\s*message\.revision > 0/);
 assert.match(dashboard, /await waitForSharedSession\(\)/);
 assert.doesNotMatch(account, /data-vozen-stripe/);
-assert.match(account, /main-v51\.js[^"']*auth-race=1/);
+assert.match(account, /main-v51\.js[^"']*auth-race=2/);
 
 console.log('Shared auth and account loading contract passed.');

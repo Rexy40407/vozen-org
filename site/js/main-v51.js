@@ -1157,7 +1157,9 @@
     if (IS_ACCOUNT) void loadPanel();
   });
 
+  let panelLoadRevision = 0;
   async function loadPanel() {
+    const loadRevision = ++panelLoadRevision;
     if (IS_ACCOUNT_PREVIEW) {
       setPanel({
         mode: "ok",
@@ -1221,12 +1223,18 @@
       setPanel({ mode: "hidden" });
       return;
     }
-    setPanel({ mode: "loading" });
+    // Keep an already-rendered account visible while it is being refreshed. Replacing valid
+    // data with a skeleton on every cross-tab auth sync causes a visible flash, and a single
+    // transient network failure must not turn a healthy signed-in account into a fatal error.
+    if (panelState.mode !== "ok") setPanel({ mode: "loading" });
     try {
       const res = await fetchWithTimeout(PREMIUM_API_BASE + "/api/me/premium", {
         cache: "no-store",
         headers: { Authorization: "Bearer " + tok },
       });
+      // A newer refresh or token may have won while this request was in flight. Never let the
+      // stale response overwrite that newer state.
+      if (loadRevision !== panelLoadRevision || storedToken() !== tok) return;
       if (res.status === 401) {
         if (storedToken() === tok) clearAuthCache();
         else return;
@@ -1238,7 +1246,9 @@
         return;
       }
       if (!res.ok) throw new Error("http " + res.status);
-      setPanel({ mode: "ok", data: await res.json() });
+      const data = await res.json();
+      if (loadRevision !== panelLoadRevision || storedToken() !== tok) return;
+      setPanel({ mode: "ok", data });
       if (await resumeBillingReturn()) return;
       const purchase = readBillingIntent();
       if (purchase) {
@@ -1262,7 +1272,8 @@
         setClaimMessage(t("claim.resumeExpired"), "err");
       }
     } catch {
-      setPanel({ mode: "error" });
+      if (loadRevision !== panelLoadRevision || storedToken() !== tok) return;
+      if (panelState.mode !== "ok") setPanel({ mode: "error" });
     }
   }
 
