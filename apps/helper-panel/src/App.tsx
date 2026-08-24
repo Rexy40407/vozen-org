@@ -670,6 +670,14 @@ function localizedFeature(feature: Feature): Feature {
     ),
   };
 }
+
+function normalizeFeatureSearchText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase()
+    .trim();
+}
 function localizedIssue(issue: { code?: string; message?: string }): string {
   return issue.code
     ? helperT(`helper.issue.${issue.code}`, issue.message ?? helperT('helper.latestError', 'Latest error'))
@@ -2461,10 +2469,20 @@ function App() {
     route.page === 'detail' ? detailDirty : route.page === 'rank-card' ? rankDirty : false;
   const filteredFeatures = useMemo(() => {
     const unique = Array.from(new Map(features.map((item) => [item.key, item])).values());
+    const queryTokens = normalizeFeatureSearchText(search).split(/\s+/).filter(Boolean);
     return unique.filter(
-      (item) =>
-        (filter === 'all' || item.category === filter) &&
-        item.label.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+      (item) => {
+        if (filter !== 'all' && item.category !== filter) return false;
+        if (!queryTokens.length) return true;
+
+        const translated = localizedFeature(item);
+        const searchText = normalizeFeatureSearchText(
+          [item.key, item.label, item.description, translated.label, translated.description]
+            .filter(Boolean)
+            .join(' '),
+        );
+        return queryTokens.every((token) => searchText.includes(token));
+      },
     );
   }, [features, filter, search]);
   async function switchGuild(guildId: string, nextPath?: string) {
