@@ -27,13 +27,15 @@ assert.match(main, /if \(panelState\.mode !== "ok"\) setPanel\(\{ mode: "error" 
 assert.doesNotMatch(main, /if \(!IS_ACCOUNT \|\| helperSessionHandoffWired\)/);
 assert.match(main, /keepalive: true/);
 assert.match(main, /void bootstrapHelperSession\(token\);/);
-assert.doesNotMatch(main, /bootstrapHelperSession\(token\)\.finally\(\(\) => window\.location\.assign/);
+assert.match(main, /event\.preventDefault\(\);\s*void bootstrapHelperSession\(token\)\.finally/);
+assert.match(main, /window\.location\.assign\(href\)/);
+assert.match(main, /if \(!helperSessionReady\) helperSessionBridgePromise = null/);
 assert.match(nav, /new BroadcastChannel\(AUTH_CHANNEL_NAME\)/);
 assert.match(nav, /const AUTH_REV_KEY = ["']vozen\.ecosystem\.authrev["']/);
 assert.match(nav, /message\.revision >= currentAuthRevision\(\)/);
 assert.match(nav, /Number\.isSafeInteger\(message\.revision\) &&\s*message\.revision > 0/);
 assert.match(dashboard, /await waitForSharedSession\(\)/);
 assert.doesNotMatch(account, /data-vozen-stripe/);
-assert.match(account, /main-v51\.js[^"']*auth-race=2/);
+assert.match(account, /main-v51\.js[^"']*auth-race=3/);
 
 console.log('Shared auth and account loading contract passed.');

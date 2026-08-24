@@ -869,6 +869,9 @@
     writeSessionValue(TOK_KEY, token);
     writeSessionValue(AUTH_REV_KEY, String(revision));
     publishAuth({ type: "session", token, revision });
+    // Warm the Helper session as soon as Discord authentication succeeds. This
+    // avoids racing the cookie exchange against navigation to the dashboard.
+    void bootstrapHelperSession(token);
   }
   function clearAuthCache() {
     const revision = nextAuthRevision();
@@ -884,8 +887,10 @@
   // Establish the same-site Helper cookie before sending someone into the
   // dashboard so the panel does not ask for a second Discord login.
   let helperSessionBridgePromise = null;
+  let helperSessionReady = false;
   async function bootstrapHelperSession(token = storedToken()) {
     if (!token || !PREMIUM_API_BASE) return false;
+    if (helperSessionReady) return true;
     if (helperSessionBridgePromise) return helperSessionBridgePromise;
 
     const controller = typeof AbortController === "function" ? new AbortController() : null;
@@ -901,10 +906,14 @@
       body: JSON.stringify({ token }),
       ...(controller ? { signal: controller.signal } : {}),
     })
-      .then((response) => response.ok)
+      .then((response) => {
+        helperSessionReady = response.ok;
+        return helperSessionReady;
+      })
       .catch(() => false)
       .finally(() => {
         if (timer) window.clearTimeout(timer);
+        if (!helperSessionReady) helperSessionBridgePromise = null;
       });
 
     return helperSessionBridgePromise;
@@ -937,12 +946,22 @@
         const token = storedToken();
         if (!token) return;
 
-        // Do not make the account card wait on Discord. The panel checks the
-        // resulting cookie first and uses one bounded fallback only if needed.
-        void bootstrapHelperSession(token);
+        const href = target.href;
+        if (!href) return;
+
+        // Complete the bounded same-site cookie exchange before leaving the
+        // account page. Otherwise the navigation can cancel the request and
+        // the Helper immediately redirects back to /account/.
+        event.preventDefault();
+        void bootstrapHelperSession(token).finally(() => {
+          window.location.assign(href);
+        });
       },
       { capture: true },
     );
+
+    const token = storedToken();
+    if (token) void bootstrapHelperSession(token);
   }
 
   function cachedNavData() {
