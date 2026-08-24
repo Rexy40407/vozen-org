@@ -4100,7 +4100,7 @@ function Overview({
         <Metric value={String(enabled)} label={helperT('helper.activeFeatures', 'active features')} />
         <Metric value={String(stats.totalCases)} label={helperT('helper.moderationCases', 'moderation cases')} />
         <Metric value={String(cases.length)} label={helperT('helper.recentEvents', 'recent events')} />
-        <Metric value={quota.plan} label={helperT('helper.currentPlan', 'current plan')} />
+        <Metric value={quotaPlanLabel(quota.plan)} label={helperT('helper.currentPlan', 'current plan')} />
       </div>
       <section className="section-heading">
         <div>
@@ -4158,6 +4158,28 @@ function Overview({
     </>
   );
 }
+function quotaPlanLabel(value: unknown): string {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value);
+  }
+
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    const named = record.name ?? record.plan ?? record.tier;
+
+    if (typeof named === 'string' || typeof named === 'number') {
+      return String(named);
+    }
+
+    const firstKey = Object.keys(record)[0];
+    if (firstKey) {
+      return firstKey;
+    }
+  }
+
+  return 'Free';
+}
+
 function Metric({ value, label }: { value: string; label: string }) {
   return (
     <div className="metric card">
