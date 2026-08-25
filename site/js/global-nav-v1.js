@@ -5,6 +5,10 @@
   const hosts = document.querySelectorAll("[data-vozen-nav]");
   const AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
   const AUTH_REV_KEY = "vozen.ecosystem.authrev";
+  const AUTH_EXP_KEY = "vozen.ecosystem.authexp";
+  const AUTH_STORE_KEY = "vozen.ecosystem.auth.v2";
+  const AUTH_MAX_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+  const OAUTH_CLIENT_ID = String(window.VOZEN_ECOSYSTEM_OAUTH?.clientId || "").trim();
   const navLocale = () => {
     try {
       const value = localStorage.getItem("vozen.lang") || "en";
@@ -87,6 +91,56 @@
       else sessionStorage.setItem(key, value);
     } catch (_) {}
   };
+  const validToken = (value) => typeof value === "string" && /^[A-Za-z0-9._~-]{20,4096}$/.test(value);
+  const clearPersistentAuth = () => {
+    try { localStorage.removeItem(AUTH_STORE_KEY); } catch (_) {}
+  };
+  const readPersistentAuth = () => {
+    try {
+      const auth = JSON.parse(localStorage.getItem(AUTH_STORE_KEY) || "null");
+      const valid = auth
+        && auth.version === 2
+        && OAUTH_CLIENT_ID
+        && auth.clientId === OAUTH_CLIENT_ID
+        && validToken(auth.token)
+        && Number.isSafeInteger(auth.revision)
+        && auth.revision > 0
+        && Number.isFinite(auth.expiresAt)
+        && auth.expiresAt > Date.now()
+        && auth.expiresAt <= Date.now() + AUTH_MAX_TTL_MS;
+      if (!valid) {
+        clearPersistentAuth();
+        return null;
+      }
+      return auth;
+    } catch (_) {
+      clearPersistentAuth();
+      return null;
+    }
+  };
+  const persistAuth = (token, revision, expiresAt, nav) => {
+    if (!validToken(token) || !Number.isSafeInteger(revision) || revision <= 0) return;
+    try {
+      localStorage.setItem(AUTH_STORE_KEY, JSON.stringify({
+        version: 2,
+        clientId: OAUTH_CLIENT_ID,
+        token,
+        revision,
+        expiresAt,
+        nav: typeof nav === "string" ? nav : null,
+      }));
+    } catch (_) {}
+  };
+  const restorePersistentAuth = () => {
+    if (readSession("vozen.ecosystem.dtoken")) return;
+    const auth = readPersistentAuth();
+    if (!auth) return;
+    writeSession("vozen.ecosystem.dtoken", auth.token);
+    writeSession(AUTH_REV_KEY, String(auth.revision));
+    writeSession(AUTH_EXP_KEY, String(auth.expiresAt));
+    if (typeof auth.nav === "string") writeSession("vozen.navuser", auth.nav);
+  };
+  restorePersistentAuth();
   const currentAuthRevision = () => {
     const revision = Number(readSession(AUTH_REV_KEY));
     return Number.isSafeInteger(revision) && revision > 0 ? revision : 0;
@@ -282,7 +336,12 @@
         ) {
           writeSession("vozen.ecosystem.dtoken", message.token);
           writeSession(AUTH_REV_KEY, String(message.revision));
+          const expiresAt = Number(message.expiresAt);
+          if (Number.isFinite(expiresAt) && expiresAt > Date.now()) writeSession(AUTH_EXP_KEY, String(expiresAt));
           if (typeof message.nav === "string") writeSession("vozen.navuser", message.nav);
+          if (Number.isFinite(expiresAt) && expiresAt > Date.now()) {
+            persistAuth(message.token, message.revision, expiresAt, message.nav);
+          }
         } else if (
           message.type === "profile" &&
           Number.isSafeInteger(message.revision) &&
@@ -290,6 +349,11 @@
           message.revision >= currentAuthRevision()
         ) {
           writeSession("vozen.navuser", typeof message.nav === "string" ? message.nav : null);
+          const token = readSession("vozen.ecosystem.dtoken");
+          const expiresAt = Number(readSession(AUTH_EXP_KEY));
+          if (token && Number.isFinite(expiresAt) && expiresAt > Date.now()) {
+            persistAuth(token, currentAuthRevision(), expiresAt, message.nav);
+          }
         } else if (
           message.type === "logout" &&
           Number.isSafeInteger(message.revision) &&
@@ -298,7 +362,9 @@
         ) {
           writeSession("vozen.ecosystem.dtoken", null);
           writeSession("vozen.navuser", null);
+          writeSession(AUTH_EXP_KEY, null);
           writeSession(AUTH_REV_KEY, String(message.revision));
+          clearPersistentAuth();
         }
         renderDocsAccount();
       });

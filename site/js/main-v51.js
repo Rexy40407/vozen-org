@@ -678,9 +678,9 @@
      fragment (#access_token), limpamos o fragment e guardamos a sessão na aba. A API valida
      o token na Discord e devolve só o estado DESTE utilizador. Escondido enquanto
      PREMIUM_API_BASE estiver vazio. */
-  // Keep the site session separate from legacy TTS sessions. The token stays
-  // in sessionStorage; BroadcastChannel synchronizes already-open Vozen tabs
-  // without making the credential persistent in localStorage.
+  // Keep the site session separate from legacy TTS sessions. The live copy is
+  // kept in sessionStorage and a bounded localStorage envelope survives a tab
+  // or browser restart only until Discord's OAuth expiry time.
   const TOK_KEY = "vozen.ecosystem.dtoken";
   const LEGACY_TOK_KEY = "vozen.dtoken";
   const STATE_KEY = "vozen.oauthstate";
@@ -700,6 +700,10 @@
   const OAUTH_CLIENT_KEY = "vozen.oauth.client";
   const AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
   const AUTH_REV_KEY = "vozen.ecosystem.authrev";
+  const AUTH_EXP_KEY = "vozen.ecosystem.authexp";
+  const AUTH_STORE_KEY = "vozen.ecosystem.auth.v2";
+  const AUTH_DEFAULT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+  const AUTH_MAX_TTL_MS = 30 * 24 * 60 * 60 * 1000;
   let authChannel = null;
   function readSessionValue(key) {
     try {
@@ -721,6 +725,62 @@
   }
   function validSharedToken(value) {
     return typeof value === "string" && /^[A-Za-z0-9._~-]{20,4096}$/.test(value);
+  }
+  function normalizedExpiry(value, fallback = Date.now() + AUTH_DEFAULT_TTL_MS) {
+    const expiresAt = Number(value);
+    const now = Date.now();
+    return Number.isFinite(expiresAt) && expiresAt > now && expiresAt <= now + AUTH_MAX_TTL_MS
+      ? Math.floor(expiresAt)
+      : fallback;
+  }
+  function clearPersistentAuth() {
+    try { localStorage.removeItem(AUTH_STORE_KEY); } catch {}
+  }
+  function readPersistentAuth() {
+    try {
+      const auth = JSON.parse(localStorage.getItem(AUTH_STORE_KEY) || "null");
+      const valid =
+        auth &&
+        auth.version === 2 &&
+        auth.clientId === ECOSYSTEM_CLIENT_ID &&
+        validSharedToken(auth.token) &&
+        Number.isSafeInteger(auth.revision) &&
+        auth.revision > 0 &&
+        Number.isFinite(auth.expiresAt) &&
+        auth.expiresAt > Date.now() &&
+        auth.expiresAt <= Date.now() + AUTH_MAX_TTL_MS;
+      if (!valid) {
+        clearPersistentAuth();
+        return null;
+      }
+      return auth;
+    } catch {
+      clearPersistentAuth();
+      return null;
+    }
+  }
+  function persistAuth(token, revision, expiresAt, nav = readSessionValue(NAV_USER_KEY)) {
+    if (!validSharedToken(token) || !Number.isSafeInteger(revision) || revision <= 0) return;
+    try {
+      localStorage.setItem(AUTH_STORE_KEY, JSON.stringify({
+        version: 2,
+        clientId: ECOSYSTEM_CLIENT_ID,
+        token,
+        revision,
+        expiresAt,
+        nav: typeof nav === "string" ? nav : null,
+      }));
+    } catch {}
+  }
+  function restorePersistentAuth() {
+    const auth = readPersistentAuth();
+    if (!auth) return null;
+    writeSessionValue(TOK_KEY, auth.token);
+    writeSessionValue(AUTH_REV_KEY, String(auth.revision));
+    writeSessionValue(AUTH_EXP_KEY, String(auth.expiresAt));
+    writeSessionValue(OAUTH_CLIENT_KEY, ECOSYSTEM_CLIENT_ID);
+    if (typeof auth.nav === "string") writeSessionValue(NAV_USER_KEY, auth.nav);
+    return auth.token;
   }
   function currentAuthRevision() {
     const revision = Number(readSessionValue(AUTH_REV_KEY));
@@ -749,6 +809,7 @@
               token,
               nav: readSessionValue(NAV_USER_KEY),
               revision: currentAuthRevision(),
+              expiresAt: normalizedExpiry(readSessionValue(AUTH_EXP_KEY)),
             });
           }
           return;
@@ -763,7 +824,10 @@
         ) {
           writeSessionValue(TOK_KEY, message.token);
           writeSessionValue(AUTH_REV_KEY, String(message.revision));
+          const expiresAt = normalizedExpiry(message.expiresAt);
+          writeSessionValue(AUTH_EXP_KEY, String(expiresAt));
           if (typeof message.nav === "string") writeSessionValue(NAV_USER_KEY, message.nav);
+          persistAuth(message.token, message.revision, expiresAt, message.nav);
           window.dispatchEvent(new Event("vozen:authsync"));
           return;
         }
@@ -774,6 +838,8 @@
           message.revision >= currentAuthRevision()
         ) {
           writeSessionValue(NAV_USER_KEY, typeof message.nav === "string" ? message.nav : null);
+          const token = storedToken();
+          if (token) persistAuth(token, currentAuthRevision(), normalizedExpiry(readSessionValue(AUTH_EXP_KEY)), message.nav);
           window.dispatchEvent(new Event("vozen:authsync"));
           return;
         }
@@ -785,7 +851,9 @@
         ) {
           writeSessionValue(TOK_KEY, null);
           writeSessionValue(NAV_USER_KEY, null);
+          writeSessionValue(AUTH_EXP_KEY, null);
           writeSessionValue(AUTH_REV_KEY, String(message.revision));
+          clearPersistentAuth();
           window.dispatchEvent(new Event("vozen:authsync"));
         }
       });
@@ -805,6 +873,7 @@
         sessionStorage.removeItem(NAV_USER_KEY);
         sessionStorage.removeItem(STATE_KEY);
         sessionStorage.removeItem(AUTH_REV_KEY);
+        sessionStorage.removeItem(AUTH_EXP_KEY);
         sessionStorage.removeItem("vozen.returnTo");
       }
       sessionStorage.setItem(OAUTH_CLIENT_KEY, ECOSYSTEM_CLIENT_ID);
@@ -863,12 +932,24 @@
     '<svg viewBox="0 0 24 18" width="20" height="15" aria-hidden="true" fill="currentColor"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg>';
 
   function storedToken() {
-    return readSessionValue(TOK_KEY);
+    const token = readSessionValue(TOK_KEY);
+    const expiresAt = Number(readSessionValue(AUTH_EXP_KEY));
+    if (validSharedToken(token) && (!Number.isFinite(expiresAt) || expiresAt <= 0 || expiresAt > Date.now())) return token;
+    if (token) {
+      writeSessionValue(TOK_KEY, null);
+      writeSessionValue(NAV_USER_KEY, null);
+      writeSessionValue(AUTH_EXP_KEY, null);
+      clearPersistentAuth();
+    }
+    return restorePersistentAuth();
   }
-  function setStoredToken(token, revision = nextAuthRevision()) {
+  function setStoredToken(token, revision = nextAuthRevision(), expiresAt = Date.now() + AUTH_DEFAULT_TTL_MS) {
+    expiresAt = normalizedExpiry(expiresAt);
     writeSessionValue(TOK_KEY, token);
     writeSessionValue(AUTH_REV_KEY, String(revision));
-    publishAuth({ type: "session", token, revision });
+    writeSessionValue(AUTH_EXP_KEY, String(expiresAt));
+    persistAuth(token, revision, expiresAt);
+    publishAuth({ type: "session", token, revision, expiresAt });
     // Warm the Helper session as soon as Discord authentication succeeds. This
     // avoids racing the cookie exchange against navigation to the dashboard.
     void bootstrapHelperSession(token);
@@ -879,7 +960,9 @@
     writeSessionValue(LEGACY_TOK_KEY, null);
     writeSessionValue("vozen.dashboardAuth", null);
     writeSessionValue(NAV_USER_KEY, null);
+    writeSessionValue(AUTH_EXP_KEY, null);
     writeSessionValue(AUTH_REV_KEY, String(revision));
+    clearPersistentAuth();
     publishAuth({ type: "logout", revision });
   }
 
@@ -979,6 +1062,8 @@
       if (data && data.user) {
         const nav = JSON.stringify({ user: data.user });
         writeSessionValue(NAV_USER_KEY, nav);
+        const token = storedToken();
+        if (token) persistAuth(token, currentAuthRevision(), normalizedExpiry(readSessionValue(AUTH_EXP_KEY)), nav);
         publishAuth({ type: "profile", nav, revision: currentAuthRevision() });
       } else {
         writeSessionValue(NAV_USER_KEY, null);
@@ -1104,6 +1189,7 @@
     if (!location.hash || location.hash.length < 2) return null;
     const p = new URLSearchParams(location.hash.slice(1));
     const tok = p.get("access_token");
+    const expiresIn = Number(p.get("expires_in"));
     const isOAuthResponse = p.has("access_token") || p.has("error") || p.has("error_description") || p.has("state");
     if (!isOAuthResponse) return null;
     const st = p.get("state");
@@ -1127,7 +1213,10 @@
       oauthReturnMessage = "This login response expired or was not started by Vozen. Select Log in to try again.";
       return null;
     }
-    return { token: tok, state: st };
+    const expiresAt = normalizedExpiry(
+      Number.isFinite(expiresIn) && expiresIn > 0 ? Date.now() + expiresIn * 1000 : null,
+    );
+    return { token: tok, state: st, expiresAt };
   }
 
   // The activation intent is consumed before any replay. It is tied to the OAuth state, expires
@@ -1207,7 +1296,7 @@
       return;
     }
     if (fromHash) {
-      setStoredToken(fromHash.token);
+      setStoredToken(fromHash.token, nextAuthRevision(), fromHash.expiresAt);
       let billingReturn = false;
       try { billingReturn = !!sessionStorage.getItem(BILLING_INTENT_KEY); } catch {}
       if (PAYMENTS_ENABLED && !IS_PREMIUM && billingReturn) {
