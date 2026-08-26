@@ -268,6 +268,17 @@ textarea:focus-visible {
   min-height: var(--panel-control-height);
 }
 
+/* The label remains the 44px touch target; the visual switch itself must not
+ * inherit the generic field height or it becomes a tall vertical control. */
+.panel-main .toggle-field input[type='checkbox'] {
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px;
+  height: 22px;
+  min-height: 22px;
+  padding: 0;
+}
+
 .panel-main .table {
   min-width: 0;
   overflow-x: auto;
