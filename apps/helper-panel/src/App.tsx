@@ -30,6 +30,7 @@ import {
   type YouTubeSubscriptionHealth,
 } from './api';
 import { docsProviderStatusUrl, docsTroubleshootingUrl, docsUrlForFeature } from './docs';
+import { bundledFeatureSchema } from './feature-contract-fallback';
 import { createLoadGuard, isAbortError } from './load-lifecycle';
 import {
   helperLocale,
@@ -1251,54 +1252,7 @@ const spec = (key: string): SectionSpec[] => {
         ],
       },
     ],
-    'protection.anti_raid': [
-      {
-        title: 'Join detection',
-        description: 'Set when the sequence of joins is considered the raid.',
-        fields: [
-          {
-            key: 'joinThreshold',
-            label: 'Joins to start an alert',
-            kind: 'number',
-            min: 2,
-            max: 100,
-          },
-          {
-            key: 'windowSeconds',
-            label: 'Time window (seconds)',
-            kind: 'number',
-            min: 3,
-            max: 60,
-          },
-          {
-            key: 'incidentMinutes',
-            label: 'Protection duration (minutes)',
-            kind: 'number',
-            min: 1,
-            max: 120,
-          },
-        ],
-      },
-      {
-        title: 'Response and recovery',
-        description: 'Choose the verification level and where the team is notified.',
-        fields: [
-          {
-            key: 'verification',
-            label: 'Verification level',
-            kind: 'select',
-            options: [
-              ['medium', 'medium'],
-              ['high', 'High'],
-              ['very_high', 'Very high'],
-            ],
-          },
-          { key: 'pauseInvites', label: 'Pause invites during the incident', kind: 'toggle' },
-          { key: 'alertOnly', label: 'Alert only', kind: 'toggle', advanced: true },
-          { key: 'alertChannel', label: 'Alert channel', kind: 'text', advanced: true },
-        ],
-      },
-    ],
+    'protection.anti_raid': bundledFeatureSchema('protection.anti_raid')!.sections as SectionSpec[],
     'protection.join_gate': [
       {
         title: 'Safe joining',
@@ -2251,33 +2205,38 @@ function App() {
   }, [me?.guildId, route.page]);
   useEffect(() => {
     if (route.page !== 'detail' || !route.key) return;
+    const featureKey = route.key;
     setDetailLoading(true);
-    // Production configuration must never be reconstructed from a stale
-    // client-side form.  Local defaults remain useful for the explicit
-    // preview mode, but the Rust adapter is the only source of truth for the
-    // deployed panel.
-    const fallback = localPreviewMode ? defaults[route.key] ?? {} : {};
+    // The Rust adapter remains the source of truth for live values and
+    // publishing. A versioned bundled contract keeps Anti-raid editable when
+    // the detail endpoint is temporarily unavailable or omits its schema.
+    const fallback = localPreviewMode ? defaults[featureKey] ?? {} : {};
+    const recoverySchema = bundledFeatureSchema(featureKey);
     if (localPreviewMode) {
       setDetailSchema(null);
       setDetailConfig({ ...fallback });
       setSavedDetailConfig({ ...fallback });
-      setDetailEnabled(features.find((item) => item.key === route.key)?.enabled ?? false);
+      setDetailEnabled(features.find((item) => item.key === featureKey)?.enabled ?? false);
       setDetailLoading(false);
       return;
     }
     const load = createLoadGuard();
     void api
-      .feature(route.key, { signal: load.signal })
+      .feature(featureKey, { signal: load.signal })
       .then((result) => {
         if (!load.isCurrent()) return;
-        setDetailSchema(result.schema ?? null);
+        const resolvedSchema = result.schema ?? recoverySchema;
+        setDetailSchema(resolvedSchema);
         const apiDefaults = result.defaults ?? {};
-        // The API adapter is the source of truth whenever it exposes a schema.
-        // Local specs are only a compatibility fallback for the explicit
-        // preview mode. In production, an API response without a schema is an
-        // adapter outage, not permission to invent controls in the browser.
-        const resolvedConfig = result.schema
-          ? configForSchema(result.schema, apiDefaults, result.config)
+        // Prefer the live adapter contract. The bundled contract is limited to
+        // Anti-raid and mirrors the adapter version; it never replaces the API
+        // for reads, writes or entitlement checks.
+        const resolvedConfig = resolvedSchema
+          ? configForSchema(
+              resolvedSchema,
+              recoverySchema ? { ...(defaults[featureKey] ?? {}), ...apiDefaults } : apiDefaults,
+              result.config,
+            )
           : localPreviewMode
             ? { ...fallback, ...apiDefaults, ...result.config }
             : { ...apiDefaults, ...result.config };
@@ -2286,7 +2245,7 @@ function App() {
         setDetailEnabled(result.enabled);
         setDetailRevision(result.revision ?? 0);
         setFeatures((items) => {
-          const current = items.find((item) => item.key === route.key);
+          const current = items.find((item) => item.key === featureKey);
           const premiumRequired = result.premiumRequired ?? current?.premium_required;
           const premiumUnlocked = result.premiumUnlocked ?? current?.premium_unlocked;
           if (
@@ -2298,7 +2257,7 @@ function App() {
             return items;
           }
           return items.map((item) =>
-            item.key === route.key
+            item.key === featureKey
               ? {
                   ...item,
                   enabled: result.enabled,
@@ -2311,10 +2270,15 @@ function App() {
       })
       .catch((cause) => {
         if (!load.isCurrent() || isAbortError(cause)) return;
-        setDetailSchema(null);
-        setDetailConfig(localPreviewMode ? { ...fallback } : {});
-        setSavedDetailConfig(localPreviewMode ? { ...fallback } : {});
-        setDetailEnabled(featuresRef.current.find((item) => item.key === route.key)?.enabled ?? false);
+        const recoveryConfig = recoverySchema
+          ? configForSchema(recoverySchema, defaults[featureKey] ?? {}, {})
+          : localPreviewMode
+            ? { ...fallback }
+            : {};
+        setDetailSchema(recoverySchema);
+        setDetailConfig(recoveryConfig);
+        setSavedDetailConfig(recoveryConfig);
+        setDetailEnabled(featuresRef.current.find((item) => item.key === featureKey)?.enabled ?? false);
         setDetailRevision(0);
       })
       .finally(() => {
