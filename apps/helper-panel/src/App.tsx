@@ -32,6 +32,7 @@ import {
 import { docsProviderStatusUrl, docsTroubleshootingUrl, docsUrlForFeature } from './docs';
 import { bundledFeatureSchema } from './feature-contract-fallback';
 import { createLoadGuard, isAbortError } from './load-lifecycle';
+import { isRoleResourceOptionDisabled, roleResourceLabel } from './role-resource';
 import {
   helperLocale,
   helperT,
@@ -5652,6 +5653,16 @@ function FieldControl({
       ? (context?.channels ?? []).filter((option) => option.type !== 'category')
       : (context?.roles ?? []);
   const multiple = field.kind === 'channels' || field.kind === 'roles';
+  const isRoleResource = field.kind === 'role' || field.kind === 'roles';
+  const selectedResourceIds = new Set(
+    (Array.isArray(normalized) ? normalized : [normalized])
+      .filter(
+        (item): item is string | number =>
+          typeof item === 'string' || typeof item === 'number',
+      )
+      .map(String)
+      .filter(Boolean),
+  );
   if (field.kind === 'channel' || field.kind === 'category' || field.kind === 'channels' || field.kind === 'role' || field.kind === 'roles')
     return (
       <label className="field">
@@ -5670,7 +5681,26 @@ function FieldControl({
           disabled={!context?.capabilities.channelSelectors && (field.kind === 'channel' || field.kind === 'category' || field.kind === 'channels') || !context?.capabilities.roleSelectors && (field.kind === 'role' || field.kind === 'roles')}
         >
           {!multiple && <option value="">{helperT('helper.chooseResource', 'Choose a resource')}</option>}
-          {resourceOptions.map((option) => <option value={option.id} key={option.id}>{field.kind === 'role' || field.kind === 'roles' ? `@${option.name}` : field.kind === 'category' ? `▾ ${option.name}` : `#${option.name}`}</option>)}
+          {resourceOptions.map((option) => {
+            const roleOption = isRoleResource && 'manageable' in option ? option : null;
+            return (
+              <option
+                value={option.id}
+                key={option.id}
+                disabled={
+                  roleOption
+                    ? isRoleResourceOptionDisabled(roleOption, selectedResourceIds)
+                    : false
+                }
+              >
+                {roleOption
+                  ? roleResourceLabel(roleOption)
+                  : field.kind === 'category'
+                    ? `▾ ${option.name}`
+                    : `#${option.name}`}
+              </option>
+            );
+          })}
         </select>
       </label>
     );
