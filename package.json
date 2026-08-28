@@ -3,16 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "docs:build": "node tools/generate-module-pages.mjs && eleventy --config=.eleventy.cjs && node tools/build-docs-search.mjs && node tools/enrich-site-metadata.mjs && node tools/generate-site-index.mjs",
+    "docs:build": "node tools/generate-module-pages.mjs && eleventy --config=.eleventy.cjs && node tools/build-docs-search.mjs && node tools/enrich-site-metadata.mjs && node tools/generate-site-index.mjs && node tools/build-marketing-i18n.mjs",
     "docs:test": "node tools/docs-test.mjs",
     "docs:links": "node tools/docs-links.mjs",
     "docs:a11y": "node tools/docs-a11y.mjs",
-    "site:check": "node tools/site-meta-check.mjs",
+    "site:check": "node tools/site-meta-check.mjs && node tools/build-marketing-i18n.mjs --check",
     "helper-tracker:check": "node tools/helper-tracker-check.mjs",
     "helper-panel:redirect-check": "node tools/helper-panel-redirect-check.mjs",
     "helper-panel:vozen-session-check": "node tools/helper-panel-vozen-session-check.mjs",
     "product-install:check": "node tools/product-install-flow-check.mjs",
     "auth-session:check": "node tools/auth-session-check.mjs",
+    "build:i18n:marketing": "node tools/build-marketing-i18n.mjs",
     "build": "npm run docs:build"
   },
   "devDependencies": {

@@ -7,6 +7,8 @@
 - [Vozen TTS](https://vozen.org/tts/): voice and reading tools for Discord channels.
 - [Vozen Helper](https://vozen.org/helper/): moderation, community, support and server-operation tools.
 - [Vozen Helper documentation](https://vozen.org/docs/helper/): public setup and troubleshooting guides.
+- [TTS without a microphone](https://vozen.org/guides/discord-without-a-mic/): a practical typed-to-voice Discord guide.
+- [Vozen Helper first modules](https://vozen.org/guides/helper-moderation-tickets-roles/): moderation, tickets and role-panel setup.
 
 ## Account and support
 

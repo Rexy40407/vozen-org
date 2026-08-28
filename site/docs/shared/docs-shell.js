@@ -131,6 +131,24 @@
     document.body.appendChild(navScript);
   }
 
+  function installPublicAnalytics() {
+    if (document.body.dataset.vozenPublicAnalytics !== "true") {
+      document.body.dataset.vozenPublicAnalytics = "true";
+    }
+    if (document.querySelector("script[data-vozen-analytics-config]")) return;
+
+    var config = document.createElement("script");
+    config.src = new URL("js/analytics-config.js?v=cf-web-analytics-v1", siteRoot).href;
+    config.dataset.vozenAnalyticsConfig = "true";
+    config.onload = function () {
+      var loader = document.createElement("script");
+      loader.src = new URL("js/web-analytics-v1.js?v=cf-web-analytics-v1", siteRoot).href;
+      loader.defer = true;
+      document.head.appendChild(loader);
+    };
+    document.head.appendChild(config);
+  }
+
   function isDocsUrl(value) {
     try {
       return /\/docs(?:\/|$)/i.test(new URL(value, window.location.href).pathname.replace(/\\/g, '/'));
@@ -723,6 +741,7 @@
     normalisePublicIndexAddress();
     normalisePublicIndexLinks();
     ensureCurrentShellStyles();
+    installPublicAnalytics();
     // Docs pages are static documents, so they do not load the main-site
     // runtime. Load the shared catalogue here as well; this keeps the docs
     // shell, search controls and ecosystem header on the same locale contract.

@@ -18,7 +18,7 @@
   const ACTIVATION_INTENT_KEY = "vozen.activationIntent";
   const BILLING_INTENT_KEY = "vozen.billingIntent";
   const ACTIVATION_INTENT_TTL_MS = 5 * 60 * 1000;
-  const INVITE_URL =
+  const FALLBACK_INVITE_URL =
     TTS_CLIENT_ID && TTS_CLIENT_ID !== "YOUR_CLIENT_ID"
       ? "/dashboard.html?add=1"
       : "#";
@@ -68,8 +68,15 @@
   // target=_blank links get rel=noopener noreferrer (reverse-tabnabbing defence). The static
   // HTML links already carry it; these JS-assigned ones must set it too (SEC audit S7).
   $$(".js-invite").forEach((a) => {
-    a.href = INVITE_URL;
-    if (INVITE_URL !== "#") {
+    const secureHref = typeof window.vozenTtsInstallHref === "function"
+      ? window.vozenTtsInstallHref(a.dataset.ttsInstallSource || "tts-hero")
+      : null;
+    const inviteHref = secureHref || FALLBACK_INVITE_URL;
+    a.href = inviteHref;
+    if (secureHref) {
+      a.removeAttribute("target");
+      a.removeAttribute("rel");
+    } else if (inviteHref !== "#") {
       a.target = "_blank";
       a.rel = "noopener noreferrer";
     }

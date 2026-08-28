@@ -1538,6 +1538,22 @@
     extra[locale] = Object.assign({}, extra[locale] || {}, helperPremiumGateAdditions[locale]);
   });
 
+  var ttsHeroAdditions = {
+    en: { "hero.title1": "No mic?", "hero.title2": "Stay in the conversation." },
+    pt: { "hero.title1": "Sem microfone?", "hero.title2": "Continua na conversa." },
+    fr: { "hero.title1": "Pas de micro ?", "hero.title2": "Restez dans la conversation." },
+    es: { "hero.title1": "¿Sin micrófono?", "hero.title2": "Sigue en la conversación." },
+    de: { "hero.title1": "Kein Mikro?", "hero.title2": "Bleib im Gespräch." },
+    tr: { "hero.title1": "Mikrofon yok mu?", "hero.title2": "Sohbette kal." },
+    ar: { "hero.title1": "لا ميكروفون؟", "hero.title2": "ابقَ في المحادثة." },
+    zh: { "hero.title1": "没有麦克风？", "hero.title2": "继续参与对话。" },
+    ru: { "hero.title1": "Нет микрофона?", "hero.title2": "Оставайтесь в разговоре." },
+    ko: { "hero.title1": "마이크가 없나요?", "hero.title2": "대화에 계속 참여하세요." }
+  };
+  Object.keys(ttsHeroAdditions).forEach(function (locale) {
+    extra[locale] = Object.assign({}, extra[locale] || {}, ttsHeroAdditions[locale]);
+  });
+
   var dictionary = window.VOZEN_I18N || {};
   Object.keys(extra).forEach(function (locale) {
     dictionary[locale] = Object.assign({}, dictionary[locale] || {}, extra[locale]);

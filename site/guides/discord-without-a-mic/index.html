@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#05060f">
+    <title>Use Discord without a microphone — Vozen TTS</title>
+    <meta name="description" content="Use Vozen TTS to keep up with a Discord voice conversation when you cannot use a microphone.">
+    <link rel="canonical" href="https://vozen.org/guides/discord-without-a-mic/">
+    <link rel="alternate" hreflang="en" href="https://vozen.org/guides/discord-without-a-mic/">
+    <link rel="alternate" hreflang="x-default" href="https://vozen.org/guides/discord-without-a-mic/">
+    <meta property="og:site_name" content="Vozen">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How to stay in a Discord voice conversation without a mic">
+    <meta property="og:description" content="A practical, privacy-respecting TTS setup for Discord voice channels.">
+    <meta property="og:url" content="https://vozen.org/guides/discord-without-a-mic/">
+    <meta property="og:image" content="https://vozen.org/assets/og-image.png">
+    <meta property="og:image:alt" content="Vozen Discord TTS">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to stay in a Discord voice conversation without a mic">
+    <meta name="twitter:description" content="A practical TTS setup for Discord voice channels.">
+    <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../css/guides-v1.css?v=1">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to stay in a Discord voice conversation without a mic","description":"A practical TTS setup for Discord voice channels.","url":"https://vozen.org/guides/discord-without-a-mic/","publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
+  </head>
+  <body data-vozen-public-analytics="true">
+    <a class="guide-skip" href="#main">Skip to content</a>
+    <header class="guide-shell guide-nav">
+      <a class="guide-brand" href="../../"><span aria-hidden="true">◈</span> Vozen <span>TTS</span></a>
+      <nav class="guide-navlinks" aria-label="Primary"><a href="../../tts/">TTS</a><a href="../../helper/">Helper</a><a href="../../docs/tts/getting-started/install/">Setup docs</a></nav>
+    </header>
+    <main id="main" class="guide-shell guide-main">
+      <section class="guide-hero">
+        <div>
+          <p class="guide-kicker">TTS GUIDE</p>
+          <h1>No mic? Stay in the Discord conversation.</h1>
+          <p class="guide-lede">Vozen reads your messages into the voice channel, so you can reply by typing when speaking is inconvenient or simply not possible.</p>
+          <div class="guide-actions"><a class="guide-button" href="../../dashboard.html?add=1" data-tts-install-source="tts-hero">Add Vozen to Discord</a><a class="guide-button guide-button--quiet" href="../../tts/#hear">Hear a voice sample</a></div>
+        </div>
+        <aside class="guide-card" aria-label="What you need">
+          <div class="guide-stat"><strong>Manage Server</strong><span>Needed only by the person adding and setting up Vozen.</span></div>
+          <div class="guide-stat"><strong>/setup</strong><span>Choose the text channel and verify the voice permissions.</span></div>
+          <div class="guide-stat"><strong>/join</strong><span>Join the same voice channel, then send a short test.</span></div>
+        </aside>
+      </section>
+
+      <section class="guide-section" aria-labelledby="steps-title">
+        <h2 id="steps-title">A calm first setup</h2>
+        <div class="guide-grid">
+          <article class="guide-step"><span class="guide-step__number">01</span><h3>Add it to one server</h3><p>Choose a server where you can manage the server. Discord shows the requested permissions before anything is installed.</p></article>
+          <article class="guide-step"><span class="guide-step__number">02</span><h3>Run <code>/setup</code></h3><p>Set a text channel you want read aloud. Keep the bot role below any role it needs to manage.</p></article>
+          <article class="guide-step"><span class="guide-step__number">03</span><h3>Make one small test</h3><p>Join voice with <code>/join</code>, type a short message, and adjust the voice only after the first playback works.</p></article>
+        </div>
+      </section>
+
+      <section class="guide-section guide-copy" aria-labelledby="use-title">
+        <h2 id="use-title">Use it without taking over the room</h2>
+        <p>Tell the people in the channel that a typed reply will be played aloud. Keep the first messages short and choose a voice that is easy to understand. Members can later choose their own language and voice; the server admin can keep automatic reading limited to the intended text channel.</p>
+        <ul class="guide-list"><li>Use a dedicated channel for frequent messages, so private or off-topic chat is not read accidentally.</li><li>Keep channel overrides explicit: Vozen needs to view the chosen text channel and connect/speak in the voice channel.</li><li>Use the dashboard or <code>/config</code> to tune behaviour only after the basic test succeeds.</li></ul>
+        <aside class="guide-note"><strong>Privacy reminder.</strong> Do not send passwords, access tokens or private account details to any Discord bot or setup flow. If audio does not play, review the channel permissions and retry <code>/setup</code>.</aside>
+      </section>
+    </main>
+    <footer class="guide-shell guide-footer">Vozen TTS for Discord.<nav aria-label="Footer"><a href="../../docs/tts/troubleshooting/no-audio/">No-audio troubleshooting</a><a href="../../privacy.html">Privacy</a><a href="../../terms.html">Terms</a></nav></footer>
+    <script defer src="../../js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="../../js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
+    <script defer src="../../js/install-config-v1.js?v=tts-install-v1"></script>
+    <script defer src="../../js/tts-install-v1.js?v=tts-install-v1"></script>
+  </body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org; media-src 'self'; form-action 'self'"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org; media-src 'self'; form-action 'self'"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -43,12 +43,12 @@
       <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
       <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Terms of Service — Vozen","description":"The terms for using the Vozen Discord TTS bot.","url":"https://vozen.org/terms","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
   </head>
-  <body data-vozen-static-page="terms">
+  <body data-vozen-static-page="terms" data-vozen-public-analytics="true">
     <div class="grain" aria-hidden="true"></div>
     <main class="legal">
       <a class="back" href="/" data-i18n="legal.back">← Back to Vozen</a>
       <h1 data-i18n="legal.termsTitle">Terms of Service — Vozen</h1>
-      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 20 July 2026</p>
+      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 28 August 2026</p>
 
       <p>
         By adding Vozen to a Discord server or using its commands, you agree to these terms.
@@ -88,7 +88,7 @@
         <li>Refund requests are assessed through the support server and processed through Stripe where approved. Nothing here limits mandatory consumer rights.</li>
         <li>Nothing here limits mandatory consumer rights. In the EU/EEA, a 14-day withdrawal right may apply to a distance contract and is lost early only if all legal conditions are met, including any required prior express consent and acknowledgement. Statutory conformity remedies remain unaffected.</li>
         <li>Prices, tiers, and included features may change prospectively, but a change will not reduce benefits already promised for a paid period unless required by applicable law or the purchase platform.</li>
-        <li><b>Top.gg vote promotion:</b> the first eligible, verified top.gg vote made by a Discord account grants <b>48 hours of Vozen Plus</b>, once per account for the lifetime of the promotion. Further votes, delivery retries, test events, and top.gg double-vote periods do not grant or extend Plus. The reward has no cash value, is not transferable, and may not be obtained through vote automation, alternate accounts used to evade the limit, or other abuse. We may change or end the promotion prospectively, but will not shorten an already-active reward merely because the promotion ends.</li>
+        <li><b>Top.gg vote promotion:</b> each eligible, verified top.gg vote grants <b>24 hours of Vozen Plus</b>. Rewards are limited to four grants in any rolling 30-day period and their combined expiry can never be more than 48 hours ahead. Provider delivery retries and duplicate events never grant a second reward. The reward has no cash value, is not transferable, and may not be obtained through vote automation, alternate accounts used to evade the limit, or other abuse. We may change or end the promotion prospectively, but will not shorten an already-active reward merely because the promotion ends.</li>
       </ul>
 
       <h2>Availability &amp; changes</h2>
@@ -117,8 +117,10 @@
         · <a href="/privacy">Privacy Policy</a>
       </p>
     </main>
+    <script defer src="js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
     <script defer src="js/i18n-v41.js"></script>
-    <script defer src="js/i18n-v42.js"></script>
+    <script defer src="js/i18n-marketing-v1.js?v=public-i18n-v1"></script>
     <script defer src="js/static-pages-i18n-v1.js"></script>
   </body>
 </html>

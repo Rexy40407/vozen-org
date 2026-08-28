@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://api.vozen.org; form-action 'self'"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://api.vozen.org; form-action 'self'"
     />
     <meta name="referrer" content="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -71,7 +71,7 @@
       <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
       <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Vozen service status","description":"Live health, latency and system checks for Vozen","url":"https://vozen.org/status","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
   </head>
-  <body>
+  <body data-vozen-public-analytics="true">
     <div class="grain" aria-hidden="true"></div>
     <main class="status-page">
       <div class="status-shell">
@@ -106,8 +106,10 @@
         </section>
       </div>
     </main>
+    <script defer src="js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
     <script defer src="js/i18n-v41.js"></script>
-    <script defer src="js/i18n-v42.js"></script>
+    <script defer src="js/i18n-marketing-v1.js?v=public-i18n-v1"></script>
     <script defer src="js/static-pages-i18n-v1.js"></script>
     <script defer src="js/status-v1.js"></script>
     <script defer src="js/motion-v1.js"></script>

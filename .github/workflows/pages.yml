@@ -48,6 +48,7 @@ jobs:
           npm run docs:links
           npm run docs:a11y
           npm run site:check
+          npm run product-install:check
       - name: Build Helper panel
         run: |
           npm ci --prefix apps/helper-panel

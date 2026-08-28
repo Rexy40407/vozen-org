@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org; form-action 'self'"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org; form-action 'self'"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,7 +37,7 @@
       <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
       <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Commands — Vozen","description":"Find every Vozen Discord command, with quick descriptions, options and access labels.","url":"https://vozen.org/commands/","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
   </head>
-  <body class="page-commands" data-i18n-document-title="commands.documentTitle">
+  <body class="page-commands" data-i18n-document-title="commands.documentTitle" data-vozen-public-analytics="true">
     <div class="grain" aria-hidden="true"></div>
     <div class="orbs" aria-hidden="true">
       <span class="orb orb--blurple"></span>
@@ -150,7 +150,7 @@
                   <li><code>/join</code><span>Join your current voice channel</span></li>
                   <li><code>/tts</code><span>Say something out loud</span></li>
                 </ol>
-                <a class="btn btn--discord-cta btn--sm" id="commandAsideCta" href="/dashboard.html?add=1">Add Vozen to Discord</a>
+                <a class="btn btn--discord-cta btn--sm" id="commandAsideCta" href="/dashboard.html?add=1" data-tts-install-source="commands">Add Vozen to Discord</a>
               </div>
               <div class="commands-aside__block">
                 <p class="command-finder__kicker">Reading the labels</p>
@@ -176,9 +176,13 @@
       <div class="wrap foot__base"><span>© 2026 Vozen</span><span class="foot__legal"><a href="../privacy.html" data-i18n="foot.privacy">Privacy</a><a href="../terms.html" data-i18n="foot.terms">Terms</a></span><span data-i18n="foot.legal">Not affiliated with Discord</span></div>
     </footer>
 
+    <script defer src="../js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="../js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
+    <script defer src="../js/install-config-v1.js?v=tts-install-v1"></script>
+    <script defer src="../js/tts-install-v1.js?v=tts-install-v1"></script>
     <script defer src="../js/global-nav-v1.js?v=ecosystem-nav-v15"></script>
     <script defer src="../js/i18n-v41.js"></script>
-    <script defer src="../js/i18n-v42.js?v=workspace-copy-1"></script>
+    <script defer src="../js/i18n-marketing-v1.js?v=public-i18n-v1"></script>
     <script defer src="../js/oauth-config.js?v=ecosystem-oauth-v3"></script>
     <script defer src="../js/main-v51.js?oauth=ecosystem-v3&auth-tabs=1&account-fast=1&auth-race=1"></script>
     <script defer src="../js/motion-v1.js"></script>

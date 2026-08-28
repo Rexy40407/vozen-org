@@ -14,13 +14,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07070d" />
-    <meta name="robots" content="noindex" />
     <meta
       name="description"
-      content="Vozen Helper is a Discord operations companion for safer, clearer server management. Explore its modules and setup path."
+      content="Vozen Helper combines moderation, tickets, roles, events and automations in one transparent Discord operations companion."
     />
     <link rel="canonical" href="https://vozen.org/helper/" />
-    <title>Vozen Helper — Available now</title>
+    <meta property="og:site_name" content="Vozen" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://vozen.org/helper/" />
+    <meta property="og:title" content="Vozen Helper — Discord operations without six bots" />
+    <meta property="og:description" content="Moderation, tickets, roles, events and automations with clear permissions and traceable actions." />
+    <meta property="og:image" content="https://vozen.org/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Vozen Helper, a Discord operations companion" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Vozen Helper — Discord operations without six bots" />
+    <meta name="twitter:description" content="Moderation, tickets, roles, events and automations with transparent permissions." />
+    <meta name="twitter:image" content="https://vozen.org/assets/og-image.png" />
+    <title>Vozen Helper — Discord operations without six bots</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="css/main-v43.css?v=nav-icons-v2" />
     <link rel="stylesheet" href="css/ecosystem-v1.css?v=popup-viewport-v2" />
@@ -36,7 +48,7 @@
       }
     </script>
   </head>
-  <body class="helper-page">
+  <body class="helper-page" data-vozen-public-analytics="true">
     <a class="eco-skip" href="#helper">Skip to content</a>
 
     <div data-vozen-nav data-nav-product="Helper" data-nav-current="helper"></div>
@@ -67,10 +79,10 @@
               </span>
               <span>Vozen Helper</span>
             </div>
-            <h1 id="helper-title"><span>A smarter hand</span><span>for your server.</span></h1>
-            <p class="helper-hero__lede">Safety, support, events, and everyday community work — coordinated by one calm Discord companion.</p>
+            <h1 id="helper-title"><span>Run your server</span><span>without six bots.</span></h1>
+            <p class="helper-hero__lede">Moderation, tickets, roles, events, and automations — coordinated by one transparent Discord companion.</p>
             <div class="helper-hero__actions">
-              <a class="helper-private-action" href="#setup"><span class="helper-private-action__dot" aria-hidden="true"></span> Get started with Helper</a>
+              <a class="helper-private-action js-helper-invite" href="https://api.vozen.org/rust/api/install/start?source=helper-hero"><span class="helper-private-action__dot" aria-hidden="true"></span> Get started with Helper</a>
               <a class="helper-explore-action" href="#modules">Explore the modules <span aria-hidden="true">↓</span></a>
             </div>
             <p class="helper-hero__proof">8 modules · scoped permissions · traceable actions</p>
@@ -163,7 +175,7 @@
               <span class="helper-kicker">Module map</span>
               <h2 id="modules-title">Choose the part of Helper you want to understand.</h2>
             </div>
-            <p>These are the runtime surfaces being shaped now. Nothing here opens a server or asks for an invite.</p>
+            <p>Every module starts with its purpose and permissions in plain language. Nothing here opens a server or asks for an invite.</p>
           </div>
 
           <div class="helper-explorer__layout">
@@ -231,7 +243,7 @@
                 <p class="helper-command"><span>Command surface</span><code>/rank</code><code>/leaderboard</code><code>/rolepanel</code><code>/suggest</code></p>
               </article>
               <article class="helper-module-panel" id="module-automate" role="tabpanel" aria-labelledby="helper-tab-automate" data-panel="automate" hidden>
-                <div class="helper-module-panel__top"><span class="helper-kicker">Automate</span><span class="helper-module-state">Bounded MVP</span></div>
+                <div class="helper-module-panel__top"><span class="helper-kicker">Automate</span><span class="helper-module-state">Bounded workflows</span></div>
                 <h3>Remove repeat work, keep the rule visible.</h3>
                 <p>Start with small message workflows: an optional contains condition, a reply action, and a dry-run before anything is enabled.</p>
                 <ul class="helper-feature-list"><li>Message trigger with optional condition</li><li>Reply action with durable workflow runs</li><li>Dry-run for safer iteration</li><li>Toggle and delete controls for owners</li></ul>
@@ -263,7 +275,7 @@
           </div>
           <ol class="helper-setup__steps">
             <li><span>01</span><div><h3>Choose modules</h3><p>Start with the work your server actually needs.</p></div></li>
-            <li><span>02</span><div><h3>Confirm permissions</h3><p>See why each permission exists before enabling it.</p></div></li>
+            <li><span>02</span><div><h3>Confirm permissions</h3><p>See why each permission exists before enabling it. Helper never asks for Administrator.</p></div></li>
             <li><span>03</span><div><h3>Configure and monitor</h3><p>Keep changes visible, reversible, and scoped to your server.</p></div></li>
           </ol>
         </section>
@@ -305,7 +317,7 @@
               <div class="seat-toggle plan-scope plan-scope--free"><span class="seat-toggle__btn is-active">forever</span></div>
               <div class="price-card__price"><span class="price-line"><b><span class="amt">&#8364;0</span></b></span><span class="per">forever</span></div>
               <ul class="ticks price-card__highlights" aria-label="Free plan highlights"><li>Spam, raid and join protection</li><li>Welcome messages and basic tickets</li><li>Basic roles, XP and activity tools</li><li>Essential logs, privacy and moderation</li><li>Suggestions, polls and reminders</li></ul>
-              <p class="price-card__note">Core features, free forever</p><a class="price-card__buy price-card__buy--free btn--discord-cta js-helper-invite" href="https://api.vozen.org/rust/api/install/start">Add to Discord</a><p class="price-card__idnote">Start with the essentials and add a plan later.</p>
+              <p class="price-card__note">Core features, free forever</p><a class="price-card__buy price-card__buy--free btn--discord-cta js-helper-invite" href="https://api.vozen.org/rust/api/install/start?source=helper-pricing">Add to Discord</a><p class="price-card__idnote">Start with the essentials and add a plan later.</p>
             </article>
             <div class="paid-plans">
               <article class="price-card price-card--plus" hidden aria-hidden="true">
@@ -372,9 +384,12 @@
       </div>
     </footer>
 
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Vozen Helper","applicationCategory":"UtilitiesApplication","operatingSystem":"Discord","url":"https://vozen.org/helper/","description":"A Discord operations companion for moderation, tickets, roles, events and automations with clear permissions and traceable actions.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"}}</script>
+    <script defer src="js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
     <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v15"></script>
     <script defer src="js/i18n-v41.js"></script>
-    <script defer src="js/i18n-v42.js?v=workspace-copy-1"></script>
+    <script defer src="js/i18n-marketing-v1.js?v=public-i18n-v1"></script>
     <script defer src="js/helper-landing-i18n-v1.js?v=all-languages-1"></script>
     <script defer src="js/oauth-config.js?v=ecosystem-oauth-v3"></script>
     <script defer src="js/main-v51.js?oauth=ecosystem-v3&auth-tabs=1&account-fast=1&auth-race=1"></script>

@@ -9,12 +9,14 @@ const directTtsInvite = 'https://discord.com/oauth2/authorize?client_id=15238260
 const directHelperInvite = 'https://discord.com/oauth2/authorize?client_id=1526211106081734666';
 const helperInstallStart = 'https://api.vozen.org/rust/api/install/start';
 
-const [dashboard, helperRedirect, helperPanel, main, commands, ...publicPages] = await Promise.all([
+const [dashboard, helperRedirect, helperPanel, main, commands, installConfig, ttsInstall, ...publicPages] = await Promise.all([
   read('site/js/dashboard-v8.js'),
   read('site/js/helper-redirect-v1.js'),
   read('apps/helper-panel/src/App.tsx'),
   read('site/js/main-v51.js'),
   read('site/js/commands-v1.js'),
+  read('site/js/install-config-v1.js'),
+  read('site/js/tts-install-v1.js'),
   ...[
     'site/tts.html',
     'site/tts/index.html',
@@ -24,8 +26,14 @@ const [dashboard, helperRedirect, helperPanel, main, commands, ...publicPages] =
   ].map(read),
 ]);
 
-assert.match(main, /\?\s*"\/dashboard\.html\?add=1"/);
-assert.match(commands, /href:\s*"\/dashboard\.html\?add=1"/);
+assert.match(main, /FALLBACK_INVITE_URL/);
+assert.match(main, /vozenTtsInstallHref/);
+assert.match(commands, /vozenTtsInstallHref\("commands"\)/);
+assert.match(commands, /"\/dashboard\.html\?add=1"/);
+assert.match(installConfig, /ttsStartEndpoint:\s*"https:\/\/api\.vozen\.org\/rust\/api\/install\/tts\/start"/);
+assert.match(ttsInstall, /api\\\.vozen\\\.org\\\/rust\\\/api\\\/install\\\/tts\\\/start/);
+assert.match(ttsInstall, /"home", "tts-hero", "tts-pricing", "commands", "topgg"/);
+assert.match(ttsInstall, /removeAttribute\("target"\)/);
 assert.equal(helperPanel.includes(helperInstallStart), true);
 
 assert.match(dashboard, /TTS_INSTALL_STATE_KEY/);
@@ -44,5 +52,11 @@ for (const page of publicPages) {
 
 assert.equal(publicPages[2].includes(helperInstallStart), true);
 assert.equal(publicPages[3].includes(helperInstallStart), true);
+
+assert.match(publicPages[0], /data-tts-install-source="tts-hero"/);
+assert.match(publicPages[0], /data-tts-install-source="tts-pricing"/);
+assert.match(publicPages[1], /tts-install-v1/);
+assert.match(publicPages[4], /data-tts-install-source="commands"/);
+assert.match(publicPages[4], /tts-install-v1/);
 
 console.log('Product install redirect contracts are present.');

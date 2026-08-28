@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { gzipSync } from 'node:zlib';
 import {
   absoluteCanonical,
   isIndexable,
@@ -13,6 +14,7 @@ const root = path.resolve('site');
 const errors = [];
 const titles = new Map();
 const publicUrls = new Set();
+const maxPublicImageBytes = 200 * 1024;
 
 for (const file of walkHtml(root)) {
   const relative = path.relative(root, file).replaceAll('\\', '/');
@@ -29,9 +31,20 @@ for (const file of walkHtml(root)) {
   if (!canonical || !canonical.startsWith('https://vozen.org/')) errors.push(`${relative}: missing canonical`);
   if (ogImage !== 'https://vozen.org/assets/og-image.png') errors.push(`${relative}: missing canonical og:image`);
   if (!icon) errors.push(`${relative}: missing favicon`);
-  if (!/<html\b[^>]*lang=["']en["']/i.test(html)) errors.push(`${relative}: missing lang=en`);
+  if (!/<html\b[^>]*lang=["'][a-z]{2,3}(?:-[a-z0-9]{2,8})?["']/i.test(html)) errors.push(`${relative}: missing valid lang`);
   if (h1Count !== 1) errors.push(`${relative}: expected one h1, found ${h1Count}`);
   if (/<img\b(?![^>]*\balt=)[^>]*>/i.test(html)) errors.push(`${relative}: image without alt attribute`);
+  for (const match of html.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)) {
+    const raw = match[1].split(/[?#]/, 1)[0];
+    if (!raw || /^(?:https?:|data:|\/\/)/i.test(raw)) continue;
+    const asset = raw.startsWith('/')
+      ? path.join(root, raw.slice(1))
+      : path.resolve(path.dirname(file), raw);
+    if (!asset.startsWith(root + path.sep) || !fs.existsSync(asset)) continue;
+    if (fs.statSync(asset).size > maxPublicImageBytes) {
+      errors.push(`${relative}: public image ${path.relative(root, asset)} exceeds 200 KB`);
+    }
+  }
   if (title) {
     if (titles.has(title)) errors.push(`duplicate title "${title}" in ${relative} and ${titles.get(title)}`);
     else titles.set(title, relative);
@@ -64,6 +77,30 @@ function walkAll(dir) {
 }
 walkAll(root);
 if (sourceMaps.length) errors.push(`public source maps found: ${sourceMaps.map(file => path.relative(root, file)).join(', ')}`);
+
+const ttsInitialScripts = [
+  'js/analytics-config.js',
+  'js/web-analytics-v1.js',
+  'js/install-config-v1.js',
+  'js/tts-install-v1.js',
+  'js/oauth-config.js',
+  'js/global-nav-v1.js',
+  'js/i18n-v41.js',
+  'js/i18n-marketing-v1.js',
+  'js/main-v51.js',
+  'js/motion-v1.js',
+];
+const ttsInitialBytes = ttsInitialScripts.reduce((total, relative) => {
+  const file = path.join(root, relative);
+  if (!fs.existsSync(file)) {
+    errors.push(`TTS initial script is missing: ${relative}`);
+    return total;
+  }
+  return total + gzipSync(fs.readFileSync(file), { level: 9 }).length;
+}, 0);
+if (ttsInitialBytes > 150 * 1024) {
+  errors.push(`TTS initial JavaScript is ${Math.ceil(ttsInitialBytes / 1024)} KB gzip; budget is 150 KB`);
+}
 
 if (errors.length) throw new Error(`Site metadata check failed:\n${errors.join('\n')}`);
 console.log(`Site metadata check passed for ${publicUrls.size} public pages`);

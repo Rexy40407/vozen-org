@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org; media-src 'self'; form-action 'self'"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org; media-src 'self'; form-action 'self'"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -45,12 +45,12 @@
       <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
       <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Privacy Policy — Vozen","description":"What data the Vozen Discord TTS bot stores, why, and how to delete it.","url":"https://vozen.org/privacy","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
   </head>
-  <body data-vozen-static-page="privacy">
+  <body data-vozen-static-page="privacy" data-vozen-public-analytics="true">
     <div class="grain" aria-hidden="true"></div>
     <main class="legal">
       <a class="back" href="/" data-i18n="legal.back">← Back to Vozen</a>
       <h1 data-i18n="legal.privacyTitle">Privacy Policy — Vozen</h1>
-      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 22 July 2026</p>
+      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 28 August 2026</p>
 
       <p>
         Vozen is a text-to-speech (TTS) bot for Discord. This page explains exactly what
@@ -91,7 +91,8 @@
         <li><b>Fun stats</b> — minigame scores (points and wins) and "top speaker" counts (how many of your messages were read aloud, plus daily streaks). These power the <code>/topspeakers</code> and <code>/game</code> leaderboards.</li>
         <li><b>Aggregate TTS usage</b> — the <code>talk_usage</code> table keeps counters by server, user, detected/selected language, and resolved TTS engine. It stores counts only, never message text. These aggregates let the private operator console show a top talker's dominant language and engine. They are deleted for that user by <code>/privacy erase</code> and for that server by the server-data purge.</li>
         <li><b>Birthday</b> — only the <b>month and day</b> you optionally set, never the year. Used so Vozen can wish you a happy birthday in the voice channel.</li>
-        <li><b>Optional Vozen notices</b> — Top.gg reward and support-server cards are off by default and can be enabled by an admin with <code>/config vote-reminders active:true</code>. They alternate in the configured setup channel: at most one card in any rolling 24 hours, and each kind at most once per 48 hours, so both can never appear on the same day. A server ID, timestamp, and last-card kind persist this rotation across restarts; every card explains how to disable it. When you vote, top.gg separately sends your Discord user ID in a signed webhook. An eligible account receives <b>48 hours of Plus once ever</b>. The raw ID is kept only while that entitlement is active and is then deleted. A separate keyed one-way HMAC marker records that the account used its lifetime reward without storing the raw ID.</li>
+        <li><b>Optional Vozen notices</b> — Top.gg reward and support-server cards are off by default and can be enabled by an admin with <code>/config vote-reminders active:true</code>. They alternate in the configured setup channel: at most one card in any rolling 24 hours, and each kind at most once per 48 hours, so both can never appear on the same day. A server ID, timestamp, and last-card kind persist this rotation across restarts; every card explains how to disable it. When you vote, top.gg separately sends your Discord user ID in a signed webhook. Each eligible vote grants <b>24 hours of Plus</b>, up to four grants in a rolling 30-day window and never more than 48 hours ahead. The raw ID is kept only while the entitlement is active. A keyed one-way HMAC entry is retained for 30 days solely to apply that rolling limit.</li>
+        <li><b>Server growth lifecycle</b> — to understand whether installation and setup work, Vozen stores the server ID, product, first and latest join, setup completion, first successful value, last activity, departure and an allowed installation source. Individual server rows are deleted 30 days after departure; only non-identifying daily totals remain.</li>
         <li><b>Premium status &amp; entitlements</b> — whether a server or user has Premium, when it expires, and the source of the entitlement; for server passes, which servers you activated a licence on.</li>
         <li><b>Stripe billing records</b> — for a Stripe subscription, Vozen stores the Discord user ID, Stripe customer/subscription identifiers, plan, seat count, payment state and current paid-through date. Vozen does not store card data, payment credentials, shipping addresses or the customer email received by Stripe.</li>
       </ul>
@@ -100,7 +101,7 @@
       <ul>
         <li><b>To provide the service you asked for</b> (GDPR Art. 6(1)(b)/(f)) — your voice/engine/speed preferences, server settings, opt-out choice, pronunciation overrides, and existing entitlement status.</li>
         <li><b>Your consent</b> (Art. 6(1)(a)) — your optional birthday and voice transcription (see §6). You can withdraw consent at any time; it does not affect processing already done.</li>
-        <li><b>Our legitimate interests</b> (Art. 6(1)(f)) — keeping the bot working and fair: rate limits, the blocklist, anti-spam, operational/security logs, the non-reversible vote-redemption marker needed to enforce the one-account lifetime limit, and the minigame and "top speaker" leaderboards. You can object at any time (see §12).</li>
+        <li><b>Our legitimate interests</b> (Art. 6(1)(f)) — keeping the bot working and fair: rate limits, the blocklist, anti-spam, operational/security logs, the short-lived pseudonymous vote ledger needed to enforce the rolling reward limit, service-improvement totals, and the minigame and "top speaker" leaderboards. You can object at any time (see §12).</li>
       </ul>
 
       <h2>4. What we do NOT store</h2>
@@ -152,14 +153,18 @@
 
       <h2>8. Cookies &amp; local storage</h2>
       <p>
-        vozen.org sets <b>no cookies</b> and runs <b>no analytics or trackers</b>. Fonts are
-        served from our own server, so loading the site sends nothing to third-party font or
-        analytics providers. The site uses your browser's storage only for strictly necessary
+        vozen.org sets <b>no cookies</b>. When the optional Cloudflare Web Analytics beacon is
+        enabled, it runs only on public marketing, documentation and legal pages to produce
+        cookie-free, aggregate page, referrer, device and web-vitals measurements; account,
+        dashboard, OAuth callback and private operator pages are excluded. It does not provide
+        custom product events or advertising profiles. Fonts are served from our own server. The
+        site uses your browser's storage only for strictly necessary
         functions: your Discord access token (<code>sessionStorage</code>, cleared when you log
         out or close the tab), a one-shot activation intent containing no email (also
         <code>sessionStorage</code>, removed on use and expiring after five minutes), and your
         chosen interface language (<code>localStorage</code>). Because these are strictly
-        necessary to provide what you asked for, no consent banner is required.
+        necessary to provide what you asked for, and the optional analytics beacon is cookie-free,
+        no consent banner is required.
       </p>
 
       <h2>9. Who we share data with</h2>
@@ -167,7 +172,8 @@
       <ul>
         <li><b>Speech providers</b> — local Piper voices do not send text to a third party. If a Google voice is selected or enabled by the operator, the <b>text to be spoken</b> is sent to Google to generate audio (never your user ID or message history), subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
         <li><b>Discord</b> — the platform the bot runs on and the OAuth provider; all Discord processing is subject to <a href="https://discord.com/privacy" target="_blank" rel="noopener">Discord's Privacy Policy</a>.</li>
-        <li><b>top.gg</b> — we publish the bot's <b>server count</b>. If you vote, top.gg sends your Discord user ID to our signed webhook so Vozen can apply the advertised one-time 48-hour Plus reward; no message content is sent.</li>
+        <li><b>top.gg</b> — we publish the bot's <b>server count</b>. If you vote, top.gg sends your Discord user ID to our signed webhook so Vozen can apply the advertised 24-hour Plus reward; no message content is sent.</li>
+        <li><b>Cloudflare Web Analytics</b> — when enabled on an eligible public page, Cloudflare receives the information required for its cookie-free aggregate traffic and Core Web Vitals reporting. Its access credentials stay on the server and are never exposed in this website or the operator panel.</li>
         <li><b>Operator admin console</b> — the operator has a private console (gated by the operator's own Discord login — only the owner's account may enter) to manage Premium and to see <b>aggregate usage per server</b>: the server's name and icon, how many messages Vozen read there, top talkers, and each global top talker's dominant language and TTS engine from <code>talk_usage</code>. These are counters, never message content. User-scoped <code>talk_stats</code> and <code>talk_usage</code> are removed by <code>/privacy erase</code>; server-scoped rows are removed by the server-data purge.</li>
         <li><b>GitHub Pages</b> — hosts this website; like any web host it processes standard request logs (including IP addresses).</li>
         <li><b>Hetzner</b> — hosts the bot's server and database.</li>
@@ -183,7 +189,8 @@
       <h2>11. How long we keep it</h2>
       <ul>
         <li><b>Your personal settings and stats</b> — kept until you remove them (with the relevant command or <code>/privacy erase</code>).</li>
-        <li><b>Vote reward</b> — the raw Discord ID and reward timestamp are deleted after 48 hours or by <code>/privacy erase</code>. The non-reversible HMAC redemption marker is kept while the promotion operates solely to prevent another claim; erasure does not make the account eligible again.</li>
+        <li><b>Vote reward</b> — the raw Discord ID and reward timestamp are deleted after the active 24-hour entitlement or by <code>/privacy erase</code>. A keyed one-way HMAC ledger entry and the provider delivery identifier are retained for 30 days to prevent replay and enforce the rolling limit, then deleted.</li>
+        <li><b>Server growth lifecycle</b> — the identifiable server lifecycle row is deleted 30 days after the bot leaves that server. Daily aggregate counts do not contain server or user IDs.</li>
         <li><b>Server data</b> — automatically deleted <b>30 days</b> after Vozen is removed from a server, unless it is re-invited within that window.</li>
         <li><b>Audio cache</b> — rotates automatically (about 500 files per engine, oldest first); not tied to you.</li>
         <li><b>HD-voice usage counter</b> — auto-purged after about 3 months.</li>
@@ -196,7 +203,7 @@
       <ul>
         <li><b>Access</b> — ask what data is tied to your ID.</li>
         <li><b>Rectification</b> — most of your data is settings you can change yourself with the bot's commands.</li>
-        <li><b>Erasure</b> — <code>/privacy erase</code> deletes your erasable personal settings, preferences, consent, scores, <code>talk_stats</code>, <code>talk_usage</code>, and an active free vote entitlement across all servers. It does not make the account eligible for the lifetime vote reward again: the non-reversible anti-abuse HMAC marker remains while that promotion operates. It also does not silently revoke paid rights or destroy minimum financial and activation records retained for accounting, fraud prevention, disputes, and legal obligations. Individual commands remove single items (<code>/voice reset</code>, <code>/voice nickname</code> with no name, <code>/voice optin</code>, <code>/config reset</code>, and so on).</li>
+        <li><b>Erasure</b> — <code>/privacy erase</code> deletes your erasable personal settings, preferences, consent, scores, <code>talk_stats</code>, <code>talk_usage</code>, and an active free vote entitlement across all servers. A pseudonymous vote-limit entry may remain for at most 30 days to prevent replay and enforce the published rolling limit. It also does not silently revoke paid rights or destroy minimum financial and activation records retained for accounting, fraud prevention, disputes, and legal obligations. Individual commands remove single items (<code>/voice reset</code>, <code>/voice nickname</code> with no name, <code>/voice optin</code>, <code>/config reset</code>, and so on).</li>
         <li><b>Restriction &amp; objection</b> — stop being read aloud with <code>/voice optout</code>, or ask us to restrict processing.</li>
         <li><b>Portability</b> — request a copy of your data.</li>
         <li><b>Withdraw consent</b> — e.g. <code>/transcribe revoke</code> or removing your birthday — at any time, without affecting past processing.</li>
@@ -238,8 +245,10 @@
         · <a href="/terms">Terms of Service</a>
       </p>
     </main>
+    <script defer src="js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
     <script defer src="js/i18n-v41.js"></script>
-    <script defer src="js/i18n-v42.js"></script>
+    <script defer src="js/i18n-marketing-v1.js?v=public-i18n-v1"></script>
     <script defer src="js/static-pages-i18n-v1.js"></script>
   </body>
 </html>
