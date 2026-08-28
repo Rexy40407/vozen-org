@@ -2,7 +2,7 @@
   "use strict";
   var allowedSources = new Set(["home", "tts-hero", "tts-pricing", "commands", "topgg"]);
   var endpoint = String((window.VOZEN_INSTALL || {}).ttsStartEndpoint || "").trim();
-  var trustedEndpoint = /^https:\/\/api\.vozen\.org\/rust\/api\/install\/tts\/start$/.test(endpoint);
+  var trustedEndpoint = /^https:\/\/api\.vozen\.org\/api\/install\/tts\/start$/.test(endpoint);
 
   window.vozenTtsInstallHref = function (source) {
     if (!trustedEndpoint || !allowedSources.has(source)) return null;

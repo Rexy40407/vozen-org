@@ -32,7 +32,7 @@ assert.match(commands, /vozenTtsInstallHref\("commands"\)/);
 assert.match(commands, /"\/dashboard\.html\?add=1"/);
 assert.match(installConfig, /ttsStartEndpoint:\s*""/);
 assert.match(installConfig, /dashboard fallback/);
-assert.match(ttsInstall, /api\\\.vozen\\\.org\\\/rust\\\/api\\\/install\\\/tts\\\/start/);
+assert.match(ttsInstall, /api\\\.vozen\\\.org\\\/api\\\/install\\\/tts\\\/start/);
 assert.match(ttsInstall, /"home", "tts-hero", "tts-pricing", "commands", "topgg"/);
 assert.match(ttsInstall, /removeAttribute\("target"\)/);
 assert.equal(helperPanel.includes(helperInstallStart), true);
