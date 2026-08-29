@@ -8,5 +8,5 @@
  * operator panel.
  */
 window.VOZEN_PUBLIC_ANALYTICS = Object.freeze({
-  cloudflareBeaconToken: ""
+  cloudflareBeaconToken: "5688ffcfb35548ce892dbb8e592f909e"
 });
