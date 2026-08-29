@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://js.stripe.com https://*.js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com https://*.stripe.com https://*.link.com; connect-src 'self' https://api.vozen.org https://api.stripe.com https://checkout.stripe.com https://r.stripe.com https://*.stripe.com https://link.com https://*.link.com; frame-src https://checkout.stripe.com https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://link.com https://*.link.com; media-src 'self'; form-action 'self'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com https://js.stripe.com https://*.js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com https://*.stripe.com https://*.link.com; connect-src 'self' https://api.vozen.org https://cloudflareinsights.com https://api.stripe.com https://checkout.stripe.com https://r.stripe.com https://*.stripe.com https://link.com https://*.link.com; frame-src https://checkout.stripe.com https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://link.com https://*.link.com; media-src 'self'; form-action 'self'" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07070d" />
@@ -29,7 +29,7 @@
       <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
       <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Premium — Vozen","description":"Compare the Vozen plans for your community.","url":"https://vozen.org/premium","isPartOf":{"@type":"WebSite","name":"Vozen","url":"https://vozen.org/"},"publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
   </head>
-  <body class="page-premium">
+  <body class="page-premium" data-vozen-public-analytics="true">
     <div class="grain" aria-hidden="true"></div>
     <div class="orbs" aria-hidden="true"><span class="orb orb--blurple"></span><span class="orb orb--aqua"></span></div>
     <a class="skip-link" href="#plans" data-i18n="premium.skip">Skip to plans</a>
@@ -127,6 +127,8 @@
     </main>
 
     <footer class="foot"><div class="wrap foot__base"><span>© 2026 Vozen</span><span class="foot__legal"><a href="/privacy" data-i18n="foot.privacy">Privacy</a><a href="/terms" data-i18n="foot.terms">Terms</a></span><span data-i18n="foot.legal">Not affiliated with Discord</span></div></footer>
+    <script defer src="js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
     <script defer src="js/global-nav-v1.js?v=ecosystem-nav-v15"></script>
     <script defer src="js/i18n-v41.js?v=payment-element"></script>
     <script defer src="js/i18n-v42.js?v=workspace-copy-1"></script>

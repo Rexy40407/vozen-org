@@ -7,7 +7,7 @@
     "docs:test": "node tools/docs-test.mjs",
     "docs:links": "node tools/docs-links.mjs",
     "docs:a11y": "node tools/docs-a11y.mjs",
-    "site:check": "node tools/site-meta-check.mjs && node tools/build-marketing-i18n.mjs --check",
+    "site:check": "node tools/site-meta-check.mjs && node tools/web-analytics-check.mjs && node tools/build-marketing-i18n.mjs --check",
     "helper-tracker:check": "node tools/helper-tracker-check.mjs",
     "helper-panel:redirect-check": "node tools/helper-panel-redirect-check.mjs",
     "helper-panel:vozen-session-check": "node tools/helper-panel-vozen-session-check.mjs",
