@@ -15,6 +15,14 @@ const errors = [];
 const titles = new Map();
 const publicUrls = new Set();
 const maxPublicImageBytes = 200 * 1024;
+const expectedOgImages = new Map([
+  ['helper/index.html', 'https://vozen.org/assets/helper-og-v1.jpg'],
+]);
+const requiredAlternates = new Map([
+  ['index.html', ['en', 'x-default']],
+  ['tts/index.html', ['en', 'pt-PT', 'x-default']],
+  ['helper/index.html', ['en', 'x-default']],
+]);
 
 for (const file of walkHtml(root)) {
   const relative = path.relative(root, file).replaceAll('\\', '/');
@@ -29,7 +37,15 @@ for (const file of walkHtml(root)) {
   if (!title) errors.push(`${relative}: missing title`);
   if (!description || description.length < 30) errors.push(`${relative}: missing or short meta description`);
   if (!canonical || !canonical.startsWith('https://vozen.org/')) errors.push(`${relative}: missing canonical`);
-  if (ogImage !== 'https://vozen.org/assets/og-image.png') errors.push(`${relative}: missing canonical og:image`);
+  const expectedOgImage = expectedOgImages.get(relative) || 'https://vozen.org/assets/og-image.png';
+  if (ogImage !== expectedOgImage) errors.push(`${relative}: missing expected og:image`);
+  const alternateLanguages = new Set(
+    [...html.matchAll(/<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["']([^"']+)["'][^>]*>/gi)]
+      .map((match) => match[1]),
+  );
+  for (const language of requiredAlternates.get(relative) || []) {
+    if (!alternateLanguages.has(language)) errors.push(`${relative}: missing hreflang ${language}`);
+  }
   if (!icon) errors.push(`${relative}: missing favicon`);
   if (!/<html\b[^>]*lang=["'][a-z]{2,3}(?:-[a-z0-9]{2,8})?["']/i.test(html)) errors.push(`${relative}: missing valid lang`);
   if (h1Count !== 1) errors.push(`${relative}: expected one h1, found ${h1Count}`);
