@@ -9,9 +9,9 @@ honour its STOP conditions and update the row when finished.
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |---|---|---:|---:|---|---|
-| 001 | Make `vozen-org` the sole publisher of `vozen.org` | P1 | M | — | DONE IN CODE (Pages owner/canary is external) |
+| 001 | Make `vozen-org` the sole publisher of `vozen.org` | P1 | M | — | DONE (Pages ownership, DNS and canaries verified 2026-09-03) |
 | 002 | Make Helper panel loads cancellable and testable | P1 | M | 001 | DONE (tests and panel build pass) |
-| 003 | Harden public Pages publisher | P1 | M | 001 | DONE IN CODE (Pages settings/canary is external) |
+| 003 | Harden public Pages publisher | P1 | M | 001 | DONE (GitHub Actions source and canaries verified 2026-09-03) |
 
 ## Dependency notes
 

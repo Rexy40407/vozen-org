@@ -10,8 +10,10 @@
 - Category: security / release engineering
 - Planned against: 0c2c0d8
 - Depends on: plan 001 ownership decision being reconciled with the current workflow
-- Implementation: complete in workflow code; the Pages project must still be
-  configured to use GitHub Actions and then canaried externally.
+- Implementation: complete. Repository settings were changed to GitHub Actions
+  on 2026-09-03, the `vozen.org` DNS check is successful, HTTPS is enforced,
+  and production canaries for `/`, `/account/`, and `/panel/helper-tracker/`
+  returned HTTP 200.
 
 ## Finding
 
@@ -85,3 +87,6 @@ Then verify in GitHub Actions that the deploy job has no mutable action tags, no
 - No credential is embedded in a Git remote URL.
 - Job permissions are minimal for the chosen Pages flow.
 - All existing site gates pass and the deployed routes remain reachable.
+
+All five conditions were verified on 2026-09-03 against the repository
+settings, workflow `33810751193`, and the live production routes.

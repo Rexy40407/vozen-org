@@ -24,9 +24,11 @@
 - **Category**: migration / dx / release
 - **Planned at**: commits `e79571e` (`vozen-org-ui-fix`) and `acd7ce9`
   (`Vozen_TTS-auth-fix`), 2026-08-19
-- **Implementation**: complete in the repository; GitHub Pages ownership and
-  the first production canary still require an external repository-settings
-  check.
+- **Implementation**: complete. On 2026-09-03, repository settings confirmed
+  `Rexy40407/vozen-org` uses GitHub Actions, owns the `vozen.org` custom domain,
+  has a successful DNS check, and enforces HTTPS. `Rexy40407/Vozen_TTS` has no
+  custom domain and exposes only its default project URL. Production canaries
+  for `/`, `/account/`, and `/panel/helper-tracker/` all returned HTTP 200.
 
 ## Why this matters
 
@@ -193,14 +195,14 @@ CI; every check exits 0.
 
 ## Done criteria
 
-- [ ] Exactly one repository can deploy `vozen.org`.
-- [ ] The canonical workflow validates docs and the Helper panel before
+- [x] Exactly one repository can deploy `vozen.org`.
+- [x] The canonical workflow validates docs and the Helper panel before
   publication.
-- [ ] The TTS repository cannot re-enable Pages deployment through its normal
+- [x] The TTS repository cannot re-enable Pages deployment through its normal
   workflow path.
-- [ ] GitHub Pages settings show one confirmed custom-domain owner.
-- [ ] Production canaries return HTTP 200 for all three public routes.
-- [ ] No file outside the in-scope list changed.
+- [x] GitHub Pages settings show one confirmed custom-domain owner.
+- [x] Production canaries return HTTP 200 for all three public routes.
+- [x] No file outside the in-scope list changed during the ownership migration.
 
 ## STOP conditions
 

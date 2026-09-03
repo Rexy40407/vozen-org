@@ -6,7 +6,7 @@ Last verified: 2026-09-03. This is an evidence ledger, not a substitute for the 
 
 | Surface | Revision | CI / release evidence |
 | --- | --- | --- |
-| Public site (`vozen-org`) | `48315ab92e46a4583e8ebdcae1a0ec226bc07687` | GitHub Actions `33808768454`, successful |
+| Public site (`vozen-org`) | `3a19d208fca6bd9390e43fc61ccbf6a75711e5f2` | GitHub Actions `33810751193`, successful; WebP primaries and optimized PNG fallbacks confirmed on production |
 | Private panel (`painel`) | `981edb8f3f259e1af9be6d48746bb7959dd9a79b` | GitHub Actions `33788606428`, successful |
 | TTS runtime (`Vozen_TTS`) | `ed64889ed10b6a6a7338d85d8a1fbd84412d269d` | GitHub Actions `33788606726`, successful; exact revision active in the production container |
 | Helper runtime (`vozen-helper`) | `5a562b6c6ec091c6f33b7f1b7b345d7bb7d06e2b` | CI `33788827395` and release `33788827312`, successful; exact release active in the production service |
@@ -25,7 +25,7 @@ Last verified: 2026-09-03. This is an evidence ledger, not a substitute for the 
   - localized-page generator coverage is 95.78% lines, 89.77% branches, and 100% functions;
   - initial marketing JavaScript is 52,152 bytes gzip on Home, 53,503 on TTS, and 59,928 on Helper;
   - all 29 shipped raster images remain under 200 KB; large Helper and Stripe artwork ships with WebP primaries and optimized PNG fallbacks, while Helper picker thumbnails load lazily;
-  - Lighthouse: Home 100/100/100/100 with 1,653 ms LCP and 0 CLS; TTS 100/100/100/100 with 1,885 ms LCP and 0 CLS; Helper 99/100/100/100 with 1,956 ms LCP and 0.003 CLS.
+  - Lighthouse: Home 100/100/100/100 with 1,653 ms LCP and 0 CLS; TTS 100/100/100/100 with 1,880 ms LCP and 0 CLS; Helper 99/100/100/100 with 1,957 ms LCP and 0.003 CLS.
 
 ## Production evidence
 
@@ -56,6 +56,7 @@ The read-only production audit returned database integrity `ok` for both product
 - At the audit time it returned 71 visits / 98 page views for 7 days, 110 / 140 for 30 days, and 120 / 150 for 90 days.
 - Browser verification confirms the cookie-free beacon on public marketing/documentation/legal pages and no beacon on account or dashboard pages.
 - Cloudflare Cache Response Rule `Cache imutável para assets versionados` gives versioned assets `max-age=31536000, s-maxage=31536000, immutable, public`; a repeated production request returned `cf-cache-status: HIT`.
+- Production serves the optimized Helper rank artwork as `image/webp` with an optimized PNG fallback; both returned HTTP 200 and `cf-cache-status: HIT`, and the published bundle contains WebP selection plus lazy thumbnail loading.
 
 ### Public release
 
