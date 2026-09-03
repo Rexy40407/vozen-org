@@ -136,6 +136,28 @@ test('the editorial Portuguese TTS page exposes the same verifiable review sourc
   await expect(reviews.locator('img, blockquote')).toHaveCount(0);
 });
 
+test('the editorial guides expose complete Portuguese counterparts', async ({ page }) => {
+  const guides = [
+    ['/pt/guides/discord-without-a-mic/', 'Sem microfone? Continua na conversa do Discord.'],
+    ['/pt/guides/vozen-vs-generic-discord-tts/', 'Escolhe o TTS para Discord'],
+    ['/pt/guides/helper-moderation-tickets-roles/', 'Começa a organizar o servidor'],
+  ];
+
+  for (const [path, heading] of guides) {
+    await page.goto(path, { waitUntil: 'networkidle' });
+    await expect(page.locator('html')).toHaveAttribute('lang', 'pt-PT');
+    await expect(page.locator('h1')).toContainText(heading);
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][hreflang="pt-PT"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveCount(1);
+    const overflow = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      content: document.documentElement.scrollWidth,
+    }));
+    expect(overflow.content, `${path}: ${JSON.stringify(overflow)}`).toBeLessThanOrEqual(overflow.viewport + 1);
+  }
+});
+
 test('below-fold styles activate on the first scroll without creating page overflow', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   for (const path of entryPages) {

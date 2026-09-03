@@ -22,6 +22,9 @@ const directPublicPages = [
   'site/guides/discord-without-a-mic/index.html',
   'site/guides/vozen-vs-generic-discord-tts/index.html',
   'site/guides/helper-moderation-tickets-roles/index.html',
+  'site/pt/guides/discord-without-a-mic/index.html',
+  'site/pt/guides/vozen-vs-generic-discord-tts/index.html',
+  'site/pt/guides/helper-moderation-tickets-roles/index.html',
   'site/pt/tts/index.html',
 ];
 

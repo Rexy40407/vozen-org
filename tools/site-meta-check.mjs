@@ -23,6 +23,16 @@ const requiredAlternates = new Map([
   ['tts/index.html', ['en', 'pt-PT', 'x-default']],
   ['helper/index.html', ['en', 'x-default']],
 ]);
+const bilingualGuides = [
+  'discord-without-a-mic',
+  'vozen-vs-generic-discord-tts',
+  'helper-moderation-tickets-roles',
+];
+
+for (const slug of bilingualGuides) {
+  requiredAlternates.set(`guides/${slug}/index.html`, ['en', 'pt-PT', 'x-default']);
+  requiredAlternates.set(`pt/guides/${slug}/index.html`, ['en', 'pt-PT', 'x-default']);
+}
 
 for (const file of walkHtml(root)) {
   const relative = path.relative(root, file).replaceAll('\\', '/');
@@ -68,6 +78,29 @@ for (const file of walkHtml(root)) {
     else titles.set(title, relative);
   }
   if (canonical) publicUrls.add(canonical);
+}
+
+for (const slug of bilingualGuides) {
+  const expected = new Map([
+    ['en', `https://vozen.org/guides/${slug}/`],
+    ['pt-PT', `https://vozen.org/pt/guides/${slug}/`],
+    ['x-default', `https://vozen.org/guides/${slug}/`],
+  ]);
+  for (const relative of [`guides/${slug}/index.html`, `pt/guides/${slug}/index.html`]) {
+    const filename = path.join(root, relative);
+    if (!fs.existsSync(filename)) {
+      errors.push(`${relative}: bilingual guide is missing`);
+      continue;
+    }
+    const html = fs.readFileSync(filename, 'utf8');
+    for (const [language, href] of expected) {
+      const alternate = new RegExp(
+        `<link\\b(?=[^>]*\\brel=["']alternate["'])(?=[^>]*\\bhreflang=["']${language}["'])(?=[^>]*\\bhref=["']${href.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}["'])[^>]*>`,
+        'i',
+      );
+      if (!alternate.test(html)) errors.push(`${relative}: ${language} alternate must point to ${href}`);
+    }
+  }
 }
 
 if (!fs.existsSync(path.join(root, 'robots.txt'))) errors.push('site/robots.txt is missing');

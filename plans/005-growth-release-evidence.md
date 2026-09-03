@@ -17,10 +17,10 @@ Last verified: 2026-09-03. This is an evidence ledger, not a substitute for the 
 - Helper: `cargo test --workspace --all-targets` passes 222 tests with no failures or ignored tests.
 - Private panel: 53 unit/contract tests and 8 Playwright tests pass.
 - Public site:
-  - metadata passes for 161 public pages;
-  - resources and internal links pass for 174 pages;
+  - metadata passes for 164 public pages;
+  - resources and internal links pass for 177 pages;
   - accessibility smoke checks pass for 83 documentation pages;
-  - 23 Playwright journeys pass across 320, 375, 768, 1024, and 1440 px;
+  - 24 Playwright journeys pass across 320, 375, 768, 1024, and 1440 px, including the three Portuguese editorial guides;
   - generated localization is current for 10 locales and the Home, TTS, and Helper entry routes;
   - localized-page generator coverage is 95.78% lines, 89.77% branches, and 100% functions;
   - initial marketing JavaScript is 52,152 bytes gzip on Home, 53,503 on TTS, and 59,928 on Helper;
@@ -61,15 +61,15 @@ The read-only production audit returned database integrity `ok` for both product
 ### Public release
 
 - Production serves the real review proof on both `/tts/` and `/pt/tts/`, linking to the moderated Top.gg record without copying reviewer identities, avatars, or quotations.
-- `robots.txt`, `llms.txt`, `sitemap.xml`, the custom 404, favicon, public guides, TTS documentation, Portuguese TTS page, and Helper page all return successfully.
-- The live sitemap contains 161 canonical URLs. Ordinary indexing is allowed while named AI-training crawlers remain blocked.
+- `robots.txt`, `llms.txt`, `sitemap.xml`, the custom 404, favicon, bilingual English/Portuguese guides, TTS documentation, Portuguese TTS page, and Helper page all return successfully.
+- The release sitemap contains 164 canonical URLs. Ordinary indexing is allowed while named AI-training crawlers remain blocked.
 - Secure TTS and Helper OAuth entry points use signed state, server-side callbacks, PKCE where applicable, replay protection, and limited permissions without `Administrator`.
 
 ## External gates still requiring an account action
 
 These items must remain open until their external state is observed after submission:
 
-1. Re-submit `https://vozen.org/sitemap.xml` in Google Search Console. The verified domain currently shows the previous 135-page read from 2026-09-01, while the live sitemap now has 161 URLs.
+1. Re-submit `https://vozen.org/sitemap.xml` in Google Search Console. The verified domain currently shows the previous 135-page read from 2026-09-01, while the release sitemap now has 164 URLs.
 2. Log in to the Discord Developer Portal and inspect App Verification and Discovery Status for both application IDs. Discord requires a verified app before Discovery can be enabled.
 3. Complete the real Discord App Directory fields from `004-bot-directory-listing-pack.md`, preview them, and enable Discovery only when the portal checklist is green.
 4. Submit the eligible bot(s) to `discord.bots.gg` and `discordbotlist.com` after reviewing each directory's current terms. Both sites require a Discord account login; no listing was found during the audit.

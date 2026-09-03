@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#05060f">
+    <title>Usar o Discord sem microfone — Vozen TTS</title>
+    <meta name="description" content="Usa o Vozen TTS para participares numa conversa de voz no Discord quando não podes utilizar um microfone.">
+    <link rel="canonical" href="https://vozen.org/pt/guides/discord-without-a-mic/">
+    <link rel="alternate" hreflang="en" href="https://vozen.org/guides/discord-without-a-mic/">
+    <link rel="alternate" hreflang="pt-PT" href="https://vozen.org/pt/guides/discord-without-a-mic/">
+    <link rel="alternate" hreflang="x-default" href="https://vozen.org/guides/discord-without-a-mic/">
+    <meta property="og:site_name" content="Vozen">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Como participar numa conversa de voz no Discord sem microfone">
+    <meta property="og:description" content="Uma configuração TTS prática e respeitadora da privacidade para canais de voz do Discord.">
+    <meta property="og:url" content="https://vozen.org/pt/guides/discord-without-a-mic/">
+    <meta property="og:image" content="https://vozen.org/assets/og-image.png">
+    <meta property="og:image:alt" content="Vozen TTS para Discord">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Como participar numa conversa de voz no Discord sem microfone">
+    <meta name="twitter:description" content="Uma configuração TTS prática para canais de voz do Discord.">
+    <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
+    <link rel="icon" href="../../../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../../css/guides-v1.css?v=1">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","inLanguage":"pt-PT","headline":"Como participar numa conversa de voz no Discord sem microfone","description":"Uma configuração TTS prática para canais de voz do Discord.","url":"https://vozen.org/pt/guides/discord-without-a-mic/","publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
+  </head>
+  <body data-vozen-public-analytics="true">
+    <a class="guide-skip" href="#main">Saltar para o conteúdo</a>
+    <header class="guide-shell guide-nav">
+      <a class="guide-brand" href="../../../"><span aria-hidden="true">◈</span> Vozen <span>TTS</span></a>
+      <nav class="guide-navlinks" aria-label="Principal"><a href="../../tts/">TTS</a><a href="../../../helper/">Helper</a><a href="../../../docs/tts/getting-started/install/">Guia de configuração</a></nav>
+    </header>
+    <main id="main" class="guide-shell guide-main">
+      <section class="guide-hero">
+        <div>
+          <p class="guide-kicker">GUIA TTS</p>
+          <h1>Sem microfone? Continua na conversa do Discord.</h1>
+          <p class="guide-lede">O Vozen lê as tuas mensagens no canal de voz, para poderes responder por escrito quando falar não é conveniente ou simplesmente não é possível.</p>
+          <div class="guide-actions"><a class="guide-button" href="../../../dashboard.html?add=1" data-tts-install-source="tts-hero">Adicionar o Vozen ao Discord</a><a class="guide-button guide-button--quiet" href="../../tts/#hear">Ouvir uma demonstração</a></div>
+        </div>
+        <aside class="guide-card" aria-label="O que precisas">
+          <div class="guide-stat"><strong>Gerir servidor</strong><span>Só é necessário para quem adiciona e configura o Vozen.</span></div>
+          <div class="guide-stat"><strong>/setup</strong><span>Escolhe o canal de texto e verifica as permissões de voz.</span></div>
+          <div class="guide-stat"><strong>/join</strong><span>Entra no mesmo canal de voz e envia uma mensagem curta.</span></div>
+        </aside>
+      </section>
+
+      <section class="guide-section" aria-labelledby="steps-title">
+        <h2 id="steps-title">Uma primeira configuração simples</h2>
+        <div class="guide-grid">
+          <article class="guide-step"><span class="guide-step__number">01</span><h3>Adiciona-o a um servidor</h3><p>Escolhe um servidor que possas gerir. O Discord mostra as permissões pedidas antes de instalares o bot.</p></article>
+          <article class="guide-step"><span class="guide-step__number">02</span><h3>Executa <code>/setup</code></h3><p>Define o canal de texto que queres ouvir. Mantém o cargo do bot abaixo dos cargos que precisa de gerir.</p></article>
+          <article class="guide-step"><span class="guide-step__number">03</span><h3>Faz um teste pequeno</h3><p>Entra no canal de voz com <code>/join</code>, escreve uma mensagem curta e ajusta a voz só depois da primeira reprodução funcionar.</p></article>
+        </div>
+      </section>
+
+      <section class="guide-section guide-copy" aria-labelledby="use-title">
+        <h2 id="use-title">Usa-o sem dominar a conversa</h2>
+        <p>Avisa as pessoas no canal de que uma resposta escrita será reproduzida em voz alta. Começa com mensagens curtas e escolhe uma voz fácil de compreender. Mais tarde, cada membro pode escolher o seu idioma e voz; o administrador pode limitar a leitura automática ao canal de texto pretendido.</p>
+        <ul class="guide-list"><li>Usa um canal dedicado para mensagens frequentes, evitando que conversas privadas ou fora do tema sejam lidas por engano.</li><li>Mantém as permissões explícitas: o Vozen precisa de ver o canal de texto escolhido e de se ligar e falar no canal de voz.</li><li>Usa o painel ou <code>/config</code> para afinar o comportamento apenas depois de o teste básico funcionar.</li></ul>
+        <aside class="guide-note"><strong>Lembrete de privacidade.</strong> Nunca envies palavras-passe, tokens de acesso ou dados privados de contas para um bot, comando ou fluxo de configuração. Se não ouvires áudio, revê as permissões do canal e repete <code>/setup</code>.</aside>
+      </section>
+    </main>
+    <footer class="guide-shell guide-footer">Vozen TTS para Discord.<nav aria-label="Rodapé"><a href="../../../docs/tts/troubleshooting/no-audio/">Resolver falta de áudio</a><a href="../../../privacy.html">Privacidade</a><a href="../../../terms.html">Termos</a></nav></footer>
+    <script defer src="../../../js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer src="../../../js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
+    <script defer src="../../../js/install-config-v1.js?v=tts-install-v1"></script>
+    <script defer src="../../../js/tts-install-v1.js?v=tts-install-v1"></script>
+  </body>
+</html>
