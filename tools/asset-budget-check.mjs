@@ -81,6 +81,20 @@ for (const page of htmlFiles) {
   }
 }
 
+function collectRasterAssets(directory) {
+  if (!fs.existsSync(directory)) return;
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const filename = path.join(directory, entry.name);
+    if (entry.isDirectory()) collectRasterAssets(filename);
+    else if (/\.(?:avif|webp|png|jpe?g)$/i.test(entry.name)) publicRasters.add(filename);
+  }
+}
+
+// Keep every shipped source image inside the budget, including images loaded dynamically by
+// the authenticated Helper panel and assets that may be referenced by an external product page.
+collectRasterAssets(path.join(siteRoot, 'assets'));
+collectRasterAssets(path.resolve('apps', 'helper-panel', 'public'));
+
 for (const filename of publicRasters) {
   if (!fs.existsSync(filename)) {
     failures.push(`public image is missing: ${path.relative(siteRoot, filename)}`);
@@ -91,6 +105,6 @@ for (const filename of publicRasters) {
     failures.push(`${path.relative(siteRoot, filename)} is ${bytes} bytes (limit ${maxPublicRaster})`);
   }
 }
-console.log(`[asset-budget] ${publicRasters.size} referenced public raster images are within ${maxPublicRaster} bytes`);
+console.log(`[asset-budget] ${publicRasters.size} shipped raster images are within ${maxPublicRaster} bytes`);
 
 if (failures.length) throw new Error(`asset budgets failed:\n${failures.join('\n')}`);

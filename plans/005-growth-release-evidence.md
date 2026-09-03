@@ -24,7 +24,7 @@ Last verified: 2026-09-03. This is an evidence ledger, not a substitute for the 
   - generated localization is current for 10 locales and the Home, TTS, and Helper entry routes;
   - localized-page generator coverage is 95.78% lines, 89.77% branches, and 100% functions;
   - initial marketing JavaScript is 52,152 bytes gzip on Home, 53,503 on TTS, and 59,928 on Helper;
-  - referenced public raster images remain under 200 KB;
+  - all 29 shipped raster images remain under 200 KB; large Helper and Stripe artwork ships with WebP primaries and optimized PNG fallbacks, while Helper picker thumbnails load lazily;
   - Lighthouse: Home 100/100/100/100 with 1,653 ms LCP and 0 CLS; TTS 100/100/100/100 with 1,885 ms LCP and 0 CLS; Helper 99/100/100/100 with 1,956 ms LCP and 0.003 CLS.
 
 ## Production evidence

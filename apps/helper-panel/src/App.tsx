@@ -55,16 +55,16 @@ const defaultRankCard: RankCardConfig = {
 };
 const swatches = ['#8EE5D2', '#7F9CF5', '#F6AD55', '#F687B3', '#A78BFA', '#F4F7FB'];
 const presetOptions = [
-  ['aurora-lake', 'Aurora Lake', './rank-card-banners/banner-01-aurora-lake.png'],
-  ['neon-rain', 'Neon Rain', './rank-card-banners/banner-02-neon-rain.png'],
-  ['enchanted-forest', 'Enchanted Forest', './rank-card-banners/banner-03-enchanted-forest.png'],
-  ['desert-ruins', 'Desert Ruins', './rank-card-banners/banner-04-desert-ruins.png'],
-  ['coral-cavern', 'Coral Cavern', './rank-card-banners/banner-05-coral-cavern.png'],
-  ['sky-islands', 'Sky Islands', './rank-card-banners/banner-06-sky-islands.png'],
-  ['volcanic-forge', 'Volcanic Forge', './rank-card-banners/banner-07-volcanic-forge.png'],
-  ['moonlit-village', 'Moonlit Village', './rank-card-banners/banner-08-moonlit-village.png'],
-  ['starship-hangar', 'Starship Hangar', './rank-card-banners/banner-09-starship-hangar.png'],
-  ['lavender-storm', 'Lavender Storm', './rank-card-banners/banner-10-lavender-storm.png'],
+  ['aurora-lake', 'Aurora Lake', './rank-card-banners/banner-01-aurora-lake.webp', './rank-card-banners/banner-01-aurora-lake.png'],
+  ['neon-rain', 'Neon Rain', './rank-card-banners/banner-02-neon-rain.webp', './rank-card-banners/banner-02-neon-rain.png'],
+  ['enchanted-forest', 'Enchanted Forest', './rank-card-banners/banner-03-enchanted-forest.webp', './rank-card-banners/banner-03-enchanted-forest.png'],
+  ['desert-ruins', 'Desert Ruins', './rank-card-banners/banner-04-desert-ruins.webp', './rank-card-banners/banner-04-desert-ruins.png'],
+  ['coral-cavern', 'Coral Cavern', './rank-card-banners/banner-05-coral-cavern.webp', './rank-card-banners/banner-05-coral-cavern.png'],
+  ['sky-islands', 'Sky Islands', './rank-card-banners/banner-06-sky-islands.webp', './rank-card-banners/banner-06-sky-islands.png'],
+  ['volcanic-forge', 'Volcanic Forge', './rank-card-banners/banner-07-volcanic-forge.webp', './rank-card-banners/banner-07-volcanic-forge.png'],
+  ['moonlit-village', 'Moonlit Village', './rank-card-banners/banner-08-moonlit-village.webp', './rank-card-banners/banner-08-moonlit-village.png'],
+  ['starship-hangar', 'Starship Hangar', './rank-card-banners/banner-09-starship-hangar.webp', './rank-card-banners/banner-09-starship-hangar.png'],
+  ['lavender-storm', 'Lavender Storm', './rank-card-banners/banner-10-lavender-storm.webp', './rank-card-banners/banner-10-lavender-storm.png'],
 ] as const;
 // Production builds must talk to the Rust API even when GitHub Pages does not
 // inject Vite environment variables. Local preview is opt-in so a missing build
@@ -5993,7 +5993,7 @@ function BackgroundPicker({
       </div>
       {preset ? (
         <div className="banner-grid">
-          {presetOptions.map(([id, label, path]) => (
+          {presetOptions.map(([id, label, webp, fallback]) => (
             <button
               type="button"
               className={preset === id ? 'banner-option selected' : 'banner-option'}
@@ -6002,7 +6002,17 @@ function BackgroundPicker({
                 patch({ background_preset: id, background_url: null, background_data: null })
               }
             >
-              <img src={path} alt="" />
+              <picture>
+                <source srcSet={webp} type="image/webp" />
+                <img
+                  src={fallback}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="640"
+                  height="360"
+                />
+              </picture>
               <span>{label}</span>
             </button>
           ))}
@@ -6056,16 +6066,21 @@ function ColorField({
   );
 }
 function RankPreview({ config }: { config: RankCardConfig }) {
-  const background = presetOptions.find(([id]) => id === config.background_preset)?.[2];
-  const backgroundImage = background
-    ? `linear-gradient(rgba(0,0,0,${config.overlay_opacity}), rgba(0,0,0,${config.overlay_opacity})), url(${JSON.stringify(background)})`
-    : undefined;
+  const background = presetOptions.find(([id]) => id === config.background_preset);
+  const backgroundStyle = background
+    ? ({
+        '--rank-overlay': `linear-gradient(rgba(0,0,0,${config.overlay_opacity}), rgba(0,0,0,${config.overlay_opacity}))`,
+        '--rank-banner-fallback': `url(${JSON.stringify(background[3])})`,
+        '--rank-banner-source': `image-set(url(${JSON.stringify(background[2])}) type("image/webp"), url(${JSON.stringify(background[3])}) type("image/png"))`,
+      } as CSSProperties)
+    : {};
   return (
     <div
       className="rank-preview"
+      data-banner={background ? 'true' : undefined}
       style={{
+        ...backgroundStyle,
         backgroundColor: config.background_color,
-        backgroundImage,
         fontFamily: config.font === 'system' ? 'system-ui' : config.font.replace('_', ' '),
       }}
     >

@@ -346,6 +346,20 @@ textarea:focus-visible {
   overflow: hidden;
 }
 
+.panel-main .rank-preview[data-banner='true'] {
+  background-image: var(--rank-overlay), var(--rank-banner-fallback);
+}
+
+@supports (background-image: image-set(url("fallback.webp") type("image/webp"))) {
+  .panel-main .rank-preview[data-banner='true'] {
+    background-image: var(--rank-overlay), var(--rank-banner-source);
+  }
+}
+
+.panel-main .banner-option picture {
+  display: block;
+}
+
 .panel-main .rank-preview,
 .panel-main .rank-preview * {
   min-width: 0;
