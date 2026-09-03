@@ -62,6 +62,20 @@ for (const file of walkHtml(root)) {
   if (!/<html\b[^>]*lang=["'][a-z]{2,3}(?:-[a-z0-9]{2,8})?["']/i.test(html)) errors.push(`${relative}: missing valid lang`);
   if (h1Count !== 1) errors.push(`${relative}: expected one h1, found ${h1Count}`);
   if (/<img\b(?![^>]*\balt=)[^>]*>/i.test(html)) errors.push(`${relative}: image without alt attribute`);
+  if (/data-vozen-localized-route/i.test(html) && /-critical-v1\.css/i.test(html)) {
+    if (/data-deferred-style/i.test(html)) errors.push(`${relative}: interaction-deferred CSS can create layout shifts`);
+    if (/deferred-styles-v1\.js/i.test(html)) errors.push(`${relative}: interaction-deferred CSS loader must not ship`);
+    if (!/progressive-styles-v1\.js/i.test(html)) errors.push(`${relative}: progressive CSS loader is missing`);
+  }
+  const productRoute = relative === 'pt/tts/index.html'
+    ? undefined
+    : html.match(/data-vozen-localized-route=["'](tts|helper)["']/i)?.[1];
+  if (productRoute && !new RegExp(`${productRoute}-page-v1\\.css`, 'i').test(html)) {
+    errors.push(`${relative}: product-specific page CSS is missing`);
+  }
+  if (productRoute && /data-(?:deferred|progressive)-style|(?:deferred|progressive)-styles-v1\.js/i.test(html)) {
+    errors.push(`${relative}: product CSS must load atomically before interaction`);
+  }
   for (const match of html.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)) {
     const raw = match[1].split(/[?#]/, 1)[0];
     if (!raw || /^(?:https?:|data:|\/\/)/i.test(raw)) continue;

@@ -15,10 +15,30 @@ const pages = {
   tts: {
     html: path.join(siteRoot, 'tts', 'index.html'),
     sources: ['main-v43.css', 'ecosystem-bridge.css', 'global-nav-v1.css', 'tts-ui-v1.css'],
+    pageSources: [
+      'main-v43.css',
+      'ecosystem-bridge.css',
+      'global-nav-v1.css',
+      'tts-ui-v1.css',
+      'pricing-cards-v3.css',
+      'pricing-cards-v9.css',
+      'billing-v3.css',
+      'bundle-pricing-v1.css',
+    ],
   },
   helper: {
     html: path.join(siteRoot, 'helper', 'index.html'),
     sources: ['main-v43.css', 'ecosystem-v1.css', 'global-nav-v1.css', 'helper-ui-preview.css'],
+    pageSources: [
+      'main-v43.css',
+      'ecosystem-v1.css',
+      'global-nav-v1.css',
+      'helper-ui-preview.css',
+      'pricing-cards-v3.css',
+      'pricing-cards-v9.css',
+      'helper-pricing-v1.css',
+      'bundle-pricing-v1.css',
+    ],
   },
 };
 
@@ -97,6 +117,62 @@ try {
     });
     const criticalCss = `${generatedHeader('tools/build-public-css.mjs')}${criticalFontCss}\n${result.css.trim()}\n`;
     compareOrWrite(path.join(cssRoot, `${name}-critical-v1.css`), criticalCss);
+
+    if (name !== 'home') {
+      const pageBody = config.pageSources
+        .map((sourceName) => `/* source: ${sourceName} */\n${normalize(fs.readFileSync(path.join(cssRoot, sourceName), 'utf8')).trim()}`)
+        .join('\n\n');
+      const pageResult = await generate({
+        html: createRenderDocument(sourceHtml, pageBody),
+        base: siteRoot,
+        dimensions: [
+          { width: 320, height: 24_000 },
+          { width: 375, height: 24_000 },
+          { width: 768, height: 24_000 },
+          { width: 1440, height: 24_000 },
+        ],
+        concurrency: 1,
+        inline: false,
+        include: [
+          /^\.nav(?:\b|__)/,
+          /^\.brand(?:\b|__)/,
+          /^\.lang(?:\b|__)/,
+          /^\.vozen-global-nav/,
+          /^\[data-vozen-nav\]/,
+          /^\.btn(?:\b|--)/,
+          /^\.eco-back/,
+          /^\.helper-/,
+          /^\.tts-/,
+          /^\.hear(?:\b|__)/,
+          /^\.faq(?:\b|__)/,
+          /^\.qa(?:\b|__)/,
+          /^\.tabs(?:\b|__)/,
+          /^\.pricing(?:\b|__)/,
+          /^\.price-card/,
+          /^\.bundle-/,
+          /^\.bill-/,
+          /^\.seat-/,
+          /^\.billing-/,
+          /^\.modal/,
+          /^\.toast/,
+          /^\.msg/,
+          /^\.is-/,
+        ],
+        rebase: false,
+        ignore: { atrule: ['@font-face'] },
+        cleanCSS: { level: { 1: { all: true }, 2: { all: false, removeDuplicateRules: true } } },
+        penthouse: {
+          blockJSRequests: true,
+          renderWaitTime: 0,
+          maxEmbeddedBase64Length: 24_000,
+          puppeteer: { getBrowser: () => browser },
+          unstableKeepBrowserAlive: true,
+          unstableKeepOpenPages: 'all',
+        },
+      });
+      const pageCss = `${generatedHeader('tools/build-public-css.mjs')}${criticalFontCss}\n${pageResult.css.trim()}\n`;
+      compareOrWrite(path.join(cssRoot, `${name}-page-v1.css`), pageCss);
+    }
   }
 } finally {
   await browser.close();
@@ -105,4 +181,4 @@ try {
 if (mismatches.length) {
   throw new Error(`public CSS bundles are stale; run npm run build:css\n${mismatches.join('\n')}`);
 }
-console.log(`[${checkOnly ? 'check' : 'build'}-public-css] ${Object.keys(pages).length} critical/full bundle pairs are current`);
+console.log(`[${checkOnly ? 'check' : 'build'}-public-css] ${Object.keys(pages).length} critical/full pairs and 2 product page bundles are current`);

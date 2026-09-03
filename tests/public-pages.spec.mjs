@@ -28,8 +28,12 @@ for (const path of entryPages) {
       const overflow = await page.evaluate(() => ({
         viewport: document.documentElement.clientWidth,
         content: document.documentElement.scrollWidth,
+        height: document.documentElement.scrollHeight,
       }));
       expect(overflow.content, JSON.stringify(overflow)).toBeLessThanOrEqual(overflow.viewport + 1);
+      if (path !== '/') {
+        expect(overflow.height, `${path}: full-page CSS generation height at ${width}px`).toBeLessThanOrEqual(24_000);
+      }
       const clippedPrimaryContent = await page.locator('h1, h1 span, .hero__cta a, .helper-hero__actions a, .eco-home-hero__actions a').evaluateAll((nodes) =>
         nodes.filter((node) => {
           const style = getComputedStyle(node);
@@ -158,17 +162,24 @@ test('the editorial guides expose complete Portuguese counterparts', async ({ pa
   }
 });
 
-test('below-fold styles activate on the first scroll without creating page overflow', async ({ page }) => {
+test('complete styles are active before interaction and scrolling stays stable', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   for (const path of entryPages) {
     await page.goto(path, { waitUntil: 'networkidle' });
-    const fullStyles = page.locator('link[href*="-full-v1.css"]').first();
-    await expect(fullStyles).toHaveCount(1);
-    await expect(fullStyles).toHaveAttribute('data-deferred-style', '');
-    await expect(fullStyles).toHaveAttribute('media', 'print');
+    const completeStyles = path === '/'
+      ? page.locator('link[href*="home-full-v1.css"]')
+      : page.locator(`link[href*="${path.slice(1, -1)}-page-v1.css"]`);
+    await expect(completeStyles).toHaveCount(1);
+    for (const stylesheet of await completeStyles.all()) {
+      await expect(stylesheet).not.toHaveAttribute('data-deferred-style', '');
+      await expect(stylesheet).not.toHaveAttribute('data-progressive-style', '');
+      if (path === '/') await expect(stylesheet).toHaveAttribute('media', 'all');
+      else await expect(stylesheet).not.toHaveAttribute('media', 'print');
+    }
+    const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+    expect(pageHeight, `${path}: full-page CSS generation height`).toBeLessThanOrEqual(24_000);
 
     await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
-    await expect(fullStyles).toHaveAttribute('media', 'all');
     const overflow = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
       content: document.documentElement.scrollWidth,
