@@ -8,3 +8,5 @@ site/panel/helper-tracker/
 site/panel/helper/assets/
 site/panel/helper/fonts/
 site/panel/helper/rank-card-banners/
+test-results/
+playwright-report/

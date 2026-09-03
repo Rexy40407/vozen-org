@@ -19,4 +19,4 @@ The panel checks the selected server, effective channel permissions, role hierar
 
 ## Continue in the panel
 
-[Open the Helper panel](https://vozen.org/panel) or read [missing permissions](/docs/helper/troubleshooting/missing-permissions/) if a step cannot be published.
+[Open the Helper panel](https://vozen.org/panel/helper-tracker/#/quick-setup) or read [missing permissions](/docs/helper/troubleshooting/missing-permissions/) if a step cannot be published.

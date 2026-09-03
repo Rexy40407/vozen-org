@@ -1,5 +1,57 @@
 /* Shared marketing navigation for the Vozen ecosystem. */
 
+/* The display face is optional for the first visit: on a constrained network
+   text paints in the metric-compatible system fallback instead of recording a
+   late font swap as the page's LCP. The preload still wins on normal links. */
+@font-face {
+  font-family: "Vozen Critical Display";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: optional;
+  src: url("../assets/fonts/unbounded-critical-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Vozen Critical Display";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: optional;
+  src: url("../assets/fonts/unbounded-critical-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Vozen Critical Display";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: optional;
+  src: url("../assets/fonts/unbounded-critical-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+.vozen-global-nav .brand__word,
+.hero__title,
+#eco-title,
+#helper-title {
+  font-family: "Vozen Critical Display", system-ui, sans-serif;
+}
+
+/* Reserve the final header footprint before the shared navigation script
+   replaces its placeholder. This prevents a full-page layout shift. */
+[data-vozen-nav] {
+  display: block;
+  min-height: 92px;
+}
+
+@media (max-width: 1000px) {
+  [data-vozen-nav] { min-height: 76px; }
+}
+
+@media (max-width: 720px) {
+  [data-vozen-nav] { min-height: 70px; }
+}
+
 .vozen-global-nav {
   --ecosystem-header-height: 92px;
   --ecosystem-header-width: 1280px;

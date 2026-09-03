@@ -8,6 +8,8 @@ on:
       - 'docs-src/**'
       - 'docs-data/**'
       - 'tools/**'
+      - 'tests/**'
+      - 'playwright.config.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.eleventy.cjs'
@@ -28,6 +30,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -40,15 +44,24 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             apps/helper-panel/package-lock.json
-      - name: Build Helper documentation
+      - name: Install site dependencies
+        run: npm ci
+      - name: Install browser runtime
+        run: npx playwright install --with-deps chromium
+      - name: Build and validate public site
         run: |
-          npm ci
           npm run docs:build
           npm run docs:test
           npm run docs:links
           npm run docs:a11y
           npm run site:check
+          npm run helper-tracker:check
+          npm run helper-panel:redirect-check
+          npm run helper-panel:vozen-session-check
           npm run product-install:check
+          npm run auth-session:check
+          npm run test:ui
+          npm run test:lighthouse
       - name: Build Helper panel
         run: |
           npm ci --prefix apps/helper-panel

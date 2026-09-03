@@ -48,7 +48,6 @@ html.helper-ui-preview .helper-hero::before {
 
 html.helper-ui-preview .helper-hero__copy {
   max-width: 620px;
-  animation: helper-preview-copy-in 620ms var(--preview-ease) both;
 }
 
 html.helper-ui-preview .helper-hero .eco-locked {
@@ -259,11 +258,6 @@ html.helper-ui-preview .helper-access {
 
 html.helper-ui-preview .helper-access p { color: #a6b4d0; }
 html.helper-ui-preview .helper-pricing { margin-top: 112px; }
-
-@keyframes helper-preview-copy-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 @keyframes helper-preview-console-in {
   from { opacity: 0; transform: translate3d(18px, 18px, 0) scale(.975); }

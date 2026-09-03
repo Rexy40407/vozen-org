@@ -11,6 +11,8 @@
   const OAUTH_CLIENT_ID = String(window.VOZEN_ECOSYSTEM_OAUTH?.clientId || "").trim();
   const navLocale = () => {
     try {
+      const routeLocale = document.documentElement.dataset.vozenLocale;
+      if (window.VOZEN_I18N && window.VOZEN_I18N[routeLocale]) return routeLocale;
       const value = localStorage.getItem("vozen.lang") || "en";
       return window.VOZEN_I18N && window.VOZEN_I18N[value] ? value : "en";
     } catch (_) {
@@ -33,10 +35,11 @@
     ["ru", "🇷🇺", "Русский"],
     ["ko", "🇰🇷", "한국어"],
   ];
+  const HTML_LANGUAGES = { pt: "pt-PT", zh: "zh-Hant" };
   const setNavLocale = (value) => {
     const locale = NAV_LANGUAGES.some(([code]) => code === value) ? value : "en";
     try { localStorage.setItem("vozen.lang", locale); } catch (_) {}
-    document.documentElement.lang = locale;
+    document.documentElement.lang = HTML_LANGUAGES[locale] || locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
     window.dispatchEvent(new CustomEvent("vozen:languagechange", { detail: { language: locale } }));
   };
@@ -64,15 +67,21 @@
   const applyNavTranslations = () => {
     document.querySelectorAll("[data-i18n]").forEach((element) => {
       const key = element.getAttribute("data-i18n");
-      if (key) element.textContent = navText(key, element.textContent);
+      if (!key) return;
+      const value = navText(key, element.textContent);
+      if (element.textContent !== value) element.textContent = value;
     });
     document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
       const key = element.getAttribute("data-i18n-aria-label");
-      if (key) element.setAttribute("aria-label", navText(key, element.getAttribute("aria-label")));
+      if (!key) return;
+      const value = navText(key, element.getAttribute("aria-label"));
+      if (element.getAttribute("aria-label") !== value) element.setAttribute("aria-label", value);
     });
     document.querySelectorAll("[data-i18n-title]").forEach((element) => {
       const key = element.getAttribute("data-i18n-title");
-      if (key) element.setAttribute("title", navText(key, element.getAttribute("title")));
+      if (!key) return;
+      const value = navText(key, element.getAttribute("title"));
+      if (element.getAttribute("title") !== value) element.setAttribute("title", value);
     });
     syncDocsLanguageMenus();
   };
@@ -223,7 +232,7 @@
       host.outerHTML = `<header class="docs-ecosystem-nav">
         <div class="docs-ecosystem-nav__inner">
           <a class="docs-ecosystem-nav__brand" href="${link('')}" aria-label="Vozen ecosystem home" data-i18n-aria-label="ecosystem.homeAria">
-            <span class="docs-ecosystem-nav__mark" aria-hidden="true"><img src="${link('assets/vozen-ecosystem-icon.png')}" alt="" /></span>
+            <span class="docs-ecosystem-nav__mark" aria-hidden="true"><img src="${link('favicon.svg')}" alt="" width="40" height="40" /></span>
             <span class="docs-ecosystem-nav__word">Vozen</span>
             <span class="docs-ecosystem-nav__product" data-i18n="ecosystem.label">${escapeHtml(productLabel)}</span>
           </a>
@@ -253,7 +262,7 @@
     host.outerHTML = `<header class="nav vozen-global-nav" id="nav">
       <div class="wrap nav__inner">
         <a class="brand" href="${link('')}" aria-label="Vozen ecosystem home" data-i18n-aria-label="ecosystem.homeAria">
-          <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="${link('assets/vozen-ecosystem-icon.png')}" alt="" /></span>
+          <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="${link('favicon.svg')}" alt="" width="40" height="40" /></span>
           <span class="brand__word">Vozen</span>
           <span class="nav__product"${product === "Ecosystem" ? ' data-i18n="ecosystem.label"' : ""}>${escapeHtml(productLabel)}</span>
         </a>

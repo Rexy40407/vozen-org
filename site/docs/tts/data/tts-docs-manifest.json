@@ -186,7 +186,7 @@
           "title": "Missing permissions"
         },
         {
-          "route": "troubleshooting/provider-failure/index.html",
+          "route": "troubleshooting/service-failure/index.html",
           "title": "A provider failed"
         }
       ]

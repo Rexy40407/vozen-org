@@ -1769,7 +1769,7 @@ body.is-modal-open { overflow: hidden; }
 .foot { border-top: 1px solid var(--line); padding: 64px 0 32px; background: var(--bg-1); }
 .foot__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 40px; }
 .foot__tag { margin-top: 13px; color: var(--text-2); }
-.foot h4 { font-family: var(--f-body); font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-2); margin-bottom: 14px; }
+.foot h2 { font-family: var(--f-body); font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-2); margin-bottom: 14px; }
 .foot__grid a { display: block; color: var(--text-1); padding: 5px 0; transition: color 0.2s; }
 .foot__grid a:hover { color: var(--text-0); }
 .foot__base { display: flex; justify-content: space-between; margin-top: 46px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--text-2); font-size: 14px; }
@@ -1780,13 +1780,9 @@ body.is-modal-open { overflow: hidden; }
 /* ── reveal animation ───────────────────────────────────── */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.in-view { opacity: 1; transform: none; }
-.hero .reveal[data-r] { animation: heroIn 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; opacity: 1; transform: none; transition: none; }
-.hero .reveal[data-r="1"] { animation-delay: 0.05s; }
-.hero .reveal[data-r="2"] { animation-delay: 0.16s; }
-.hero .reveal[data-r="3"] { animation-delay: 0.28s; }
-.hero .reveal[data-r="4"] { animation-delay: 0.4s; }
-.hero .reveal[data-r="5"] { animation-delay: 0.52s; }
-@keyframes heroIn { from { opacity: 0; transform: translateY(28px); } }
+/* Above-the-fold content paints immediately. Animating the hero from opacity
+   zero delays LCP and can leave slower visitors looking at an empty promise. */
+.hero .reveal[data-r] { opacity: 1; transform: none; transition: none; }
 
 /* ═══ responsive ═══ */
 @media (max-width: 1000px) {

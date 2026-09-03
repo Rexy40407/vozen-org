@@ -55,7 +55,7 @@ body.tts-page .hero__grid {
   gap: clamp(44px, 6vw, 88px);
 }
 
-body.tts-page .hero__copy { max-width: 625px; }
+body.tts-page .hero__copy { min-width: 0; max-width: 625px; }
 
 body.tts-page .pill {
   padding: 8px 12px;
@@ -66,9 +66,16 @@ body.tts-page .pill {
 
 body.tts-page .hero__title {
   margin: 27px 0 22px;
-  font-size: clamp(52px, 7.15vw, 88px);
+  font-size: clamp(48px, 5.2vw, 64px);
   line-height: .95;
   letter-spacing: -.055em;
+}
+
+body.tts-page .hero__title span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  text-wrap: balance;
 }
 
 body.tts-page .hero__title .grad {
@@ -251,7 +258,8 @@ body.tts-page .price-toolbar { border-color: var(--tts-line); }
 
 @media (max-width: 720px) {
   body.tts-page .hero { padding-block: 56px 66px; }
-  body.tts-page .hero__title { font-size: clamp(48px, 14vw, 68px); }
+  body.tts-page .hero__title { font-size: clamp(32px, 10vw, 48px); }
+  body.tts-page .hero__title span { max-width: 100%; overflow-wrap: anywhere; white-space: normal; text-wrap: balance; }
   body.tts-page .hero__cta { align-items: stretch; flex-direction: column; }
   body.tts-page .hero__cta .btn { width: 100%; }
   body.tts-page .stats__grid { grid-template-columns: repeat(2, 1fr); }

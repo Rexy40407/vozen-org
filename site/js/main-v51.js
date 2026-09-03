@@ -126,35 +126,6 @@
     if (active && langEl) langEl.textContent = hearLangName(active.dataset.sample, siteLang);
   }
 
-  // Keep each translated hero phrase on the same single visual line. Some translations are
-  // naturally wider than English (French is the longest current example), so a fixed font size
-  // makes one phrase wrap and doubles the hero height. Measure the real rendered glyphs and only
-  // reduce the display size when a phrase would overflow its column.
-  function fitHeroTitle() {
-    const title = document.querySelector(".hero__title");
-    if (!title) return;
-    title.style.removeProperty("font-size");
-    const lines = [...title.querySelectorAll("span")];
-    const available = title.clientWidth;
-    const baseSize = Number.parseFloat(getComputedStyle(title).fontSize);
-    if (!available || !baseSize || lines.length === 0) return;
-    const widest = Math.max(...lines.map((line) => line.scrollWidth));
-    if (widest <= available) return;
-    const fitted = Math.max(34, Math.floor(baseSize * (available / widest) * 0.985));
-    title.style.fontSize = `${fitted}px`;
-  }
-
-  let heroFitFrame = 0;
-  function scheduleHeroTitleFit() {
-    window.cancelAnimationFrame(heroFitFrame);
-    heroFitFrame = window.requestAnimationFrame(fitHeroTitle);
-  }
-
-  window.addEventListener("resize", scheduleHeroTitleFit, { passive: true });
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(scheduleHeroTitleFit).catch(() => {});
-  }
-
   // As 10 línguas do seletor: [código, bandeira, autónimo (nome na própria língua)].
   // O documento inteiro muda para RTL em árabe; as restantes línguas usam LTR.
   const LANG_UI = [
@@ -170,6 +141,7 @@
     ["ko", "🇰🇷", "한국어"],
   ];
   const LANG_META = Object.fromEntries(LANG_UI.map(([c, flag, name]) => [c, { flag, name }]));
+  const LANG_HTML = { pt: "pt-PT", zh: "zh-Hant" };
 
   // Keep every surface on the same, deliberately small locale contract. Older site versions
   // stored additional language codes; those are not supported by the current catalogue, so a
@@ -204,12 +176,12 @@
 
   function applyLang(l) {
     lang = isSupportedLanguage(l) && DICT[l] ? l : DEFAULT_LANG;
-    document.documentElement.lang = lang;
+    document.documentElement.lang = LANG_HTML[lang] || lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     const d = DICT[lang];
     $$("[data-i18n]").forEach((el) => {
       const k = el.getAttribute("data-i18n");
-      if (d[k] != null) el.textContent = d[k];
+      if (d[k] != null && el.textContent !== d[k]) el.textContent = d[k];
     });
     const translatedAttributes = [
       ["data-i18n-aria-label", "aria-label"],
@@ -219,15 +191,13 @@
     translatedAttributes.forEach(([marker, attribute]) => {
       $$(`[${marker}]`).forEach((el) => {
         const k = el.getAttribute(marker);
-        if (d[k] != null) el.setAttribute(attribute, d[k]);
+        if (d[k] != null && el.getAttribute(attribute) !== d[k]) el.setAttribute(attribute, d[k]);
       });
     });
     const documentTitleKey = document.body?.getAttribute("data-i18n-document-title");
     if (documentTitleKey && d[documentTitleKey] != null) document.title = d[documentTitleKey];
     syncLangMenu(lang);
     localizeHear(lang);
-    fitHeroTitle();
-    scheduleHeroTitleFit();
     renderCommands();
     renderFaq();
     renderPanel(); // re-renderiza o painel Premium na língua atual (sem novo fetch)

@@ -3,6 +3,7 @@
   "use strict";
 
   const supported = new Set(["en", "pt", "fr", "es", "de", "tr", "ar", "zh", "ru", "ko"]);
+  const htmlLocale = (value) => ({ pt: "pt-PT", zh: "zh-Hant" })[value] || value;
   const locale = () => {
     try {
       const value = localStorage.getItem("vozen.lang") || "en";
@@ -21,7 +22,7 @@
   };
   const apply = () => {
     const current = locale();
-    document.documentElement.lang = current;
+    document.documentElement.lang = htmlLocale(current);
     document.documentElement.dir = current === "ar" ? "rtl" : "ltr";
     document.querySelectorAll("[data-i18n]").forEach((node) => {
       const key = node.getAttribute("data-i18n");

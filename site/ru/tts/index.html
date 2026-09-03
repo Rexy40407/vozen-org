@@ -2,7 +2,7 @@
     <!-- This route is served from /tts/. Keep the established site assets rooted at / so it does not depend on a runtime fetch. -->
     <base href="../../">
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com https://js.stripe.com https://*.js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com https://*.stripe.com https://*.link.com; connect-src 'self' https://api.vozen.org https://cloudflareinsights.com https://api.stripe.com https://checkout.stripe.com https://r.stripe.com https://*.stripe.com https://link.com https://*.link.com; frame-src https://checkout.stripe.com https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://link.com https://*.link.com; media-src 'self'; form-action 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com https://js.stripe.com https://*.js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https://cdn.discordapp.com https://*.stripe.com https://*.link.com; connect-src 'self' https://api.vozen.org https://cloudflareinsights.com https://api.stripe.com https://checkout.stripe.com https://r.stripe.com https://*.stripe.com https://link.com https://*.link.com; frame-src https://checkout.stripe.com https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://link.com https://*.link.com; media-src 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#07070d">
@@ -40,20 +40,14 @@
 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-    <link rel="stylesheet" href="css/main-v43.css?v=nav-icons-v2">
-    <link rel="stylesheet" href="css/pricing-cards-v3.css">
-    <link rel="stylesheet" href="css/pricing-cards-v9.css?v=free-align-v12">
-    <link rel="stylesheet" href="css/billing-v3.css?v=compact-checkout-v1">
-    <link rel="stylesheet" href="css/ecosystem-bridge.css">
-    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v14">
-    <link rel="stylesheet" href="css/tts-ui-v1.css?v=voice-studio-v4">
-    <link rel="stylesheet" href="css/bundle-pricing-v1.css?v=bundle-ribbon-v2">
-    <script>
-      if (window.location.protocol !== 'file:' && /\/tts\.html$/i.test(window.location.pathname)) {
-        window.location.replace('/tts/' + window.location.search + window.location.hash);
-      }
-    </script>
-
+    <link rel="stylesheet" href="css/tts-critical-v1.css?v=2">
+    <link rel="stylesheet" href="css/tts-full-v1.css?v=1" media="print" data-deferred-style="">
+    <link rel="stylesheet" href="css/pricing-cards-v3.css" media="print" data-deferred-style="">
+    <link rel="stylesheet" href="css/pricing-cards-v9.css?v=free-align-v12" media="print" data-deferred-style="">
+    <link rel="stylesheet" href="css/billing-v3.css?v=compact-checkout-v1" media="print" data-deferred-style="">
+    <link rel="stylesheet" href="css/bundle-pricing-v1.css?v=bundle-ribbon-v2" media="print" data-deferred-style="">
+    <noscript><link rel="stylesheet" href="css/tts-full-v1.css?v=1" /><link rel="stylesheet" href="css/pricing-cards-v3.css" /><link rel="stylesheet" href="css/pricing-cards-v9.css?v=free-align-v12" /><link rel="stylesheet" href="css/billing-v3.css?v=compact-checkout-v1" /><link rel="stylesheet" href="css/bundle-pricing-v1.css?v=bundle-ribbon-v2" /></noscript>
+    <script defer="" src="js/deferred-styles-v1.js?v=1"></script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Vozen TTS","applicationCategory":"UtilitiesApplication","operatingSystem":"Discord","url":"https://vozen.org/ru/tts/","description":"A Discord text-to-speech bot with 38 neural voices in 35 languages, designed to keep conversations accessible when a microphone is not available.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"inLanguage":"ru"}</script>
 
     <!-- FAQ structured data (Google rich results). Mantém em sincronia com
@@ -76,7 +70,7 @@
     <header class="nav vozen-global-nav" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-locale-root="ru/">
       <div class="wrap nav__inner">
         <a class="brand" href="https://vozen.org/ru/tts/" aria-label="Vozen ecosystem home">
-          <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="assets/vozen-ecosystem-icon.png" alt=""></span>
+          <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="favicon.svg" alt="" width="40" height="40"></span>
           <span class="brand__word">Vozen</span>
           <span class="nav__product">TTS</span>
         </a>
@@ -619,13 +613,13 @@
       <div class="wrap foot__grid">
         <div>
           <a class="brand" href="https://vozen.org/ru/tts/" aria-label="Vozen ecosystem home">
-            <span class="brand__mark"><img class="brand__portal" src="assets/vozen-ecosystem-icon.png" alt=""></span>
+            <span class="brand__mark"><img class="brand__portal" src="favicon.svg" alt="" width="40" height="40"></span>
             <span class="brand__word">Vozen</span>
           </a>
           <p class="foot__tag" data-i18n="foot.tag">Напиши, услышь</p>
         </div>
         <div>
-          <h4 data-i18n="foot.product">Продукт</h4>
+          <h2 data-i18n="foot.product">Продукт</h2>
           <a href="https://vozen.org/ru/tts/#features" data-i18n="nav.features">Возможности</a>
           <a href="https://vozen.org/ru/tts/#games" data-i18n="nav.games">Игры</a>
           <a href="commands/" data-i18n="nav.commands">Команды</a>
@@ -636,7 +630,7 @@
           <a href="/status" data-i18n="site.status">Статус</a>
         </div>
         <div>
-          <h4 data-i18n="foot.community">Сообщество</h4>
+          <h2 data-i18n="foot.community">Сообщество</h2>
           <a href="https://discord.gg/4kYw2WUbNN" class="js-support" data-i18n="foot.support">Сервер поддержки</a>
           <a href="https://vozen.org/ru/tts/#" class="js-vote" data-i18n="foot.vote">Голосуй на top.gg</a>
           <a href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" data-i18n="site.github">GitHub</a>

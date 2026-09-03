@@ -6,8 +6,11 @@
   if (!document.body.classList.contains("helper-page")) return;
 
   const supported = ["en", "pt", "fr", "es", "de", "tr", "ar", "zh", "ru", "ko"];
+  const htmlLocale = (locale) => ({ pt: "pt-PT", zh: "zh-Hant" })[locale] || locale;
   const currentLocale = () => {
     try {
+      const routeLocale = document.documentElement.dataset.vozenLocale;
+      if (supported.includes(routeLocale)) return routeLocale;
       const value = localStorage.getItem("vozen.lang") || "en";
       return supported.includes(value) && window.VOZEN_I18N?.[value] ? value : "en";
     } catch (_) { return "en"; }
@@ -18,7 +21,9 @@
     || key;
   const setText = (selector, key, fallback, root) => {
     const element = (root || document).querySelector(selector);
-    if (element) element.textContent = text(key, fallback || element.textContent);
+    if (!element) return;
+    const value = text(key, fallback || element.textContent);
+    if (element.textContent !== value) element.textContent = value;
   };
   const setTextPreservingChildren = (selector, key, fallback, root) => {
     const element = (root || document).querySelector(selector);
@@ -32,7 +37,8 @@
     const target = nodes[nodes.length - 1];
     const leading = String(target.nodeValue || '').match(/^\s*/)?.[0] || '';
     const trailing = String(target.nodeValue || '').match(/\s*$/)?.[0] || '';
-    target.nodeValue = `${leading}${value}${trailing}`;
+    const nextValue = `${leading}${value}${trailing}`;
+    if (target.nodeValue !== nextValue) target.nodeValue = nextValue;
   };
   const setAll = (selector, fn) => document.querySelectorAll(selector).forEach(fn);
   const setAttribute = (selector, attribute, key, fallback) => {
@@ -72,7 +78,7 @@
   ];
 
   function apply() {
-    document.documentElement.lang = currentLocale();
+    document.documentElement.lang = htmlLocale(currentLocale());
     document.documentElement.dir = currentLocale() === "ar" ? "rtl" : "ltr";
     document.title = text("helper.landing.documentTitle", "Vozen Helper — Available now");
 
@@ -205,5 +211,5 @@
 
   window.addEventListener("vozen:i18nready", apply);
   window.addEventListener("vozen:languagechange", apply);
-  window.setTimeout(apply, 0);
+  Promise.resolve(window.vozenPublicI18nReady).then(apply).catch(apply);
 })();
