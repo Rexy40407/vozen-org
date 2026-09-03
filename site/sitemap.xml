@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://vozen.org/</loc></url>
+  <url><loc>https://vozen.org/ar/</loc></url>
+  <url><loc>https://vozen.org/ar/helper/</loc></url>
+  <url><loc>https://vozen.org/ar/tts/</loc></url>
   <url><loc>https://vozen.org/commands/</loc></url>
+  <url><loc>https://vozen.org/de/</loc></url>
+  <url><loc>https://vozen.org/de/helper/</loc></url>
+  <url><loc>https://vozen.org/de/tts/</loc></url>
   <url><loc>https://vozen.org/docs/</loc></url>
   <url><loc>https://vozen.org/docs/helper/</loc></url>
   <url><loc>https://vozen.org/docs/helper/get-started/feature-status/</loc></url>
@@ -125,14 +131,34 @@
   <url><loc>https://vozen.org/docs/tts/voice-games/overview/</loc></url>
   <url><loc>https://vozen.org/docs/tts/voice-games/permissions-and-limits/</loc></url>
   <url><loc>https://vozen.org/docs/tts/voice-games/starting-and-stopping/</loc></url>
+  <url><loc>https://vozen.org/es/</loc></url>
+  <url><loc>https://vozen.org/es/helper/</loc></url>
+  <url><loc>https://vozen.org/es/tts/</loc></url>
+  <url><loc>https://vozen.org/fr/</loc></url>
+  <url><loc>https://vozen.org/fr/helper/</loc></url>
+  <url><loc>https://vozen.org/fr/tts/</loc></url>
   <url><loc>https://vozen.org/guides/discord-without-a-mic/</loc></url>
   <url><loc>https://vozen.org/guides/helper-moderation-tickets-roles/</loc></url>
   <url><loc>https://vozen.org/guides/vozen-vs-generic-discord-tts/</loc></url>
   <url><loc>https://vozen.org/helper/</loc></url>
+  <url><loc>https://vozen.org/ko/</loc></url>
+  <url><loc>https://vozen.org/ko/helper/</loc></url>
+  <url><loc>https://vozen.org/ko/tts/</loc></url>
   <url><loc>https://vozen.org/premium</loc></url>
   <url><loc>https://vozen.org/privacy</loc></url>
+  <url><loc>https://vozen.org/pt/</loc></url>
+  <url><loc>https://vozen.org/pt/helper/</loc></url>
   <url><loc>https://vozen.org/pt/tts/</loc></url>
+  <url><loc>https://vozen.org/ru/</loc></url>
+  <url><loc>https://vozen.org/ru/helper/</loc></url>
+  <url><loc>https://vozen.org/ru/tts/</loc></url>
   <url><loc>https://vozen.org/status</loc></url>
   <url><loc>https://vozen.org/terms</loc></url>
+  <url><loc>https://vozen.org/tr/</loc></url>
+  <url><loc>https://vozen.org/tr/helper/</loc></url>
+  <url><loc>https://vozen.org/tr/tts/</loc></url>
   <url><loc>https://vozen.org/tts/</loc></url>
+  <url><loc>https://vozen.org/zh/</loc></url>
+  <url><loc>https://vozen.org/zh/helper/</loc></url>
+  <url><loc>https://vozen.org/zh/tts/</loc></url>
 </urlset>

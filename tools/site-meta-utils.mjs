@@ -16,15 +16,27 @@ export function walkHtml(root) {
 }
 
 export function metaContent(html, name, attribute = 'name') {
-  const expression = new RegExp(`<meta\\b[^>]*${attribute}=["']${name}["'][^>]*content=["']([^"']*)["'][^>]*>`, 'i');
-  const reverseExpression = new RegExp(`<meta\\b[^>]*content=["']([^"']*)["'][^>]*${attribute}=["']${name}["'][^>]*>`, 'i');
-  return html.match(expression)?.[1] || html.match(reverseExpression)?.[1] || '';
+  for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
+    const attributes = tagAttributes(tag);
+    if (attributes[attribute]?.toLowerCase() === name.toLowerCase()) return attributes.content || '';
+  }
+  return '';
 }
 
 export function linkHref(html, rel) {
-  const expression = new RegExp(`<link\\b[^>]*rel=["']${rel}["'][^>]*href=["']([^"']+)["'][^>]*>`, 'i');
-  const reverseExpression = new RegExp(`<link\\b[^>]*href=["']([^"']+)["'][^>]*rel=["']${rel}["'][^>]*>`, 'i');
-  return html.match(expression)?.[1] || html.match(reverseExpression)?.[1] || '';
+  for (const tag of html.match(/<link\b[^>]*>/gi) || []) {
+    const attributes = tagAttributes(tag);
+    if (attributes.rel?.toLowerCase() === rel.toLowerCase()) return attributes.href || '';
+  }
+  return '';
+}
+
+function tagAttributes(tag) {
+  const attributes = {};
+  for (const match of tag.matchAll(/([^\s=<>]+)\s*=\s*(["'])([\s\S]*?)\2/g)) {
+    attributes[match[1].toLowerCase()] = match[3];
+  }
+  return attributes;
 }
 
 export function titleContent(html) {

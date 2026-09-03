@@ -1,0 +1,666 @@
+<!DOCTYPE html><html lang="zh-Hant" data-vozen-locale="zh" data-vozen-localized-route="tts"><head>
+    <!-- This route is served from /tts/. Keep the established site assets rooted at / so it does not depend on a runtime fetch. -->
+    <base href="../../">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com https://js.stripe.com https://*.js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com https://*.stripe.com https://*.link.com; connect-src 'self' https://api.vozen.org https://cloudflareinsights.com https://api.stripe.com https://checkout.stripe.com https://r.stripe.com https://*.stripe.com https://link.com https://*.link.com; frame-src https://checkout.stripe.com https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://link.com https://*.link.com; media-src 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07070d">
+    <title data-i18n="tts.documentTitle">Vozen TTS——35 種語言、38 種語音</title>
+    <meta name="description" content="Vozen 用自然的神經網路語音，把你的 Discord 聊天內容大聲朗讀出來——支援 35 種語言，內建遊戲與歡笑，核心功能永久免費。">
+
+    <!-- Social + canonical. URLs ABSOLUTAS do dominio proprio (vozen.org via GitHub
+         Pages). Se algum dia mudares de dominio, troca estas 4 URLs (canonical,
+         og:url, og:image, twitter:image). -->
+    <link rel="canonical" href="https://vozen.org/zh/tts/"><link rel="alternate" hreflang="en" href="https://vozen.org/tts/"><link rel="alternate" hreflang="pt-PT" href="https://vozen.org/pt/tts/"><link rel="alternate" hreflang="fr" href="https://vozen.org/fr/tts/"><link rel="alternate" hreflang="es" href="https://vozen.org/es/tts/"><link rel="alternate" hreflang="de" href="https://vozen.org/de/tts/"><link rel="alternate" hreflang="tr" href="https://vozen.org/tr/tts/"><link rel="alternate" hreflang="ar" href="https://vozen.org/ar/tts/"><link rel="alternate" hreflang="zh-Hant" href="https://vozen.org/zh/tts/"><link rel="alternate" hreflang="ru" href="https://vozen.org/ru/tts/"><link rel="alternate" hreflang="ko" href="https://vozen.org/ko/tts/"><link rel="alternate" hreflang="x-default" href="https://vozen.org/tts/">
+
+
+
+
+
+
+
+
+
+
+
+    <meta property="og:site_name" content="Vozen">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vozen.org/zh/tts/">
+    <meta property="og:title" content="Vozen TTS——35 種語言、38 種語音">
+    <meta property="og:description" content="Vozen 用自然的神經網路語音，把你的 Discord 聊天內容大聲朗讀出來——支援 35 種語言，內建遊戲與歡笑，核心功能永久免費。">
+    <meta property="og:image" content="https://vozen.org/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Vozen — Discord TTS with 38 voices in 35 languages, core free forever">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vozen TTS——35 種語言、38 種語音">
+    <meta name="twitter:description" content="Vozen 用自然的神經網路語音，把你的 Discord 聊天內容大聲朗讀出來——支援 35 種語言，內建遊戲與歡笑，核心功能永久免費。">
+    <meta name="twitter:image" content="https://vozen.org/assets/og-image.png">
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <link rel="stylesheet" href="css/main-v43.css?v=nav-icons-v2">
+    <link rel="stylesheet" href="css/pricing-cards-v3.css">
+    <link rel="stylesheet" href="css/pricing-cards-v9.css?v=free-align-v12">
+    <link rel="stylesheet" href="css/billing-v3.css?v=compact-checkout-v1">
+    <link rel="stylesheet" href="css/ecosystem-bridge.css">
+    <link rel="stylesheet" href="css/global-nav-v1.css?v=ecosystem-nav-v14">
+    <link rel="stylesheet" href="css/tts-ui-v1.css?v=voice-studio-v4">
+    <link rel="stylesheet" href="css/bundle-pricing-v1.css?v=bundle-ribbon-v2">
+    <script>
+      if (window.location.protocol !== 'file:' && /\/tts\.html$/i.test(window.location.pathname)) {
+        window.location.replace('/tts/' + window.location.search + window.location.hash);
+      }
+    </script>
+
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Vozen TTS","applicationCategory":"UtilitiesApplication","operatingSystem":"Discord","url":"https://vozen.org/zh/tts/","description":"A Discord text-to-speech bot with 38 neural voices in 35 languages, designed to keep conversations accessible when a microphone is not available.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"inLanguage":"zh-Hant"}</script>
+
+    <!-- FAQ structured data (Google rich results). Mantém em sincronia com
+         window.VOZEN_FAQ (js/i18n.js) — o JSON-LD tem de ser ESTÁTICO porque os
+         crawlers não correm o JS que renderiza o FAQ. -->
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Vozen really free?","acceptedAnswer":{"@type":"Answer","text":"Yes — the core is free forever: 38 Piper voices in 35 languages, auto-read, greetings, most games and every admin control. Kokoro and Google HD are Premium voice engines; Plus unlocks them personally and server Premium unlocks them for that server."}},{"@type":"Question","name":"What does Premium include?","acceptedAnswer":{"@type":"Answer","text":"Kokoro neural and Google HD voice engines, all 8 voice effects, 24/7 in-call, 50 personal pronunciations, /rizz and the premium games (Word Chain, Wordle, Chess). Server Premium also includes live voice transcription. €6.99/month covers 2 servers, or €14.99/month covers 5; annual saves about 20%. Vozen Plus (€3.99/month) gives the personal perks on any server."}},{"@type":"Question","name":"How do I add Vozen to my server?","acceptedAnswer":{"@type":"Answer","text":"Click \"Add to Discord\", pick your server (you need Manage Server), and run /setup. That's it."}},{"@type":"Question","name":"Which languages does it support?","acceptedAnswer":{"@type":"Answer","text":"35 languages with 38 neural voices — Portuguese, English, Spanish, French, German, Japanese, Arabic, Russian and many more, each with a native voice."}},{"@type":"Question","name":"Do I need to configure anything?","acceptedAnswer":{"@type":"Answer","text":"No. /setup does it in one step. After that, everything works with sensible defaults — you can fine-tune later with /config."}},{"@type":"Question","name":"Can everyone have a different voice?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each member sets their own voice and language with /voice set. Automatic per-message language detection is optional and can be enabled with /voice detection on."}},{"@type":"Question","name":"How do I turn features off?","acceptedAnswer":{"@type":"Answer","text":"Everything is toggleable via /config — the greeting, auto-read, who-said announcements, the anti-spam filter, and more. There's also a full kill-switch."}}],"inLanguage":"zh-Hant"}</script>
+  </head>
+  <body class="tts-page" data-i18n-document-title="tts.documentTitle" data-vozen-public-analytics="true">
+    <!-- grain overlay -->
+    <div class="grain" aria-hidden="true"></div>
+    <!-- atmospheric glow orbs -->
+    <div class="orbs" aria-hidden="true">
+      <span class="orb orb--blurple"></span>
+      <span class="orb orb--aqua"></span>
+    </div>
+
+    <a class="skip-link" href="https://vozen.org/zh/tts/#hero">Skip to content</a>
+
+    <!-- ─────────────── NAVBAR ─────────────── -->
+    <header class="nav vozen-global-nav" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-locale-root="zh/">
+      <div class="wrap nav__inner">
+        <a class="brand" href="https://vozen.org/zh/tts/" aria-label="Vozen ecosystem home">
+          <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="assets/vozen-ecosystem-icon.png" alt=""></span>
+          <span class="brand__word">Vozen</span>
+          <span class="nav__product">TTS</span>
+        </a>
+
+        <nav class="nav__links" aria-label="Primary">
+          <a class="is-current" href="zh/tts/" aria-current="page">Vozen TTS</a>
+          <a href="zh/helper/">Vozen Helper</a>
+          <a href="commands/">Commands</a>
+          <a href="premium.html">Premium</a>
+        </nav>
+
+        <div class="nav__actions">
+          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" title="Open source on GitHub">
+            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
+          </a>
+          <div class="lang" id="langMenu">
+            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language">
+              <span class="lang__flag" id="langBtnFlag">🇬🇧</span>
+              <span class="lang__name" id="langBtnName">English</span>
+              <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language"></ul>
+          </div>
+          <button class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" type="button">
+            <svg viewBox="0 0 24 18" width="18" height="14" fill="currentColor" aria-hidden="true"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"></path></svg>
+            <span data-i18n="nav.login">登入</span>
+          </button>
+          <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ─────────────── HERO ─────────────── -->
+      <section class="hero" id="hero">
+        <canvas id="wave" class="hero__wave" aria-hidden="true"></canvas>
+        <div class="wrap hero__grid">
+          <div class="hero__copy">
+            <span class="pill reveal" data-r="1">
+              <span class="pill__dot"></span>
+              <span data-i18n="hero.badge">核心功能永久免費 · 開放原始碼</span>
+            </span>
+
+            <h1 class="hero__title reveal" data-r="2">
+              <span data-i18n="hero.title1">没有麦克风？</span>
+              <span class="grad" data-i18n="hero.title2">继续参与对话。</span>
+            </h1>
+
+            <p class="hero__sub reveal" data-r="3" data-i18n="hero.sub">Vozen 用自然的神經網路語音，把你的 Discord 聊天內容大聲朗讀出來——支援 35 種語言，內建遊戲與歡笑，核心功能永久免費。</p>
+
+            <div class="hero__cta reveal" data-r="4">
+              <a class="btn btn--primary btn--discord-cta js-invite" href="/dashboard.html?add=1" data-tts-install-source="tts-hero">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor">
+                  <path d="M20.3 4.4A19 19 0 0 0 15.6 3l-.24.48a17.6 17.6 0 0 1 4.16 1.3 15 15 0 0 0-11.06 0A17.6 17.6 0 0 1 12.63 3.5L12.4 3A19 19 0 0 0 7.7 4.4C4.8 8.7 4 13 4.2 17.2A19 19 0 0 0 9.9 20l.4-.6a12 12 0 0 1-1.9-.9c.16-.12.32-.24.47-.37a13.6 13.6 0 0 0 11.6 0c.15.13.3.25.47.37-.6.36-1.24.66-1.9.9l.4.6a19 19 0 0 0 5.7-2.8c.28-4.9-.76-9.16-3.36-12.8ZM9.7 14.7c-1.1 0-2-1-2-2.3 0-1.24.88-2.28 2-2.28s2.02 1.04 2 2.28c0 1.26-.9 2.3-2 2.3Zm4.6 0c-1.1 0-2-1-2-2.3 0-1.24.88-2.28 2-2.28s2.02 1.04 2 2.28c0 1.26-.88 2.3-2 2.3Z"></path>
+                </svg>
+                <span data-i18n="cta.add">加入 Discord</span>
+              </a>
+              <a class="btn btn--ghost js-support" href="https://discord.gg/4kYw2WUbNN" data-i18n="cta.support">加入支援伺服器</a>
+            </div>
+
+            <p class="hero__mini reveal" data-r="5">
+              <span data-i18n="hero.mini">35 種語言 · 38 種語音 · 16 款小遊戲 · 免費核心功能</span>
+            </p>
+          </div>
+
+          <!-- animated Discord chat mock -->
+          <div class="hero__demo reveal" data-r="4" aria-hidden="true">
+            <div class="discord">
+              <div class="discord__bar">
+                <span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+                <span class="discord__ch"># general</span>
+              </div>
+              <div class="discord__body" id="chat">
+                <!-- messages injected by JS -->
+              </div>
+            </div>
+            <div class="demo__glow"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────────── HEAR (audio demo) ─────────────── -->
+      <section class="hear" id="hear">
+        <div class="wrap hear__inner reveal">
+          <span class="eyebrow" data-i18n="hear.eyebrow">聽聽看</span>
+          <h2 class="hear__title" data-i18n="hear.title">按下播放。這就是真正的 Vozen 語音。</h2>
+          <p class="hear__sub" data-i18n="hear.sub">试听所有引擎。Piper 免费；Kokoro 需通过 Vozen Plus 或 Premium 解锁。</p>
+
+          <div class="hear__engines" id="hearEngines" role="group" aria-label="語音引擎" data-i18n-aria-label="tts.engineAria">
+            <button class="hear__eng is-active" data-engine="google" type="button">Google</button>
+            <button class="hear__eng" data-engine="piper" type="button">Piper</button>
+            <button class="hear__eng" data-engine="kokoro" type="button" data-i18n="tts.premiumEngine">Kokoro · Premium</button>
+          </div>
+
+          <div class="hear__stage" id="hearStage">
+            <button class="hear__btn" id="hearBtn" type="button" aria-label="播放範例" data-i18n-aria-label="tts.playSample" aria-pressed="false">
+              <svg class="hear__ic hear__ic--play" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+              <svg class="hear__ic hear__ic--pause" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+            </button>
+            <div class="hear__meta">
+              <div class="hear__nowrow">
+                <span class="hear__flag" id="hearFlag">🇬🇧</span>
+                <span class="hear__lang" id="hearLang">English</span>
+                <span class="hear__engtag" id="hearEngTag">Google</span>
+                <span class="eq hear__eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+              </div>
+              <p class="hear__phrase" id="hearPhrase">Hey! Welcome to the server. Type anything and I'll read it out loud</p>
+            </div>
+          </div>
+
+          <div class="hear__chips" id="hearChips" role="group" aria-label="選擇語言範例" data-i18n-aria-label="tts.chooseSample">
+            <button class="hear__chip is-active" data-sample="en" type="button"><span>🇬🇧</span> <span class="hear__chip-name">English</span></button>
+            <button class="hear__chip" data-sample="pt" type="button"><span>🇵🇹</span> <span class="hear__chip-name">Português</span></button>
+            <button class="hear__chip" data-sample="es" type="button"><span>🇪🇸</span> <span class="hear__chip-name">Español</span></button>
+            <button class="hear__chip" data-sample="fr" type="button"><span>🇫🇷</span> <span class="hear__chip-name">Français</span></button>
+            <button class="hear__chip" data-sample="it" type="button"><span>🇮🇹</span> <span class="hear__chip-name">Italiano</span></button>
+          </div>
+          <audio id="hearAudio" preload="none"></audio>
+        </div>
+      </section>
+
+      <!-- ─────────────── STATS ─────────────── -->
+      <section class="stats">
+        <div class="wrap stats__grid">
+          <div class="stat"><b class="count" data-to="35">0</b><span data-i18n="stat.langs">種語言</span></div>
+          <div class="stat"><b class="count" data-to="38">0</b><span data-i18n="stat.voices">種神經網路語音</span></div>
+          <div class="stat"><b class="count" data-to="16">0</b><span data-i18n="stat.games">款小遊戲</span></div>
+          <div class="stat"><b class="stat__inf">∞</b><span data-i18n="stat.free">核心功能永久免費</span></div>
+        </div>
+      </section>
+
+      <!-- ─────────────── FEATURES ─────────────── -->
+      <section class="section" id="features">
+        <div class="wrap">
+          <header class="head reveal">
+            <span class="eyebrow" data-i18n="feat.eyebrow">功能</span>
+            <h2 data-i18n="feat.title">你的伺服器所需的一切</h2>
+            <p data-i18n="feat.sub">一個機器人，涵蓋你一直希望 Discord 擁有的所有語音功能——而且核心功能永久免費。</p>
+          </header>
+
+          <div class="cards">
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h4l5-4v16l-5-4H4z"></path><path d="M17 9a4 4 0 0 1 0 6"></path></svg>
+              </span>
+              <h3 data-i18n="feat.1.t">自動朗讀頻道</h3>
+              <p data-i18n="feat.1.d">選定一個頻道，Vozen 就會大聲朗讀每一則訊息。用 /setup 一次設定完成。</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18"></path><path d="M8 6v12M16 6v12M4 10v4M20 10v4"></path></svg>
+              </span>
+              <h3 data-i18n="feat.2.t">你的語音，你的語言</h3>
+              <p data-i18n="feat.2.d">每位成員都能從 35 種語言中挑選自己的語音——Google 或本地神經網路引擎皆可。</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>
+              </span>
+              <h3 data-i18n="feat.3.t">說起話來像真人</h3>
+              <p data-i18n="feat.3.d">預設使用你選擇的語音。可用 /voice detection on 啟用每則訊息的選用語言偵測；! 和全大寫會加強語氣。</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic card__ic--amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 12h4M8 10v4"></path><circle cx="16" cy="11" r="1"></circle><circle cx="18" cy="13" r="1"></circle><rect x="2" y="6" width="20" height="12" rx="4"></rect></svg>
+              </span>
+              <h3 data-i18n="feat.4.t">16 款語音小遊戲</h3>
+              <p data-i18n="feat.4.d">猜語言、拼字比賽、Wordle、反應對決——還有伺服器排行榜。</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 11a4 4 0 1 0 0-.01"></path><path d="M2 20a6 6 0 0 1 12 0"></path><path d="M16 4a4 4 0 0 1 0 8M18 20a6 6 0 0 0-4-5.6"></path></svg>
+              </span>
+              <h3 data-i18n="feat.5.t">自帶個性</h3>
+              <p data-i18n="feat.5.d">向加入的成員打招呼——而且不會重複同樣的話——送上生日祝福、講笑話、回答神奇八號球，還會追蹤伺服器中最愛講話的成員。</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+              </span>
+              <h3 data-i18n="feat.6.t">讓管理員安心</h3>
+              <p data-i18n="feat.6.d">封鎖清單、速率限制、會將洗版訊息靜音的反垃圾訊息過濾器、身分組權限控管、退出選項與緊急停用開關。一切盡在你的掌控中。</p>
+            </article>
+
+            <article class="card card--accent reveal">
+              <span class="card__badge" data-i18n="feat.new">NEW</span>
+              <span class="card__ic card__ic--amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h2l2-6 3 12 3-9 2 3h6"></path></svg>
+              </span>
+              <h3 data-i18n="feat.7.t">語音特效</h3>
+              <p data-i18n="feat.7.d">機器人、回音、低沉、花栗鼠、廣播、惡魔……你的訊息，隨心變換。免費提供兩種特效，升級 Premium 即可享用全部八種。</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12l4 6-10 12L2 9z"></path><path d="M2 9h20M9 3l3 6 3-6M12 21l-3-12M12 21l3-12"></path></svg>
+              </span>
+              <h3 data-i18n="feat.8.t">公道的 Premium</h3>
+              <p data-i18n="feat.8.d">每月 €6.99 可解锁 Kokoro 和服务器附加功能；基础 Piper 核心仍然免费。</p>
+            </article>
+
+            <article class="card card--accent reveal">
+              <span class="card__badge" data-i18n="feat.new">NEW</span>
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v12H8l-4 3z"></path><path d="M8 9h8M8 13h5"></path></svg>
+              </span>
+              <h3 data-i18n="feat.10.t">隨處可用的私人工具</h3>
+              <p data-i18n="feat.10.d">使用 /tts-file 和 /translate text，或右鍵點擊訊息，私下翻譯或轉錄支援的 Discord 音訊，不必加入通話</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"></rect><path d="M7 9h10M7 14h6"></path></svg>
+              </span>
+              <h3 data-i18n="feat.11.t">頻道設定檔</h3>
+              <p data-i18n="feat.11.d">從安全的伺服器控制面板為每個頻道設定自己的語音、引擎、語言、速度、限制與語音頻道繫結</p>
+            </article>
+
+            <article class="card reveal">
+              <span class="card__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"></path></svg>
+              </span>
+              <h3 data-i18n="feat.12.t">最愛語音</h3>
+              <p data-i18n="feat.12.d">儲存最多 25 個最愛語音，無需再次搜尋完整資料庫即可回到最近使用的 10 個語音</p>
+            </article>
+
+            <a class="card card--link reveal" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener">
+              <span class="card__ic">
+                <svg viewBox="0 0 16 16" fill="currentColor" stroke="none"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
+              </span>
+              <h3 data-i18n="feat.9.t">開放原始碼</h3>
+              <p data-i18n="feat.9.d">Vozen 的所有程式碼都公開在 GitHub 上。你可以稽核、學習，或發起 PR——沒有秘密，沒有間諜軟體。</p>
+              <span class="card__arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────────── SHOWCASE A · LANGUAGES ─────────────── -->
+      <section class="section section--alt" id="languages">
+        <div class="wrap show">
+          <div class="show__copy reveal">
+            <span class="eyebrow" data-i18n="lang.eyebrow">語言</span>
+            <h2 data-i18n="lang.title">一個伺服器，通行所有語言。</h2>
+            <p data-i18n="lang.sub">Vozen 會說 35 種以上的語言。每個人都能選擇自己的語音——中文、英文、日文、阿拉伯文等等——並以各自的語言顯示名稱。</p>
+            <ul class="ticks">
+              <li data-i18n="lang.t1">35 種以上語言</li>
+              <li data-i18n="lang.t2">每種語言都有道地母語語音</li>
+              <li data-i18n="lang.t3">語音名稱依使用者在地化顯示</li>
+            </ul>
+          </div>
+          <div class="show__visual reveal">
+            <div class="picker">
+              <div class="picker__head"><span class="mono">/voice set</span></div>
+              <div class="picker__row is-sel"><span>🇬🇧</span> English <b>— Amy</b></div>
+              <div class="picker__row"><span>🇵🇹</span> Portuguese <b>— Faber</b></div>
+              <div class="picker__row"><span>🇩🇪</span> German <b>— Thorsten</b></div>
+              <div class="picker__row"><span>🇪🇸</span> Spanish <b>— Davefx</b></div>
+              <div class="picker__row"><span>🇯🇵</span> Japanese <b>— Nanami</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee__track" id="marqueeTrack"></div>
+        </div>
+      </section>
+
+      <!-- ─────────────── SHOWCASE B · GAMES ─────────────── -->
+      <section class="section section--games" id="games">
+        <div class="wrap show show--rev">
+          <div class="show__visual reveal">
+            <div class="wordle">
+              <div class="wordle__rows" id="wordle"></div>
+              <div class="game-pills">
+                <span>Guess the Language</span><span>Fast Talk</span><span>Reflexes</span>
+                <span>Spelling Bee</span><span>Wordle</span><span>Vozen Says</span>
+              </div>
+            </div>
+          </div>
+          <div class="show__copy reveal">
+            <span class="eyebrow eyebrow--amber" data-i18n="games.eyebrow">小遊戲</span>
+            <h2 data-i18n="games.title">大聲玩出來。</h2>
+            <p data-i18n="games.sub">16 款為語音打造的小遊戲：以你的語言進行輪流接龍的文字接龍（Vozen 會大聲朗讀每個詞）、猜出所說的語言、破解超快速的語音、拼字比賽、反應對決，還有 Wordle、猜字遊戲、井字遊戲與真正圖形棋盤上的西洋棋。每個伺服器都保留自己的排行榜。</p>
+            <ul class="ticks ticks--amber">
+              <li data-i18n="games.t1">語音＋文字遊戲，搶答制</li>
+              <li data-i18n="games.t2">伺服器排行榜與個人統計</li>
+              <li data-i18n="games.t3">Vozen 會大聲宣布贏家</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────────── SHOWCASE C · SETUP ─────────────── -->
+      <section class="section">
+        <div class="wrap">
+          <header class="head reveal">
+            <span class="eyebrow" data-i18n="setup.eyebrow">開始使用</span>
+            <h2 data-i18n="setup.title">30 秒即可就緒</h2>
+          </header>
+          <div class="steps">
+            <div class="step reveal"><span class="step__n">1</span><h3 data-i18n="setup.1.t">邀請</h3><p data-i18n="setup.1.d">只要一鍵，即可將 Vozen 加入你的伺服器。</p></div>
+            <div class="step reveal"><span class="step__n">2</span><h3 data-i18n="setup.2.t">/join</h3><p data-i18n="setup.2.d">Vozen 會加入你的語音頻道。</p></div>
+            <div class="step reveal"><span class="step__n">3</span><h3 data-i18n="setup.3.t">輸入</h3><p data-i18n="setup.3.d">打一則訊息——然後大聲聽它唸出來。</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────────── COMMANDS ─────────────── -->
+      <section class="section section--alt" id="commands">
+        <div class="wrap">
+          <header class="head reveal">
+            <span class="eyebrow" data-i18n="cmd.eyebrow">指令</span>
+            <h2 data-i18n="cmd.title">簡單的斜線指令</h2>
+            <p data-i18n="cmd.sub">使用 /cast 為語音通話中的每個人隨機分配主題角色，然後聽取結果。</p>
+          </header>
+          <div class="tabs reveal" id="cmdTabs">
+            <button class="is-active" data-tab="general" data-i18n="cmd.general">一般</button>
+            <button data-tab="voice" data-i18n="cmd.voice">語音</button>
+            <button data-tab="fun" data-i18n="cmd.fun">趣味</button>
+            <button data-tab="admin" data-i18n="cmd.admin">管理</button>
+          </div>
+          <div class="cmd-list reveal" id="cmdList"></div>
+        </div>
+      </section>
+
+      <!-- ─────────────── PRICING ─────────────── -->
+      <section class="section" id="premium">
+        <div class="wrap">
+          <header class="head reveal">
+            <span class="eyebrow eyebrow--amber" data-i18n="price.eyebrow">定價</span>
+            <h2 data-i18n="price.choose.title">选择谁获得升级。</h2>
+            <p data-i18n="price.choose.sub">保留免费核心功能，升级你自己，或为服务器中的所有人解锁 Premium。</p>
+          </header>
+          <!-- O login/estado da conta vivem agora numa página dedicada (account.html),
+               acessível pelo botão "Log in" da navbar. -->
+          <div class="price-toolbar reveal">
+            <div class="bill-toggle" role="group" aria-label="付款週期" data-i18n-aria-label="price.billingPeriod">
+              <button type="button" class="bill-toggle__btn is-active" data-bill="month" data-i18n="price.billMonthly">每月</button>
+              <button type="button" class="bill-toggle__btn" data-bill="year">
+                <span data-i18n="price.billYearly">每年</span>
+                <span class="bill-toggle__save">−20%</span>
+              </button>
+            </div>
+          </div>
+          <p class="payments-paused" role="status"><span aria-hidden="true">•</span> <span data-i18n="price.paused">付款暫時停用。價格僅供參考。</span></p>
+          <div class="bundle-ribbon" role="note" aria-label="Vozen 套件" data-i18n-aria-label="price.bundleAria">
+            <span class="bundle-ribbon__eyebrow" data-i18n="price.bundleEyebrow">VOZEN 套件</span>
+            <div class="bundle-ribbon__copy">
+              <strong data-i18n="price.bundleTitle">兩個機器人。一個訂閱。</strong>
+              <span data-i18n="price.bundleText">為你選擇的社群提供 Premium TTS 與 Helper。</span>
+            </div>
+            <span class="bundle-ribbon__value" data-i18n="price.bundleValue">TTS + HELPER</span>
+          </div>
+          <div class="pricing">
+            <article class="price-card price-card--free reveal">
+              <div class="price-card__topline">
+                <span class="price-card__badge price-card__badge--free"><span aria-hidden="true">✦</span> <span data-i18n="price.free.per">永久</span></span>
+              </div>
+              <h3 data-i18n="price.free.name">Free</h3>
+              <p class="price-card__pitch" data-i18n="price.free.pitch">所有核心功能。无需银行卡，也没有试用期。</p>
+              <div class="seat-toggle plan-scope plan-scope--free">
+                <span class="seat-toggle__btn is-active" data-i18n="price.free.per">永久</span>
+              </div>
+              <div class="price-card__price">
+                <span class="price-line"><b><span class="amt" data-i18n="price.free.price">€0</span></b></span>
+                <span class="per" data-i18n="price.free.per">永久</span>
+              </div>
+              <ul class="ticks price-card__highlights" aria-label="免費方案重點" data-i18n-aria-label="price.freeHighlights">
+                <li data-i18n="price.m.1">38 种 Piper 语音</li>
+                <li data-i18n="price.m.2">35 种语言</li>
+                <li data-i18n="price.m.3">朗读你的频道</li>
+                <li data-i18n="price.m.5">16 个游戏中的 13 个</li>
+                <li data-i18n="price.m.20">每日聊天连击</li>
+              </ul>
+              <p class="price-card__note" data-i18n="price.free.per">永久</p>
+              <a class="price-card__buy price-card__buy--free btn--discord-cta js-invite" href="/dashboard.html?add=1" target="_blank" rel="noopener" data-tts-install-source="tts-pricing" data-i18n="cta.add">加入 Discord</a>
+              <p class="price-card__idnote">
+                <span data-i18n="price.free.pitch">所有核心功能。无需银行卡，也没有试用期。</span>
+              </p>
+            </article>
+
+            <div class="paid-plans">
+            <article class="price-card price-card--plus reveal">
+              <div class="price-card__topline">
+                <span class="price-card__badge price-card__badge--plus"><span aria-hidden="true">✦</span> <span data-i18n="price.plus.badge">個人</span></span>
+              </div>
+              <h3 data-i18n="price.plus.name">Vozen Plus</h3>
+              <p class="price-card__pitch" data-i18n="price.plus.pitch">你的高级语音权益会跟随你前往每个服务器。</p>
+              <div class="seat-toggle plan-scope">
+                <span class="seat-toggle__btn is-active" data-i18n="price.m.17">走到哪都跟着你</span>
+              </div>
+              <div class="price-card__price">
+                <span class="price-line"><b><span class="amt amt--m">€3.99</span><span class="amt amt--y">€37.99</span></b><s class="was was--y">€47.88</s></span>
+                <span class="per per--m" data-i18n="price.plus.per">/ 每月 · 每位使用者</span>
+                <span class="per per--y" data-i18n="price.plus.perYear">/ 每年 · 每位使用者</span>
+              </div>
+              <ul class="ticks price-card__highlights">
+                <li class="price-card__included-free" data-i18n="price.includesFree">包含 Free 的全部内容</li>
+                <li data-i18n="price.m.21">Kokoro 神经语音引擎</li>
+                <li data-i18n="price.m.22">Google HD 語音</li>
+                <li data-i18n="price.m.9">全部 8 种语音效果（低沉、恶魔、电台…）</li>
+                <li data-i18n="price.m.15">50 个个人发音</li>
+                <li data-i18n="price.m.11">Word Chain 游戏</li>
+                <li data-i18n="price.m.12">Wordle 游戏</li>
+                <li data-i18n="price.m.14">/rizz</li>
+              </ul>
+              <p class="price-card__note" data-i18n="price.digital">數位訂閱 · 無配送</p>
+              <button class="price-card__buy price-card__buy--disabled" type="button" disabled="" aria-disabled="true" data-i18n="price.checkout">付款目前已停用</button>
+              <p class="price-card__idnote">
+                <span data-i18n="price.checkoutLater">付款重新啟用後，結帳功能會恢復。</span>              </p>
+            </article>
+            <article class="price-card price-card--pro reveal">
+              <div class="price-card__topline">
+                <span class="price-card__badge"><span aria-hidden="true">💎</span> <span data-i18n="price.pro.badge">PREMIUM</span></span>
+                <span class="price-card__recommended" data-i18n="price.recommended">最适合服务器</span>
+              </div>
+              <h3 data-i18n="price.pro.name">Vozen Premium</h3>
+              <p class="price-card__pitch" data-i18n="price.pro.pitch">为整个社区解锁完整的 Vozen 体验。</p>
+              <!-- Toggle de licenças: a mesma tier muda o número de servidores e o preço. -->
+              <div class="seat-toggle" role="group" aria-label="每個訂閱的伺服器數量" data-i18n-aria-label="price.serversPerSubscription">
+                <button type="button" class="seat-toggle__btn is-active" data-seats="2" data-i18n="price.pro.seats2">2 個伺服器</button>
+                <button type="button" class="seat-toggle__btn" data-seats="5" data-i18n="price.pro.seats5">5 個伺服器</button>
+              </div>
+              <div class="price-card__price">
+                <span class="price-line"><b><span class="amt amt--m amt--s2">€6.99</span><span class="amt amt--m amt--s5">€14.99</span><span class="amt amt--y amt--s2">€66.99</span><span class="amt amt--y amt--s5">€133.99</span></b><s class="was was--y was--s2">€83.88</s><s class="was was--y was--s5">€179.88</s></span>
+                <span class="per per--m per--s2" data-i18n="price.pro.per">/ 每月 · 2 個伺服器</span>
+                <span class="per per--m per--s5" data-i18n="price.max.per">/ 月 · 5 个服务器</span>
+                <span class="per per--y per--s2" data-i18n="price.pro.perYear">/ 每年 · 2 個伺服器</span>
+                <span class="per per--y per--s5" data-i18n="price.max.perYear">/ 年 · 5 个服务器</span>
+              </div>
+              <ul class="ticks ticks--amber price-card__highlights">
+                <li class="price-card__included-free" data-i18n="price.includesFree">包含 Free 的全部内容</li>
+                <li data-i18n="price.m.18">服务器里所有人可用</li>
+                <li data-i18n="price.m.24">每个选定服务器都包含 Vozen Helper Premium</li>
+                <li data-i18n="price.m.21">Kokoro 神经语音引擎</li>
+                <li data-i18n="price.m.22">Google HD 語音</li>
+                <li data-i18n="price.m.9">全部 8 种语音效果（低沉、恶魔、电台…）</li>
+                <li data-i18n="price.m.19">50 个服务器发音</li>
+                <li data-i18n="price.m.16">24/7 在语音频道</li>
+                <li data-i18n="price.m.23">即時語音轉錄</li>
+                <li data-i18n="price.m.11">Word Chain 游戏</li>
+              </ul>
+              <p class="price-card__note note--s2" data-i18n="price.digital">數位訂閱 · 無配送</p>
+              <p class="price-card__note note--s5" data-i18n="price.digital">數位訂閱 · 無配送</p>
+              <button class="price-card__buy price-card__buy--pro price-card__buy--disabled" type="button" disabled="" aria-disabled="true" data-i18n="price.checkout">付款目前已停用</button>
+              <p class="price-card__idnote">
+                <span data-i18n="price.checkoutLater">付款重新啟用後，結帳功能會恢復。</span>              </p>
+            </article>
+            </div>
+
+            <section class="plan-comparison reveal" aria-labelledby="planComparisonTitle">
+              <div class="plan-comparison__head">
+                <div>
+                  <span class="plan-kicker" data-i18n="price.eyebrow">定價</span>
+                  <h3 id="planComparisonTitle" data-i18n="price.compare.title">查看所有差异</h3>
+                  <p data-i18n="price.compare.sub">完整比较各方案，没有隐藏内容。</p>
+                </div>
+                <span class="plan-comparison__checkout" data-i18n="price.checkout">付款目前已停用</span>
+              </div>
+              <div class="plan-table-wrap" tabindex="0" aria-label="方案比較表" data-i18n-aria-label="price.compareTable">
+                <!-- role=* explícitos: em mobile o CSS usa display:grid nas linhas (blocos
+                     verticais + cabeçalho sticky) e isso pode apagar a semântica de tabela
+                     nativa; os roles repõem-na para leitores de ecrã. -->
+                <table class="plan-table" role="table">
+                  <thead>
+                    <tr role="row">
+                      <th scope="col" role="columnheader" data-i18n="nav.features">功能</th>
+                      <th scope="col" role="columnheader" data-i18n="price.free.name">Free</th>
+                      <th scope="col" role="columnheader" data-i18n="price.plus.name">Vozen Plus</th>
+                      <th scope="col" role="columnheader" data-i18n="price.pro.name">Vozen Premium</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Bloco A — base grátis: incluído nos três planos. -->
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.1">38 种 Piper 语音</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.2">35 种语言</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.3">朗读你的频道</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.4">笑话和问候</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.5">16 个游戏中的 13 个</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.6">Robot 和 Echo 语音效果</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.7">每周排行榜</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.20">每日聊天连击</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.8">完整管理工具</th><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <!-- Bloco B — extras pagos: iguais no Plus e no Premium. -->
+                    <tr role="row" class="group-b"><th scope="row" role="rowheader" data-i18n="price.m.21">Kokoro 神经语音引擎</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.22">Google HD 語音</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.9">全部 8 种语音效果（低沉、恶魔、电台…）</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.11">Word Chain 游戏</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.12">Wordle 游戏</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.13">国际象棋游戏</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.14">/rizz</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.15">50 个个人发音</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has">✓</td></tr>
+                    <!-- Bloco C — exclusivos: pessoal (Plus) vs servidor (Premium). -->
+                    <tr role="row" class="group-c"><th scope="row" role="rowheader" data-i18n="price.m.17">走到哪都跟着你</th><td role="cell" class="has-not">—</td><td role="cell" class="has">✓</td><td role="cell" class="has-not">—</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.19">50 个服务器发音</th><td role="cell" class="has-not">—</td><td role="cell" class="has-not">—</td><td role="cell" class="has has--premium">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.16">24/7 在语音频道</th><td role="cell" class="has-not">—</td><td role="cell" class="has-not">—</td><td role="cell" class="has has--premium">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.23">即時語音轉錄</th><td role="cell" class="has-not">—</td><td role="cell" class="has-not">—</td><td role="cell" class="has has--premium">✓</td></tr>
+                    <tr role="row"><th scope="row" role="rowheader" data-i18n="price.m.18">服务器里所有人可用</th><td role="cell" class="has-not">—</td><td role="cell" class="has-not">—</td><td role="cell" class="has has--premium">✓</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────────── FAQ ─────────────── -->
+      <section class="section" id="faq">
+        <div class="wrap wrap--narrow">
+          <header class="head reveal">
+            <span class="eyebrow" data-i18n="faq.eyebrow">常見問題</span>
+            <h2 data-i18n="faq.title">問題，一次解答</h2>
+          </header>
+          <div class="faq" id="faq-list"></div>
+        </div>
+      </section>
+
+      <!-- ─────────────── FINAL CTA ─────────────── -->
+      <section class="finale">
+        <div class="wrap finale__inner reveal">
+          <h2 data-i18n="finale.title">讓你的伺服器發聲。</h2>
+          <a class="btn btn--primary btn--discord-cta btn--lg js-invite" href="/dashboard.html?add=1" data-tts-install-source="tts-hero">
+            <span data-i18n="cta.add">加入 Discord</span>
+          </a>
+          <p class="finale__note" data-i18n="finale.note">核心功能永久免費 · 35 種語言 · 30 秒完成設定</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ─────────────── FOOTER ─────────────── -->
+    <footer class="foot">
+      <div class="wrap foot__grid">
+        <div>
+          <a class="brand" href="https://vozen.org/zh/tts/" aria-label="Vozen ecosystem home">
+            <span class="brand__mark"><img class="brand__portal" src="assets/vozen-ecosystem-icon.png" alt=""></span>
+            <span class="brand__word">Vozen</span>
+          </a>
+          <p class="foot__tag" data-i18n="foot.tag">打出來，聽出來。</p>
+        </div>
+        <div>
+          <h4 data-i18n="foot.product">產品</h4>
+          <a href="https://vozen.org/zh/tts/#features" data-i18n="nav.features">功能</a>
+          <a href="https://vozen.org/zh/tts/#games" data-i18n="nav.games">遊戲</a>
+          <a href="commands/" data-i18n="nav.commands">指令</a>
+          <a href="premium.html#plans" data-i18n="nav.premium">Premium</a>
+          <a href="https://vozen.org/zh/tts/#faq" data-i18n="nav.faq">常見問題</a>
+          <a href="https://vozen.org/zh/tts/" data-i18n="ecosystem.name">Vozen 生態系統</a>
+          <a href="zh/helper/">Vozen Helper</a>
+          <a href="/status" data-i18n="site.status">狀態</a>
+        </div>
+        <div>
+          <h4 data-i18n="foot.community">社群</h4>
+          <a href="https://discord.gg/4kYw2WUbNN" class="js-support" data-i18n="foot.support">支援伺服器</a>
+          <a href="https://vozen.org/zh/tts/#" class="js-vote" data-i18n="foot.vote">在 top.gg 上投票</a>
+          <a href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" data-i18n="site.github">GitHub</a>
+        </div>
+      </div>
+      <div class="wrap foot__base">
+        <span>© 2026 Vozen</span>
+        <span class="foot__legal">
+          <a href="/privacy" data-i18n="foot.privacy">隱私權</a>
+          <a href="/terms" data-i18n="foot.terms">服務條款</a>
+        </span>
+        <span data-i18n="foot.legal">與 Discord 並無隸屬關係。</span>
+      </div>
+    </footer>
+
+    <script defer="" src="js/analytics-config.js?v=cf-web-analytics-v1"></script>
+    <script defer="" src="js/web-analytics-v1.js?v=cf-web-analytics-v1"></script>
+    <script defer="" src="js/install-config-v1.js?v=tts-install-v1"></script>
+    <script defer="" src="js/tts-install-v1.js?v=tts-install-v1"></script>
+    <script defer="" src="js/oauth-config.js?v=ecosystem-oauth-v5"></script>
+    <script defer="" src="js/global-nav-v1.js?v=ecosystem-nav-v16"></script>
+    <script defer="" src="js/i18n-public-loader-v1.js?v=isolated-locales-v1"></script>
+    <script defer="" src="js/main-v51.js?v=embedded-checkout-v1&amp;oauth=ecosystem-v5&amp;auth-tabs=1&amp;account-fast=1&amp;auth-race=4&amp;auth-persist=1"></script>
+    <script defer="" src="js/motion-v1.js"></script>
+
+
+</body></html>

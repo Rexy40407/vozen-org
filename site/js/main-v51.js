@@ -95,7 +95,7 @@
   });
 
   /* ── i18n ────────────────────────────────────────────── */
-  const DICT = window.VOZEN_I18N;
+  const DICT = window.VOZEN_I18N || (window.VOZEN_I18N = {});
   // Idioma por defeito: INGLÊS. NÃO fazemos sniffing do navigator (senão um browser PT
   // abria o site em português). Só respeitamos uma escolha EXPLÍCITA (guardada quando o
   // utilizador carrega no toggle EN/PT). Chave nova ("vozen.lang") para ignorar o valor que
@@ -178,8 +178,12 @@
     return typeof value === "string" && Object.prototype.hasOwnProperty.call(LANG_META, value);
   }
   try {
+    const routeLanguage = document.documentElement.getAttribute("data-vozen-locale");
     const storedLanguage = localStorage.getItem(LS_KEY);
-    if (isSupportedLanguage(storedLanguage)) lang = storedLanguage;
+    if (isSupportedLanguage(routeLanguage)) {
+      lang = routeLanguage;
+      localStorage.setItem(LS_KEY, routeLanguage);
+    } else if (isSupportedLanguage(storedLanguage)) lang = storedLanguage;
     else if (storedLanguage) localStorage.setItem(LS_KEY, DEFAULT_LANG);
   } catch {}
 
@@ -258,8 +262,18 @@
       btn.setAttribute("aria-expanded", "false");
       if (focusBtn) btn.focus();
     };
-    const choose = (code) => {
+    const choose = async (code) => {
       localStorage.setItem(LS_KEY, code); // escolha explícita persiste
+      if (typeof window.vozenLocalizedUrl === "function") {
+        const target = window.vozenLocalizedUrl(code);
+        if (target && new URL(target, location.href).pathname !== location.pathname) {
+          location.assign(target);
+          return;
+        }
+      }
+      if (typeof window.vozenLoadPublicLocale === "function") {
+        try { await window.vozenLoadPublicLocale(code); } catch { code = DEFAULT_LANG; }
+      }
       applyLang(code);
     };
     btn.addEventListener("click", () => (isOpen() ? close(false) : open()));
@@ -2562,7 +2576,9 @@
   }
 
   /* ── boot ────────────────────────────────────────────── */
-  applyLang(lang);
+  Promise.resolve(window.vozenPublicI18nReady)
+    .then(() => applyLang(lang))
+    .catch(() => applyLang(DEFAULT_LANG));
   runChat();
   initHear();
   initAuthChannel();

@@ -202,10 +202,16 @@
 
   hosts.forEach((host) => {
     const root = host.dataset.navRoot || "";
+    const localeRoot = host.dataset.navLocaleRoot || "";
     const current = host.dataset.navCurrent || "";
     const product = host.dataset.navProduct || "Vozen";
     const docsSurface = host.dataset.navSurface === "docs";
-    const link = (target) => target ? `${root}${target}` : (root || './');
+    const link = (target) => {
+      if (localeRoot && (!target || target === 'tts/' || target === 'helper/')) {
+        return `${localeRoot}${target || ''}`;
+      }
+      return target ? `${root}${target}` : (root || './');
+    };
     const currentClass = (name) => current === name ? " is-current" : "";
     const currentAria = (name) => current === name ? ' aria-current="page"' : "";
     const productLabel = product === "Ecosystem" ? navText("ecosystem.label", product) : product;

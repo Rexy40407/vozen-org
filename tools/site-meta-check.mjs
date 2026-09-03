@@ -37,7 +37,9 @@ for (const file of walkHtml(root)) {
   if (!title) errors.push(`${relative}: missing title`);
   if (!description || description.length < 30) errors.push(`${relative}: missing or short meta description`);
   if (!canonical || !canonical.startsWith('https://vozen.org/')) errors.push(`${relative}: missing canonical`);
-  const expectedOgImage = expectedOgImages.get(relative) || 'https://vozen.org/assets/og-image.png';
+  const expectedOgImage = relative === 'helper/index.html' || /^[a-z]{2}\/helper\/index\.html$/.test(relative)
+    ? 'https://vozen.org/assets/helper-og-v1.jpg'
+    : expectedOgImages.get(relative) || 'https://vozen.org/assets/og-image.png';
   if (ogImage !== expectedOgImage) errors.push(`${relative}: missing expected og:image`);
   const alternateLanguages = new Set(
     [...html.matchAll(/<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["']([^"']+)["'][^>]*>/gi)]
@@ -101,8 +103,8 @@ const ttsInitialScripts = [
   'js/tts-install-v1.js',
   'js/oauth-config.js',
   'js/global-nav-v1.js',
-  'js/i18n-v41.js',
-  'js/i18n-marketing-v1.js',
+  'js/i18n-public-loader-v1.js',
+  'js/i18n-public/en.js',
   'js/main-v51.js',
   'js/motion-v1.js',
 ];
