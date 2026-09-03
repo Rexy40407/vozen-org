@@ -415,6 +415,15 @@
     "helper.landing.bullet2": "Actions conscientes des permissions",
     "helper.landing.bullet3": "Changements sûrs et réversibles",
     "helper.landing.bullet4": "Historique serveur traçable",
+    "helper.landing.freeFeature1": "Protection contre le spam, les raids et les arrivées suspectes",
+    "helper.landing.freeFeature2": "Messages de bienvenue et tickets de base",
+    "helper.landing.freeFeature3": "Rôles, XP et outils d’activité de base",
+    "helper.landing.freeFeature4": "Journaux essentiels, confidentialité et modération",
+    "helper.landing.freeFeature5": "Suggestions, sondages et rappels",
+    "helper.landing.ttsPremiumFeature": "Vozen TTS Premium pour chaque serveur sélectionné",
+    "helper.landing.comparisonCaption": "Comparaison des fonctionnalités de Helper Free et Vozen Premium",
+    "helper.landing.features": "Fonctionnalités de Helper",
+    "helper.landing.limitsNote": "Les limites Premium ne s’appliquent que lorsque Helper et tout fournisseur requis sont disponibles.",
     "status.documentTitle": "État du service Vozen",
     "status.metaDescription": "État, latence et vérifications du système Vozen en direct",
     "status.back": "← Retour à Vozen",
@@ -642,6 +651,28 @@
       ]
     ]
   },
+  "helperFaq": [
+    [
+      "Vozen Helper est-il déjà disponible ?",
+      "Oui. Helper est disponible publiquement. Installez-le depuis cette page, choisissez un serveur et configurez votre premier module grâce au démarrage guidé."
+    ],
+    [
+      "Helper demande-t-il la permission Administrateur ?",
+      "Non. L’invitation de base utilise des permissions limitées et ne demande jamais Administrateur. Si un module nécessite une permission sensible supplémentaire, Helper en explique la raison avant son activation."
+    ],
+    [
+      "Comment commencer à utiliser Helper ?",
+      "Installez Helper, choisissez votre serveur, terminez le démarrage guidé, activez un module et lancez sa première action utile."
+    ],
+    [
+      "Quels modules sont inclus ?",
+      "Helper réunit protection et modération, tickets, rôles et outils communautaires, événements, automatisation et informations opérationnelles. Le tableau de bord affiche les options exactes disponibles pour votre serveur."
+    ],
+    [
+      "Puis-je acheter Premium maintenant ?",
+      "Les paiements sont temporairement désactivés. Le cœur de Helper reste gratuit et les tarifs Premium affichés sont fournis à titre indicatif jusqu’au retour du paiement."
+    ]
+  ],
   "faq": [
     [
       "Vozen est-il vraiment gratuit ?",

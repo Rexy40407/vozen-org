@@ -610,7 +610,10 @@ main {
 }
 
 .eco-back {
-  display: inline-block;
+  display: inline-flex;
+  min-height: 44px;
+  padding: 0 4px;
+  align-items: center;
   margin-bottom: 80px;
   color: var(--text);
   font-size: 14px;
@@ -2440,6 +2443,37 @@ html:has(.helper-page) {
 
 .helper-access + .eco-back {
   margin-bottom: 80px;
+}
+
+.helper-faq {
+  max-width: 860px;
+  margin: 96px auto 80px;
+}
+
+.helper-faq .helper-section-heading {
+  margin-bottom: 28px;
+}
+
+.helper-faq .qa__q {
+  list-style: none;
+  text-align: start;
+}
+
+.helper-faq .qa__q::-webkit-details-marker {
+  display: none;
+}
+
+.helper-faq .qa__a {
+  max-height: none;
+}
+
+.helper-faq .qa[open] .qa__q::after {
+  transform: rotate(45deg);
+}
+
+.helper-faq .qa__q:focus-visible {
+  outline: 2px solid var(--aqua);
+  outline-offset: -3px;
 }
 
 .helper-pricing {

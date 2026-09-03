@@ -420,6 +420,15 @@
     "helper.landing.bullet2": "Permission-aware actions",
     "helper.landing.bullet3": "Safe, reversible changes",
     "helper.landing.bullet4": "Traceable server history",
+    "helper.landing.freeFeature1": "Spam, raid and join protection",
+    "helper.landing.freeFeature2": "Welcome messages and basic tickets",
+    "helper.landing.freeFeature3": "Basic roles, XP and activity tools",
+    "helper.landing.freeFeature4": "Essential logs, privacy and moderation",
+    "helper.landing.freeFeature5": "Suggestions, polls and reminders",
+    "helper.landing.ttsPremiumFeature": "Vozen TTS Premium for every selected server",
+    "helper.landing.comparisonCaption": "Helper Free and Vozen Premium feature comparison",
+    "helper.landing.features": "Helper features",
+    "helper.landing.limitsNote": "Premium limits apply only when the Helper runtime and any required provider are available.",
     "status.documentTitle": "Vozen service status",
     "status.metaDescription": "Live health, latency and system checks for Vozen",
     "status.back": "← Back to Vozen",
@@ -642,6 +651,28 @@
       ]
     ]
   },
+  "helperFaq": [
+    [
+      "Is Vozen Helper available now?",
+      "Yes. Helper is publicly available. Install it from this page, choose a server, and configure your first module through the guided setup."
+    ],
+    [
+      "Does Helper request Administrator?",
+      "No. The base invite uses limited permissions and never requests Administrator. If a module needs an additional sensitive permission, Helper explains why before you enable it."
+    ],
+    [
+      "How do I get started?",
+      "Install Helper, choose your server, complete the guided setup, enable one module, and run its first useful action."
+    ],
+    [
+      "Which modules does Helper include?",
+      "Helper brings together protection and moderation, tickets, roles and community tools, events, automation, and operational insights. The panel shows the exact options available to your server."
+    ],
+    [
+      "Can I buy Premium now?",
+      "Payments are temporarily disabled. The Helper core remains free, and the displayed Premium prices are for reference until checkout is enabled again."
+    ]
+  ],
   "faq": [
     [
       "Is Vozen really free?",

@@ -415,6 +415,15 @@
     "helper.landing.bullet2": "İzinleri dikkate alan işlemler",
     "helper.landing.bullet3": "Güvenli ve geri alınabilir değişiklikler",
     "helper.landing.bullet4": "İzlenebilir sunucu geçmişi",
+    "helper.landing.freeFeature1": "Spam, baskın ve şüpheli katılım koruması",
+    "helper.landing.freeFeature2": "Karşılama mesajları ve temel destek talepleri",
+    "helper.landing.freeFeature3": "Temel roller, XP ve etkinlik araçları",
+    "helper.landing.freeFeature4": "Temel günlükler, gizlilik ve moderasyon",
+    "helper.landing.freeFeature5": "Öneriler, anketler ve hatırlatıcılar",
+    "helper.landing.ttsPremiumFeature": "Seçilen her sunucu için Vozen TTS Premium",
+    "helper.landing.comparisonCaption": "Helper Free ve Vozen Premium özellik karşılaştırması",
+    "helper.landing.features": "Helper özellikleri",
+    "helper.landing.limitsNote": "Premium sınırları yalnızca Helper ve gerekli sağlayıcılar kullanılabilir olduğunda geçerlidir.",
     "status.documentTitle": "Vozen hizmet durumu",
     "status.metaDescription": "Vozen için canlı sağlık, gecikme ve sistem kontrolleri",
     "status.back": "← Vozen'e dön",
@@ -642,6 +651,28 @@
       ]
     ]
   },
+  "helperFaq": [
+    [
+      "Vozen Helper şu anda kullanılabilir mi?",
+      "Evet. Helper herkese açık olarak kullanılabilir. Bu sayfadan yükleyin, bir sunucu seçin ve rehberli kurulumla ilk modülünüzü yapılandırın."
+    ],
+    [
+      "Helper Yönetici izni ister mi?",
+      "Hayır. Temel davet sınırlı izinler kullanır ve hiçbir zaman Yönetici izni istemez. Bir modül ek bir hassas izne ihtiyaç duyarsa Helper, etkinleştirmeden önce nedenini açıklar."
+    ],
+    [
+      "Helper'ı kullanmaya nasıl başlarım?",
+      "Helper'ı yükleyin, sunucunuzu seçin, rehberli kurulumu tamamlayın, bir modülü etkinleştirin ve ilk yararlı işlemini çalıştırın."
+    ],
+    [
+      "Hangi modüller dahildir?",
+      "Helper; koruma ve moderasyon, destek talepleri, roller ve topluluk araçları, etkinlikler, otomasyon ve operasyon bilgilerini bir araya getirir. Panel, sunucunuzda bulunan seçenekleri tam olarak gösterir."
+    ],
+    [
+      "Premium'u şimdi satın alabilir miyim?",
+      "Ödemeler geçici olarak devre dışıdır. Helper'ın temel özellikleri ücretsiz kalır; gösterilen Premium fiyatları ödeme yeniden etkinleştirilene kadar yalnızca bilgi amaçlıdır."
+    ]
+  ],
   "faq": [
     [
       "Vozen gerçekten ücretsiz mi?",

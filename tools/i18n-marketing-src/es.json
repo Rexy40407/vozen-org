@@ -415,6 +415,15 @@
     "helper.landing.bullet2": "Acciones adaptadas a los permisos",
     "helper.landing.bullet3": "Cambios seguros y reversibles",
     "helper.landing.bullet4": "Historial del servidor trazable",
+    "helper.landing.freeFeature1": "Protección contra spam, raids y entradas sospechosas",
+    "helper.landing.freeFeature2": "Mensajes de bienvenida y tickets básicos",
+    "helper.landing.freeFeature3": "Roles básicos, XP y herramientas de actividad",
+    "helper.landing.freeFeature4": "Registros esenciales, privacidad y moderación",
+    "helper.landing.freeFeature5": "Sugerencias, encuestas y recordatorios",
+    "helper.landing.ttsPremiumFeature": "Vozen TTS Premium para cada servidor seleccionado",
+    "helper.landing.comparisonCaption": "Comparación de funciones entre Helper Free y Vozen Premium",
+    "helper.landing.features": "Funciones de Helper",
+    "helper.landing.limitsNote": "Los límites Premium solo se aplican cuando Helper y cualquier proveedor necesario están disponibles.",
     "status.documentTitle": "Estado del servicio Vozen",
     "status.metaDescription": "Salud, latencia y comprobaciones del sistema Vozen en directo",
     "status.back": "← Volver a Vozen",
@@ -642,6 +651,28 @@
       ]
     ]
   },
+  "helperFaq": [
+    [
+      "¿Vozen Helper ya está disponible?",
+      "Sí. Helper está disponible públicamente. Instálalo desde esta página, elige un servidor y configura tu primer módulo mediante el inicio guiado."
+    ],
+    [
+      "¿Helper solicita el permiso Administrador?",
+      "No. La invitación base usa permisos limitados y nunca solicita Administrador. Si un módulo necesita un permiso sensible adicional, Helper explica el motivo antes de activarlo."
+    ],
+    [
+      "¿Cómo empiezo a usar Helper?",
+      "Instala Helper, elige tu servidor, completa el inicio guiado, activa un módulo y ejecuta su primera acción útil."
+    ],
+    [
+      "¿Qué módulos incluye?",
+      "Helper reúne protección y moderación, tickets, roles y herramientas de comunidad, eventos, automatización e información operativa. El panel muestra las opciones exactas disponibles para tu servidor."
+    ],
+    [
+      "¿Puedo comprar Premium ahora?",
+      "Los pagos están desactivados temporalmente. El núcleo de Helper sigue siendo gratuito y los precios Premium mostrados son solo informativos hasta que vuelva a habilitarse el pago."
+    ]
+  ],
   "faq": [
     [
       "¿Vozen es realmente gratis?",

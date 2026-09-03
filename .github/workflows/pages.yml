@@ -60,6 +60,7 @@ jobs:
           npm run helper-panel:vozen-session-check
           npm run product-install:check
           npm run auth-session:check
+          npm run test:unit
           npm run test:ui
           npm run test:lighthouse
       - name: Build Helper panel

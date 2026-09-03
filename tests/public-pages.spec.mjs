@@ -67,6 +67,22 @@ test('localized entry routes expose their own language, title and translated cop
   }
 });
 
+test('the localized Helper page exposes translated product copy and a real accessible FAQ', async ({ page }) => {
+  await page.goto('/pt/helper/', { waitUntil: 'networkidle' });
+
+  await expect(page.locator('#outcomes-title')).toContainText('O trabalho à volta do teu servidor, mais leve.');
+  const faq = page.locator('#helper-faq');
+  await expect(faq.getByRole('heading', { name: 'Perguntas, respondidas' })).toBeVisible();
+  const questions = faq.locator('details');
+  await expect(questions).toHaveCount(5);
+
+  const firstQuestion = questions.first();
+  await expect(firstQuestion.locator('summary')).toContainText('O Vozen Helper já está disponível?');
+  await firstQuestion.locator('summary').click();
+  await expect(firstQuestion).toHaveAttribute('open', '');
+  await expect(firstQuestion.locator('p')).toContainText('O Helper está disponível publicamente');
+});
+
 test('the language selector navigates to the matching canonical product route', async ({ page }) => {
   await page.goto('/tts/', { waitUntil: 'networkidle' });
   await page.locator('#langBtn').click();
@@ -85,6 +101,18 @@ test('mobile navigation opens without obscuring the page or losing keyboard focu
   await expect(burger).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('.nav__links')).toHaveClass(/is-open/);
   await expect(page.locator('.nav__links a', { hasText: 'Vozen TTS' })).toBeVisible();
+});
+
+test('Helper FAQ and return link keep 44px mobile touch targets', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 812 });
+  await page.goto('/helper/', { waitUntil: 'networkidle' });
+  await page.locator('#helper-faq').scrollIntoViewIfNeeded();
+
+  for (const target of await page.locator('#helper-faq summary, .eco-back').all()) {
+    const box = await target.boundingBox();
+    expect(box, 'touch target should have a layout box').not.toBeNull();
+    expect(box.height, 'touch target height').toBeGreaterThanOrEqual(44);
+  }
 });
 
 test('below-fold styles activate on the first scroll without creating page overflow', async ({ page }) => {

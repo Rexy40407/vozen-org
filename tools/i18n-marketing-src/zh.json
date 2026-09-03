@@ -415,6 +415,15 @@
     "helper.landing.bullet2": "考量權限的操作",
     "helper.landing.bullet3": "安全且可復原的變更",
     "helper.landing.bullet4": "可追蹤的伺服器歷史",
+    "helper.landing.freeFeature1": "垃圾訊息、突襲與可疑加入保護",
+    "helper.landing.freeFeature2": "歡迎訊息與基本客服單",
+    "helper.landing.freeFeature3": "基本身分組、XP 與活動工具",
+    "helper.landing.freeFeature4": "必要記錄、隱私與管理工具",
+    "helper.landing.freeFeature5": "建議、投票與提醒",
+    "helper.landing.ttsPremiumFeature": "每個已選伺服器均享有 Vozen TTS Premium",
+    "helper.landing.comparisonCaption": "Helper Free 與 Vozen Premium 功能比較",
+    "helper.landing.features": "Helper 功能",
+    "helper.landing.limitsNote": "只有在 Helper 與所有必要供應商可用時，Premium 限額才適用。",
     "status.documentTitle": "Vozen 服務狀態",
     "status.metaDescription": "Vozen 的即時健康度、延遲與系統檢查",
     "status.back": "← 返回 Vozen",
@@ -642,6 +651,28 @@
       ]
     ]
   },
+  "helperFaq": [
+    [
+      "Vozen Helper 現在可以使用了嗎？",
+      "可以。Helper 已公開提供。從此頁安裝、選擇伺服器，然後透過引導式設定配置第一個模組。"
+    ],
+    [
+      "Helper 會要求管理員權限嗎？",
+      "不會。基本邀請僅使用有限權限，而且絕不要求管理員權限。若某個模組需要額外的敏感權限，Helper 會在啟用前說明原因。"
+    ],
+    [
+      "如何開始使用 Helper？",
+      "安裝 Helper、選擇你的伺服器、完成引導式設定、啟用一個模組，然後執行它的第一個實用動作。"
+    ],
+    [
+      "Helper 包含哪些模組？",
+      "Helper 整合保護與管理、客服單、身分組與社群工具、活動、自動化及營運資訊。控制台會顯示你的伺服器可用的確切選項。"
+    ],
+    [
+      "我現在可以購買 Premium 嗎？",
+      "付款功能暫時停用。Helper 核心功能仍然免費；在重新開放結帳前，顯示的 Premium 價格僅供參考。"
+    ]
+  ],
   "faq": [
     [
       "Vozen 真的免費嗎？",

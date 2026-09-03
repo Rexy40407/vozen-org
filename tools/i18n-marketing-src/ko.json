@@ -415,6 +415,15 @@
     "helper.landing.bullet2": "권한을 고려한 작업",
     "helper.landing.bullet3": "안전하고 되돌릴 수 있는 변경",
     "helper.landing.bullet4": "추적 가능한 서버 기록",
+    "helper.landing.freeFeature1": "스팸, 레이드 및 의심스러운 참여 보호",
+    "helper.landing.freeFeature2": "환영 메시지와 기본 티켓",
+    "helper.landing.freeFeature3": "기본 역할, XP 및 활동 도구",
+    "helper.landing.freeFeature4": "필수 로그, 개인정보 보호 및 관리",
+    "helper.landing.freeFeature5": "제안, 투표 및 알림",
+    "helper.landing.ttsPremiumFeature": "선택한 모든 서버의 Vozen TTS Premium",
+    "helper.landing.comparisonCaption": "Helper Free와 Vozen Premium 기능 비교",
+    "helper.landing.features": "Helper 기능",
+    "helper.landing.limitsNote": "Premium 한도는 Helper와 필요한 공급자를 사용할 수 있을 때만 적용됩니다.",
     "status.documentTitle": "Vozen 서비스 상태",
     "status.metaDescription": "Vozen의 실시간 상태, 지연 시간 및 시스템 점검",
     "status.back": "← Vozen으로 돌아가기",
@@ -642,6 +651,28 @@
       ]
     ]
   },
+  "helperFaq": [
+    [
+      "Vozen Helper를 지금 사용할 수 있나요?",
+      "예. Helper는 공개적으로 사용할 수 있습니다. 이 페이지에서 설치하고 서버를 선택한 뒤 안내 설정을 통해 첫 번째 모듈을 구성하세요."
+    ],
+    [
+      "Helper가 관리자 권한을 요청하나요?",
+      "아니요. 기본 초대는 제한된 권한만 사용하며 관리자 권한을 절대 요청하지 않습니다. 모듈에 추가 민감 권한이 필요한 경우 Helper가 활성화 전에 그 이유를 설명합니다."
+    ],
+    [
+      "Helper를 어떻게 시작하나요?",
+      "Helper를 설치하고 서버를 선택한 다음 안내 설정을 완료하고 모듈 하나를 활성화하여 첫 번째 유용한 작업을 실행하세요."
+    ],
+    [
+      "어떤 모듈이 포함되어 있나요?",
+      "Helper는 보호 및 관리, 티켓, 역할과 커뮤니티 도구, 이벤트, 자동화, 운영 정보를 하나로 제공합니다. 패널에는 서버에서 사용할 수 있는 정확한 옵션이 표시됩니다."
+    ],
+    [
+      "지금 Premium을 구매할 수 있나요?",
+      "결제는 일시적으로 비활성화되어 있습니다. Helper 핵심 기능은 계속 무료이며, 표시된 Premium 가격은 결제가 다시 활성화될 때까지 참고용입니다."
+    ]
+  ],
   "faq": [
     [
       "Vozen은 정말 무료인가요?",

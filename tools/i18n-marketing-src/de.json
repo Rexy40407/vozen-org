@@ -415,6 +415,15 @@
     "helper.landing.bullet2": "Berechtigungsbewusste Aktionen",
     "helper.landing.bullet3": "Sichere, umkehrbare Änderungen",
     "helper.landing.bullet4": "Nachvollziehbare Serverhistorie",
+    "helper.landing.freeFeature1": "Schutz vor Spam, Raids und verdächtigen Beitritten",
+    "helper.landing.freeFeature2": "Willkommensnachrichten und grundlegende Tickets",
+    "helper.landing.freeFeature3": "Grundlegende Rollen-, XP- und Aktivitätswerkzeuge",
+    "helper.landing.freeFeature4": "Wichtige Protokolle, Datenschutz und Moderation",
+    "helper.landing.freeFeature5": "Vorschläge, Umfragen und Erinnerungen",
+    "helper.landing.ttsPremiumFeature": "Vozen TTS Premium für jeden ausgewählten Server",
+    "helper.landing.comparisonCaption": "Funktionsvergleich zwischen Helper Free und Vozen Premium",
+    "helper.landing.features": "Helper-Funktionen",
+    "helper.landing.limitsNote": "Premium-Limits gelten nur, wenn Helper und alle benötigten Anbieter verfügbar sind.",
     "status.documentTitle": "Vozen-Service-Status",
     "status.metaDescription": "Live-Gesundheit, Latenz und Systemprüfungen für Vozen",
     "status.back": "← Zurück zu Vozen",
@@ -642,6 +651,28 @@
       ]
     ]
   },
+  "helperFaq": [
+    [
+      "Ist Vozen Helper bereits verfügbar?",
+      "Ja. Helper ist öffentlich verfügbar. Installiere ihn über diese Seite, wähle einen Server und richte dein erstes Modul mit der geführten Einrichtung ein."
+    ],
+    [
+      "Fordert Helper die Administrator-Berechtigung an?",
+      "Nein. Die Basiseinladung verwendet begrenzte Berechtigungen und fordert niemals Administrator an. Benötigt ein Modul eine zusätzliche sensible Berechtigung, erklärt Helper vor der Aktivierung den Grund."
+    ],
+    [
+      "Wie beginne ich mit Helper?",
+      "Installiere Helper, wähle deinen Server, schließe die geführte Einrichtung ab, aktiviere ein Modul und führe dessen erste nützliche Aktion aus."
+    ],
+    [
+      "Welche Module sind enthalten?",
+      "Helper vereint Schutz und Moderation, Tickets, Rollen und Community-Werkzeuge, Events, Automatisierung und Betriebsinformationen. Im Dashboard siehst du die genauen Optionen für deinen Server."
+    ],
+    [
+      "Kann ich Premium jetzt kaufen?",
+      "Zahlungen sind vorübergehend deaktiviert. Der Helper-Kern bleibt kostenlos; die angezeigten Premium-Preise dienen nur als Information, bis der Checkout wieder aktiviert wird."
+    ]
+  ],
   "faq": [
     [
       "Ist Vozen wirklich kostenlos?",

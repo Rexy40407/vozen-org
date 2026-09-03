@@ -14,6 +14,7 @@
     "product-install:check": "node tools/product-install-flow-check.mjs",
     "auth-session:check": "node tools/auth-session-check.mjs",
     "test:ui": "playwright test",
+    "test:unit": "node --test --experimental-test-coverage --test-coverage-include=tools/build-localized-pages.mjs --test-coverage-lines=80 --test-coverage-functions=80 --test-coverage-branches=80 tests/unit/*.unit.mjs",
     "test:lighthouse": "node tools/lighthouse-check.mjs",
     "build:i18n:marketing": "node tools/build-marketing-i18n.mjs",
     "build:font": "node tools/build-critical-font.mjs",
