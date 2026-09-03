@@ -88,3 +88,22 @@ Install Helper, choose a server, complete the guided setup, enable the first use
 - Do not copy reviewer names, avatars, or quotations from Top.gg.
 - Do not describe temporarily disabled checkout as available.
 - Preview every listing before the final external submission.
+
+## Verified directory gates (2026-09-04)
+
+### Discord App Directory
+
+- Discord currently requires App Verification before the Discovery section is available: `https://docs.discord.com/developers/discovery/enabling-discovery`.
+- The product page requires a Community-enabled support server and an accurate application description. A configured install link is also required for the Add App action and Directory eligibility.
+- Keep the public privacy policy and terms linked, select only real supported languages, and upload only current product screenshots.
+- Enabling Discovery is a separate final opt-in after every portal checklist item is green. Discord says appearance may take up to 24 hours, so submission is not evidence of indexing.
+
+### discord.bots.gg
+
+- Current terms require at least 75% weekly uptime, truthful listing information, and continued membership in the directory's Discord server after approval: `https://discord.bots.gg/terms`.
+- Its developer policy explicitly prohibits automating website modifications. Submission must therefore be completed manually while logged in; no browser agent or API should submit or edit the listing.
+
+### discordbotlist.com
+
+- The current add-bot route is `https://discordbotlist.com/bots/add` and redirects to Discord authentication when logged out.
+- Review and accept its current terms in the logged-in flow before the final submission. If approved, the optional statistics API is documented at `https://docs.discordbotlist.com/bot-statistics`; never expose its authorization token in public code.
