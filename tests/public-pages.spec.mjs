@@ -115,6 +115,27 @@ test('Helper FAQ and return link keep 44px mobile touch targets', async ({ page 
   }
 });
 
+test('TTS links to independently hosted Top.gg reviews without republishing identities or quotes', async ({ page }) => {
+  await page.goto('/tts/', { waitUntil: 'networkidle' });
+
+  const reviews = page.locator('#reviews');
+  await expect(reviews.getByRole('heading', { name: 'Reviews you can verify' })).toBeVisible();
+  const link = reviews.getByRole('link', { name: 'Read verified reviews on Top.gg' });
+  await expect(link).toHaveAttribute('href', 'https://top.gg/bot/1523826014935842997');
+  await expect(reviews.locator('img')).toHaveCount(0);
+  await expect(reviews.locator('blockquote')).toHaveCount(0);
+});
+
+test('the editorial Portuguese TTS page exposes the same verifiable review source', async ({ page }) => {
+  await page.goto('/pt/tts/', { waitUntil: 'networkidle' });
+
+  const reviews = page.locator('#reviews');
+  await expect(reviews.getByRole('heading', { name: 'Avaliações que podes verificar' })).toBeVisible();
+  const link = reviews.getByRole('link', { name: 'Ler avaliações verificadas no Top.gg' });
+  await expect(link).toHaveAttribute('href', 'https://top.gg/bot/1523826014935842997');
+  await expect(reviews.locator('img, blockquote')).toHaveCount(0);
+});
+
 test('below-fold styles activate on the first scroll without creating page overflow', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   for (const path of entryPages) {
