@@ -26,11 +26,9 @@
   <url><loc>https://vozen.org/docs/helper/modules/alerts/instagram/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/alerts/kick/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/alerts/podcasts/</loc></url>
-  <url><loc>https://vozen.org/docs/helper/modules/alerts/reddit/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/alerts/rss/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/alerts/tiktok/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/alerts/twitch/</loc></url>
-  <url><loc>https://vozen.org/docs/helper/modules/alerts/x/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/alerts/youtube/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/automate/custom-commands/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/automate/embeds/</loc></url>
@@ -66,9 +64,6 @@
   <url><loc>https://vozen.org/docs/helper/modules/web3/crypto-queries/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/web3/crypto-statistics/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/web3/gas-tracker/</loc></url>
-  <url><loc>https://vozen.org/docs/helper/modules/web3/nft-queries/</loc></url>
-  <url><loc>https://vozen.org/docs/helper/modules/web3/nft-sales/</loc></url>
-  <url><loc>https://vozen.org/docs/helper/modules/web3/nft-statistics/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/web3/wallet-gating/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/welcome/birthdays/</loc></url>
   <url><loc>https://vozen.org/docs/helper/modules/welcome/guided-channel/</loc></url>
