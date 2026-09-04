@@ -1,20 +1,20 @@
 # Integrated growth release evidence
 
-Last verified: 2026-09-03. This is an evidence ledger, not a substitute for the private analytics panel. It contains no guild or user identifiers and no provider credentials.
+Last verified: 2026-09-04. This is an evidence ledger, not a substitute for the private analytics panel. It contains no guild or user identifiers and no provider credentials.
 
 ## Released revisions
 
 | Surface | Revision | CI / release evidence |
 | --- | --- | --- |
 | Public site (`vozen-org`) | `b36d4728c99e11ceb6846bab20f5e4ea4539faec` | GitHub Actions `33815490233`, successful; product CSS and removal of interaction-triggered layout shifts confirmed on production |
-| Private panel (`painel`) | `981edb8f3f259e1af9be6d48746bb7959dd9a79b` | GitHub Actions `33788606428`, successful |
-| TTS runtime (`Vozen_TTS`) | `ed64889ed10b6a6a7338d85d8a1fbd84412d269d` | GitHub Actions `33788606726`, successful; exact revision active in the production container |
-| Helper runtime (`vozen-helper`) | `5a562b6c6ec091c6f33b7f1b7b345d7bb7d06e2b` | CI `33788827395` and release `33788827312`, successful; exact release active in the production service |
+| Private panel (`painel`) | `0adbc8bd2a48ea200406b56fdc882ce9b6b0e7fd` | GitHub Pages `33819539062`, successful; funnel, product filter, votes, daily series, and range-consistent cards confirmed on production |
+| TTS runtime (`Vozen_TTS`) | `80d012bd7a4657a2609f455fc1347a924e96b50c` | CI `33820879350` and deploy `33822180768`, successful; exact revision label and healthy image active in the production container |
+| Helper runtime (`vozen-helper`) | `c36d10f22613df1b4c102b9e5c0c41b31fd2b099` | CI `33822228280` and release `33822228299`, successful; exact checksum-verified release active in the production service |
 
 ## Automated verification
 
-- TTS: `cargo test --workspace --locked` passes 774 tests with no failures or ignored tests.
-- Helper: `cargo test --workspace --all-targets` passes 222 tests with no failures or ignored tests.
+- TTS: the final CI passes 781 workspace tests plus 195 voice-driver tests in both development and release profiles, with no failures or ignored tests.
+- Helper: `cargo test --workspace --all-targets` passes 226 tests with no failures or ignored tests; strict workspace Clippy and both Rust and npm dependency audits pass.
 - Private panel: 53 unit/contract tests and 8 Playwright tests pass.
 - Public site:
   - metadata passes for 164 public pages;
@@ -33,19 +33,20 @@ The read-only production audit returned database integrity `ok` for both product
 
 ### TTS lifecycle and Top.gg
 
-- 184 current guilds, 199 lifecycle rows, 90 currently configured guilds, and 95 current guilds with recorded use.
-- Measurement starts on 2026-08-28. The 7-, 30-, and 90-day growth requests therefore correctly contain the same complete measured history until more than seven days exist.
-- Measured acquisition: 34 joins, 18 leaves, 12 new setup completions, and 2 new first-value events after excluding the baseline inventory.
-- Historical aggregate rows contain 14 setup completions and 26 first-value guilds. These totals are intentionally distinct from the period funnel and the current configured/used snapshots.
-- Top.gg last delivery returned HTTP 204 for 184 guilds with zero consecutive failures and a sanitized `delivered` state.
-- The public Top.gg listing reported 179 servers at the audit time, a 2.7% difference from the live count and below the 5% alert threshold.
+- 186 current guilds, 201 lifecycle rows, 92 currently configured guilds, and 95 current guilds with recorded use.
+- Measurement starts on 2026-08-28. At this audit, all non-baseline measured transitions still fall inside the current seven-day window, so the 7-, 30-, and 90-day event totals correctly match; the requested range and coverage date remain visibly distinct in the panel.
+- Measured acquisition: 36 joins, 18 leaves, 14 new setup completions, and 2 new first-value events after excluding the 168-guild baseline inventory.
+- Current readiness and use come from live `guild_config` and `talk_stats` state, while period funnel events count only transitions observed after instrumentation began. This is why 92 currently ready and 95 historically used guilds do not equal the 14 new setups or 2 new first values.
+- Top.gg last delivery returned HTTP 204 for 186 guilds at 2026-09-04 00:41 UTC, with zero consecutive failures and a sanitized `delivered` state.
+- The retention migration stores anonymous W7/W30 outcomes durably while retaining guild-scoped deduplication only until the ordinary 30-day departure purge. Tests prove rates survive identity purge and migration replay does not double count; production database integrity is `ok`.
 - The reward tests prove authenticated delivery, idempotency per provider event, a 24-hour grant, four rewards per rolling 30 days, a maximum 48-hour future expiry, and 30-day removal of raw and pseudonymous ledger rows.
 
 ### Helper lifecycle
 
-- 4 current guilds, 2 first-value guilds, and 2 active guilds.
+- 4 current guilds, 2 first-value guilds, 2 active guilds, and no completed module configuration yet. Measurement starts on 2026-08-29.
 - Setup is recorded only after a successful `/setup` or the first valid module configuration; no setup is fabricated from installation.
-- The lifecycle tests prove one-time setup/first-value events, daily activity, re-entry handling, and removal of departed guild data after 30 days.
+- The lifecycle tests prove one-time setup/first-value events, daily activity, re-entry handling, durable anonymous W7/W30 outcomes, migration idempotency, and removal of departed guild identities after 30 days.
+- The private Helper growth route rejects a mismatched `product=tts` request and returns the same aggregate-only contract as TTS without guild or user IDs.
 - Helper applies the same sanitized Top.gg health contract. Its state is `unconfigured` because no Helper Top.gg project/token is configured yet; this is not reported as a successful sync.
 
 ### Web analytics and cache
@@ -67,6 +68,8 @@ The read-only production audit returned database integrity `ok` for both product
 - `robots.txt`, `llms.txt`, `sitemap.xml`, the custom 404, favicon, bilingual English/Portuguese guides, TTS documentation, Portuguese TTS page, and Helper page all return successfully.
 - The release sitemap contains 164 canonical URLs. Ordinary indexing is allowed while named AI-training crawlers remain blocked.
 - Secure TTS and Helper OAuth entry points use signed state, server-side callbacks, PKCE where applicable, replay protection, and limited permissions without `Administrator`.
+- The final TTS deploy used the exact CI-built immutable image, verified its checksum, created and verified an online SQLite backup, and passed rollback-aware production health checks. A storage preflight failure was resolved by removing only inactive, reinstallable editor caches; databases, models, rollback data, and the live container were preserved.
+- The final Helper deploy verified the GitHub release digest `sha256:3a7dd40b41f0e177537e19de9fdd9a91c255890d89292336e9b6a47efce95e7d`, created a restorable SQLite backup with integrity `ok`, switched the release symlink atomically, and confirmed API and gateway readiness on the exact release.
 
 ## External gates still requiring an account action
 
