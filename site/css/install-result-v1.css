@@ -1,0 +1,277 @@
+@font-face {
+  font-family: "Unbounded";
+  src: url("/assets/fonts/unbounded-critical-latin.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 600 800;
+}
+
+:root {
+  color-scheme: dark;
+  --background: #05060f;
+  --surface: #10121f;
+  --elevated: #151827;
+  --text: #f6f7fe;
+  --muted: #a3a9c4;
+  --primary: #6672ff;
+  --accent: #2ee6c8;
+  --line: rgba(163, 169, 196, 0.2);
+  font-family: Outfit, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(102, 114, 255, 0.16), transparent 34rem),
+    radial-gradient(circle at 85% 80%, rgba(46, 230, 200, 0.1), transparent 30rem),
+    var(--background);
+}
+
+a { color: inherit; }
+
+[hidden] { display: none !important; }
+
+.skip-link {
+  position: fixed;
+  z-index: 10;
+  top: 8px;
+  left: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--text);
+  color: var(--background);
+  transform: translateY(-150%);
+}
+
+.skip-link:focus { transform: translateY(0); }
+
+.install-nav,
+.install-footer {
+  width: min(1160px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+.install-nav {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.install-brand {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  font-family: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.install-brand__mark {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.install-brand__mark i {
+  display: block;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--background);
+}
+
+.install-brand__mark i:nth-child(1),
+.install-brand__mark i:nth-child(5) { height: 7px; }
+.install-brand__mark i:nth-child(2),
+.install-brand__mark i:nth-child(4) { height: 13px; }
+.install-brand__mark i:nth-child(3) { height: 18px; }
+
+.install-product,
+.install-eyebrow {
+  font: 700 0.72rem/1.4 ui-monospace, "Cascadia Code", monospace;
+  letter-spacing: 0.12em;
+}
+
+.install-product {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--accent);
+}
+
+.install-shell {
+  width: min(760px, calc(100% - 32px));
+  margin: clamp(32px, 7vw, 80px) auto;
+}
+
+.install-card {
+  padding: clamp(24px, 6vw, 52px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(21, 24, 39, 0.96), rgba(16, 18, 31, 0.96));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
+}
+
+.install-eyebrow {
+  margin: 0 0 16px;
+  color: var(--accent);
+}
+
+h1 {
+  margin: 0;
+  max-width: 18ch;
+  font-family: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.75rem, 6vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+
+.install-lead,
+.install-help {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.install-lead { margin: 22px 0 0; }
+.install-help { margin: 14px 0 0; }
+
+.install-steps {
+  display: grid;
+  gap: 12px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.install-steps li {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(5, 6, 15, 0.36);
+}
+
+.install-step__number {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(102, 114, 255, 0.18);
+  color: var(--accent);
+  font: 700 0.9rem/1 ui-monospace, "Cascadia Code", monospace;
+}
+
+.install-steps strong,
+.install-steps span { display: block; }
+
+.install-steps strong {
+  margin: 1px 0 5px;
+  font-size: 1rem;
+}
+
+.install-steps div > span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+code {
+  color: var(--accent);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+}
+
+.install-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+.button--primary {
+  background: var(--primary);
+  color: white;
+}
+
+.button--secondary {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.button:hover { transform: translateY(-1px); }
+
+.button:focus-visible,
+.install-brand:focus-visible,
+.install-footer a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.install-footer {
+  min-height: 76px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding-block: 16px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.install-footer a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 520px) {
+  .install-shell,
+  .install-nav,
+  .install-footer { width: min(100% - 24px, 760px); }
+  .install-actions { display: grid; }
+  .button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

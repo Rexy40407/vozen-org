@@ -2,15 +2,20 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relative) => readFile(path.join(root, relative), 'utf8');
 const directTtsInvite = 'https://discord.com/oauth2/authorize?client_id=1523826014935842997';
 const directHelperInvite = 'https://discord.com/oauth2/authorize?client_id=1526211106081734666';
 const helperInstallStart = 'https://api.vozen.org/rust/api/install/start';
+const ttsInstallStart = 'https://api.vozen.org/api/install/tts/start';
 
-const [dashboard, helperRedirect, helperPanel, main, commands, installConfig, ttsInstall, ...publicPages] = await Promise.all([
+const [dashboard, dashboardInstallRedirect, installResultPage, installResultScript, helperRedirect, helperPanel, main, commands, installConfig, ttsInstall, ...publicPages] = await Promise.all([
   read('site/js/dashboard-v8.js'),
+  read('site/js/dashboard-install-redirect-v1.js'),
+  read('site/dashboard/index.html'),
+  read('site/js/install-result-v1.js'),
   read('site/js/helper-redirect-v1.js'),
   read('apps/helper-panel/src/App.tsx'),
   read('site/js/main-v51.js'),
@@ -37,11 +42,48 @@ assert.match(ttsInstall, /"home", "tts-hero", "tts-pricing", "commands", "topgg"
 assert.match(ttsInstall, /removeAttribute\("target"\)/);
 assert.equal(helperPanel.includes(helperInstallStart), true);
 
-assert.match(dashboard, /TTS_INSTALL_STATE_KEY/);
-assert.match(dashboard, /u\.searchParams\.set\("response_type", "code"\)/);
-assert.match(dashboard, /u\.searchParams\.set\("scope", "bot applications\.commands identify"\)/);
-assert.match(dashboard, /consumeTtsInstallCallback/);
-assert.match(dashboard, /ttsInstallRequested/);
+assert.match(dashboard, /TTS_INSTALL_START/);
+assert.match(dashboard, /window\.location\.assign\(ttsInstallUrl\("home"\)\)/);
+assert.equal(dashboard.includes('https://discord.com/oauth2/authorize'), false);
+assert.equal(dashboard.includes('TTS_INSTALL_STATE_KEY'), false);
+assert.match(dashboardInstallRedirect, /query\.get\("add"\) === "1"/);
+assert.match(dashboardInstallRedirect, /window\.location\.replace\(TTS_INSTALL_START\)/);
+assert.equal(dashboardInstallRedirect.includes('https://discord.com/oauth2/authorize'), false);
+let dashboardRedirect = null;
+vm.runInNewContext(dashboardInstallRedirect, {
+  URLSearchParams,
+  window: {
+    location: {
+      search: '?add=1',
+      replace(value) { dashboardRedirect = value; },
+    },
+  },
+});
+assert.equal(dashboardRedirect, `${ttsInstallStart}?source=home`);
+
+assert.match(installResultPage, /name="robots" content="noindex,nofollow"/);
+assert.match(installResultPage, /data-install-outcome="installed"/);
+assert.match(installResultPage, /Choose your server/);
+assert.match(installResultPage, /Run <code>\/setup<\/code>/);
+assert.match(installResultPage, /Test Vozen TTS/);
+assert.equal(installResultPage.includes('static.cloudflareinsights.com'), false);
+assert.match(installResultScript, /new Set\(\["installed", "cancelled", "oauth_failed", "guild_missing"\]\)/);
+assert.match(installResultScript, /window\.location\.replace\("\/dashboard\.html"\)/);
+assert.equal(installResultScript.includes('innerHTML'), false);
+assert.equal(installResultScript.includes('textContent = outcome'), false);
+assert.equal(installResultScript.includes(ttsInstallStart), false);
+let invalidOutcomeRedirect = null;
+vm.runInNewContext(installResultScript, {
+  Set,
+  URLSearchParams,
+  window: {
+    location: {
+      search: '?installed=0&install=unexpected',
+      replace(value) { invalidOutcomeRedirect = value; },
+    },
+  },
+});
+assert.equal(invalidOutcomeRedirect, '/dashboard.html');
 
 assert.match(helperRedirect, /HELPER_INSTALL_URL/);
 assert.match(helperRedirect, /window\.location\.replace\(HELPER_INSTALL_URL\)/);

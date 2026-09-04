@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05060f" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Vozen TTS installation</title>
+    <meta name="description" content="Complete your Vozen TTS installation and start your first voice session." />
+    <link rel="canonical" href="https://vozen.org/dashboard/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/css/install-result-v1.css?v=1" />
+  </head>
+  <body>
+    <a class="skip-link" href="#install-result">Skip to result</a>
+    <header class="install-nav">
+      <a class="install-brand" href="/" aria-label="Vozen home">
+        <span class="install-brand__mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span>Vozen</span>
+      </a>
+      <span class="install-product">TTS</span>
+    </header>
+
+    <main class="install-shell" id="install-result">
+      <article class="install-card" aria-live="polite">
+        <p class="install-eyebrow">SECURE DISCORD INSTALL</p>
+        <h1 id="install-title">Completing your Vozen TTS installation</h1>
+
+        <section data-install-outcome="installed" hidden>
+          <p class="install-lead">The bot was added successfully. Three short steps will get your server speaking.</p>
+          <ol class="install-steps" aria-label="Vozen TTS activation steps">
+            <li>
+              <span class="install-step__number">1</span>
+              <div><strong>Choose your server</strong><span>Open the Vozen account and select the server you just connected.</span></div>
+            </li>
+            <li>
+              <span class="install-step__number">2</span>
+              <div><strong>Run <code>/setup</code></strong><span>Choose the text channel Vozen should read and finish the guided setup.</span></div>
+            </li>
+            <li>
+              <span class="install-step__number">3</span>
+              <div><strong>Test Vozen TTS</strong><span>Join a voice channel and send a message in the configured text channel.</span></div>
+            </li>
+          </ol>
+          <div class="install-actions">
+            <a class="button button--primary" href="/account/">Open your Vozen account</a>
+            <a class="button button--secondary" href="/docs/tts/getting-started/first-voice-session/">Read the setup guide</a>
+          </div>
+        </section>
+
+        <section data-install-outcome="cancelled" hidden>
+          <p class="install-lead">Nothing was changed. You can restart the secure Discord installation whenever you are ready.</p>
+          <div class="install-actions">
+            <a class="button button--primary" href="https://api.vozen.org/api/install/tts/start?source=home">Try again</a>
+            <a class="button button--secondary" href="/tts/">Back to Vozen TTS</a>
+          </div>
+        </section>
+
+        <section data-install-outcome="oauth_failed" hidden>
+          <p class="install-lead">Discord could not complete the authorization. No browser credentials were stored.</p>
+          <p class="install-help">Try once more. If it still fails, check that you can manage the target server and then contact support.</p>
+          <div class="install-actions">
+            <a class="button button--primary" href="https://api.vozen.org/api/install/tts/start?source=home">Try again</a>
+            <a class="button button--secondary" href="/docs/tts/troubleshooting/missing-permissions/">Check permissions</a>
+          </div>
+        </section>
+
+        <section data-install-outcome="guild_missing" hidden>
+          <p class="install-lead">Discord completed the authorization, but did not return a server for activation tracking.</p>
+          <p class="install-help">Confirm that you selected a server where you have Manage Server permission, then repeat the installation.</p>
+          <div class="install-actions">
+            <a class="button button--primary" href="https://api.vozen.org/api/install/tts/start?source=home">Choose a server</a>
+            <a class="button button--secondary" href="/docs/tts/getting-started/install/">Installation help</a>
+          </div>
+        </section>
+
+        <noscript>
+          <p class="install-help">JavaScript is required to display the installation result.</p>
+          <a class="button button--secondary" href="/dashboard.html">Open the dashboard</a>
+        </noscript>
+      </article>
+    </main>
+
+    <footer class="install-footer">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <span>Not affiliated with Discord</span>
+    </footer>
+    <script src="/js/install-result-v1.js?v=1" defer></script>
+  </body>
+</html>

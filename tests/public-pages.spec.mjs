@@ -10,6 +10,32 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
 });
 
+test('the TTS install result explains the first-value path without analytics', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 812 });
+  await page.goto('/dashboard/?installed=1&install=installed', { waitUntil: 'networkidle' });
+
+  await expect(page.getByRole('heading', { name: 'Vozen TTS is in your server' })).toBeVisible();
+  await expect(page.locator('[data-install-outcome="installed"] li')).toHaveCount(3);
+  await expect(page.getByText('/setup', { exact: true })).toBeVisible();
+  await expect(page.locator('script[src*="cloudflareinsights"]')).toHaveCount(0);
+  await expect(page.locator('[data-cf-beacon]')).toHaveCount(0);
+  const overflow = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: document.documentElement.scrollWidth,
+  }));
+  expect(overflow.content, JSON.stringify(overflow)).toBeLessThanOrEqual(overflow.viewport + 1);
+});
+
+test('the TTS install result exposes a useful cancellation state', async ({ page }) => {
+  await page.goto('/dashboard/?installed=0&install=cancelled', { waitUntil: 'networkidle' });
+
+  await expect(page.getByRole('heading', { name: 'Installation cancelled' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Try again' })).toHaveAttribute(
+    'href',
+    'https://api.vozen.org/api/install/tts/start?source=home',
+  );
+});
+
 for (const path of entryPages) {
   for (const width of widths) {
     test(`${path} has no console, resource or horizontal-overflow failures at ${width}px`, async ({ page }) => {

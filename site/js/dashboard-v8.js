@@ -10,24 +10,11 @@
    por addEventListener; CSS injetado num <style> (style-src tem 'unsafe-inline'). */
 (function () {
   "use strict";
-  // Product identity: this application is used only to invite Vozen TTS. The account
-  // page owns ecosystem login; this bundle only starts the add-server invite flow.
-  var TTS_CLIENT_ID = "1523826014935842997";
-  var OAUTH_CONFIG = window.VOZEN_ECOSYSTEM_OAUTH || {};
   var API = "https://api.vozen.org";
-  var TTS_REDIRECT =
-    typeof OAUTH_CONFIG.ttsRedirectUri === "string" && OAUTH_CONFIG.ttsRedirectUri
-      ? OAUTH_CONFIG.ttsRedirectUri
-      : new URL("/dashboard/", location.href).href;
+  var TTS_INSTALL_START = API + "/api/install/tts/start";
   var TOK_KEY = "vozen.ecosystem.dtoken";
   var AUTH_CHANNEL_NAME = "vozen.ecosystem.auth.v1";
   var LEGACY_TOK_KEY = "vozen.dtoken";
-  var TTS_INSTALL_STATE_KEY = "vozen.tts.install.state";
-  var INVITE_PENDING_KEY = "vozen.ttsInvitePending";
-  var INVITE_BASELINE_KEY = "vozen.ttsInviteBaseline";
-  var INVITE_POLL_ATTEMPTS = 8;
-  var INVITE_POLL_DELAY_MS = 1500;
-  var INVITE_PERMISSIONS = "326420745216";
   var LS_LANG = "vozen.lang";
 
   var workspaceRoot = document.getElementById("dashRoot");
@@ -411,123 +398,21 @@
       }
     });
   }
-  function setInvitePending(guilds) {
-    try {
-      sessionStorage.setItem(INVITE_PENDING_KEY, "1");
-      sessionStorage.setItem(
-        INVITE_BASELINE_KEY,
-        JSON.stringify(
-          (guilds || []).map(function (g) {
-            return String(g.id);
-          }),
-        ),
-      );
-    } catch (e) {}
-  }
-  function inviteIsPending() {
-    try {
-      return sessionStorage.getItem(INVITE_PENDING_KEY) === "1";
-    } catch (e) {
-      return false;
-    }
-  }
-  function invitedGuild(guilds) {
-    var baseline = [];
-    try {
-      baseline = JSON.parse(sessionStorage.getItem(INVITE_BASELINE_KEY) || "[]");
-    } catch (e) {}
-    if (!Array.isArray(baseline)) baseline = [];
-    for (var i = 0; i < (guilds || []).length; i++) {
-      var guild = guilds[i];
-      if (baseline.indexOf(String(guild.id)) === -1) return guild;
-    }
-    return null;
-  }
-  function clearInvitePending() {
-    try {
-      sessionStorage.removeItem(INVITE_PENDING_KEY);
-      sessionStorage.removeItem(INVITE_BASELINE_KEY);
-    } catch (e) {}
-  }
-
-  function clearTtsInstallState() {
-    try {
-      sessionStorage.removeItem(TTS_INSTALL_STATE_KEY);
-    } catch (e) {}
-  }
-
-  function cleanTtsInstallQuery() {
-    if (!window.history || typeof window.history.replaceState !== "function") return;
-    var next = new URL(window.location.href);
-    ["add", "code", "state", "guild_id", "permissions", "error", "error_description"].forEach(
-      function (key) {
-        next.searchParams.delete(key);
-      },
-    );
-    window.history.replaceState({}, document.title, next.pathname + next.search + next.hash);
-  }
-
-  function consumeTtsInstallCallback() {
-    var query = new URLSearchParams(window.location.search || "");
-    var code = query.get("code");
-    var state = query.get("state");
-    var error = query.get("error");
-    if (!code && !state && !error) return { received: false, valid: false };
-
-    var expected = null;
-    try {
-      expected = sessionStorage.getItem(TTS_INSTALL_STATE_KEY);
-    } catch (e) {}
-    clearTtsInstallState();
-    cleanTtsInstallQuery();
-
-    // The callback code is never treated as a browser credential. We only use
-    // Discord's successful return plus our one-time state to resume the panel.
-    return { received: true, valid: Boolean(code && !error && expected && state === expected) };
-  }
   function authHeaders() {
     var value = token();
     return value ? { Authorization: "Bearer " + value } : {};
   }
 
-  function randState() {
-    var a = new Uint8Array(16);
-    var c = window.crypto || window.msCrypto;
-    if (!c || typeof c.getRandomValues !== "function") throw new Error("no-csprng");
-    c.getRandomValues(a);
-    return [].map
-      .call(a, function (b) {
-        return b.toString(16).padStart(2, "0");
-      })
-      .join("");
+  function ttsInstallUrl(source) {
+    var url = new URL(TTS_INSTALL_START);
+    url.searchParams.set("source", source);
+    return url.toString();
   }
 
-  function addServer(guilds) {
-    var state;
-    try {
-      state = randState();
-    } catch (e) {
-      alert(t("dashboard.secureTokenError"));
-      return;
-    }
-    setInvitePending(guilds || workspaceState.guilds || []);
-    try {
-      sessionStorage.setItem(TTS_INSTALL_STATE_KEY, state);
-    } catch (e) {}
-    var u = new URL("https://discord.com/oauth2/authorize");
-    u.searchParams.set("client_id", TTS_CLIENT_ID);
-    u.searchParams.set("permissions", INVITE_PERMISSIONS);
-    // Adding a server is a TTS product flow. Keep the product token on the
-    // TTS dashboard; the Ecosystem application is reserved for site login.
-    u.searchParams.set("redirect_uri", TTS_REDIRECT);
-    u.searchParams.set("response_type", "code");
-    // `identify` enables Discord's callback-capable Advanced Bot Authorization
-    // flow. The dashboard already has the shared Vozen session, so no extra
-    // account scopes or browser token are needed.
-    u.searchParams.set("scope", "bot applications.commands identify");
-    u.searchParams.set("integration_type", "0");
-    u.searchParams.set("state", state);
-    location.href = u.toString();
+  function addServer() {
+    // State signing, replay protection and code exchange all happen server-side.
+    // No Discord credential or authorization code is handled by this bundle.
+    window.location.assign(ttsInstallUrl("home"));
   }
 
   /* ── estilos inline (CSP permite; usam as vars do tema do site) ── */
@@ -1381,13 +1266,11 @@
     };
   }
 
-  function loadGuilds(attempt, onReadyForInstall) {
-    var pollAttempt = Number(attempt) || 0;
+  function loadGuilds() {
     renderSkeleton("picker");
     fetchWithTimeout(API + "/api/dashboard/guilds", { headers: authHeaders() })
       .then(function (res) {
         if (res.status === 401) {
-          clearInvitePending();
           clearToken();
           renderLogin("dashboard.expired");
           return null;
@@ -1401,26 +1284,8 @@
       .then(function (data) {
         if (!data) return;
         var guilds = data.guilds || [];
-        var pendingInvite = inviteIsPending();
-        var added = pendingInvite ? invitedGuild(guilds) : null;
-        if (pendingInvite && !added && pollAttempt < INVITE_POLL_ATTEMPTS) {
-          window.setTimeout(function () {
-            loadGuilds(pollAttempt + 1, onReadyForInstall);
-          }, INVITE_POLL_DELAY_MS);
-          return;
-        }
-        if (typeof onReadyForInstall === "function") {
-          onReadyForInstall(guilds);
-          return;
-        }
-        clearInvitePending();
         if (!guilds.length) {
           renderMessage("dashboard.none", "dashboard.noneHint", { addServer: true });
-          return;
-        }
-        if (added) {
-          workspaceState.dirty = false;
-          loadForm(added, guilds);
           return;
         }
         renderPicker(guilds);
@@ -1435,27 +1300,12 @@
     // Authentication belongs to /account. The TTS dashboard must consume the
     // shared HttpOnly ecosystem session instead of opening a second OAuth flow.
     await waitForSharedSession();
-    if (ttsInstallCallback.received && !ttsInstallCallback.valid) {
-      ttsInstallCallback = { received: false, valid: false };
-      clearInvitePending();
-      renderMessage("dashboard.error", "dashboard.retry", { retry: true, onRetry: boot });
-      return;
-    }
-    if (ttsInstallRequested) {
-      loadGuilds(0, function (guilds) {
-        addServer(guilds);
-      });
-      return;
-    }
-    loadGuilds(0);
+    loadGuilds();
   }
 
   window.addEventListener("vozen:languagechange", function () {
     if (typeof onLang === "function") onLang();
   });
 
-  var ttsInstallCallback = consumeTtsInstallCallback();
-  var ttsInstallRequested = !ttsInstallCallback.received && new URLSearchParams(window.location.search || "").get("add") === "1";
-  if (ttsInstallRequested) cleanTtsInstallQuery();
   boot();
 })();
