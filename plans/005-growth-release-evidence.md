@@ -9,12 +9,12 @@ Last verified: 2026-09-04. This is an evidence ledger, not a substitute for the 
 | Public site (`vozen-org`) | `a2054a2ff7ab8be44abf7a05a518876f2d46cfb6` | GitHub Actions `33826384680`, successful; secure TTS return route, legacy add-server redirect, product CSS, and layout stability confirmed on production |
 | Private panel (`painel`) | `0adbc8bd2a48ea200406b56fdc882ce9b6b0e7fd` | GitHub Pages `33819539062`, successful; funnel, product filter, votes, daily series, and range-consistent cards confirmed on production |
 | TTS runtime (`Vozen_TTS`) | `80d012bd7a4657a2609f455fc1347a924e96b50c` | CI `33820879350` and deploy `33822180768`, successful; exact revision label and healthy image active in the production container |
-| Helper runtime (`vozen-helper`) | `c36d10f22613df1b4c102b9e5c0c41b31fd2b099` | CI `33822228280` and release `33822228299`, successful; exact checksum-verified release active in the production service |
+| Helper runtime (`vozen-helper`) | `15eb00b9b03a78b771c864c351e7146bde1e8850` | Release `33829077850`, successful; exact checksum-verified release active in the production service. The later dependency-lock and CI-only revision `d1285e2eb9e61694cf6ca3e8e64165c09c15854a` passed CI `33834785758` and release packaging `33834785775` without changing the deployed runtime source |
 
 ## Automated verification
 
 - TTS: the final CI passes 781 workspace tests plus 195 voice-driver tests in both development and release profiles, with no failures or ignored tests.
-- Helper: `cargo test --workspace --all-targets` passes 226 tests with no failures or ignored tests; strict workspace Clippy and both Rust and npm dependency audits pass.
+- Helper: CI `33834785758` passes 231 Rust workspace tests, strict workspace Clippy, 260 Node tests, lint, typecheck, both application builds, the Rust dependency audit, and both npm dependency audits. The panel lock now contains the complete 75-entry cross-platform dependency tree; an isolated clean install is idempotent and its registry audit reports zero vulnerabilities. The CI runner retries only provider/transport failures and still fails immediately when npm reports any high or critical vulnerability.
 - Private panel: 53 unit/contract tests and 8 Playwright tests pass.
 - Public site:
   - metadata passes for 164 public pages;
@@ -44,8 +44,10 @@ The read-only production audit returned database integrity `ok` for both product
 
 ### Helper lifecycle
 
-- 4 current guilds, 2 first-value guilds, 2 active guilds, and no completed module configuration yet. Measurement starts on 2026-08-29.
-- Setup is recorded only after a successful `/setup` or the first valid module configuration; no setup is fabricated from installation.
+- 4 current guilds, no completed module configuration, and no valid first-value guilds yet. Measurement starts on 2026-08-29.
+- Two pre-v2 interactions had previously been counted as first value despite having no setup. They remain in the raw v1 aggregates for auditability but are excluded from every current funnel, activity, activation, and retention result.
+- Setup is recorded only after `/setup` has saved at least one module or after the dashboard publishes an enabled, valid module configuration; no setup is fabricated from installation or from disabling a feature.
+- First value and daily activity require a valid setup first. Informational/onboarding commands such as `/help`, `/status`, `/permissions`, `/modules`, and `/setup` do not count as value. A post-setup first value replaces any invalid pre-v2 lifecycle timestamp and starts a new retention clock.
 - The lifecycle tests prove one-time setup/first-value events, daily activity, re-entry handling, durable anonymous W7/W30 outcomes, migration idempotency, and removal of departed guild identities after 30 days.
 - The private Helper growth route rejects a mismatched `product=tts` request and returns the same aggregate-only contract as TTS without guild or user IDs.
 - Helper applies the same sanitized Top.gg health contract. Its state is `unconfigured` because no Helper Top.gg project/token is configured yet; this is not reported as a successful sync.
@@ -71,7 +73,7 @@ The read-only production audit returned database integrity `ok` for both product
 - Secure TTS and Helper OAuth entry points use signed state, server-side callbacks, PKCE where applicable, replay protection, and limited permissions without `Administrator`.
 - The TTS callback now lands on the deployed `/dashboard/` result surface. Production browser checks prove the installed and cancelled states, the three-step server → `/setup` → first-audio guide, and the working retry path. The legacy `/dashboard.html?add=1` route immediately reaches Discord through the server-side start endpoint; it no longer waits for a dashboard session or constructs OAuth state in the browser.
 - The final TTS deploy used the exact CI-built immutable image, verified its checksum, created and verified an online SQLite backup, and passed rollback-aware production health checks. A storage preflight failure was resolved by removing only inactive, reinstallable editor caches; databases, models, rollback data, and the live container were preserved.
-- The final Helper deploy verified the GitHub release digest `sha256:3a7dd40b41f0e177537e19de9fdd9a91c255890d89292336e9b6a47efce95e7d`, created a restorable SQLite backup with integrity `ok`, switched the release symlink atomically, and confirmed API and gateway readiness on the exact release.
+- The final Helper deploy verified the GitHub release digest `sha256:d0ddf6f5fef88c44b25bbeb99c8a59dbd29f1fec63de2614beb54c02e5192dd8`, created the restorable SQLite backup `vozen-helper-15eb00b9b03a78b771c864c351e7146bde1e8850.db` (`sha256:bcb847226f5a7cb90e0d38f6e8f3dea213e452ed7e7fb2cd7c86c93dad4a4684`) with source and isolated-restore integrity `ok`, switched the release symlink atomically, and confirmed both public health routes plus a single healthy gateway process on the exact release.
 
 ## External gates still requiring an account action
 
