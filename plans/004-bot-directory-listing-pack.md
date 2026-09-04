@@ -8,9 +8,9 @@ Use this copy for the Discord App Directory and independent bot directories. It 
 - Privacy policy: `https://vozen.org/privacy.html`
 - Terms of service: `https://vozen.org/terms.html`
 - Support server: `https://discord.gg/4kYw2WUbNN`
-- Commands: `https://vozen.org/commands.html`
+- Commands: `https://vozen.org/commands/`
 - Documentation: `https://vozen.org/docs/`
-- Service status: `https://vozen.org/status/`
+- Service status: `https://vozen.org/status.html`
 
 ## Vozen TTS
 
