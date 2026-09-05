@@ -2786,7 +2786,7 @@
       "taskGroup": "alerts",
       "audience": "creators",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Limited availability"
     },
     {
       "adapter": "youtube_data_api_v3_adapter_v1",
@@ -2868,7 +2868,7 @@
       "taskGroup": "alerts",
       "audience": "creators",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Limited availability"
     },
     {
       "adapter": "rank_card_adapter_v2",
@@ -4034,7 +4034,7 @@
       "taskGroup": "web3",
       "audience": "advanced",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Limited availability"
     },
     {
       "adapter": "siwe_read_only_role_gate_v1",
@@ -4145,6 +4145,13 @@
   "product": "vozen-helper",
   "schemaVersion": 1,
   "sourceCommit": "4f0dae6cd253ef8677558e5f821b6e114cef8969",
+  "statusCounts": {
+    "operational": 39,
+    "beta": 3,
+    "blocked": 5,
+    "planned": 0,
+    "degraded": 0
+  },
   "byKey": {
     "community.achievements": {
       "adapter": "achievements_adapter_v2",
@@ -6932,7 +6939,7 @@
       "taskGroup": "alerts",
       "audience": "creators",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Limited availability"
     },
     "social.youtube": {
       "adapter": "youtube_data_api_v3_adapter_v1",
@@ -7014,7 +7021,7 @@
       "taskGroup": "alerts",
       "audience": "creators",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Limited availability"
     },
     "studio.rank_card": {
       "adapter": "rank_card_adapter_v2",
@@ -8180,7 +8187,7 @@
       "taskGroup": "web3",
       "audience": "advanced",
       "available": true,
-      "statusLabel": "Beta"
+      "statusLabel": "Limited availability"
     },
     "web3.gating": {
       "adapter": "siwe_read_only_role_gate_v1",
@@ -11002,7 +11009,7 @@
           "taskGroup": "alerts",
           "audience": "creators",
           "available": true,
-          "statusLabel": "Beta"
+          "statusLabel": "Limited availability"
         },
         {
           "adapter": "youtube_data_api_v3_adapter_v1",
@@ -11084,7 +11091,7 @@
           "taskGroup": "alerts",
           "audience": "creators",
           "available": true,
-          "statusLabel": "Beta"
+          "statusLabel": "Limited availability"
         },
         {
           "adapter": "bounded_search_adapter_v1",
@@ -11407,7 +11414,7 @@
           "taskGroup": "web3",
           "audience": "advanced",
           "available": true,
-          "statusLabel": "Beta"
+          "statusLabel": "Limited availability"
         },
         {
           "adapter": "siwe_read_only_role_gate_v1",

@@ -50,4 +50,23 @@ if (credentialPatterns.some(pattern => pattern.test(searchIndex))) {
   throw new Error('Credential-like value found in search index');
 }
 
+const featureStatusPage = fs.readFileSync(path.join(root, 'site/docs/helper/status/features/index.html'), 'utf8');
+const statusCounts = manifest.features.reduce((counts, feature) => {
+  const maturity = feature.maturity ?? 'planned';
+  counts[maturity] = (counts[maturity] ?? 0) + 1;
+  return counts;
+}, { operational: 0, beta: 0, blocked: 0 });
+for (const [label, count] of [
+  ['Available', statusCounts.operational],
+  ['Limited availability', statusCounts.beta],
+  ['Unavailable', statusCounts.blocked],
+]) {
+  if (!featureStatusPage.includes(`${label} ${count}`)) {
+    throw new Error(`Feature status summary has an incorrect ${label.toLowerCase()} count`);
+  }
+}
+if (/\bBeta\b/.test(featureStatusPage)) {
+  throw new Error('Feature status page must not present Helper as a beta');
+}
+
 console.log(`Documentation contract passed for ${manifest.features.length} features`);

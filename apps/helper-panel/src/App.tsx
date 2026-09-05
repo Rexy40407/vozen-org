@@ -4235,7 +4235,7 @@ function FeatureCatalogue({
     {} as Record<string, number>,
   );
   const operationalCount = maturityCounts.operational ?? 0;
-  const betaCount = maturityCounts.beta ?? 0;
+  const limitedAvailabilityCount = maturityCounts.beta ?? 0;
   const requirementCount = maturityCounts.blocked ?? 0;
   // Every adapter-backed topic has a real configuration page, including
   // integrations that are blocked until credentials or an approval exist.
@@ -4277,7 +4277,7 @@ function FeatureCatalogue({
           <b>{operationalCount}</b> {helperT('helper.operational', 'operational')}
         </span>
         <span className="summary-item summary-beta">
-          <b>{betaCount}</b> {helperT('helper.inBeta', 'in beta')}
+          <b>{limitedAvailabilityCount}</b> {helperT('helper.limitedAvailability', 'limited availability')}
         </span>
         {requirementCount > 0 && (
           <span className="summary-item summary-requirements">
@@ -4325,7 +4325,7 @@ function FeatureCatalogue({
                 ? helperT('helper.active', 'Active')
                 : helperT('helper.available', 'Available')
               : maturity === 'beta'
-                ? helperT('helper.beta', 'Beta')
+                ? helperT('helper.limitedAvailability', 'Limited availability')
                 : maturity === 'blocked'
                   ? helperT('helper.blocked', 'Blocked')
                   : maturity === 'degraded'

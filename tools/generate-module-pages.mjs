@@ -59,12 +59,21 @@ const features = manifest.features.map((raw) => {
     audience: overlay.audience || 'server-managers',
     configurable: blocked ? false : Boolean(raw.configurable),
     available: !blocked,
-    statusLabel: blocked ? 'Unavailable' : raw.maturity === 'beta' ? 'Beta' : 'Available',
+    // The product is publicly available. A module that still depends on an
+    // external integration can be honestly described as limited without
+    // presenting the whole product (or an individual module) as a beta.
+    statusLabel: blocked ? 'Unavailable' : raw.maturity === 'beta' ? 'Limited availability' : 'Available',
   };
 });
+const statusCounts = features.reduce((counts, feature) => {
+  const maturity = feature.maturity ?? 'planned';
+  counts[maturity] = (counts[maturity] ?? 0) + 1;
+  return counts;
+}, { operational: 0, beta: 0, blocked: 0, planned: 0, degraded: 0 });
 const featureData = {
   ...manifest,
   features,
+  statusCounts,
   byKey: Object.fromEntries(features.map(feature => [feature.key, feature])),
   tasks: Object.entries(taskLabels).map(([key, label]) => ({
     key,
