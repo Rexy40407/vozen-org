@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = relative => readFile(path.join(root, relative), 'utf8');
 const marker = 'data-vozen-public-analytics="true"';
-const configScript = 'analytics-config.js?v=cf-web-analytics-v1';
-const loaderScript = 'web-analytics-v1.js?v=cf-web-analytics-v1';
+const configScript = /analytics-config\.js\?v=[a-f0-9]{12}/;
+const loaderScript = /web-analytics-v1\.js\?v=[a-f0-9]{12}/;
 const publicPropertyId = '81b57bca105c44d8bc2a07e74b1d7801';
 
 const directPublicPages = [
@@ -31,8 +31,8 @@ const directPublicPages = [
 for (const relative of directPublicPages) {
   const page = await read(relative);
   assert.equal(page.includes(marker), true, `${relative} must opt into public analytics`);
-  assert.equal(page.includes(configScript), true, `${relative} must load the beacon config`);
-  assert.equal(page.includes(loaderScript), true, `${relative} must load the beacon`);
+  assert.equal(configScript.test(page), true, `${relative} must load the versioned beacon config`);
+  assert.equal(loaderScript.test(page), true, `${relative} must load the versioned beacon`);
 }
 
 for (const relative of [
@@ -43,8 +43,8 @@ for (const relative of [
 ]) {
   const page = await read(relative);
   assert.equal(page.includes(marker), false, `${relative} must stay outside analytics`);
-  assert.equal(page.includes(configScript), false, `${relative} must not load analytics config`);
-  assert.equal(page.includes(loaderScript), false, `${relative} must not load analytics`);
+  assert.equal(configScript.test(page), false, `${relative} must not load analytics config`);
+  assert.equal(loaderScript.test(page), false, `${relative} must not load analytics`);
 }
 
 const config = await read('site/js/analytics-config.js');

@@ -3,11 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "docs:build": "node tools/generate-module-pages.mjs && eleventy --config=.eleventy.cjs && node tools/build-docs-search.mjs && node tools/build-tts-docs-data.mjs && node tools/enrich-site-metadata.mjs && node tools/generate-site-index.mjs && node tools/build-marketing-i18n.mjs && node tools/build-critical-font.mjs && node tools/build-public-css.mjs && node tools/build-localized-pages.mjs",
+    "docs:build": "node tools/generate-module-pages.mjs && eleventy --config=.eleventy.cjs && node tools/build-docs-search.mjs && node tools/build-tts-docs-data.mjs && node tools/enrich-site-metadata.mjs && node tools/generate-site-index.mjs && node tools/build-marketing-i18n.mjs && node tools/build-critical-font.mjs && node tools/build-public-css.mjs && node tools/version-public-assets.mjs && node tools/build-localized-pages.mjs && node tools/version-public-assets.mjs",
     "docs:test": "node tools/docs-test.mjs",
     "docs:links": "node tools/docs-links.mjs",
     "docs:a11y": "node tools/docs-a11y.mjs",
-    "site:check": "node tools/site-meta-check.mjs && node tools/web-analytics-check.mjs && node tools/build-marketing-i18n.mjs --check && node tools/public-i18n-check.mjs && node tools/build-tts-docs-data.mjs --check && node tools/build-critical-font.mjs --check && node tools/build-public-css.mjs --check && node tools/build-localized-pages.mjs --check && node tools/localized-pages-check.mjs && node tools/asset-budget-check.mjs && node tools/csp-check.mjs",
+    "site:check": "node tools/site-meta-check.mjs && node tools/web-analytics-check.mjs && node tools/build-marketing-i18n.mjs --check && node tools/public-i18n-check.mjs && node tools/build-tts-docs-data.mjs --check && node tools/build-critical-font.mjs --check && node tools/build-public-css.mjs --check && node tools/version-public-assets.mjs --check && node tools/build-localized-pages.mjs --check && node tools/localized-pages-check.mjs && node tools/asset-budget-check.mjs && node tools/csp-check.mjs",
     "helper-tracker:check": "node tools/helper-tracker-check.mjs",
     "helper-panel:redirect-check": "node tools/helper-panel-redirect-check.mjs",
     "helper-panel:vozen-session-check": "node tools/helper-panel-vozen-session-check.mjs",
@@ -19,6 +19,7 @@
     "build:i18n:marketing": "node tools/build-marketing-i18n.mjs",
     "build:font": "node tools/build-critical-font.mjs",
     "build:css": "node tools/build-public-css.mjs",
+    "version:assets": "node tools/version-public-assets.mjs",
     "build:localized": "node tools/build-localized-pages.mjs",
     "build": "npm run docs:build"
   },
