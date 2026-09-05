@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  var allowedSources = new Set(["home", "tts-hero", "tts-pricing", "commands", "topgg"]);
+  var allowedSources = new Set(["home", "tts-hero", "tts-pricing", "commands", "topgg", "discordbotlist"]);
   var endpoint = String((window.VOZEN_INSTALL || {}).ttsStartEndpoint || "").trim();
   var trustedEndpoint = /^https:\/\/api\.vozen\.org\/api\/install\/tts\/start$/.test(endpoint);
 
