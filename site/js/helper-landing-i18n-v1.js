@@ -77,7 +77,14 @@
     ["helper.landing.configureMonitor", "helper.landing.configureMonitorText"],
   ];
 
+  let appliedLocale;
+  let appliedCatalogue;
   function apply() {
+    const locale = currentLocale();
+    const catalogue = window.VOZEN_I18N?.[locale];
+    // Both catalogue readiness and main navigation announce the initial locale.
+    // Do not rewrite the entire static story twice for that same catalogue.
+    if (!catalogue || (locale === appliedLocale && catalogue === appliedCatalogue)) return;
     document.documentElement.lang = htmlLocale(currentLocale());
     document.documentElement.dir = currentLocale() === "ar" ? "rtl" : "ltr";
     document.title = text("helper.landing.documentTitle", "Vozen Helper — Available now");
@@ -207,6 +214,8 @@
       const key = href.includes("privacy") ? "foot.privacy" : "foot.terms";
       link.textContent = text(key, link.textContent);
     });
+    appliedLocale = locale;
+    appliedCatalogue = catalogue;
   }
 
   window.addEventListener("vozen:i18nready", apply);

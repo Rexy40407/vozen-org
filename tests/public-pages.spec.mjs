@@ -3,6 +3,20 @@ import { test, expect } from '@playwright/test';
 const entryPages = ['/', '/tts/', '/helper/'];
 const widths = [320, 375, 768, 1024, 1440];
 
+test('Helper does not rewrite translated content for a duplicate locale event', async ({ page }) => {
+  await page.goto('/helper/', { waitUntil: 'networkidle' });
+  const mutations = await page.evaluate(() => {
+    const list = document.querySelector('.helper-feature-list');
+    const observer = new MutationObserver(() => {});
+    observer.observe(list, { childList: true, subtree: true, characterData: true });
+    window.dispatchEvent(new CustomEvent('vozen:languagechange', { detail: { language: 'en' } }));
+    const count = observer.takeRecords().length;
+    observer.disconnect();
+    return count;
+  });
+  expect(mutations).toBe(0);
+});
+
 test('audio demo reports failure and lets the visitor retry', async ({ page }) => {
   await page.addInitScript(() => {
     let attempts = 0;
