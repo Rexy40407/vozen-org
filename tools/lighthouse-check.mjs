@@ -3,7 +3,7 @@ import { launch } from 'chrome-launcher';
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import { createSiteServer } from './serve-site.mjs';
+import { createSiteServer, closeSiteServer } from './serve-site.mjs';
 
 const routeArgument = process.argv.find((value) => value.startsWith('--route='));
 const requestedRoute = routeArgument?.slice('--route='.length);
@@ -86,7 +86,7 @@ try {
     }
   }
 } finally {
-  await new Promise((resolve) => server.close(resolve));
+  await closeSiteServer(server);
 }
 
 if (failures.length) {

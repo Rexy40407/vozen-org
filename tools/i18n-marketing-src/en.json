@@ -1,6 +1,8 @@
 {
   "locale": "en",
   "messages": {
+    "hear.loading": "Loading audio…",
+    "hear.error": "Audio could not play. Try again using the play button.",
     "nav.features": "Features",
     "nav.games": "Games",
     "nav.commands": "Commands",

@@ -1,6 +1,8 @@
 {
   "locale": "fr",
   "messages": {
+    "hear.loading": "Chargement audio…",
+    "hear.error": "Impossible de lire l’audio. Réessaie avec le bouton de lecture.",
     "nav.features": "Fonctionnalités",
     "nav.games": "Jeux",
     "nav.commands": "Commandes",

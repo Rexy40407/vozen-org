@@ -1,6 +1,8 @@
 {
   "locale": "tr",
   "messages": {
+    "hear.loading": "Ses yükleniyor…",
+    "hear.error": "Ses çalınamadı. Oynat düğmesiyle tekrar dene.",
     "nav.features": "Özellikler",
     "nav.games": "Oyunlar",
     "nav.commands": "Komutlar",

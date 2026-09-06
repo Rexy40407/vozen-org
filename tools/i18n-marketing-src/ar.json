@@ -1,6 +1,8 @@
 {
   "locale": "ar",
   "messages": {
+    "hear.loading": "جارٍ تحميل الصوت…",
+    "hear.error": "تعذّر تشغيل الصوت. حاول مجددًا باستخدام زر التشغيل.",
     "nav.features": "المزايا",
     "nav.games": "الألعاب",
     "nav.commands": "الأوامر",

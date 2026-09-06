@@ -1,6 +1,8 @@
 {
   "locale": "zh",
   "messages": {
+    "hear.loading": "正在加载音频…",
+    "hear.error": "无法播放音频。请点击播放按钮重试。",
     "nav.features": "功能",
     "nav.games": "遊戲",
     "nav.commands": "指令",

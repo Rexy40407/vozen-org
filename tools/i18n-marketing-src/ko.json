@@ -1,6 +1,8 @@
 {
   "locale": "ko",
   "messages": {
+    "hear.loading": "오디오 로딩 중…",
+    "hear.error": "오디오를 재생하지 못했습니다. 재생 버튼으로 다시 시도하세요.",
     "nav.features": "기능",
     "nav.games": "게임",
     "nav.commands": "명령어",

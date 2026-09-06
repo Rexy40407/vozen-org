@@ -731,6 +731,7 @@ button.is-tap, a.btn.is-tap, [role="button"].is-tap {
 .hear__stage.is-playing .hear__eq { opacity: 1; }
 .hear__stage.is-playing .hear__eq i { animation-play-state: running; }
 .hear__phrase { color: var(--text-1); font-size: 14.5px; line-height: 1.5; }
+.hear__status { min-height: 3em; margin: 8px 0 0; color: var(--text-1); font-size: 14px; line-height: 1.5; }
 .hear__chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
 .hear__chip {
   display: inline-flex; align-items: center; gap: 7px; padding: 9px 15px; border-radius: 999px; cursor: pointer;

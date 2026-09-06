@@ -3,6 +3,56 @@ import { test, expect } from '@playwright/test';
 const entryPages = ['/', '/tts/', '/helper/'];
 const widths = [320, 375, 768, 1024, 1440];
 
+test('audio demo reports failure and lets the visitor retry', async ({ page }) => {
+  await page.addInitScript(() => {
+    let attempts = 0;
+    HTMLMediaElement.prototype.play = function () {
+      if (++attempts === 1) return Promise.reject(new DOMException('Unavailable', 'NotSupportedError'));
+      this.dispatchEvent(new Event('playing'));
+      return Promise.resolve();
+    };
+  });
+  await page.goto('/tts/', { waitUntil: 'networkidle' });
+  await page.locator('#hearBtn').click();
+  await expect(page.locator('#hearStatus')).toContainText('Try again');
+  await expect(page.locator('#hearBtn')).toHaveAttribute('aria-pressed', 'false');
+  await page.locator('#hearBtn').click();
+  await expect(page.locator('#hearBtn')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#hearStatus')).toHaveText('');
+});
+
+test('audio demo ignores stale failures when switching samples', async ({ page }) => {
+  await page.addInitScript(() => {
+    HTMLMediaElement.prototype.play = function () {
+      if (this.src.endsWith('/en.mp3')) {
+        return new Promise((resolve, reject) => { window.rejectOldSample = reject; });
+      }
+      this.dispatchEvent(new Event('playing'));
+      return Promise.resolve();
+    };
+  });
+  await page.goto('/tts/', { waitUntil: 'networkidle' });
+  await page.locator('#hearBtn').click();
+  await expect(page.locator('#hearStatus')).toContainText('Loading');
+  await page.locator('[data-sample="pt"]').click();
+  await page.evaluate(() => window.rejectOldSample(new DOMException('Old request failed', 'NotSupportedError')));
+  await expect(page.locator('#hearBtn')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#hearStatus')).toHaveText('');
+});
+
+test('audio demo retries the real media request after a temporary server failure', async ({ page }) => {
+  let requests = 0;
+  await page.route('**/assets/samples/en.mp3', (route) => ++requests === 1
+    ? route.fulfill({ status: 503, body: 'Temporarily unavailable' })
+    : route.continue());
+  await page.goto('/tts/', { waitUntil: 'networkidle' });
+  await page.locator('#hearBtn').click();
+  await expect(page.locator('#hearStatus')).toContainText('Try again');
+  await page.locator('#hearBtn').click();
+  await expect(page.locator('#hearBtn')).toHaveAttribute('aria-pressed', 'true');
+  expect(requests).toBe(2);
+});
+
 test.beforeEach(async ({ page }) => {
   // Keep browser QA deterministic when CI or a sandbox blocks the optional
   // third-party analytics script. All first-party resources remain real.

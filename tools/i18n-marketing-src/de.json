@@ -1,6 +1,8 @@
 {
   "locale": "de",
   "messages": {
+    "hear.loading": "Audio wird geladen…",
+    "hear.error": "Audio konnte nicht abgespielt werden. Versuche es erneut mit der Wiedergabetaste.",
     "nav.features": "Funktionen",
     "nav.games": "Spiele",
     "nav.commands": "Befehle",

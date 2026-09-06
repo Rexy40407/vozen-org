@@ -2486,6 +2486,48 @@
     const ENGINE_NAME = { google: "Google", piper: "Piper", kokoro: "Kokoro" };
     let current = "en";
     let engine = "google";
+    let request = 0;
+    let loading = false;
+    const status = document.createElement("p");
+    status.id = "hearStatus";
+    status.className = "hear__status";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    stage.querySelector(".hear__meta").append(status);
+    btn.setAttribute("aria-describedby", status.id);
+    const feedback = (key) => {
+      if (key) status.dataset.i18n = key;
+      else delete status.dataset.i18n;
+      const fallback = { "hear.loading": "Loading audio…", "hear.error": "Audio could not play. Try again using the play button." };
+      status.textContent = key ? (DICT[lang]?.[key] || DICT.en?.[key] || fallback[key]) : "";
+    };
+    const off = () => {
+      request++;
+      loading = false;
+      stage.classList.remove("is-playing");
+      btn.setAttribute("aria-pressed", "false");
+      btn.setAttribute("aria-busy", "false");
+      feedback(null);
+    };
+    const fail = () => {
+      off();
+      feedback("hear.error");
+    };
+    const play = async () => {
+      // A failed media element keeps its error until explicitly reloaded.
+      if (audio.error) audio.load();
+      const attempt = ++request;
+      loading = true;
+      btn.setAttribute("aria-busy", "true");
+      feedback("hear.loading");
+      try {
+        await audio.play();
+      } catch (error) {
+        if (attempt !== request) return;
+        if (error.name === "AbortError") off();
+        else fail();
+      }
+    };
 
     const ENGINE_SUFFIX = { google: "", piper: "-piper", kokoro: "-kokoro" };
     const srcFor = (code, eng) => "assets/samples/" + code + (ENGINE_SUFFIX[eng] || "") + ".mp3";
@@ -2501,8 +2543,9 @@
       phraseEl.textContent = s.phrase;
       engTag.textContent = ENGINE_NAME[eng];
       $$(".hear__chip").forEach((c) => c.classList.toggle("is-active", c.dataset.sample === code));
+      off();
       audio.src = srcFor(code, eng); // preload="none" => so descarrega ao dar play
-      if (autoplay) audio.play().catch(() => {});
+      if (autoplay) void play();
     };
 
     // Marca como indisponiveis os chips das linguas sem o motor escolhido.
@@ -2519,27 +2562,32 @@
         engine = b.dataset.engine;
         $$(".hear__eng").forEach((x) => x.classList.toggle("is-active", x === b));
         refreshChips();
-        const playing = !audio.paused;
+        const playing = loading || !audio.paused;
         select(SAMPLES[current].engines.includes(engine) ? current : "en", playing);
       }),
     );
 
     // Toca/pausa. is-playing (icone + equalizador) segue os eventos do <audio>, por
     // isso trocar de lingua/motor a meio nunca deixa dois a tocar.
-    btn.addEventListener("click", () => (audio.paused ? audio.play().catch(() => {}) : audio.pause()));
+    btn.addEventListener("click", () => {
+      if (loading || !audio.paused) {
+        audio.pause();
+        off();
+      } else void play();
+    });
     $$(".hear__chip").forEach((chip) =>
       chip.addEventListener("click", () => select(chip.dataset.sample, true)),
     );
-    audio.addEventListener("play", () => {
+    audio.addEventListener("playing", () => {
+      loading = false;
+      btn.setAttribute("aria-busy", "false");
+      feedback(null);
       stage.classList.add("is-playing");
       btn.setAttribute("aria-pressed", "true");
     });
-    const off = () => {
-      stage.classList.remove("is-playing");
-      btn.setAttribute("aria-pressed", "false");
-    };
-    audio.addEventListener("pause", off);
+    audio.addEventListener("pause", () => { if (audio.paused && !audio.error) off(); });
     audio.addEventListener("ended", off);
+    audio.addEventListener("error", fail);
 
     refreshChips();
     select("en", false); // estado inicial: EN + Google, sem tocar

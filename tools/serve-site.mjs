@@ -60,11 +60,20 @@ export function createSiteServer(port = 0) {
   });
 }
 
+export function closeSiteServer(server) {
+  return new Promise((resolve, reject) => {
+    server.close((error) => error ? reject(error) : resolve());
+    // Browser preconnections and unfinished requests can outlive a Lighthouse
+    // run. This server is temporary; none of its sockets need to survive it.
+    server.closeAllConnections();
+  });
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const port = Number(process.argv[2] || process.env.PREVIEW_PORT || 4177);
   const { server, origin } = await createSiteServer(port);
   console.log(`Serving site at ${origin}`);
   for (const signal of ['SIGINT', 'SIGTERM']) {
-    process.on(signal, () => server.close(() => process.exit(0)));
+    process.once(signal, () => { void closeSiteServer(server); });
   }
 }

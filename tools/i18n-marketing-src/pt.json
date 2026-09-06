@@ -1,6 +1,8 @@
 {
   "locale": "pt",
   "messages": {
+    "hear.loading": "A carregar áudio…",
+    "hear.error": "Não foi possível reproduzir o áudio. Tenta novamente no botão de reprodução.",
     "nav.features": "Funcionalidades",
     "nav.games": "Jogos",
     "nav.commands": "Comandos",
