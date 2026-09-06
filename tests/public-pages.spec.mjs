@@ -3,6 +3,23 @@ import { test, expect } from '@playwright/test';
 const entryPages = ['/', '/tts/', '/helper/'];
 const widths = [320, 375, 768, 1024, 1440];
 
+test('selected billing controls meet AA contrast on both product pages', async ({ page }) => {
+  for (const path of ['/tts/', '/helper/']) {
+    await page.goto(path, { waitUntil: 'networkidle' });
+    const contrast = await page.locator('.bill-toggle__btn.is-active').first().evaluate((button) => {
+      const luminance = (color) => color.match(/[\d.]+/g).slice(0, 3).map(Number).map(value => {
+        const channel = value / 255;
+        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+      }).reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
+      const style = getComputedStyle(button);
+      const foreground = luminance(style.color);
+      const background = luminance(style.backgroundColor);
+      return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+    });
+    expect(contrast, path).toBeGreaterThanOrEqual(4.5);
+  }
+});
+
 test('Helper does not rewrite translated content for a duplicate locale event', async ({ page }) => {
   await page.goto('/helper/', { waitUntil: 'networkidle' });
   const mutations = await page.evaluate(() => {
