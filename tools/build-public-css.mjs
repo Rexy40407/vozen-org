@@ -102,6 +102,7 @@ try {
         /^\.helper-faq/,
         /^\.faq(?:\b|__)/,
         /^\.qa(?:\b|__)/,
+        /^\.reveal(?:\b|\.)/,
       ],
       rebase: false,
       ignore: { atrule: ['@font-face'] },
@@ -144,6 +145,9 @@ try {
           /^\.helper-/,
           /^\.tts-/,
           /^\.hear(?:\b|__)/,
+          // Runtime scroll states do not exist in the JS-disabled extraction
+          // document. Preserve their rules or sections stay permanently hidden.
+          /^\.reveal(?:\b|\.)/,
           /^\.faq(?:\b|__)/,
           /^\.qa(?:\b|__)/,
           /^\.tabs(?:\b|__)/,

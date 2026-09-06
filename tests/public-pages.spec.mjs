@@ -3,6 +3,17 @@ import { test, expect } from '@playwright/test';
 const entryPages = ['/', '/tts/', '/helper/'];
 const widths = [320, 375, 768, 1024, 1440];
 
+test('TTS scroll-reveal sections actually become opaque, not merely clickable', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/tts/', { waitUntil: 'networkidle' });
+  for (const section of await page.locator('.reveal:not([data-r])').all()) {
+    if (!await section.isVisible()) continue;
+    await section.scrollIntoViewIfNeeded();
+    await expect(section).toHaveCSS('opacity', '1');
+  }
+});
+
 test('selected billing controls meet AA contrast on both product pages', async ({ page }) => {
   for (const path of ['/tts/', '/helper/']) {
     await page.goto(path, { waitUntil: 'networkidle' });
