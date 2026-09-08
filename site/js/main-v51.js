@@ -1388,13 +1388,15 @@
 
   function avatarMarkup(u, cls, size) {
     const initial = esc((u.username || "?").slice(0, 1).toUpperCase());
+    // Marketing catalogues intentionally omit account-page copy.
+    const avatarLabel = t("account.discordAvatar");
+    const alt = esc((avatarLabel === "account.discordAvatar" ? "Discord avatar of {name}" : avatarLabel)
+      .replace("{name}", u.username || "Discord user"));
     let avatar;
     if (u.id && u.avatar) {
-      const ext = String(u.avatar).startsWith("a_") ? "gif" : "png";
-      const alt = esc(
-        t("account.discordAvatar").replace("{name}", u.username || t("account.defaultUser")),
-      );
-      avatar = `<img class="${cls}" src="https://cdn.discordapp.com/avatars/${esc(u.id)}/${esc(u.avatar)}.${ext}?size=${size}" alt="${alt}" width="${size}" height="${size}" referrerpolicy="no-referrer">`;
+      // WebP supports animated avatars regardless of the original upload format.
+      const cdnSize = Math.max(16, Math.min(4096, 2 ** Math.ceil(Math.log2(size))));
+      avatar = `<img class="${cls}" data-avatar-initial="${initial}" src="https://cdn.discordapp.com/avatars/${esc(u.id)}/${esc(u.avatar)}.webp?size=${cdnSize}" alt="${alt}" width="${size}" height="${size}" referrerpolicy="no-referrer">`;
     } else {
       avatar = `<span class="${cls} ${cls}--none">${initial}</span>`;
     }
@@ -1402,6 +1404,22 @@
     if (!decoration) return avatar;
     return `<span class="discord-avatar ${cls}-wrap">${avatar}<img class="discord-avatar__decoration" src="https://cdn.discordapp.com/avatar-decoration-presets/${decoration}.png?size=256" alt="" aria-hidden="true" width="256" height="256" referrerpolicy="no-referrer"></span>`;
   }
+
+  // A CDN failure must not leave broken alt text or an empty account portrait.
+  document.addEventListener("error", (event) => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement)) return;
+    if (image.classList.contains("discord-avatar__decoration")) {
+      image.remove();
+    } else if (image.hasAttribute("data-avatar-initial")) {
+      const fallback = document.createElement("span");
+      fallback.className = `${image.className} ${image.className}--none`;
+      fallback.textContent = image.dataset.avatarInitial;
+      fallback.setAttribute("role", "img");
+      fallback.setAttribute("aria-label", image.alt);
+      image.replaceWith(fallback);
+    }
+  }, true);
 
   function statusRow(label, active, detail) {
     const state = active ? "is-on" : "is-off";
@@ -1431,7 +1449,8 @@
     }
     btn.classList.add("nav__login--account");
     const username = u.username || t("account.defaultUser");
-    btn.setAttribute("aria-label", t("account.discordAccount").replace("{name}", username));
+    const accountLabel = t("account.discordAccount");
+    btn.setAttribute("aria-label", (accountLabel === "account.discordAccount" ? "Open {name}'s Vozen account" : accountLabel).replace("{name}", username));
     btn.innerHTML = `${avatarMarkup(u, "nav__login-av", 24)}<span>${esc(username)}</span>`;
   }
 

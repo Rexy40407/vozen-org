@@ -194,7 +194,7 @@
       return `<span class="docs-ecosystem-nav__account-mark docs-ecosystem-nav__account-mark--fallback" aria-hidden="true">${initial}</span>`;
     }
 
-    const extension = avatar.startsWith("a_") ? "gif" : "png";
+    const extension = "webp";
     const image = `<img class="docs-ecosystem-nav__account-avatar" src="https://cdn.discordapp.com/avatars/${escapeHtml(id)}/${escapeHtml(avatar)}.${extension}?size=96" alt="" aria-hidden="true" width="24" height="24" referrerpolicy="no-referrer">`;
     const decoration = discordDecorationAsset(account);
     if (!decoration) return image;

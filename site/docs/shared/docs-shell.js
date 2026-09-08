@@ -686,7 +686,8 @@
       const breadcrumb = document.createElement('nav');
       breadcrumb.className = 'docs-breadcrumbs';
       breadcrumb.setAttribute('aria-label', docsText('docs.breadcrumb', 'Breadcrumb'));
-      breadcrumb.innerHTML = '<a href="' + esc(new URL('index.html', config.root).href) + '">' + esc(config.label) + ' docs</a><span aria-hidden="true">/</span><span>' + esc(h1.textContent.trim()) + '</span>';
+      const breadcrumbLabel = config.label.toLowerCase() === 'docs' ? config.label : config.label + ' docs';
+      breadcrumb.innerHTML = '<a href="' + esc(new URL('index.html', config.root).href) + '">' + esc(breadcrumbLabel) + '</a><span aria-hidden="true">/</span><span>' + esc(h1.textContent.trim()) + '</span>';
       main.insertBefore(breadcrumb, main.firstChild);
     }
     const headings = [...main.querySelectorAll('h2')].filter((node) => node.textContent.trim());

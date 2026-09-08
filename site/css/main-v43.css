@@ -1129,7 +1129,7 @@ button.is-tap, a.btn.is-tap, [role="button"].is-tap {
   width: 134%;
   height: 134%;
 }
-.nav__login--account span:last-child {
+.nav__login--account > span:last-child:not(.discord-avatar) {
   max-width: 132px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .btn--ghost {
@@ -1795,10 +1795,10 @@ body.is-modal-open { overflow: hidden; }
   .show { gap: 38px; }
 }
 /* Navbar colapsa antes de os seis links e ações se apertarem. */
-@media (max-width: 1000px) {
+@media (max-width: 1279px) {
   .nav__links { display: none; }
   .nav__links.is-open {
-    display: flex; flex-direction: column; position: absolute; top: var(--nav-h); left: 0; right: 0;
+    display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
     background: rgba(5, 6, 15, 0.97); backdrop-filter: blur(20px); padding: 14px 24px; gap: 0; border-bottom: 1px solid var(--line);
   }
   /* alvos de toque generosos no menu aberto (~44px por link) */
@@ -1821,7 +1821,7 @@ body.is-modal-open { overflow: hidden; }
      traduzido (data-i18n), sem ocupar espaço; filhos absolute saem do fluxo flex, por
      isso o gap não cria espaço fantasma. */
   .nav .nav__login { position: relative; padding: 0; width: 44px; height: 44px; justify-content: center; gap: 0; border-radius: 50%; }
-  .nav .nav__login > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .nav .nav__login > span:not(.discord-avatar):not(.nav__login-av) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .nav .nav__login svg { width: 20px; height: 15px; }
   .nav .nav__login:active { transform: scale(0.96); }
   .nav .nav__burger { width: 44px; height: 44px; align-items: center; justify-content: center; padding: 10px; }

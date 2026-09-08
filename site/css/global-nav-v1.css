@@ -114,6 +114,10 @@
   gap: clamp(18px, 2.2vw, 30px);
 }
 
+.vozen-global-nav .nav__inner { gap: 24px; }
+.vozen-global-nav .brand,
+.vozen-global-nav .nav__links a { white-space: nowrap; }
+
 .vozen-global-nav .nav__actions { gap: 14px; }
 
 .vozen-global-nav .nav__login {
