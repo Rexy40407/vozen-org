@@ -28,6 +28,8 @@ for (const path of ['/', '/tts/', '/helper/', '/account/']) {
       expect(bounds.height).toBeLessThanOrEqual(60);
       expect(bounds.x).toBeGreaterThanOrEqual(0);
       expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
+      const brand = await page.locator('.vozen-global-nav .brand').boundingBox();
+      expect(brand.x).toBeGreaterThanOrEqual(10);
       await expect(page.locator('#navLogin .discord-avatar__decoration')).toHaveCSS('position', 'absolute');
       await expect(avatar).not.toHaveAttribute('alt', /account\./);
       expect(await page.evaluate(() => [...document.fonts].some(font => font.family.replaceAll('"', '') === 'Twemoji Country Flags'))).toBe(true);
