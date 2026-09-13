@@ -229,6 +229,7 @@ export type FeatureSchema = {
   }>;
 };
 export type FeatureDetail = {
+  discordApply?: { applied: boolean; channelId?: string; messageId?: string; code?: string } | null;
   guildId: string;
   key: string;
   enabled: boolean;

@@ -757,6 +757,7 @@ const defaults: Record<string, FeatureConfig> = {
     requiredRole: '',
   },
   'support.tickets': {
+    panelChannel: '',
     categoryId: '',
     staffRole: '',
     transcriptChannel: '',
@@ -1427,6 +1428,7 @@ const spec = (key: string): SectionSpec[] => {
         title: 'Support',
         description: 'Prepare the space for your team to answer members.',
         fields: [
+          { key: 'panelChannel', label: 'Ticket panel channel', kind: 'channel', help: 'The public channel for the Open ticket button. Saving publishes or updates the panel in this channel; private tickets are created in the category below. Existing panels in other channels are kept.' },
           { key: 'categoryId', label: 'Ticket category', kind: 'category' },
           ticketStaffField,
           { key: 'transcriptChannel', label: 'Transcript channel', kind: 'channel' },
@@ -2511,7 +2513,9 @@ function App() {
       setDetailRevision(result.revision ?? detailRevision);
       setStatus('ready');
       setMessage(
-        localPreviewMode
+        'discordApply' in result && result.discordApply?.applied === false
+          ? helperT('helper.ticketPanelFailed', 'Configuration saved, but the ticket panel could not be published. Check the selected channel, the bot permissions and the panel quota. If a panel appeared, do not create another manually; contact support before retrying.')
+          : localPreviewMode
           ? helperT('helper.previewSaved', 'Preview saved in this browser.')
           : helperT('helper.configurationPublished', 'Configuration published to the server.'),
       );
@@ -5686,6 +5690,8 @@ function FieldControl({
         >
           {!multiple && <option value="">{field.key === 'staffRole'
             ? helperT('helper.ticketStaffNone', 'No staff notification — choose a role')
+            : field.key === 'panelChannel'
+              ? helperT('helper.ticketPanelNone', 'Choose the channel for the Open ticket button')
             : helperT('helper.chooseResource', 'Choose a resource')}</option>}
           {resourceOptions.map((option) => {
             const roleOption = isRoleResource ? option : null;
