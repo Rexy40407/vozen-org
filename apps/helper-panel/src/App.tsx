@@ -31,6 +31,7 @@ import {
 } from './api';
 import { docsProviderStatusUrl, docsTroubleshootingUrl, docsUrlForFeature } from './docs';
 import { bundledFeatureSchema } from './feature-contract-fallback';
+import { ticketStaffField, ticketStaffRoleOptions } from './ticket-staff';
 import { createLoadGuard, isAbortError } from './load-lifecycle';
 import { isRoleResourceOptionDisabled, roleResourceLabel } from './role-resource';
 import {
@@ -1427,7 +1428,7 @@ const spec = (key: string): SectionSpec[] => {
         description: 'Prepare the space for your team to answer members.',
         fields: [
           { key: 'categoryId', label: 'Ticket category', kind: 'category' },
-          { key: 'staffRole', label: 'Staff role', kind: 'role' },
+          ticketStaffField,
           { key: 'transcriptChannel', label: 'Transcript channel', kind: 'channel' },
           { key: 'maxOpen', label: 'Open tickets per member', kind: 'number', min: 1, max: 10 },
         ],
@@ -5560,6 +5561,7 @@ function schemaSlug(value: string): string {
 }
 
 function localizedField(field: FieldSpec): FieldSpec {
+  if (field.key === 'staffRole') field = { ...field, ...ticketStaffField };
   const label = helperT(`helper.field.${field.key}.label`, field.label);
   const help = field.help
     ? helperT(`helper.field.${field.key}.help`, field.help)
@@ -5651,7 +5653,9 @@ function FieldControl({
     ? (context?.channels ?? []).filter((option) => option.type === 'category')
     : field.kind === 'channel' || field.kind === 'channels'
       ? (context?.channels ?? []).filter((option) => option.type !== 'category')
-      : (context?.roles ?? []);
+      : field.key === 'staffRole'
+        ? ticketStaffRoleOptions(context?.roles ?? [], context?.guildId)
+        : (context?.roles ?? []);
   const multiple = field.kind === 'channels' || field.kind === 'roles';
   const isRoleResource = field.kind === 'role' || field.kind === 'roles';
   const selectedResourceIds = new Set(
@@ -5680,21 +5684,23 @@ function FieldControl({
           }}
           disabled={!context?.capabilities.channelSelectors && (field.kind === 'channel' || field.kind === 'category' || field.kind === 'channels') || !context?.capabilities.roleSelectors && (field.kind === 'role' || field.kind === 'roles')}
         >
-          {!multiple && <option value="">{helperT('helper.chooseResource', 'Choose a resource')}</option>}
+          {!multiple && <option value="">{field.key === 'staffRole'
+            ? helperT('helper.ticketStaffNone', 'No staff notification — choose a role')
+            : helperT('helper.chooseResource', 'Choose a resource')}</option>}
           {resourceOptions.map((option) => {
-            const roleOption = isRoleResource && 'manageable' in option ? option : null;
+            const roleOption = isRoleResource ? option : null;
             return (
               <option
                 value={option.id}
                 key={option.id}
                 disabled={
                   roleOption
-                    ? isRoleResourceOptionDisabled(roleOption, selectedResourceIds)
+                    ? isRoleResourceOptionDisabled(roleOption, selectedResourceIds, field.key !== 'staffRole')
                     : false
                 }
               >
                 {roleOption
-                  ? roleResourceLabel(roleOption)
+                  ? roleResourceLabel(roleOption, field.key !== 'staffRole')
                   : field.kind === 'category'
                     ? `▾ ${option.name}`
                     : `#${option.name}`}

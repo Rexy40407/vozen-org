@@ -4,13 +4,14 @@ type RoleResourceOption = {
   manageable?: boolean;
 };
 
-export function roleResourceLabel(option: RoleResourceOption): string {
-  return `${option.manageable === false ? '🔒 ' : ''}@${option.name}`;
+export function roleResourceLabel(option: RoleResourceOption, requiresAssignment = true): string {
+  return `${requiresAssignment && option.manageable === false ? '🔒 ' : ''}@${option.name}`;
 }
 
 export function isRoleResourceOptionDisabled(
   option: RoleResourceOption,
   selectedIds: ReadonlySet<string>,
+  requiresAssignment = true,
 ): boolean {
-  return option.manageable === false && !selectedIds.has(option.id);
+  return requiresAssignment && option.manageable === false && !selectedIds.has(option.id);
 }

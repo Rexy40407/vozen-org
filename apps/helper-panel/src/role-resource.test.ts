@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { isRoleResourceOptionDisabled, roleResourceLabel } from './role-resource';
 
 describe('Discord role resource options', () => {
+  it('allows high staff roles referenced for ticket access and pings without assigning them', () => {
+    const staff = { id: 'staff', name: 'Admins', manageable: false };
+    expect(isRoleResourceOptionDisabled(staff, new Set(), false)).toBe(false);
+    expect(roleResourceLabel(staff, false)).toBe('@Admins');
+  });
   it('disables roles the bot cannot assign', () => {
     expect(
       isRoleResourceOptionDisabled(
