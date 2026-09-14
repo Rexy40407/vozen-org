@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
+import { XpCardShortcut } from './xp-card-shortcut';
 import {
   api,
   restoreOAuthReturnHash,
@@ -3109,6 +3110,7 @@ function App() {
               providerHealth={providerHealth}
               saving={status === 'saving'}
               onBack={() => navigate('#/features')}
+              onOpen={navigate}
             />
           ))}
       </main>
@@ -4422,6 +4424,7 @@ function FeatureCatalogue({
 }
 
 function FeatureDetail({
+  onOpen,
   feature,
   schema,
   context,
@@ -4440,6 +4443,7 @@ function FeatureDetail({
   saving,
   onBack,
 }: {
+  onOpen: (path: string) => void;
   feature?: Feature;
   schema: FeatureSchema | null;
   context: GuildContext | null;
@@ -4630,6 +4634,11 @@ function FeatureDetail({
           ))}
         </div>
         <aside className="detail-aside card">
+          <XpCardShortcut
+            featureKey={feature?.key}
+            label={helperT('helper.xpIdentity', 'XP card identity')}
+            onOpen={onOpen}
+          />
           <div>
             <small className="eyebrow">{helperT('helper.beforePublishing', 'BEFORE PUBLISHING')}</small>
             <h3>{helperT('helper.reviewSafely', 'Review safely')}</h3>
