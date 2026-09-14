@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
 import {
   api,
   restoreOAuthReturnHash,
@@ -270,17 +271,8 @@ const demoFeatures: Feature[] = [
   },
   {
     key: 'support.welcome',
-    label: 'Welcome messages',
-    description: 'Welcomes new members with a guided message.',
-    category: 'management',
-    capability: 'core',
-    available: true,
-    enabled: false,
-  },
-  {
-    key: 'support.welcome_channel',
-    label: 'Welcome channel',
-    description: 'Organizes rules, information, and first steps for newcomers.',
+    label: 'Welcome',
+    description: 'Welcome messages, optional orientation buttons, direct messages and automatic roles.',
     category: 'management',
     capability: 'core',
     available: true,
@@ -767,6 +759,11 @@ const defaults: Record<string, FeatureConfig> = {
     panelDescription: 'Open a private ticket and the support team will help you.',
   },
   'support.welcome': {
+    guideEnabled: false,
+    steps: ['rules', 'introductions', 'channels'],
+    rulesChannel: '',
+    introductionsChannel: '',
+    channelsChannel: '',
     channel: '',
     message: 'Welcome {member} to {server}!',
     sendDm: false,
@@ -1457,6 +1454,11 @@ const spec = (key: string): SectionSpec[] => {
         title: 'Welcome message',
         description: 'Welcome members without editing code.',
         fields: [
+          { key: 'guideEnabled', label: 'Add orientation buttons', kind: 'toggle', help: 'Add rules, introductions, channels and help buttons to the same welcome message.' },
+          { key: 'steps', label: 'Guided steps', kind: 'tags', advanced: true, help: 'Choose from rules, introductions, channels and help.' },
+          { key: 'rulesChannel', label: 'Rules channel (optional)', kind: 'channel', advanced: true },
+          { key: 'introductionsChannel', label: 'Introductions channel (optional)', kind: 'channel', advanced: true },
+          { key: 'channelsChannel', label: 'Channels guide (optional)', kind: 'channel', advanced: true },
           { key: 'channel', label: 'Public channel', kind: 'channel' },
           {
             key: 'message',
@@ -1792,7 +1794,7 @@ function parseRoute(hash: string): Route {
   if (value === '/activity') return { page: 'activity' };
   if (value === '/rank-card') return { page: 'rank-card' };
   if (value.startsWith('/config/'))
-    return { page: 'detail', key: decodeURIComponent(value.slice('/config/'.length)) };
+    return { page: 'detail', key: canonicalWelcomeKey(decodeURIComponent(value.slice('/config/'.length))) };
   return { page: 'overview' };
 }
 
@@ -2078,7 +2080,7 @@ function App() {
           ]);
         if (!load.isCurrent()) return;
 
-        setFeatures(nextFeatures.features.map(presentFeature));
+        setFeatures(visibleWelcomeFeatures(nextFeatures.features).map(presentFeature));
         setStats(nextStats);
         setCases(nextCases.cases);
         setAudit(nextAudit.events);
@@ -4230,7 +4232,7 @@ function FeatureCatalogue({
   setSearch: (value: string) => void;
   onOpen: (key: string) => void;
 }) {
-  const uniqueFeatures = Array.from(new Map(features.map((item) => [item.key, item])).values());
+  const uniqueFeatures = Array.from(new Map(visibleWelcomeFeatures(features).map((item) => [item.key, item])).values());
   const maturityCounts = uniqueFeatures.reduce(
     (counts, feature) => {
       const maturity = feature.maturity ?? (feature.available ? 'operational' : 'planned');
