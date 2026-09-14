@@ -339,19 +339,19 @@ textarea:focus-visible {
   max-height: none;
 }
 
-.panel-main .rank-preview {
+.rank-preview {
   min-height: 0;
   aspect-ratio: 1.86 / 1;
   max-height: 390px;
   overflow: hidden;
 }
 
-.panel-main .rank-preview[data-banner='true'] {
+.rank-preview[data-banner='true'] {
   background-image: var(--rank-overlay), var(--rank-banner-fallback);
 }
 
 @supports (background-image: image-set(url("fallback.webp") type("image/webp"))) {
-  .panel-main .rank-preview[data-banner='true'] {
+  .rank-preview[data-banner='true'] {
     background-image: var(--rank-overlay), var(--rank-banner-source);
   }
 }
@@ -360,8 +360,8 @@ textarea:focus-visible {
   display: block;
 }
 
-.panel-main .rank-preview,
-.panel-main .rank-preview * {
+.rank-preview,
+.rank-preview * {
   min-width: 0;
 }
 
