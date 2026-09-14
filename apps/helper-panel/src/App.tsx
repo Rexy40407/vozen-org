@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
-import { XpCardShortcut } from './xp-card-shortcut';
 import {
   api,
   restoreOAuthReturnHash,
@@ -132,7 +131,6 @@ const pages = [
   { id: 'quick-setup', label: 'Quick Setup', icon: '✧', hint: 'Guided setup' },
   { id: 'features', label: 'Features', icon: '✦', hint: 'Configure modules' },
   { id: 'activity', label: 'Activity', icon: '◷', hint: 'Server history' },
-  { id: 'rank-card', label: 'XP card', icon: '▣', hint: 'Levels and identity' },
 ] as const;
 const helperPageCopy: Record<string, [string, string]> = {
   overview: ['dashboard.overview', 'Overview'],
@@ -1793,7 +1791,7 @@ function parseRoute(hash: string): Route {
   if (value === '/quick-setup') return { page: 'quick-setup' };
   if (value === '/features' || value === '/config') return { page: 'features' };
   if (value === '/activity') return { page: 'activity' };
-  if (value === '/rank-card') return { page: 'rank-card' };
+  if (value === '/rank-card' || value === '/config/studio.rank_card') return { page: 'detail', key: 'community.levels' };
   if (value.startsWith('/config/'))
     return { page: 'detail', key: canonicalWelcomeKey(decodeURIComponent(value.slice('/config/'.length))) };
   return { page: 'overview' };
@@ -2437,7 +2435,7 @@ function App() {
   const detailDirty = JSON.stringify(detailConfig) !== JSON.stringify(savedDetailConfig);
   const rankDirty = JSON.stringify(rankConfig) !== JSON.stringify(savedRankConfig);
   const dirty =
-    route.page === 'detail' ? detailDirty : route.page === 'rank-card' ? rankDirty : false;
+    route.page === 'detail' ? detailDirty || (route.key === 'community.levels' && rankDirty) : route.page === 'rank-card' ? rankDirty : false;
   const filteredFeatures = useMemo(() => {
     const unique = Array.from(new Map(features.map((item) => [item.key, item])).values());
     const queryTokens = normalizeFeatureSearchText(search).split(/\s+/).filter(Boolean);
@@ -2474,8 +2472,20 @@ function App() {
     if (!route.key) return;
     setStatus('saving');
     try {
+      const publishConfig = { ...detailConfig };
+      if (route.key === 'community.levels') {
+        delete publishConfig.rankCard;
+        if (publishConfig.bannerEnabled === true) {
+          if (!rankConfig.background_preset) {
+            setStatus('ready');
+            setMessage(helperT('helper.chooseLevelBanner', 'Choose a banner before enabling level-up banners.'));
+            return;
+          }
+          publishConfig.rankCard = rankConfig;
+        }
+      }
       if (!localPreviewMode) {
-        const preflight = await api.featurePreflight(route.key, detailConfig, detailEnabled);
+        const preflight = await api.featurePreflight(route.key, publishConfig, detailEnabled);
         if (!preflight.ok) {
           setStatus('ready');
           setMessage(preflight.issues.map((issue) => issue.message).join(' '));
@@ -2483,8 +2493,9 @@ function App() {
         }
       }
       const result = localPreviewMode
-        ? { enabled: detailEnabled, config: detailConfig, revision: detailRevision }
-        : await api.saveFeature(route.key, detailEnabled, detailConfig, detailRevision);
+        ? { enabled: detailEnabled, config: publishConfig, revision: detailRevision }
+        : await api.saveFeature(route.key, detailEnabled, publishConfig, detailRevision);
+      if (route.key === 'community.levels' && publishConfig.bannerEnabled === true) setSavedRankConfig(rankConfig);
       if (
         !localPreviewMode &&
         route.key === 'community.role_panels' &&
@@ -3102,6 +3113,7 @@ function App() {
               onRepair={() => void repairDetail()}
               onDiscard={() => {
                 setDetailConfig(savedDetailConfig);
+                if (route.key === 'community.levels') setRankConfig(savedRankConfig);
                 setDetailEnabled(features.find((item) => item.key === route.key)?.enabled ?? false);
               }}
               onTest={() => void testDetail()}
@@ -3110,7 +3122,8 @@ function App() {
               providerHealth={providerHealth}
               saving={status === 'saving'}
               onBack={() => navigate('#/features')}
-              onOpen={navigate}
+              bannerPremium={features.some(item => item.key === 'studio.rank_card' && item.premium_unlocked)}
+              bannerEditor={<RankCardEditor config={rankConfig} patch={(next) => setRankConfig(current => ({ ...current, ...next }))} onSave={() => void saveDetail()} onReset={() => setRankConfig(defaultRankCard)} saving={status === 'saving'} />}
             />
           ))}
       </main>
@@ -4239,7 +4252,7 @@ function FeatureCatalogue({
   setSearch: (value: string) => void;
   onOpen: (key: string) => void;
 }) {
-  const uniqueFeatures = Array.from(new Map(visibleWelcomeFeatures(features).map((item) => [item.key, item])).values());
+  const uniqueFeatures = Array.from(new Map(visibleWelcomeFeatures(features).filter(item => item.key !== 'studio.rank_card').map((item) => [item.key, item])).values());
   const maturityCounts = uniqueFeatures.reduce(
     (counts, feature) => {
       const maturity = feature.maturity ?? (feature.available ? 'operational' : 'planned');
@@ -4429,7 +4442,8 @@ function FeatureCatalogue({
 }
 
 function FeatureDetail({
-  onOpen,
+  bannerPremium,
+  bannerEditor,
   feature,
   schema,
   context,
@@ -4448,7 +4462,8 @@ function FeatureDetail({
   saving,
   onBack,
 }: {
-  onOpen: (path: string) => void;
+  bannerPremium: boolean;
+  bannerEditor: import('react').ReactNode;
   feature?: Feature;
   schema: FeatureSchema | null;
   context: GuildContext | null;
@@ -4480,7 +4495,7 @@ function FeatureDetail({
       options: field.key === 'templateId' ? templateOptions : field.options,
     })),
   })) ?? (localPreviewMode ? spec(feature?.key ?? '') : []);
-  const sections = rawSections.map(localizedSection);
+  const sections = rawSections.map(section => ({ ...section, fields: section.fields.filter(field => field.key !== 'bannerEnabled') })).map(localizedSection);
   const premiumLocked = Boolean(feature?.premium_required && !feature.premium_unlocked);
   // Keep blocked providers discoverable, but do not expose a save/enable
   // form that can only fail at publication time. Their detail page is a
@@ -4605,6 +4620,16 @@ function FeatureDetail({
       </div>
       <div className="detail-layout">
         <div className="detail-sections">
+          {feature?.key === 'community.levels' && (
+            <section className="config-section card">
+              <h3>{helperT('helper.levelBanners', 'Level-up banners')}</h3>
+              <label className="switch-row">
+                <span>{helperT('helper.enableLevelBanner', 'Show the banner in the level-up message')}{!bannerPremium && ' · 🔒 Premium'}</span>
+                <input type="checkbox" checked={config.bannerEnabled === true} disabled={!bannerPremium && config.bannerEnabled !== true} onChange={event => onChange('bannerEnabled', event.target.checked)} />
+              </label>
+              {!bannerPremium && <a className="link-button" href="/premium#plans">{helperT('helper.viewPremium', 'View Premium')}</a>}
+            </section>
+          )}
           {feature?.key === 'management.templates' && (
             <TemplateManager
               templates={templates}
@@ -4639,11 +4664,6 @@ function FeatureDetail({
           ))}
         </div>
         <aside className="detail-aside card">
-          <XpCardShortcut
-            featureKey={feature?.key}
-            label={helperT('helper.xpIdentity', 'XP card identity')}
-            onOpen={onOpen}
-          />
           <div>
             <small className="eyebrow">{helperT('helper.beforePublishing', 'BEFORE PUBLISHING')}</small>
             <h3>{helperT('helper.reviewSafely', 'Review safely')}</h3>
@@ -4680,6 +4700,7 @@ function FeatureDetail({
           </div>
         </aside>
       </div>
+      {feature?.key === 'community.levels' && bannerPremium && config.bannerEnabled === true && bannerEditor}
       <div className="sticky-actions">
         <button type="button" className="secondary" onClick={onDiscard} disabled={saving}>
           {helperT('helper.discard', 'Discard')}
