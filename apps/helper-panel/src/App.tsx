@@ -3797,7 +3797,7 @@ function EcosystemLanguageMenu() {
   );
 }
 
-function EcosystemTopbar() {
+function useEcosystemAccount() {
   const [account, setAccount] = useState<EcosystemAccount | null>(() => readCachedEcosystemAccount());
 
   useEffect(() => {
@@ -3823,6 +3823,11 @@ function EcosystemTopbar() {
     };
   }, []);
 
+  return account;
+}
+
+function EcosystemTopbar() {
+  const account = useEcosystemAccount();
   const username = account?.username?.trim() || '';
   const initial = username.slice(0, 1).toUpperCase() || 'V';
   const avatar = account ? discordAvatarUrl(account) : null;
@@ -6089,39 +6094,41 @@ function ColorField({
   );
 }
 function RankPreview({ config }: { config: RankCardConfig }) {
+  const account = useEcosystemAccount();
+  const username = account?.username?.trim() || helperT('helper.account', 'Account');
+  const avatar = account ? discordAvatarUrl(account) : null;
   const background = presetOptions.find(([id]) => id === config.background_preset);
-  const backgroundStyle = background
-    ? ({
-        '--rank-overlay': `linear-gradient(rgba(0,0,0,${config.overlay_opacity}), rgba(0,0,0,${config.overlay_opacity}))`,
-        '--rank-banner-fallback': `url(${JSON.stringify(background[3])})`,
-        '--rank-banner-source': `image-set(url(${JSON.stringify(background[2])}) type("image/webp"), url(${JSON.stringify(background[3])}) type("image/png"))`,
-      } as CSSProperties)
-    : {};
   return (
     <div
       className="rank-preview"
       data-banner={background ? 'true' : undefined}
       style={{
-        ...backgroundStyle,
         backgroundColor: config.background_color,
         fontFamily: config.font === 'system' ? 'system-ui' : config.font.replace('_', ' '),
       }}
     >
+      {background && (
+        <picture className="rank-preview-banner" aria-hidden="true">
+          <source srcSet={background[2]} type="image/webp" />
+          <img src={background[3]} alt="" />
+        </picture>
+      )}
+      {background && <div className="rank-preview-overlay" style={{ opacity: config.overlay_opacity }} />}
       <div
         className="rank-avatar"
         style={{ borderColor: config.avatar_ring_color, borderWidth: config.avatar_ring_width }}
       >
-        <span>✦</span>
+        <EcosystemAccountAvatar src={avatar} initial={username.slice(0, 1).toUpperCase()} />
       </div>
       <div className="rank-content">
         <div className="rank-top">
-          <strong style={{ color: config.text_color }}>Lunara</strong>
+          <strong style={{ color: config.text_color }}>{username}</strong>
           <div>
             <b style={{ color: config.primary_color }}>{helperT('helper.rank', 'Rank')} #17</b>
             <b style={{ color: config.text_color }}>{helperT('helper.level', 'Level')} 8</b>
           </div>
         </div>
-        <p style={{ color: config.primary_color }}>lunara#4821</p>
+        <p style={{ color: config.primary_color }}>{account?.username ? `@${account.username}` : ''}</p>
         <div className="xp-meta">
           <span style={{ color: config.text_color }}>429 / 1337 {helperT('helper.xp', 'XP')}</span>
           <span style={{ color: config.text_color }}>32%</span>

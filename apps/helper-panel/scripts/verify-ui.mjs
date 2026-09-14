@@ -30,8 +30,8 @@ check(foundation.includes('grid-auto-rows: max-content'), 'XP editor columns mus
 check(foundation.includes('height: max-content'), 'XP editor cards must not inherit the taller column height');
 check(foundation.includes('aspect-ratio: 1.86 / 1'), 'XP preview needs a stable desktop aspect ratio');
 check(
-  foundation.includes("\n.rank-preview[data-banner='true']"),
-  'a selected XP banner must target the preview rendered by the panel',
+  app.includes('className="rank-preview-banner"') && foundation.includes('.rank-preview-banner img'),
+  'a selected XP banner must have a visible image layer in the preview',
 );
 check(foundation.includes('flex: 0 0 44px'), 'XP color swatches must keep a square touch target');
 check(foundation.includes('aspect-ratio: 1;'), 'XP color swatches must keep a circular aspect ratio');
