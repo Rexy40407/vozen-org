@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
 import { PremiumBannerSwitch } from './premium-banner-switch';
+import { guildStorage, preferredGuild, rememberGuild } from './last-guild';
 import {
   api,
   restoreOAuthReturnHash,
@@ -1974,7 +1975,10 @@ function App() {
   const [message, setMessage] = useState('');
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Category>('all');
-  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(true);
+  const [detailError, setDetailError] = useState(false);
+  const [detailRetry, setDetailRetry] = useState(0);
+  const switchingGuild = useRef(false);
 
   useEffect(() => {
     syncHelperDocumentLocale();
@@ -2028,7 +2032,7 @@ function App() {
         // Establish those first, then hydrate the full dashboard in the
         // background. Every request shares this guard so leaving the panel
         // cannot leave an old response writing into a new route.
-        const nextMe = await api.meOrBootstrap({ signal: load.signal });
+        let nextMe = await api.meOrBootstrap({ signal: load.signal });
         const nextGuilds = await api.guilds({ signal: load.signal }).catch((cause) => {
           if (isAbortError(cause) || !load.isCurrent()) throw cause;
           setMessage('Could not load your servers. Return to your account and try again.');
@@ -2036,6 +2040,17 @@ function App() {
         });
         if (!load.isCurrent()) return;
 
+        const selectedGuild = preferredGuild(guildStorage(), nextMe.id, nextMe.guildId, nextGuilds.guilds);
+        if (selectedGuild !== nextMe.guildId) {
+          await api.switchGuild(selectedGuild);
+          if (!load.isCurrent()) return;
+          nextMe = await api.me({ signal: load.signal });
+          if (nextMe.guildId !== selectedGuild) throw new Error('guild_switch_mismatch');
+        }
+        if (!load.isCurrent()) return;
+        if (nextGuilds.guilds.some(guild => guild.id === nextMe.guildId && guild.canManage)) {
+          rememberGuild(guildStorage(), nextMe.id, nextMe.guildId);
+        }
         setMe(nextMe);
         setGuilds(nextGuilds.guilds);
         restoreOAuthReturnHash();
@@ -2210,9 +2225,11 @@ function App() {
     return undefined;
   }, [me?.guildId, route.page]);
   useEffect(() => {
-    if (route.page !== 'detail' || !route.key) return;
+    if (route.page !== 'detail' || !route.key || (!localPreviewMode && !me)) return;
     const featureKey = route.key;
     setDetailLoading(true);
+    setDetailError(false);
+    setDetailSchema(null);
     // The Rust adapter remains the source of truth for live values and
     // publishing. A versioned bundled contract keeps Anti-raid editable when
     // the detail endpoint is temporarily unavailable or omits its schema.
@@ -2232,6 +2249,7 @@ function App() {
       .then((result) => {
         if (!load.isCurrent()) return;
         const resolvedSchema = result.schema ?? recoverySchema;
+        if (!resolvedSchema) throw new Error('feature_contract_unavailable');
         setDetailSchema(resolvedSchema);
         const apiDefaults = result.defaults ?? {};
         // Prefer the live adapter contract. The bundled contract is limited to
@@ -2281,7 +2299,8 @@ function App() {
           : localPreviewMode
             ? { ...fallback }
             : {};
-        setDetailSchema(recoverySchema);
+        setDetailError(true);
+        setDetailSchema(null);
         setDetailConfig(recoveryConfig);
         setSavedDetailConfig(recoveryConfig);
         setDetailEnabled(featuresRef.current.find((item) => item.key === featureKey)?.enabled ?? false);
@@ -2291,9 +2310,10 @@ function App() {
         if (load.isCurrent()) setDetailLoading(false);
       });
     return () => load.dispose();
-  }, [route.page, route.key]);
+  }, [route.page, route.key, me?.guildId, detailRetry]);
   useEffect(() => {
     if (
+      !me ||
       route.page !== 'detail' ||
       !route.key ||
       !['management.templates', 'support.welcome', 'support.welcome_channel'].includes(route.key) ||
@@ -2307,7 +2327,7 @@ function App() {
         if (load.isCurrent() && !isAbortError(cause)) setStudioTemplates([]);
       });
     return () => load.dispose();
-  }, [route.page, route.key]);
+  }, [route.page, route.key, me?.guildId]);
   useEffect(() => {
     const subscription = route.key === 'social.youtube' ? youtubeSubscriptions[0] : undefined;
     if (route.page === 'detail' && route.key === 'social.youtube' && subscription) {
@@ -2431,7 +2451,7 @@ function App() {
     setDetailEnabled(subscription.enabled);
   }, [route.page, route.key, externalSubscriptions]);
 
-  const currentGuild = guilds.find((guild) => guild.id === me?.guildId) ?? guilds[0];
+  const currentGuild = guilds.find((guild) => guild.id === me?.guildId);
   const premiumGuildRef = useRef(me?.guildId);
   premiumGuildRef.current = me?.guildId;
   const currentFeature = features.find((item) => item.key === route.key);
@@ -2458,16 +2478,26 @@ function App() {
     );
   }, [features, filter, search]);
   async function switchGuild(guildId: string, nextPath?: string) {
+    if (switchingGuild.current || status === 'saving') return;
     if (localPreviewMode) {
       setMe((current) => (current ? { ...current, guildId } : current));
       if (nextPath) navigate(nextPath);
       return;
     }
     try {
+      switchingGuild.current = true;
+      setStatus('loading');
       await api.switchGuild(guildId);
+      if (me) rememberGuild(guildStorage(), me.id, guildId);
       if (nextPath) window.location.hash = nextPath;
       window.location.reload();
     } catch (cause) {
+      switchingGuild.current = false;
+      // A lost response may still have rotated the shared cookie. Never expose
+      // the old form until its server identity has been confirmed again.
+      const actual = await api.me().catch(() => null);
+      if (actual?.guildId === me?.guildId && actual?.id === me?.id) setStatus('ready');
+      else { setMe(null); setStatus('error'); }
       setMessage(cause instanceof Error ? cause.message : helperT('helper.switchServerError', 'Could not switch server.'));
     }
   }
@@ -2963,6 +2993,7 @@ function App() {
             <select
             aria-label={helperT('helper.currentServer', 'Current server')}
             value={currentGuild?.id ?? ''}
+            disabled={status === 'saving'}
             onChange={(event) => void switchGuild(event.target.value)}
           >
             {guilds.map((guild) => (
@@ -3024,7 +3055,11 @@ function App() {
             </div>
             <div className="header-state">
               <span className="status-dot" />{' '}
-              {dirty
+              {route.page === 'detail' && detailError
+                ? helperT('helper.configurationLoadFailed', 'Could not load this configuration')
+                : route.page === 'detail' && detailLoading
+                ? helperT('helper.loadingConfiguration', 'Loading configuration…')
+                : dirty
                 ? helperT('helper.unpublished', 'Unpublished draft')
                 : localPreviewMode
                   ? helperT('helper.demoMode', 'Demo mode')
@@ -3100,6 +3135,12 @@ function App() {
               <div className="loader" />
               <span>{helperT('helper.loadingConfiguration', 'Loading configuration…')}</span>
             </div>
+          ) : detailError ? (
+            <section className="card" role="alert">
+              <h2>{helperT('helper.configurationLoadFailed', 'Could not load this configuration')}</h2>
+              <p>{helperT('helper.configurationRetryHelp', 'Your settings have not been changed. Check your connection and try again.')}</p>
+              <button type="button" className="button primary" onClick={() => setDetailRetry(value => value + 1)}>{helperT('helper.retryConfiguration', 'Retry configuration')}</button>
+            </section>
           ) : (
             <FeatureDetail
               feature={currentFeature}

@@ -67,8 +67,19 @@ jobs:
         run: |
           npm ci --prefix apps/helper-panel
           npm run build --prefix apps/helper-panel
+          npm test --prefix apps/helper-panel
           node tools/install-helper-panel.mjs
           node tools/release-artifact-check.mjs
+      - name: Check Helper session and server recovery
+        run: |
+          node apps/helper-panel/node_modules/vite/bin/vite.js preview apps/helper-panel --host 127.0.0.1 --port 5179 --base /panel/helper-tracker/ &
+          preview_pid=$!
+          trap 'kill "$preview_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:5179/panel/helper-tracker/ >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/helper-session-regression.mjs
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
       - name: Upload Pages artifact

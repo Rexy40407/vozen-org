@@ -1578,6 +1578,9 @@
 
   Object.assign(extra.en, {
     "helper.premiumActivateTitle": "Activate Premium on this server?",
+    "helper.configurationLoadFailed": "Could not load this configuration",
+    "helper.configurationRetryHelp": "Your settings have not been changed. Check your connection and try again.",
+    "helper.retryConfiguration": "Retry configuration",
     "helper.premiumChecking": "Checking your subscription…",
     "helper.premiumNoPass": "You do not have an active Premium subscription. Would you like to see the plans? This does not start a purchase.",
     "helper.premiumNoSeats": "All your Premium server slots are in use. Manage your servers or change your plan.",
@@ -1594,6 +1597,9 @@
   });
   Object.assign(extra.pt, {
     "helper.premiumActivateTitle": "Ativar Premium neste servidor?",
+    "helper.configurationLoadFailed": "Não foi possível carregar esta configuração",
+    "helper.configurationRetryHelp": "As tuas definições não foram alteradas. Verifica a ligação e tenta novamente.",
+    "helper.retryConfiguration": "Tentar carregar novamente",
     "helper.premiumChecking": "A verificar a tua subscrição…",
     "helper.premiumNoPass": "Não tens uma subscrição Premium ativa. Queres ver os planos? Isto não inicia uma compra.",
     "helper.premiumNoSeats": "Todas as vagas de servidores Premium estão ocupadas. Gere os teus servidores ou altera o plano.",

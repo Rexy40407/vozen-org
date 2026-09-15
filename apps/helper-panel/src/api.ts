@@ -592,12 +592,18 @@ export const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     }),
-  switchGuild: (guildId: string) =>
-    request<{ ok: boolean; guildId: string }>('/api/session/switch', {
+  switchGuild: async (guildId: string) => {
+    const result = await request<{ ok: boolean; guildId: string }>('/api/session/switch', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ guild_id: guildId }),
-    }),
+    });
+    // The endpoint rotates the HttpOnly cookie and revokes the old session.
+    // A legacy bearer must not override that new cookie after reload.
+    persistSessionBearer(null);
+    if (!result.ok || result.guildId !== guildId) throw new Error('guild_switch_mismatch');
+    return result;
+  },
   stats: (options?: ReadOptions) => request<{ totalCases: number; guildId: string }>('/api/stats', options),
   leaderboard: (options?: ReadOptions) =>
     request<{
