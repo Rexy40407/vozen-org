@@ -1576,6 +1576,38 @@
     extra[locale] = Object.assign({}, extra[locale] || {}, ttsHeroAdditions[locale]);
   });
 
+  Object.assign(extra.en, {
+    "helper.premiumActivateTitle": "Activate Premium on this server?",
+    "helper.premiumChecking": "Checking your subscription…",
+    "helper.premiumNoPass": "You do not have an active Premium subscription. Would you like to see the plans? This does not start a purchase.",
+    "helper.premiumNoSeats": "All your Premium server slots are in use. Manage your servers or change your plan.",
+    "helper.premiumAlreadyActive": "This server already has Premium. Enable banners without using another slot?",
+    "helper.premiumUseSeat": "Use one slot from your subscription to activate Premium on this server?",
+    "helper.premiumSeatsUsed": "Slots used",
+    "helper.premiumCancel": "No, cancel",
+    "helper.premiumSeePlans": "Yes, view plans",
+    "helper.premiumManage": "Manage subscription",
+    "helper.premiumConfirm": "Yes, activate",
+    "helper.premiumActivating": "Activating…",
+    "helper.premiumCheckAgain": "Check again",
+    "helper.premiumActivateError": "Could not confirm Premium. Check again before retrying; no extra seat is used if this server is already active."
+  });
+  Object.assign(extra.pt, {
+    "helper.premiumActivateTitle": "Ativar Premium neste servidor?",
+    "helper.premiumChecking": "A verificar a tua subscrição…",
+    "helper.premiumNoPass": "Não tens uma subscrição Premium ativa. Queres ver os planos? Isto não inicia uma compra.",
+    "helper.premiumNoSeats": "Todas as vagas de servidores Premium estão ocupadas. Gere os teus servidores ou altera o plano.",
+    "helper.premiumAlreadyActive": "Este servidor já tem Premium. Queres ligar os banners sem gastar outra vaga?",
+    "helper.premiumUseSeat": "Queres usar uma vaga da tua subscrição para ativar Premium neste servidor?",
+    "helper.premiumSeatsUsed": "Vagas utilizadas",
+    "helper.premiumCancel": "Não, cancelar",
+    "helper.premiumSeePlans": "Sim, ver planos",
+    "helper.premiumManage": "Gerir subscrição",
+    "helper.premiumConfirm": "Sim, ativar",
+    "helper.premiumActivating": "A ativar…",
+    "helper.premiumCheckAgain": "Verificar novamente",
+    "helper.premiumActivateError": "Não foi possível confirmar o Premium. Verifica novamente antes de repetir; se o servidor já estiver ativo, não será gasta outra vaga."
+  });
   var dictionary = window.VOZEN_I18N || {};
   Object.keys(extra).forEach(function (locale) {
     dictionary[locale] = Object.assign({}, dictionary[locale] || {}, extra[locale]);

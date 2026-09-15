@@ -1,0 +1,7 @@
+.premium-activation-dialog { color: #f4f7fb; background: #101c2c; border: 1px solid #35516b; border-radius: 20px; padding: 28px; width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); box-sizing: border-box; box-shadow: 0 24px 90px #0008; }
+.premium-activation-dialog::backdrop { background: #050b16bd; }
+.premium-activation-dialog h2 { margin-top: 0; font-size: 1.4rem; }
+.premium-activation-dialog p { line-height: 1.6; }
+.premium-activation-server { color: #8ee5d2; overflow-wrap: anywhere; }
+.premium-activation-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+.premium-activation-actions .button { min-height: 44px; }

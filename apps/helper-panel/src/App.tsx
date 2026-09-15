@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
+import { PremiumBannerSwitch } from './premium-banner-switch';
 import {
   api,
   restoreOAuthReturnHash,
@@ -2431,6 +2432,8 @@ function App() {
   }, [route.page, route.key, externalSubscriptions]);
 
   const currentGuild = guilds.find((guild) => guild.id === me?.guildId) ?? guilds[0];
+  const premiumGuildRef = useRef(me?.guildId);
+  premiumGuildRef.current = me?.guildId;
   const currentFeature = features.find((item) => item.key === route.key);
   const detailDirty = JSON.stringify(detailConfig) !== JSON.stringify(savedDetailConfig);
   const rankDirty = JSON.stringify(rankConfig) !== JSON.stringify(savedRankConfig);
@@ -3123,6 +3126,13 @@ function App() {
               saving={status === 'saving'}
               onBack={() => navigate('#/features')}
               bannerPremium={features.some(item => item.key === 'studio.rank_card' && item.premium_unlocked)}
+              premiumGuildId={me?.guildId ?? ''}
+              premiumGuildName={currentGuild?.name ?? ''}
+              onPremiumActivated={async () => {
+                const updated = await api.features();
+                if (updated.guildId !== me?.guildId || premiumGuildRef.current !== me?.guildId) throw new Error('guild_changed');
+                setFeatures(visibleWelcomeFeatures(updated.features));
+              }}
               bannerEditor={<RankCardEditor config={rankConfig} patch={(next) => setRankConfig(current => ({ ...current, ...next }))} onSave={() => void saveDetail()} onReset={() => setRankConfig(defaultRankCard)} saving={status === 'saving'} />}
             />
           ))}
@@ -4442,6 +4452,9 @@ function FeatureCatalogue({
 }
 
 function FeatureDetail({
+  premiumGuildId,
+  premiumGuildName,
+  onPremiumActivated,
   bannerPremium,
   bannerEditor,
   feature,
@@ -4463,6 +4476,9 @@ function FeatureDetail({
   onBack,
 }: {
   bannerPremium: boolean;
+  premiumGuildId: string;
+  premiumGuildName: string;
+  onPremiumActivated: () => Promise<void>;
   bannerEditor: import('react').ReactNode;
   feature?: Feature;
   schema: FeatureSchema | null;
@@ -4623,10 +4639,7 @@ function FeatureDetail({
           {feature?.key === 'community.levels' && (
             <section className="config-section card">
               <h3>{helperT('helper.levelBanners', 'Level-up banners')}</h3>
-              <label className="switch-row">
-                <span>{helperT('helper.enableLevelBanner', 'Show the banner in the level-up message')}{!bannerPremium && ' · 🔒 Premium'}</span>
-                <input type="checkbox" checked={config.bannerEnabled === true} disabled={!bannerPremium && config.bannerEnabled !== true} onChange={event => onChange('bannerEnabled', event.target.checked)} />
-              </label>
+              <PremiumBannerSwitch key={premiumGuildId} guildId={premiumGuildId} guildName={premiumGuildName} premium={bannerPremium} checked={config.bannerEnabled === true} onChange={value => onChange('bannerEnabled', value)} onActivated={onPremiumActivated} />
               {!bannerPremium && <a className="link-button" href="/premium#plans">{helperT('helper.viewPremium', 'View Premium')}</a>}
             </section>
           )}

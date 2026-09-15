@@ -558,6 +558,10 @@ async function meOrBootstrap(options?: ReadOptions): Promise<Me> {
 }
 
 export const api = {
+  premiumServer: (options?: ReadOptions) => request<import('./premium-activation').PremiumSeatStatus>('/api/premium/server', options),
+  activatePremiumServer: (guildId: string) => request<import('./premium-activation').PremiumSeatStatus>('/api/premium/server', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ guild_id: guildId }),
+  }),
   bootstrapVozenAccountSession,
   me: (options?: ReadOptions) => request<Me>('/api/me', options),
   meOrBootstrap,
