@@ -56,7 +56,7 @@ export function PremiumBannerSwitch({ guildId, guildName, premium, checked, onCh
   const choice = status ? activationChoice(status) : null;
   return <>
     <label className="switch-row">
-      <span>{t('helper.enableLevelBanner', 'Show the banner in the level-up message')}{!premium && ' · 🔒 Premium'}</span>
+      <span>{t('helper.customizeLevelBanner', 'Customize the card and use background images')}{!premium && ' · 🔒 Premium'}</span>
       <input ref={trigger} type="checkbox" checked={checked} aria-haspopup={!premium ? 'dialog' : undefined} onChange={event => {
         if (premium || !event.target.checked) onChange(event.target.checked);
         else { setOpen(true); void load(); }

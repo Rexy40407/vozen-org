@@ -2508,12 +2508,7 @@ function App() {
       const publishConfig = { ...detailConfig };
       if (route.key === 'community.levels') {
         delete publishConfig.rankCard;
-        if (publishConfig.bannerEnabled === true) {
-          if (!rankConfig.background_preset) {
-            setStatus('ready');
-            setMessage(helperT('helper.chooseLevelBanner', 'Choose a banner before enabling level-up banners.'));
-            return;
-          }
+        if (publishConfig.bannerEnabled === true && features.some(item => item.key === 'studio.rank_card' && item.premium_unlocked)) {
           publishConfig.rankCard = rankConfig;
         }
       }
@@ -4680,8 +4675,12 @@ function FeatureDetail({
           {feature?.key === 'community.levels' && (
             <section className="config-section card">
               <h3>{helperT('helper.levelBanners', 'Level-up banners')}</h3>
-              <PremiumBannerSwitch key={premiumGuildId} guildId={premiumGuildId} guildName={premiumGuildName} premium={bannerPremium} checked={config.bannerEnabled === true} onChange={value => onChange('bannerEnabled', value)} onActivated={onPremiumActivated} />
-              {!bannerPremium && <a className="link-button" href="/premium#plans">{helperT('helper.viewPremium', 'View Premium')}</a>}
+              <label className="switch-row">
+                <span>{helperT('helper.enableLevelBanner', 'Show the banner in the level-up message')}</span>
+                <input type="checkbox" checked={config.bannerEnabled === true} onChange={event => onChange('bannerEnabled', event.target.checked)} />
+              </label>
+              <p>{helperT('helper.freeLevelCard', 'The default card is free: name, avatar, level and XP, with no background image or customization.')}</p>
+              {!bannerPremium && <PremiumBannerSwitch key={premiumGuildId} guildId={premiumGuildId} guildName={premiumGuildName} premium={false} checked={false} onChange={value => onChange('bannerEnabled', value)} onActivated={onPremiumActivated} />}
             </section>
           )}
           {feature?.key === 'management.templates' && (

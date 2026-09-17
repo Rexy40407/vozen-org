@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 const browser = await chromium.launch();
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 try {
-  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch']) {
+  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card']) {
     const page = await browser.newPage();
     let ready = false, guild = 'a', earlyReads = 0, detailReads = 0, switches = 0;
+    let savedConfig;
     const feature = {key:'community.levels',label:'Levels & XP',category:'community',available:true,enabled:true};
     if (scenario === 'legacy-bearer') await page.addInitScript(() => {
       if (!sessionStorage.getItem('qa-seeded')) {
@@ -28,6 +29,7 @@ try {
         value = {ok:true,guildId:guild};
       } else if (path === '/api/config/features') value = {guildId:guild,features:[feature]};
       else if (path === '/api/config/features/community.levels') {
+        if (route.request().method() === 'PUT') savedConfig = route.request().postDataJSON().config;
         detailReads++;
         const number = detailReads;
         if (!ready) { earlyReads++; await route.fulfill({status:401,json:{code:'session_not_ready'}}); return; }
@@ -35,7 +37,8 @@ try {
         if (scenario === 'stale-detail' && number === 1) await new Promise(resolve => setTimeout(resolve, 600));
         value = {...feature,config:{xpMin:(guild === 'b' || (scenario === 'stale-detail' && number > 1)) ? 42 : 15},defaults:{},schema:{sections:[{title:'XP progression',fields:[{key:'xpMin',label:'Minimum XP',kind:'number'}]}]},revision:1};
         if (scenario === 'missing-schema' && number === 1) delete value.schema;
-      } else if (path === '/api/stats') value = {guildId:guild,totalCases:0};
+      } else if (path.endsWith('/preflight')) value = {ok:true,issues:[]};
+      else if (path === '/api/stats') value = {guildId:guild,totalCases:0};
       else if (path === '/api/cases') value = {cases:[]};
       else if (path === '/api/audit') value = {events:[]};
       else if (path === '/api/activity') value = {activity:[]};
@@ -55,6 +58,17 @@ try {
     try { await page.getByRole('spinbutton',{name:'XP minimum by message',exact:true}).waitFor({timeout:5000}); }
     catch (error) { console.log({scenario,earlyReads,detailReads}); console.log(await page.locator('body').innerText()); throw error; }
     assert.equal(earlyReads,0,'configuration must wait for the session');
+    if (scenario === 'free-card') {
+      await page.getByRole('checkbox',{name:'Show the banner in the level-up message',exact:true}).click();
+      assert.equal(await page.getByRole('dialog').isVisible(),false);
+      assert.equal(await page.getByRole('button',{name:'Moonlit Village',exact:true}).count(),0);
+      await Promise.all([
+        page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith('/api/config/features/community.levels')),
+        page.getByRole('button',{name:'Save changes',exact:true}).click(),
+      ]);
+      assert.equal(savedConfig.bannerEnabled,true);
+      assert.equal('rankCard' in savedConfig,false,'free save cannot include customization');
+    }
     if (scenario === 'uncertain-switch') {
       await page.getByRole('combobox',{name:'Current server',exact:true}).selectOption('b');
       await page.getByRole('spinbutton',{name:'XP minimum by message',exact:true}).waitFor({state:'hidden'});
