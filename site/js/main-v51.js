@@ -126,20 +126,22 @@
     if (active && langEl) langEl.textContent = hearLangName(active.dataset.sample, siteLang);
   }
 
-  // As 10 línguas do seletor: [código, bandeira, autónimo (nome na própria língua)].
+  // As 10 línguas do seletor: [código, símbolo SVG da bandeira, autónimo].
   // O documento inteiro muda para RTL em árabe; as restantes línguas usam LTR.
   const LANG_UI = [
-    ["en", "🇬🇧", "English"],
-    ["pt", "🇵🇹", "Português"],
-    ["fr", "🇫🇷", "Français"],
-    ["es", "🇪🇸", "Español"],
-    ["de", "🇩🇪", "Deutsch"],
-    ["tr", "🇹🇷", "Türkçe"],
-    ["ar", "🇸🇦", "العربية"],
-    ["zh", "🇹🇼", "繁體中文"],
-    ["ru", "🇷🇺", "Русский"],
-    ["ko", "🇰🇷", "한국어"],
+    ["en", "gb", "English"],
+    ["pt", "pt", "Português"],
+    ["fr", "fr", "Français"],
+    ["es", "es", "Español"],
+    ["de", "de", "Deutsch"],
+    ["tr", "tr", "Türkçe"],
+    ["ar", "sa", "العربية"],
+    ["zh", "tw", "繁體中文"],
+    ["ru", "ru", "Русский"],
+    ["ko", "kr", "한국어"],
   ];
+  const flagMarkup = (flag, className = "lang__flag") =>
+    `<svg class="${className}" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-${flag}"></use></svg>`;
   const LANG_META = Object.fromEntries(LANG_UI.map(([c, flag, name]) => [c, { flag, name }]));
   const LANG_HTML = { pt: "pt-PT", zh: "zh-Hant" };
 
@@ -165,7 +167,7 @@
     if (!m) return;
     const bf = $("#langBtnFlag"),
       bn = $("#langBtnName");
-    if (bf) bf.textContent = m.flag;
+    if (bf) bf.innerHTML = flagMarkup(m.flag);
     if (bn) bn.textContent = m.name;
     $$(".lang__opt").forEach((o) => {
       const on = o.dataset.lang === code;
@@ -216,7 +218,7 @@
     panel.innerHTML = LANG_UI.map(
       ([code, flag, name]) =>
         `<li class="lang__opt" role="option" data-lang="${code}" aria-selected="false" tabindex="-1">` +
-        `<span class="lang__flag">${flag}</span><span class="lang__optname">${name}</span>` +
+        `${flagMarkup(flag)}<span class="lang__optname">${name}</span>` +
         `<svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></li>`,
     ).join("");
     const opts = $$(".lang__opt", panel);

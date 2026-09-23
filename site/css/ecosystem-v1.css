@@ -731,7 +731,7 @@ main {
   pointer-events: none;
 }
 
-.eco-home-hero__copy { position: relative; z-index: 2; }
+.eco-home-hero__copy { position: relative; z-index: 2; min-width: 0; }
 .eco-home-hero__copy .eco-hero__eyebrow { margin-bottom: 23px; }
 
 .eco-home-hero h1 {
@@ -739,7 +739,8 @@ main {
   color: var(--text);
   font: 500 clamp(32px, 3.7vw, 54px)/1.04 var(--display);
   letter-spacing: -.055em;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
 }
 
 .eco-home-hero h1 span {

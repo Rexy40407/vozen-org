@@ -189,6 +189,59 @@ test('localized entry routes expose their own language, title and translated cop
   }
 });
 
+test('every localized homepage heading wraps inside its hero at desktop and mobile widths', async ({ page }) => {
+  test.setTimeout(90_000);
+  const locales = ['', 'pt/', 'fr/', 'es/', 'de/', 'tr/', 'ar/', 'zh/', 'ru/', 'ko/'];
+  for (const locale of locales) {
+    for (const width of [320, 375, 768, 1280, 1792]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/${locale}`, { waitUntil: 'networkidle' });
+      const layout = await page.evaluate(() => {
+        const heading = document.querySelector('.eco-home-hero h1');
+        const box = heading?.getBoundingClientRect();
+        return {
+          page: document.documentElement.scrollWidth,
+          headingWidth: heading?.clientWidth,
+          headingContent: heading?.scrollWidth,
+          headingRight: box?.right,
+        };
+      });
+      expect(layout.page, `${locale || 'en'} at ${width}px page overflow: ${JSON.stringify(layout)}`).toBeLessThanOrEqual(width + 1);
+      expect(layout.headingContent, `${locale || 'en'} at ${width}px clipped title: ${JSON.stringify(layout)}`).toBeLessThanOrEqual(layout.headingWidth + 1);
+      expect(layout.headingRight, `${locale || 'en'} at ${width}px title outside viewport: ${JSON.stringify(layout)}`).toBeLessThanOrEqual(width + 1);
+    }
+  }
+});
+
+test('marketing and Docs language menus use all ten bundled SVG flags', async ({ page }) => {
+  const consoleErrors = [];
+  const failedResources = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+  page.on('response', (response) => {
+    if (response.status() >= 400) failedResources.push(`${response.status()} ${response.url()}`);
+  });
+  page.on('requestfailed', (request) => failedResources.push(`FAILED ${request.url()}`));
+  await page.goto('/tts/', { waitUntil: 'networkidle' });
+  await page.locator('#langBtn').click();
+  const marketingFlags = await page.locator('#langPanel .lang__opt use').evaluateAll((nodes) =>
+    nodes.map((node) => node.getAttribute('href')));
+  expect(marketingFlags).toHaveLength(10);
+  expect(marketingFlags.every((href) => /^\/assets\/flags\.svg#flag-(gb|pt|fr|es|de|tr|sa|tw|ru|kr)$/.test(href || ''))).toBe(true);
+  await expect(page.locator('#langBtnFlag use')).toHaveAttribute('href', '/assets/flags.svg#flag-gb');
+
+  await page.goto('/docs/', { waitUntil: 'networkidle' });
+  const docsMenu = page.locator('[data-vozen-docs-language-menu]');
+  await docsMenu.locator('[data-vozen-docs-language-button]').click();
+  const docsFlags = await docsMenu.locator('[data-vozen-docs-language-panel] use').evaluateAll((nodes) =>
+    nodes.map((node) => node.getAttribute('href')));
+  expect(docsFlags).toHaveLength(10);
+  expect(docsFlags.every((href) => /^\/assets\/flags\.svg#flag-(gb|pt|fr|es|de|tr|sa|tw|ru|kr)$/.test(href || ''))).toBe(true);
+  expect(consoleErrors).toEqual([]);
+  expect(failedResources).toEqual([]);
+});
+
 test('the localized Helper page exposes translated product copy and a real accessible FAQ', async ({ page }) => {
   await page.goto('/pt/helper/', { waitUntil: 'networkidle' });
 

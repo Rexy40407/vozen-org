@@ -599,7 +599,8 @@ button.is-tap, a.btn.is-tap, [role="button"].is-tap {
 }
 .lang__btn:hover { border-color: var(--line-2); background: rgba(255, 255, 255, 0.08); }
 .lang__btn:focus-visible { outline: 2px solid var(--blurple); outline-offset: 2px; }
-.lang__flag { font-size: 15px; line-height: 1; }
+.lang__flag { display: block; flex: none; width: 20px; height: 15px; border-radius: 2px; object-fit: cover; }
+.lang__flag-icon { display: block; width: 100%; height: 100%; border-radius: inherit; }
 .lang__chev { color: var(--text-1); transition: transform 0.22s ease; flex: none; }
 .lang.is-open .lang__chev { transform: rotate(180deg); }
 
@@ -624,7 +625,7 @@ button.is-tap, a.btn.is-tap, [role="button"].is-tap {
 .lang__opt:hover { background: rgba(102, 114, 255, 0.14); color: var(--text-0); }
 .lang__opt:focus-visible { outline: none; background: rgba(102, 114, 255, 0.14); color: var(--text-0); }
 .lang__opt.is-active { background: rgba(102, 114, 255, 0.2); color: var(--text-0); font-weight: 600; }
-.lang__opt .lang__flag { font-size: 17px; }
+.lang__opt .lang__flag { width: 20px; height: 15px; }
 .lang__optname { flex: 1 1 auto; }
 .lang__check { color: var(--blurple-2); opacity: 0; flex: none; }
 .lang__opt.is-active .lang__check { opacity: 1; }
@@ -2736,7 +2737,7 @@ main {
   pointer-events: none;
 }
 
-.eco-home-hero__copy { position: relative; z-index: 2; }
+.eco-home-hero__copy { position: relative; z-index: 2; min-width: 0; }
 .eco-home-hero__copy .eco-hero__eyebrow { margin-bottom: 23px; }
 
 .eco-home-hero h1 {
@@ -2744,7 +2745,8 @@ main {
   color: var(--text);
   font: 500 clamp(32px, 3.7vw, 54px)/1.04 var(--display);
   letter-spacing: -.055em;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
 }
 
 .eco-home-hero h1 span {

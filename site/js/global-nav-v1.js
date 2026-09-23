@@ -24,17 +24,19 @@
     return dictionary[navLocale()]?.[key] || dictionary.en?.[key] || fallback || key;
   };
   const NAV_LANGUAGES = [
-    ["en", "🇬🇧", "English"],
-    ["pt", "🇵🇹", "Português"],
-    ["fr", "🇫🇷", "Français"],
-    ["es", "🇪🇸", "Español"],
-    ["de", "🇩🇪", "Deutsch"],
-    ["tr", "🇹🇷", "Türkçe"],
-    ["ar", "🇸🇦", "العربية"],
-    ["zh", "🇹🇼", "繁體中文"],
-    ["ru", "🇷🇺", "Русский"],
-    ["ko", "🇰🇷", "한국어"],
+    ["en", "gb", "English"],
+    ["pt", "pt", "Português"],
+    ["fr", "fr", "Français"],
+    ["es", "es", "Español"],
+    ["de", "de", "Deutsch"],
+    ["tr", "tr", "Türkçe"],
+    ["ar", "sa", "العربية"],
+    ["zh", "tw", "繁體中文"],
+    ["ru", "ru", "Русский"],
+    ["ko", "kr", "한국어"],
   ];
+  const flagMarkup = (flag, className = "docs-ecosystem-nav__language-flag") =>
+    `<svg class="${className}" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-${flag}"></use></svg>`;
   const HTML_LANGUAGES = { pt: "pt-PT", zh: "zh-Hant" };
   const setNavLocale = (value) => {
     const locale = NAV_LANGUAGES.some(([code]) => code === value) ? value : "en";
@@ -44,7 +46,7 @@
     window.dispatchEvent(new CustomEvent("vozen:languagechange", { detail: { language: locale } }));
   };
   const renderDocsLanguageOptions = () => NAV_LANGUAGES.map(([code, flag, name]) =>
-    `<li role="option" aria-selected="false"><button class="docs-ecosystem-nav__language-option" type="button" data-language="${code}"><span class="docs-ecosystem-nav__language-flag" aria-hidden="true">${flag}</span><span class="docs-ecosystem-nav__language-option-name">${escapeHtml(name)}</span><span class="docs-ecosystem-nav__language-check" aria-hidden="true">✓</span></button></li>`).join("");
+    `<li role="option" aria-selected="false"><button class="docs-ecosystem-nav__language-option" type="button" data-language="${code}">${flagMarkup(flag)}<span class="docs-ecosystem-nav__language-option-name">${escapeHtml(name)}</span><span class="docs-ecosystem-nav__language-check" aria-hidden="true">✓</span></button></li>`).join("");
   const syncDocsLanguageMenus = () => {
     const current = navLocale();
     const selected = NAV_LANGUAGES.find(([code]) => code === current) || NAV_LANGUAGES[0];
@@ -53,7 +55,7 @@
       const panel = menu.querySelector("[data-vozen-docs-language-panel]");
       const flag = button?.querySelector(".docs-ecosystem-nav__language-flag");
       const name = button?.querySelector(".docs-ecosystem-nav__language-name");
-      if (flag) flag.textContent = selected[1];
+      if (flag) flag.outerHTML = flagMarkup(selected[1], "docs-ecosystem-nav__language-flag");
       if (name) name.textContent = selected[2];
       button?.setAttribute("aria-label", navText("ecosystem.siteLanguage", "Site language"));
       panel?.setAttribute("aria-label", navText("ecosystem.chooseLanguage", "Choose language"));
@@ -174,7 +176,6 @@
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;");
-  const ukFlag = String.fromCodePoint(0x1f1ec, 0x1f1e7);
   const discordDecorationAsset = (account) => {
     const asset = account.avatarDecorationAsset
       || account.avatar_decoration_asset
@@ -247,7 +248,7 @@
             <a class="docs-ecosystem-nav__github" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen on GitHub" data-i18n-aria-label="ecosystem.githubAria">${githubIcon}</a>
             <div class="docs-ecosystem-nav__language" data-vozen-docs-language-menu>
               <button class="docs-ecosystem-nav__language-button" type="button" data-vozen-docs-language-button aria-haspopup="listbox" aria-expanded="false" aria-label="Site language">
-                <span class="docs-ecosystem-nav__language-flag" aria-hidden="true">${ukFlag}</span><span class="docs-ecosystem-nav__language-name">English</span>
+                ${flagMarkup("gb")}<span class="docs-ecosystem-nav__language-name">English</span>
                 <svg class="docs-ecosystem-nav__language-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
               </button>
               <ul class="docs-ecosystem-nav__language-panel" data-vozen-docs-language-panel role="listbox" tabindex="-1" aria-label="Choose language">${renderDocsLanguageOptions()}</ul>
@@ -277,7 +278,7 @@
           <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" data-i18n-aria-label="common.githubLabel" title="Open source on GitHub" data-i18n-title="common.githubTitle">${githubIcon}</a>
           <div class="lang" id="langMenu">
             <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language" data-i18n-aria-label="ecosystem.siteLanguage">
-              <span class="lang__flag" id="langBtnFlag">${ukFlag}</span><span class="lang__name" id="langBtnName">English</span>
+              <span class="lang__flag" id="langBtnFlag">${flagMarkup("gb", "lang__flag-icon")}</span><span class="lang__name" id="langBtnName">English</span>
               <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language" data-i18n-aria-label="ecosystem.chooseLanguage"></ul>

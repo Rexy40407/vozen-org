@@ -310,3 +310,7 @@ body.docs-shell-active .docs-main .docs-local-toc li{margin:0}
 
 .docs-ecosystem-nav__language[data-vozen-docs-language]{appearance:none;background:#151d2e;color:#e5ebf6;cursor:pointer;font:inherit;outline:none}
 .docs-ecosystem-nav__language[data-vozen-docs-language]:focus-visible{outline:3px solid rgba(105,230,210,.58);outline-offset:3px}
+/* Locale flags are bundled SVGs so they render consistently without emoji fonts. */
+.docs-ecosystem-nav__language-flag { display: block; flex: none; width: 20px; height: 15px; border-radius: 2px; object-fit: cover; }
+.docs-ecosystem-nav__language-option .docs-ecosystem-nav__language-flag { width: 20px; height: 15px; }
+.docs-ecosystem-nav__language-button .docs-ecosystem-nav__language-flag { margin-inline-end: 2px; }

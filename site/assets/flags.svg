@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="flag-gb" viewBox="0 0 24 18">
+    <path fill="#012169" d="M0 0h24v18H0z"/>
+    <path stroke="#fff" stroke-width="5" d="m0 0 24 18M24 0 0 18"/>
+    <path stroke="#c8102e" stroke-width="2" d="m0 0 24 18M24 0 0 18"/>
+    <path stroke="#fff" stroke-width="7" d="M12 0v18M0 9h24"/>
+    <path stroke="#c8102e" stroke-width="4" d="M12 0v18M0 9h24"/>
+  </symbol>
+  <symbol id="flag-pt" viewBox="0 0 24 18">
+    <path fill="#046a38" d="M0 0h9v18H0z"/><path fill="#da291c" d="M9 0h15v18H9z"/>
+    <circle cx="9" cy="9" r="3.5" fill="#ffcd00"/><circle cx="9" cy="9" r="2.4" fill="#da291c"/>
+  </symbol>
+  <symbol id="flag-fr" viewBox="0 0 24 18"><path fill="#000091" d="M0 0h8v18H0z"/><path fill="#fff" d="M8 0h8v18H8z"/><path fill="#e1000f" d="M16 0h8v18h-8z"/></symbol>
+  <symbol id="flag-es" viewBox="0 0 24 18"><path fill="#aa151b" d="M0 0h24v18H0z"/><path fill="#f1bf00" d="M0 4h24v10H0z"/><circle cx="7" cy="9" r="2" fill="#aa151b"/></symbol>
+  <symbol id="flag-de" viewBox="0 0 24 18"><path fill="#000" d="M0 0h24v6H0z"/><path fill="#d00" d="M0 6h24v6H0z"/><path fill="#ffce00" d="M0 12h24v6H0z"/></symbol>
+  <symbol id="flag-tr" viewBox="0 0 24 18"><path fill="#e30a17" d="M0 0h24v18H0z"/><circle cx="10" cy="9" r="5" fill="#fff"/><circle cx="12" cy="9" r="4" fill="#e30a17"/><path fill="#fff" d="m16 6 .8 2.2 2.2.1-1.7 1.4.6 2.2-1.9-1.2-1.9 1.2.6-2.2-1.7-1.4 2.2-.1z"/></symbol>
+  <symbol id="flag-sa" viewBox="0 0 24 18"><path fill="#006c35" d="M0 0h24v18H0z"/><path fill="#fff" d="M4 8h15v1.5H4zM17 11l5 1-5 1z"/><path fill="#fff" d="M5 12h12v.8H5z"/></symbol>
+  <symbol id="flag-tw" viewBox="0 0 24 18"><path fill="#fe0000" d="M0 0h24v18H0z"/><path fill="#000095" d="M0 0h12v9H0z"/><circle cx="6" cy="4.5" r="2.1" fill="#fff"/><circle cx="6" cy="4.5" r="1.25" fill="#000095"/></symbol>
+  <symbol id="flag-ru" viewBox="0 0 24 18"><path fill="#fff" d="M0 0h24v6H0z"/><path fill="#0039a6" d="M0 6h24v6H0z"/><path fill="#d52b1e" d="M0 12h24v6H0z"/></symbol>
+  <symbol id="flag-kr" viewBox="0 0 24 18"><path fill="#fff" d="M0 0h24v18H0z"/><path fill="#cd2e3a" d="M12 5a4 4 0 0 0 0 8 2 2 0 0 0 0-4 2 2 0 0 1 0-4"/><path fill="#0047a0" d="M12 13a4 4 0 0 0 0-8 2 2 0 0 0 0 4 2 2 0 0 1 0 4"/><path stroke="#111" stroke-width="1.4" d="m3 3 3 3m-4-1 3 3m13 4 3 3m-4-1 3 3M18 3l3 3m-4-1 3 3M3 12l3 3m-4-1 3 3"/></symbol>
+</svg>
