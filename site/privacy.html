@@ -13,7 +13,7 @@
     <meta name="description" content="What data the Vozen Discord TTS bot stores, why, and how to delete it." />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="stylesheet" href="css/main-v43.css?v=e09fb8a4f245" />
+    <link rel="stylesheet" href="css/main-v43.css?v=3b9071956753" />
     <style>
       .legal { max-width: 780px; margin: 0 auto; padding: 96px 22px 120px; }
       .legal a.back { display: inline-flex; align-items: center; gap: 8px; color: var(--aqua); text-decoration: none; font-weight: 600; font-size: 15px; }
@@ -50,7 +50,7 @@
     <main class="legal">
       <a class="back" href="/" data-i18n="legal.back">← Back to Vozen</a>
       <h1 data-i18n="legal.privacyTitle">Privacy Policy — Vozen</h1>
-      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 4 September 2026</p>
+      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 6 October 2026</p>
 
       <p>
         Vozen is a text-to-speech (TTS) bot for Discord. This page explains exactly what
@@ -178,12 +178,12 @@
         <li><b>Cloudflare Web Analytics</b> — when enabled on an eligible public page, Cloudflare receives the information required for its cookie-free aggregate traffic and Core Web Vitals reporting. Its access credentials stay on the server and are never exposed in this website or the operator panel.</li>
         <li><b>Operator admin console</b> — the operator has a private console (gated by the operator's own Discord login — only the owner's account may enter) to manage Premium and to see <b>aggregate usage per server</b>: the server's name and icon, how many messages Vozen read there, top talkers, and each global top talker's dominant language and TTS engine from <code>talk_usage</code>. These are counters, never message content. User-scoped <code>talk_stats</code> and <code>talk_usage</code> are removed by <code>/privacy erase</code>; server-scoped rows are removed by the server-data purge.</li>
         <li><b>GitHub Pages</b> — hosts this website; like any web host it processes standard request logs (including IP addresses).</li>
-        <li><b>Hetzner</b> — hosts the bot's server and database.</li>
+        <li><b>OVHcloud</b> — hosts the bot's server and database in Gravelines, France.</li>
       </ul>
 
       <h2>10. Where your data is processed (international transfers)</h2>
       <ul>
-        <li><b>The bot's database and processing</b> run on a server in <b>Germany (EU)</b> (Hetzner) — no international transfer.</li>
+        <li><b>The bot's database and processing</b> run on an OVHcloud server in <b>Gravelines, France (EU)</b>.</li>
         <li><b>This website</b> is hosted by <b>GitHub Pages</b>, whose infrastructure may process requests outside the EEA. Transfers rely on an applicable adequacy decision where available and otherwise on appropriate safeguards such as Standard Contractual Clauses.</li>
         <li><b>Google voices</b>: text read with a Google voice may be processed outside the EEA. Transfers rely on the provider's applicable transfer mechanism, such as an adequacy framework where certified or Standard Contractual Clauses.</li>
       </ul>
@@ -205,8 +205,8 @@
       <ul>
         <li><b>Access</b> — ask what data is tied to your ID.</li>
         <li><b>Rectification</b> — most of your data is settings you can change yourself with the bot's commands.</li>
-        <li><b>Erasure</b> — <code>/privacy erase</code> deletes your erasable personal settings, preferences, consent, scores, <code>talk_stats</code>, <code>talk_usage</code>, and an active free vote entitlement across all servers. A pseudonymous vote-limit entry may remain for at most 30 days to prevent replay and enforce the published rolling limit. It also does not silently revoke paid rights or destroy minimum financial and activation records retained for accounting, fraud prevention, disputes, and legal obligations. Individual commands remove single items (<code>/voice reset</code>, <code>/voice nickname</code> with no name, <code>/voice optin</code>, <code>/config reset</code>, and so on).</li>
-        <li><b>Restriction &amp; objection</b> — stop being read aloud with <code>/voice optout</code>, or ask us to restrict processing.</li>
+        <li><b>Erasure</b> — <code>/privacy erase</code> deletes your erasable personal settings, preferences, consent, scores, <code>talk_stats</code>, <code>talk_usage</code>, and an active free vote entitlement across all servers. A pseudonymous vote-limit entry may remain for at most 30 days to prevent replay and enforce the published rolling limit. It also does not silently revoke paid rights or destroy minimum financial and activation records retained for accounting, fraud prevention, disputes, and legal obligations. Individual commands remove single items (<code>/voice reset</code>, <code>/voice nickname</code> with no name, <code>/voice opt-in</code>, <code>/config reset</code>, and so on).</li>
+        <li><b>Restriction &amp; objection</b> — stop being read aloud with <code>/voice opt-out</code>, or ask us to restrict processing.</li>
         <li><b>Portability</b> — request a copy of your data.</li>
         <li><b>Withdraw consent</b> — e.g. <code>/transcribe revoke</code> or removing your birthday — at any time, without affecting past processing.</li>
         <li><b>Complaint</b> — you can lodge a complaint with your local EU/EEA data protection authority. The operator's authority is Portugal's <b>CNPD</b> (<a href="https://www.cnpd.pt" target="_blank" rel="noopener">cnpd.pt</a>).</li>
