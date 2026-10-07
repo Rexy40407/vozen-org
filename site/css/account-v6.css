@@ -2155,6 +2155,13 @@ body.page-account .ppanel__receiptbody > .ppanel__claimhint {
   line-height: 1.45;
 }
 
+/* A failed Helper handoff adds a status row. Keep it within the task area
+   instead of painting over the trust/help footer in fixed-height layouts. */
+body.page-account .account-next:has(#helperSessionMessage) {
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .account-task__icon {
   display: grid;
   place-items: center;

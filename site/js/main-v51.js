@@ -1009,6 +1009,7 @@
     }
     message.textContent = t("panel.error");
     target.setAttribute("aria-describedby", message.id);
+    message.scrollIntoView?.({ block: "nearest" });
   }
   function wireHelperSessionHandoff() {
     if (helperSessionHandoffWired) return;
@@ -2653,4 +2654,3 @@
   wireHelperSessionHandoff();
   loadPanel();
 })();
-
