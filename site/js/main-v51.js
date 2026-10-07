@@ -996,6 +996,20 @@
   }
 
   let helperSessionHandoffWired = false;
+  let helperNavigationPending = false;
+  function showHelperHandoffError(target) {
+    let message = document.getElementById("helperSessionMessage");
+    if (!message) {
+      message = document.createElement("p");
+      message.id = "helperSessionMessage";
+      message.className = "account-task-message";
+      message.setAttribute("role", "status");
+      message.setAttribute("aria-live", "polite");
+      (target.closest(".account-tasklist") || target.parentElement)?.append(message);
+    }
+    message.textContent = t("panel.error");
+    target.setAttribute("aria-describedby", message.id);
+  }
   function wireHelperSessionHandoff() {
     if (helperSessionHandoffWired) return;
     helperSessionHandoffWired = true;
@@ -1029,9 +1043,24 @@
         // account page. Otherwise the navigation can cancel the request and
         // the Helper immediately redirects back to /account/.
         event.preventDefault();
-        void bootstrapHelperSession(token).finally(() => {
-          window.location.assign(href);
-        });
+        if (helperNavigationPending) return;
+        helperNavigationPending = true;
+        target.setAttribute("aria-busy", "true");
+        void bootstrapHelperSession(token)
+          .then((ready) => {
+            // A failed exchange must leave the account intact, not enter a
+            // panel/account redirect loop. Do not navigate after logout either.
+            if (storedToken() !== token) return;
+            if (ready) window.location.assign(href);
+            else showHelperHandoffError(target);
+          })
+          .catch(() => {
+            if (storedToken() === token) showHelperHandoffError(target);
+          })
+          .finally(() => {
+            helperNavigationPending = false;
+            target.removeAttribute("aria-busy");
+          });
       },
       { capture: true },
     );

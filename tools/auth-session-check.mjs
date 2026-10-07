@@ -32,7 +32,8 @@ assert.match(main, /if \(panelState\.mode !== "ok"\) setPanel\(\{ mode: "error" 
 assert.doesNotMatch(main, /if \(!IS_ACCOUNT \|\| helperSessionHandoffWired\)/);
 assert.match(main, /keepalive: true/);
 assert.match(main, /void bootstrapHelperSession\(token\);/);
-assert.match(main, /event\.preventDefault\(\);\s*void bootstrapHelperSession\(token\)\.finally/);
+assert.match(main, /event\.preventDefault\(\);\s*if \(helperNavigationPending\) return;/);
+assert.match(main, /if \(ready\) window\.location\.assign\(href\);\s*else showHelperHandoffError\(target\)/);
 assert.match(main, /window\.location\.assign\(href\)/);
 assert.match(main, /if \(!helperSessionReady\) helperSessionBridgePromise = null/);
 assert.match(nav, /new BroadcastChannel\(AUTH_CHANNEL_NAME\)/);
@@ -47,3 +48,4 @@ assert.doesNotMatch(account, /data-vozen-stripe/);
 assert.match(account, /main-v51\.js[^"']*auth-persist=1/);
 
 console.log('Shared auth and account loading contract passed.');
+await import('./helper-handoff-regression.mjs');
