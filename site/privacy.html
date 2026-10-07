@@ -50,7 +50,7 @@
     <main class="legal">
       <a class="back" href="/" data-i18n="legal.back">← Back to Vozen</a>
       <h1 data-i18n="legal.privacyTitle">Privacy Policy — Vozen</h1>
-      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 6 October 2026</p>
+      <p class="updated"><span data-i18n="legal.lastUpdated">Last updated:</span> 7 October 2026</p>
 
       <p>
         Vozen is a text-to-speech (TTS) bot for Discord. This page explains exactly what
@@ -110,7 +110,7 @@
       <ul>
         <li>We do <b>not</b> keep a history or log of your chat messages. Text is turned into speech on the fly and then discarded.</li>
         <li>We do <b>not</b> store, cache, or log the verified Discord email used for instant activation or the transient hash computed from it. Both exist only in memory for that activation request and are then discarded.</li>
-        <li>To speed up repeated phrases, recently synthesized audio may be cached on the server. It is keyed by a content hash rather than your user ID, rotates out under a bounded cache policy, and can still reveal the spoken content to someone with server-file access.</li>
+        <li>To speed up repeated phrases, recently synthesized audio may be cached on the server. It is keyed by a content hash rather than your user ID and expires seven days after its last write; reading it does not extend that deadline. Cached audio can still reveal the spoken content to someone with server-file access.</li>
         <li>Outside of a transcription session you consented to, the bot stays deafened and does not listen to or store voice-channel audio.</li>
         <li>We do <b>not</b> keep web access logs that tie your IP address to your activity. Our API (<code>api.vozen.org</code>) uses your IP only <b>momentarily</b>, in memory, for rate-limiting and security — it is never written to our logs. (This website is served by GitHub Pages, whose standard host logs are outside our control; see §9.)</li>
         <li>Stripe may process billing details and payment-method information as an independent payment processor. Vozen receives only the identifiers and subscription state needed to provide the digital service.</li>
@@ -194,13 +194,14 @@
         <li><b>Vote reward</b> — the raw Discord ID and reward timestamp are deleted after the active 24-hour entitlement or by <code>/privacy erase</code>. A keyed one-way HMAC ledger entry and the provider delivery identifier are retained for 30 days to prevent replay and enforce the rolling limit, then deleted.</li>
         <li><b>Server growth lifecycle</b> — the identifiable server lifecycle row is deleted 30 days after the bot leaves that server. Daily aggregate counts do not contain server or user IDs.</li>
         <li><b>Server data</b> — automatically deleted <b>30 days</b> after Vozen is removed from a server, unless it is re-invited within that window.</li>
-        <li><b>Audio cache</b> — rotates automatically (about 500 files per engine, oldest first); not tied to you.</li>
+        <li><b>Audio cache</b> — generated speech expires <b>seven days after its last write</b>, with a cleanup sweep at startup and every hour even without traffic. Expired audio is deleted instead of reused; repeated reads do not renew its age. In normal operation, an idle file can remain until the next hourly sweep (up to seven days plus one hour). The cache also has a count limit of about 500 completed files per engine. Expired synthesis temporary files and abandoned workspaces are cleaned as well. Cleanup failures are logged and retried; startup is refused if its initial cleanup fails. The hosting provider's single daily infrastructure snapshot may preserve a pre-deletion copy of the encrypted data volume for up to a further 24 hours. The cache is not indexed by your user ID, so contact support for a cache-deletion request.</li>
         <li><b>HD-voice usage counter</b> — auto-purged after about 3 months.</li>
         <li><b>Premium entitlement records</b> — kept while needed for an active entitlement and afterwards only for entitlement history, fraud prevention, disputes, and legal obligations; deleted or anonymized when no longer necessary.</li>
         <li><b>Website login</b> — your token lives only in your browser session; basic identity data may use a ~60-second server-side cache. The activation email and transient hash are never cached and are discarded as soon as that request finishes.</li>
       </ul>
 
       <h2>12. Your rights</h2>
+      <p>The seven-day audio-cache policy was introduced on 7 October 2026, when pre-existing expired cache files were purged. The infrastructure snapshot created before that cleanup remains subject to the hosting provider's daily rotation described above.</p>
       <p>Under the GDPR you have the following rights over your data. To exercise any of them, use the bot commands below or ask on the <a href="https://discord.gg/4kYw2WUbNN" target="_blank" rel="noopener">support server</a>.</p>
       <ul>
         <li><b>Access</b> — ask what data is tied to your ID.</li>
