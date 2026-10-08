@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
 import { PremiumBannerSwitch } from './premium-banner-switch';
+import { FeatureSimulation, type SimulationDraft } from './feature-simulation';
 import { guildStorage, preferredGuild, rememberGuild } from './last-guild';
 import {
   api,
@@ -1979,6 +1980,8 @@ function App() {
     'loading',
   );
   const [message, setMessage] = useState('');
+  const [simulation, setSimulation] = useState<SimulationDraft | null>(null);
+  useEffect(() => { setSimulation(null); }, [route.page, route.key, me?.guildId]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Category>('all');
   const [detailLoading, setDetailLoading] = useState(true);
@@ -2708,17 +2711,13 @@ function App() {
         );
         return;
       }
-      const result = await api.testFeature(route.key, detailConfig);
-      const errors = result.result.issues.filter((issue) => issue.severity === 'error');
-      const decision = result.decision;
-      const decisionText = decision ? ` · ${decision.reason}` : '';
-      setMessage(
-        errors.length
-          ? errors.map((issue) => issue.message).join(' ')
-          : result.result.effects.length
-            ? `${helperT('helper.simulation', 'simulation')}: ${result.result.effects.join(' · ')}${decisionText}`
-            : helperT('helper.simulationComplete', 'Simulation completed — no real action was applied.'),
-      );
+      if (me?.guildId) {
+        setMessage('');
+        const feature = features.find(item => item.key === route.key);
+        setSimulation({ guildId: me.guildId, key: route.key,
+          label: feature ? localizedFeature(feature).label : helperT('helper.feature', 'Feature'),
+          config: structuredClone(detailConfig), enabled: detailEnabled });
+      }
     } catch {
       setMessage(
         route.key === 'social.rss' || route.key === 'social.podcasts'
@@ -3205,6 +3204,9 @@ function App() {
             />
           ))}
       </main>
+      {simulation && route.page === 'detail' && route.key === simulation.key && me?.guildId === simulation.guildId && (
+        <FeatureSimulation draft={simulation} onClose={() => setSimulation(null)} />
+      )}
       </div>
     </div>
   );

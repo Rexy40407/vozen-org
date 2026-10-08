@@ -760,7 +760,7 @@ export const api = {
         headers: { 'Content-Type': 'application/json' },
       },
     ),
-  testFeature: (key: string, config: FeatureConfig) =>
+  testFeature: (key: string, config: FeatureConfig, options?: ReadOptions) =>
     request<{
       ok: boolean;
       key: string;
@@ -781,6 +781,7 @@ export const api = {
         reason: string;
       } | null;
     }>(`/api/config/features/${encodeURIComponent(key)}/simulate`, {
+      signal: options?.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ config }),
