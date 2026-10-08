@@ -36,6 +36,7 @@ import { docsProviderStatusUrl, docsTroubleshootingUrl, docsUrlForFeature } from
 import { bundledFeatureSchema } from './feature-contract-fallback';
 import { ticketStaffField, ticketStaffRoleOptions } from './ticket-staff';
 import { createLoadGuard, isAbortError } from './load-lifecycle';
+import { loadGuildResources } from './guild-resources';
 import { isRoleResourceOptionDisabled, roleResourceLabel } from './role-resource';
 import {
   helperLocale,
@@ -1944,7 +1945,12 @@ function App() {
   const [route, setRoute] = useState<Route>(() => parseRoute(window.location.hash));
   const [me, setMe] = useState<Me | null>(null);
   const [guilds, setGuilds] = useState<Guild[]>(() => (localPreviewMode ? demoGuilds : []));
-  const [guildContext, setGuildContext] = useState<GuildContext | null>(null);
+  const [guildContextState, setGuildContext] = useState<GuildContext | null>(null);
+  const guildContext = guildContextState?.guildId === me?.guildId ? guildContextState : null;
+  const [guildContextLoading, setGuildContextLoading] = useState(false);
+  const [guildContextError, setGuildContextError] = useState(false);
+  const [guildContextRetry, setGuildContextRetry] = useState(0);
+  const needsGuildContext = route.page !== 'servers';
   const [quickSetup, setQuickSetup] = useState<QuickSetupState | null>(null);
   const [quickSetupDefaults, setQuickSetupDefaults] = useState<QuickSetupFeatureDefaults>({});
   const [features, setFeatures] = useState<Feature[]>(() =>
@@ -2154,12 +2160,6 @@ function App() {
       .catch((cause) => {
         if (load.isCurrent() && !isAbortError(cause)) setQuickSetup(defaultQuickSetupState(guildId));
       });
-    void api
-      .guildContext({ signal: load.signal })
-      .then((result) => {
-        if (load.isCurrent()) setGuildContext(result);
-      })
-      .catch(() => undefined);
     // Quick Setup is a composition of real feature adapters.  Fetch their
     // defaults from Rust instead of reconstructing a second schema in React.
     void Promise.all(
@@ -2184,6 +2184,23 @@ function App() {
     });
     return () => load.dispose();
   }, [me?.guildId, guilds, route.page]);
+  useEffect(() => {
+    if (localPreviewMode || !me || !needsGuildContext) return;
+    const load = createLoadGuard();
+    setGuildContext(null);
+    setGuildContextError(false);
+    setGuildContextLoading(true);
+    void loadGuildResources(
+      (signal) => api.guildContext({ signal }), me.guildId, load.signal,
+    ).then((result) => {
+      if (load.isCurrent()) setGuildContext(result);
+    }).catch((cause) => {
+      if (load.isCurrent() && !isAbortError(cause)) setGuildContextError(true);
+    }).finally(() => {
+      if (load.isCurrent()) setGuildContextLoading(false);
+    });
+    return () => load.dispose();
+  }, [me?.guildId, needsGuildContext, guildContextRetry]);
   useEffect(() => {
     if (route.page !== 'overview' || !quickSetup || quickSetup.status !== 'not_started') return;
     const key = `vh_quick_setup_intro_${quickSetup.guildId}`;
@@ -3054,6 +3071,10 @@ function App() {
                 ? helperT('helper.configurationLoadFailed', 'Could not load this configuration')
                 : route.page === 'detail' && detailLoading
                 ? helperT('helper.loadingConfiguration', 'Loading configuration…')
+                : guildContextLoading
+                ? helperT('helper.resourcesLoading', 'Loading Discord channels and roles…')
+                : guildContextError || guildContext?.stale
+                ? helperT('helper.resourcesUnavailableStatus', 'Discord resources unavailable')
                 : dirty
                 ? helperT('helper.unpublished', 'Unpublished draft')
                 : localPreviewMode
@@ -3070,12 +3091,23 @@ function App() {
             </button>
           </div>
         )}
-        {guildContext && !localPreviewMode && guildContext.stale && (
-          <div className="toast panel-toast" role="status">
-            {helperT('helper.contextRefresh', 'Discord context must be refreshed before publishing changes.')}{' '}
-            {guildContext.bot?.reason === 'discord_bot_member_unavailable'
+        {!localPreviewMode && needsGuildContext && (guildContextLoading || guildContextError || guildContext?.stale) && (
+          <div className="card resource-status" role="status">
+            <span>
+            {guildContextLoading
+              ? helperT('helper.resourcesLoading', 'Loading Discord channels and roles…')
+              : guildContextError
+              ? helperT('helper.resourcesLoadFailed', 'Could not load Discord channels and roles. Try again without leaving this page.')
+              : helperT('helper.contextRefresh', 'Discord context must be refreshed before publishing changes.')}{' '}
+            {!guildContextLoading && !guildContextError && (guildContext?.bot?.reason === 'discord_bot_member_unavailable'
               ? helperT('helper.contextVerify', 'Could not verify the Helper role and permissions.')
-              : guildContext.message ?? helperT('helper.contextBlocked', 'Selectors remain available, but preflight is blocked.')}
+              : guildContext?.message ?? helperT('helper.contextBlocked', 'Selectors remain available, but preflight is blocked.'))}
+            </span>
+            {!guildContextLoading && (
+              <button className="secondary" type="button" onClick={() => setGuildContextRetry((value) => value + 1)}>
+                {helperT('helper.resourcesRetry', 'Reload channels and roles')}
+              </button>
+            )}
           </div>
         )}
         {route.page === 'overview' && (
@@ -5766,7 +5798,11 @@ function FieldControl({
       <label className="field">
         <span>
           <b>{field.label}</b>
-          <small>{field.help ?? helperT(resourceOptions.length ? 'helper.selectResourceHelp' : 'helper.resourceUnavailable', resourceOptions.length ? 'Select an existing resource.' : 'Discord resource data is not available yet.')}</small>
+          <small>{field.help ?? (resourceOptions.length
+            ? helperT('helper.selectResourceHelp', 'Select an existing resource.')
+            : context && (isRoleResource ? context.capabilities.roleSelectors : context.capabilities.channelSelectors)
+            ? helperT('helper.resourcesEmpty', 'No matching resources in this server.')
+            : helperT('helper.resourceUnavailable', 'Discord resource data is not available yet.'))}</small>
         </span>
         <select
           value={multiple ? (Array.isArray(normalized) ? normalized.map(String) : []) : String(normalized)}

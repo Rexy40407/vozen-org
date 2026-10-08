@@ -1309,3 +1309,26 @@ body:has(.workspace-standalone--helper-picker) #root,
   .helper-server-picker__server,
   .helper-server-picker__add { transition: none; }
 }
+
+.resource-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.resource-status > span {
+  flex: 1 1 240px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.resource-status > button {
+  flex: 0 1 auto;
+}

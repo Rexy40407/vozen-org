@@ -3,11 +3,13 @@ import assert from 'node:assert/strict';
 const browser = await chromium.launch();
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 try {
-  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card']) {
+  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources']) {
     const page = await browser.newPage();
     let ready = false, guild = 'a', earlyReads = 0, detailReads = 0, switches = 0;
     let savedConfig;
-    const feature = {key:'community.levels',label:'Levels & XP',category:'community',available:true,enabled:true};
+    let contextReads = 0;
+    const resourceScenario = scenario.endsWith('resources');
+    const feature = {key:resourceScenario ? 'community.starboard' : 'community.levels',label:resourceScenario ? 'Starboard' : 'Levels & XP',category:'community',available:true,enabled:true};
     if (scenario === 'legacy-bearer') await page.addInitScript(() => {
       if (!sessionStorage.getItem('qa-seeded')) {
         sessionStorage.setItem('qa-seeded','1');
@@ -23,12 +25,22 @@ try {
         await new Promise(resolve => setTimeout(resolve, 300));
         ready = true; value = {id:'qa-user',guildId:guild,dbOk:true};
       } else if (path === '/api/guilds') value = {guilds:[{id:'a',name:'Alpha',canManage:true},{id:'b',name:'Beta',canManage:true}]};
+      else if (path === '/api/guild-context') {
+        contextReads++;
+        if (scenario === 'retry-resources' && contextReads === 1) {
+          await route.fulfill({status:503,json:{code:'temporary_failure'}}); return;
+        }
+        value = {guildId:scenario === 'wrong-guild-resources' && contextReads === 1 ? 'b' : guild,
+          name:'Alpha',permissions:'8',channels:[{id:`${guild}-starboard`,name:'starboard',type:'text'}],roles:[],
+          hierarchy:{known:true},capabilities:{channelSelectors:!(scenario === 'stale-resources' && contextReads === 1),roleSelectors:true,permissionPreflight:true},
+          stale:scenario === 'stale-resources' && contextReads === 1};
+      }
       else if (path === '/api/session/switch') {
         switches++; guild = route.request().postDataJSON().guild_id;
         if (scenario === 'uncertain-switch') { await route.fulfill({status:503,json:{code:'lost_response'}}); return; }
         value = {ok:true,guildId:guild};
       } else if (path === '/api/config/features') value = {guildId:guild,features:[feature]};
-      else if (path === '/api/config/features/community.levels') {
+      else if (path === `/api/config/features/${feature.key}`) {
         if (route.request().method() === 'PUT') savedConfig = route.request().postDataJSON().config;
         detailReads++;
         const number = detailReads;
@@ -36,6 +48,7 @@ try {
         if (scenario === 'retry-detail' && detailReads === 1) { await route.fulfill({status:503,json:{code:'temporary_failure'}}); return; }
         if (scenario === 'stale-detail' && number === 1) await new Promise(resolve => setTimeout(resolve, 600));
         value = {...feature,config:{xpMin:(guild === 'b' || (scenario === 'stale-detail' && number > 1)) ? 42 : 15},defaults:{},schema:{sections:[{title:'XP progression',fields:[{key:'xpMin',label:'Minimum XP',kind:'number'}]}]},revision:1};
+        if (resourceScenario) value = {...feature,guildId:guild,config:savedConfig ?? {channel:'',threshold:3,emoji:'⭐'},defaults:{},schema:{sections:[{title:'Starboard',fields:[{key:'channel',label:'Default channel',kind:'channel'},{key:'threshold',label:'Required reactions',kind:'number',min:1,max:100},{key:'emoji',label:'Highlight emoji',kind:'text'}]}]},revision:1};
         if (scenario === 'missing-schema' && number === 1) delete value.schema;
       } else if (path.endsWith('/preflight')) value = {ok:true,issues:[]};
       else if (path === '/api/stats') value = {guildId:guild,totalCases:0};
@@ -47,7 +60,29 @@ try {
       else { await route.fulfill({status:503,json:{}}); return; }
       await route.fulfill({json:value});
     });
-    await page.goto(`${base}#/config/community.levels`);
+    await page.goto(`${base}#/config/${feature.key}`);
+    if (resourceScenario) {
+      const channel = page.getByRole('combobox',{name:/Default channel/});
+      const threshold = page.getByRole('spinbutton',{name:'Required reactions',exact:true});
+      await page.getByRole('button',{name:'Reload channels and roles',exact:true}).waitFor();
+      assert.equal(await channel.isDisabled(),true,'failed/stale/cross-guild context must not enable selectors');
+      await threshold.fill('5');
+      await page.getByRole('button',{name:'Reload channels and roles',exact:true}).click();
+      await channel.selectOption('a-starboard');
+      assert.equal(await threshold.inputValue(),'5','resource retry must retain the unsaved configuration');
+      assert.equal(await page.getByRole('button',{name:'Reload channels and roles',exact:true}).count(),0);
+      await Promise.all([
+        page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith('/api/config/features/community.starboard')),
+        page.getByRole('button',{name:'Save changes',exact:true}).click(),
+      ]);
+      assert.equal(savedConfig.channel,'a-starboard');
+      assert.equal(savedConfig.threshold,5);
+      assert.equal(savedConfig.emoji,'⭐');
+      assert.equal(contextReads,2);
+      console.log(`PASS ${scenario}`);
+      await page.close();
+      continue;
+    }
     if (scenario === 'stale-detail') {
       while (!detailReads) await new Promise(resolve => setTimeout(resolve, 10));
       await page.goto(`${base}#/features`);
