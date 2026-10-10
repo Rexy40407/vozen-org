@@ -39,7 +39,8 @@ import { bundledFeatureSchema } from './feature-contract-fallback';
 import { ticketStaffField, ticketStaffRoleOptions } from './ticket-staff';
 import { createLoadGuard, isAbortError } from './load-lifecycle';
 import { loadGuildResources } from './guild-resources';
-import { isRoleResourceOptionDisabled, roleResourceLabel } from './role-resource';
+import { isRoleResourceOptionDisabled, roleResourceLabel, roleRequiresAssignment } from './role-resource';
+import { ResourceMultiSelect } from './resource-multi-select';
 import {
   helperLocale,
   helperT,
@@ -2980,7 +2981,7 @@ function App() {
             ? helperT('helper.activityPageSubtitle', 'See what happened and stay in control.')
             : route.page === 'rank-card'
               ? helperT('helper.rankCardPageSubtitle', 'Create the level card with your server identity.')
-              : helperT('helper.detailPageSubtitle', 'Server-specific configuration with simple and advanced options.');
+              : helperT('helper.allSettingsSubtitle', helperLocale() === 'pt' ? 'Todas as definições para este servidor.' : 'All settings for this server.');
   return (
     <div className="workspace-app workspace-app--helper">
       <EcosystemTopbar />
@@ -4363,7 +4364,7 @@ function FeatureCatalogue({
           <small className="eyebrow">{helperT('helper.catalogEyebrow', 'HELPER CATALOG')}</small>
           <h2>{helperT('helper.catalogTitle', 'Choose what your server needs')}</h2>
           <p>
-            {helperT('helper.catalogIntro', 'Open a topic to see essential options, advanced settings, and a safe simulation.')}
+            {helperT('helper.catalogAllSettingsIntro', helperLocale() === 'pt' ? 'Abre uma funcionalidade para configurar todas as opções e ver uma simulação segura.' : 'Open a feature to configure all settings and review a safe simulation.')}
           </p>
         </div>
         <input
@@ -4753,7 +4754,7 @@ function FeatureDetail({
               config={config}
               context={resourceContext}
               onChange={onChange}
-              afterFields={feature?.key === 'community.starboard' && section.fields.some(field => field.key === 'channel')
+              beforeFields={feature?.key === 'community.starboard' && section.fields.some(field => field.key === 'channel')
                 ? <StarboardChannel key={context?.guildId} context={context} onCreated={channel => {
                     setCreatedChannel(channel);onChange('channel',channel.id);
                   }} /> : undefined}
@@ -4793,7 +4794,6 @@ function FeatureDetail({
             <a className="link-button" href={docsTroubleshootingUrl('restore-configuration')} target="_blank" rel="noopener noreferrer">
               {helperT('helper.rollback', 'Rollback instructions')}
             </a>
-            <span>{helperT('helper.advancedCollapsed', 'Advanced fields are collapsed to keep the first step simple.')}</span>
           </div>
         </aside>
       </div>
@@ -5726,16 +5726,14 @@ function ConfigSection({
   config,
   context,
   onChange,
-  afterFields,
+  beforeFields,
 }: {
   section: SectionSpec;
   config: FeatureConfig;
   context: GuildContext | null;
   onChange: (key: string, value: unknown) => void;
-  afterFields?: import('react').ReactNode;
+  beforeFields?: import('react').ReactNode;
 }) {
-  const advanced = section.fields.filter((field) => field.advanced);
-  const basic = section.fields.filter((field) => !field.advanced);
   return (
     <section className="config-section card">
       <div className="section-heading">
@@ -5745,8 +5743,9 @@ function ConfigSection({
           <p>{section.description}</p>
         </div>
       </div>
+      {beforeFields}
       <div className="field-grid">
-        {basic.map((field) => (
+        {section.fields.map((field) => (
           <FieldControl
             field={field}
             key={field.key}
@@ -5756,25 +5755,6 @@ function ConfigSection({
           />
         ))}
       </div>
-      {advanced.length > 0 && (
-        <details className="advanced">
-          <summary>
-            {helperT('helper.advancedOptions', 'Advanced options')} <span>{advanced.length} {helperT('helper.settings', 'settings')}</span>
-          </summary>
-          <div className="field-grid">
-            {advanced.map((field) => (
-              <FieldControl
-                field={field}
-                key={field.key}
-                value={config[field.key]}
-                context={context}
-                onChange={onChange}
-              />
-            ))}
-          </div>
-        </details>
-      )}
-      {afterFields}
     </section>
   );
 }
@@ -5799,6 +5779,7 @@ function FieldControl({
         : (context?.roles ?? []);
   const multiple = field.kind === 'channels' || field.kind === 'roles';
   const isRoleResource = field.kind === 'role' || field.kind === 'roles';
+  const requiresAssignment = roleRequiresAssignment(field.key);
   const selectedResourceIds = new Set(
     (Array.isArray(normalized) ? normalized : [normalized])
       .filter(
@@ -5808,7 +5789,14 @@ function FieldControl({
       .map(String)
       .filter(Boolean),
   );
-  if (field.kind === 'channel' || field.kind === 'category' || field.kind === 'channels' || field.kind === 'role' || field.kind === 'roles')
+  if (multiple) return <ResourceMultiSelect label={field.label} help={field.help}
+    value={Array.from(selectedResourceIds)}
+    disabled={!(isRoleResource ? context?.capabilities.roleSelectors : context?.capabilities.channelSelectors)}
+    options={resourceOptions.map(option => ({id:option.id,
+      label:isRoleResource ? roleResourceLabel(option,requiresAssignment) : `#${option.name}`,
+      disabled:isRoleResource && isRoleResourceOptionDisabled(option,selectedResourceIds,requiresAssignment),
+    }))} onChange={selected => onChange(field.key,selected)} />;
+  if (field.kind === 'channel' || field.kind === 'category' || field.kind === 'role')
     return (
       <label className="field">
         <span>
@@ -5820,16 +5808,11 @@ function FieldControl({
             : helperT('helper.resourceUnavailable', 'Discord resource data is not available yet.'))}</small>
         </span>
         <select
-          value={multiple ? (Array.isArray(normalized) ? normalized.map(String) : []) : String(normalized)}
-          multiple={multiple}
-          size={multiple ? Math.min(5, Math.max(2, resourceOptions.length)) : undefined}
-          onChange={(event) => {
-            const selected = Array.from(event.currentTarget.selectedOptions).map((option) => option.value);
-            onChange(field.key, multiple ? selected : (selected[0] ?? ''));
-          }}
-          disabled={!context?.capabilities.channelSelectors && (field.kind === 'channel' || field.kind === 'category' || field.kind === 'channels') || !context?.capabilities.roleSelectors && (field.kind === 'role' || field.kind === 'roles')}
+          value={String(normalized)}
+          onChange={event => onChange(field.key,event.currentTarget.value)}
+          disabled={!context?.capabilities.channelSelectors && (field.kind === 'channel' || field.kind === 'category') || !context?.capabilities.roleSelectors && field.kind === 'role'}
         >
-          {!multiple && <option value="">{field.key === 'staffRole'
+          {<option value="">{field.key === 'staffRole'
             ? helperT('helper.ticketStaffNone', 'No staff notification — choose a role')
             : field.key === 'panelChannel'
               ? helperT('helper.ticketPanelNone', 'Choose the channel for the Open ticket button')
@@ -5842,12 +5825,12 @@ function FieldControl({
                 key={option.id}
                 disabled={
                   roleOption
-                    ? isRoleResourceOptionDisabled(roleOption, selectedResourceIds, field.key !== 'staffRole')
+                    ? isRoleResourceOptionDisabled(roleOption, selectedResourceIds, requiresAssignment)
                     : false
                 }
               >
                 {roleOption
-                  ? roleResourceLabel(roleOption, field.key !== 'staffRole')
+                  ? roleResourceLabel(roleOption, requiresAssignment)
                   : field.kind === 'category'
                     ? `▾ ${option.name}`
                     : `#${option.name}`}

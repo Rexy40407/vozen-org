@@ -3,6 +3,7 @@ import { api, type GuildContext } from './api';
 import { helperLocale } from './i18n';
 import { canCreateStarboard, moderatorRoles, validStarboardName } from './starboard-channel';
 import './starboard-channel.css';
+import { ResourceMultiSelect } from './resource-multi-select';
 
 export function StarboardChannel({context, onCreated}: {
   context: GuildContext | null;
@@ -49,23 +50,24 @@ export function StarboardChannel({context, onCreated}: {
       if (alive.current) setBusy(false);
     }
   }
-  return <details className="starboard-channel">
-    <summary>{text('Create a dedicated Starboard channel', 'Criar um canal dedicado ao Starboard')}</summary>
+  return <section className="starboard-channel" aria-label={text('Dedicated Starboard channel','Canal dedicado ao Starboard')}>
+    <div className="starboard-channel__heading">
+      <h4>{text('Dedicated Starboard channel', 'Canal dedicado ao Starboard')}</h4>
+      {!created && <button type="button" className="primary" disabled={busy || !allowed || !validStarboardName(name)} onClick={() => void create()}>{busy ? text('Creating channel…','A criar canal…') : text('Create channel with permissions','Criar canal com permissões')}</button>}
+    </div>
     <p>{text('Members can read highlights and react. Only moderators and the Helper can post; members cannot create threads. Administrators retain their Discord access.', 'Os membros podem ler destaques e reagir. Só os moderadores e o Helper podem publicar; os membros não podem criar threads. Os administradores mantêm o seu acesso Discord.')}</p>
     <div className="field-grid">
       <label className="field"><span><b>{text('Channel name','Nome do canal')}</b></span>
         <input value={name} maxLength={80} disabled={busy || !!created} onChange={event => setName(event.target.value)} aria-invalid={!validStarboardName(name)} />
         {!validStarboardName(name) && <small>{text('Use 2–80 letters, numbers, hyphens or underscores.','Usa 2–80 letras, números, hífenes ou underscores.')}</small>}
       </label>
-      <label className="field"><span><b>{text('Moderator roles','Cargos de moderação')}</b><small>{text('Leave unselected to include all detected moderator roles.','Sem seleção, inclui todos os cargos de moderação detetados.')}</small></span>
-        <select multiple size={3} value={staff} disabled={busy || !!created || !roles.length} onChange={event => setStaff(Array.from(event.currentTarget.selectedOptions, option => option.value))}>
-          {roles.map(role => <option key={role.id} value={role.id}>{role.name}</option>)}
-        </select>
-      </label>
+      <ResourceMultiSelect label={text('Moderator roles','Cargos de moderação')}
+        help={text('Leave unselected to include all detected moderator roles.','Sem seleção, inclui todos os cargos de moderação detetados.')}
+        options={roles.map(role => ({id:role.id,label:role.name}))} value={staff}
+        disabled={busy || !!created || !roles.length} onChange={setStaff} />
     </div>
     {!allowed && <p role="status">{text('Refresh Discord resources and check the Helper permissions before creating a channel.','Atualiza os recursos Discord e verifica as permissões do Helper antes de criar um canal.')}</p>}
     {error && <p className="starboard-channel__error" role="alert">{error}</p>}
-    {created ? <p className="starboard-channel__success" role="status">{text(`#${created} is ready and selected. Save changes to use it for Starboard.`, `#${created} está pronto e selecionado. Guarda as alterações para o usar no Starboard.`)}</p>
-      : <button type="button" className="secondary" disabled={busy || !allowed || !validStarboardName(name)} onClick={() => void create()}>{busy ? text('Creating channel…','A criar canal…') : text('Create read-only channel','Criar canal só de leitura')}</button>}
-  </details>;
+    {created && <p className="starboard-channel__success" role="status">{text(`#${created} is ready and selected. Save changes to use it for Starboard.`, `#${created} está pronto e selecionado. Guarda as alterações para o usar no Starboard.`)}</p>}
+  </section>;
 }

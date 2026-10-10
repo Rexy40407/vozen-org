@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { isRoleResourceOptionDisabled, roleResourceLabel } from './role-resource';
+import { isRoleResourceOptionDisabled, roleResourceLabel, roleRequiresAssignment } from './role-resource';
 
 describe('Discord role resource options', () => {
+  it('only applies hierarchy to assignment fields, not ignored/access references', () => {
+    for (const key of ['ignoredRoles','requiredRole','staffRole']) {
+      expect(roleRequiresAssignment(key)).toBe(false);
+      expect(isRoleResourceOptionDisabled({id:'high',name:'High role',manageable:false},new Set(),roleRequiresAssignment(key))).toBe(false);
+    }
+    for (const key of ['autoRole','verifiedRole','levelRoles','roleIds']) expect(roleRequiresAssignment(key)).toBe(true);
+  });
   it('allows high staff roles referenced for ticket access and pings without assigning them', () => {
     const staff = { id: 'staff', name: 'Admins', manageable: false };
     expect(isRoleResourceOptionDisabled(staff, new Set(), false)).toBe(false);

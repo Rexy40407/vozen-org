@@ -4,6 +4,10 @@ type RoleResourceOption = {
   manageable?: boolean;
 };
 
+export function roleRequiresAssignment(fieldKey: string): boolean {
+  return !['staffRole','requiredRole','ignoredRoles'].includes(fieldKey);
+}
+
 export function roleResourceLabel(option: RoleResourceOption, requiresAssignment = true): string {
   return `${requiresAssignment && option.manageable === false ? '🔒 ' : ''}@${option.name}`;
 }

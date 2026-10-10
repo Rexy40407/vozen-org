@@ -4,7 +4,7 @@ import { mkdir } from 'node:fs/promises';
 const browser = await chromium.launch();
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 try {
-  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout', 'channel-create', 'channel-error', 'channel-wrong-guild', 'channel-switch', 'channel-no-permissions', 'channel-mobile', 'channel-pt']) {
+  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout', 'channel-create', 'channel-error', 'channel-wrong-guild', 'channel-switch', 'channel-no-permissions', 'channel-mobile', 'channel-pt', 'channel-one-click', 'multiple-resources', 'multiple-mobile', 'multiple-keyboard', 'fields-visible']) {
     if (process.env.HELPER_SCENARIO && !scenario.startsWith(process.env.HELPER_SCENARIO)) continue;
     const page = await browser.newPage();
     let ready = false, guild = 'a', earlyReads = 0, detailReads = 0, switches = 0;
@@ -14,12 +14,13 @@ try {
     let simulatedConfig;
     let channelCreates = 0;
     const channelScenario = scenario.startsWith('channel-');
+    const multipleScenario = scenario.startsWith('multiple-');
     const resourceScenario = scenario.endsWith('resources');
     const simulationScenario = scenario.startsWith('simulation-');
-    const starboard = resourceScenario || simulationScenario || channelScenario;
+    const starboard = resourceScenario || simulationScenario || channelScenario || multipleScenario;
     const feature = {key:starboard ? 'community.starboard' : 'community.levels',label:starboard ? 'Starboard' : 'Levels & XP',category:'community',available:true,enabled:true};
     if (scenario === 'simulation-pt' || scenario === 'channel-pt') await page.addInitScript(() => localStorage.setItem('vozen.lang','pt'));
-    if (scenario === 'channel-mobile') await page.setViewportSize({width:390,height:844});
+    if (scenario === 'channel-mobile' || scenario === 'multiple-mobile') await page.setViewportSize({width:390,height:844});
     if (scenario === 'simulation-video') await page.emulateMedia({reducedMotion:'reduce'});
     if (scenario === 'simulation-timeout') await page.addInitScript(() => {
       const original = window.setTimeout;
@@ -51,11 +52,14 @@ try {
           hierarchy:{known:true},capabilities:{channelSelectors:!(scenario === 'stale-resources' && contextReads === 1),roleSelectors:true,permissionPreflight:true},
           stale:scenario === 'stale-resources' && contextReads === 1};
         if (channelScenario) Object.assign(value,{bot:{available:true,permissions:scenario === 'channel-no-permissions' ? '2048' : '8'},roles:[{id:'mod',name:'Moderator',permissions:'8192'},{id:'member',name:'Member',permissions:'2048'}]});
+        if (multipleScenario) Object.assign(value,{bot:{available:true,permissions:'8'},
+          channels:[{id:'a-starboard',name:'starboard',type:'text'},{id:'first',name:'general',type:'text'},{id:'second',name:'off-topic',type:'text'},{id:'third',name:'photos',type:'text'}],
+          roles:[{id:'high',name:'Green',manageable:false},{id:'managed',name:'Muted',managed:true,manageable:false},{id:'low',name:'Member',manageable:true}]});
       }
       else if (path === '/api/starboard/channel') {
         channelCreates++;
         const body = route.request().postDataJSON();
-        assert.deepEqual(body,{name:'starboard',moderatorRoleIds:['mod']});
+        assert.deepEqual(body,{name:'starboard',moderatorRoleIds:scenario === 'channel-one-click' ? [] : ['mod']});
         assert.equal(route.request().method(),'POST');
         const requestedGuild = guild;
         await new Promise(resolve => setTimeout(resolve, scenario === 'channel-switch' ? 1500 : 350));
@@ -76,6 +80,11 @@ try {
         if (scenario === 'stale-detail' && number === 1) await new Promise(resolve => setTimeout(resolve, 600));
         value = {...feature,config:{xpMin:(guild === 'b' || (scenario === 'stale-detail' && number > 1)) ? 42 : 15},defaults:{},schema:{sections:[{title:'XP progression',fields:[{key:'xpMin',label:'Minimum XP',kind:'number'}]}]},revision:1};
         if (starboard) value = {...feature,guildId:guild,config:savedConfig ?? {channel:'a-starboard',threshold:3,emoji:'⭐'},defaults:{},schema:{sections:[{title:'Starboard',fields:[{key:'channel',label:'Default channel',kind:'channel'},{key:'threshold',label:'Required reactions',kind:'number',min:1,max:100},{key:'emoji',label:'Highlight emoji',kind:'text'}]}]},revision:1};
+        if (multipleScenario) {
+          value.config = savedConfig ?? {...value.config,ignoredChannels:[],ignoredRoles:[]};
+          value.schema.sections[0].fields.push({key:'ignoredChannels',label:'Channels ignored',kind:'channels',advanced:true},{key:'ignoredRoles',label:'Roles ignored',kind:'roles',advanced:true},{key:'autoRole',label:'Initial role',kind:'role',advanced:true});
+        }
+        if (scenario === 'fields-visible') value.schema.sections[0].fields.push({key:'cooldown',label:'Cooldown',kind:'number',advanced:true});
         if (scenario === 'missing-schema' && number === 1) delete value.schema;
       } else if (path === `/api/config/features/${feature.key}/simulate`) {
         simulationReads++;
@@ -96,22 +105,67 @@ try {
       await route.fulfill({json:value});
     });
     await page.goto(`${base}#/config/${feature.key}`);
+    if (multipleScenario) {
+      const channels = page.getByRole('group',{name:'Channels ignored',exact:true});
+      const roles = page.getByRole('group',{name:'Roles ignored',exact:true});
+      await channels.waitFor();
+      assert.equal(await page.locator('details.advanced').count(),0);
+      assert.equal(await page.getByText('Advanced options',{exact:true}).count(),0);
+      if (scenario === 'multiple-keyboard') {
+        await channels.getByRole('checkbox',{name:'#general',exact:true}).focus();
+        await page.keyboard.press('Space');
+        await channels.getByRole('checkbox',{name:'#off-topic',exact:true}).focus();
+        await page.keyboard.press('Space');
+      } else {
+        await channels.getByRole('checkbox',{name:'#general',exact:true}).click();
+        await channels.getByRole('checkbox',{name:'#off-topic',exact:true}).click();
+      }
+      await channels.getByRole('checkbox',{name:'#photos',exact:true}).click();
+      await channels.getByRole('checkbox',{name:'#photos',exact:true}).click();
+      await roles.getByRole('checkbox',{name:'@Green',exact:true}).click();
+      await roles.getByRole('checkbox',{name:'@Muted',exact:true}).click();
+      assert.equal(await channels.getByRole('checkbox',{name:'#general',exact:true}).isChecked(),true);
+      assert.equal(await channels.getByRole('checkbox',{name:'#off-topic',exact:true}).isChecked(),true);
+      assert.equal(await roles.getByRole('checkbox',{name:'@Green',exact:true}).isChecked(),true);
+      assert.notEqual(await page.getByRole('combobox',{name:/Initial role/}).getByRole('option',{name:'🔒 @Green',exact:true}).getAttribute('disabled'),null,'assignment restrictions must remain');
+      if (scenario !== 'multiple-keyboard') {
+        await mkdir('output/playwright',{recursive:true});
+        await page.screenshot({path:`output/playwright/${scenario}.png`,fullPage:true});
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+      }
+      await Promise.all([page.waitForResponse(response => response.request().method() === 'PUT'),page.getByRole('button',{name:'Save changes',exact:true}).click()]);
+      assert.deepEqual(savedConfig.ignoredChannels,['first','second']);
+      assert.deepEqual(savedConfig.ignoredRoles,['high','managed']);
+      await page.reload();
+      await roles.getByRole('checkbox',{name:'@Green',exact:true}).waitFor();
+      assert.equal(await roles.getByRole('checkbox',{name:'@Green',exact:true}).isChecked(),true);
+      assert.equal(await channels.getByRole('checkbox',{name:'#off-topic',exact:true}).isChecked(),true);
+      console.log(`PASS ${scenario}`);await page.close();continue;
+    }
+    if (scenario === 'fields-visible') {
+      await page.getByRole('spinbutton',{name:/Cooldown/}).waitFor();
+      assert.equal(await page.locator('details.advanced').count(),0);
+      console.log(`PASS ${scenario}`);await page.close();continue;
+    }
     if (channelScenario) {
       const pt = scenario === 'channel-pt';
       const setup = page.locator('.starboard-channel');
-      await setup.locator('summary').click();
-      const create = setup.getByRole('button',{name:pt ? 'Criar canal só de leitura' : 'Create read-only channel',exact:true});
+      const create = setup.getByRole('button',{name:pt ? 'Criar canal com permissões' : 'Create channel with permissions',exact:true});
+      await create.waitFor();
+      assert.equal(await setup.locator('summary').count(),0,'creation must not be hidden');
       const channel = page.getByRole('combobox',{name:pt ? /Canal predefinido/ : /Default channel/});
       if (scenario === 'channel-no-permissions') {
         assert.equal(await create.isDisabled(),true);
         assert.equal(channelCreates,0);
       } else {
         const input = setup.getByRole('textbox',{name:pt ? /Nome do canal/ : /Channel name/});
-        await input.fill('../bad');
-        assert.equal(await create.isDisabled(),true);
-        await input.fill('starboard');
-        await setup.getByRole('listbox').selectOption('mod');
-        assert.equal(await setup.getByRole('option',{name:'Member',exact:true}).count(),0);
+        if (scenario !== 'channel-one-click') {
+          await input.fill('../bad');
+          assert.equal(await create.isDisabled(),true);
+          await input.fill('starboard');
+        } else assert.equal(await input.inputValue(),'starboard');
+        if (scenario !== 'channel-one-click') await setup.getByRole('checkbox',{name:'Moderator',exact:true}).click();
+        assert.equal(await setup.getByRole('checkbox',{name:'Member',exact:true}).count(),0);
         await create.click();
         assert.equal(await setup.getByRole('button').isDisabled(),true,'prevent duplicate clicks');
         if (scenario === 'channel-switch') {

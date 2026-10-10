@@ -1,6 +1,6 @@
-.starboard-channel {border-top:1px solid var(--line);padding-top:18px;margin-top:20px;}
-.starboard-channel summary {color:var(--mint);cursor:pointer;font-weight:600;line-height:1.5;}
-.starboard-channel summary:focus-visible {outline:2px solid var(--mint);outline-offset:5px;}
+.starboard-channel {border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:24px;}
+.starboard-channel__heading {display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.starboard-channel h4 {margin:0;font-size:16px;color:var(--mint);}
 .starboard-channel p {color:var(--muted);max-width:70ch;line-height:1.6;margin:12px 0;}
 .starboard-channel .field-grid {margin:16px 0;}
 .starboard-channel .starboard-channel__error {color:var(--danger);}
