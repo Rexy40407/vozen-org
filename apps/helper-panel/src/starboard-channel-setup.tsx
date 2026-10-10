@@ -39,7 +39,12 @@ export function StarboardChannel({context, onCreated}: {
       const errors: Record<string, string> = {
         starboard_channel_name_exists:text('A channel with this name already exists. Select it above or choose another name; its permissions were not changed.', 'Já existe um canal com este nome. Seleciona-o acima ou escolhe outro nome; as suas permissões não foram alteradas.'),
         starboard_existing_channel_changed:text('The previously created channel was changed in Discord. Check its permissions there and select it above; no existing channel was modified.', 'O canal criado anteriormente foi alterado no Discord. Verifica as permissões e seleciona-o acima; nenhum canal existente foi modificado.'),
-        starboard_bot_permissions_required:text('The Helper needs Manage Channels, Manage Roles, View Channel, Send Messages, Add Reactions, Embed Links, Attach Files and Read Message History.', 'O Helper precisa de gerir canais e cargos, ver canais, enviar mensagens, adicionar reações, incorporar links, anexar ficheiros e ler o histórico.'),
+        starboard_bot_permissions_required:text('The Helper needs Manage Channels, Manage Roles, View Channel, Send Messages, Add Reactions, Embed Links, Attach Files, Read Message History, Create Public/Private Threads and Send Messages in Threads. Administrator is not required.', 'O Helper precisa de gerir canais e cargos, ver canais, enviar mensagens, adicionar reações, incorporar links, anexar ficheiros, ler o histórico, criar threads públicas/privadas e enviar mensagens em threads. Não precisa de Administrador.'),
+        starboard_creation_rate_limited:text('Discord is limiting channel creation. Wait a moment before trying again.', 'O Discord está a limitar a criação de canais. Aguarda um pouco antes de tentar novamente.'),
+        starboard_channel_limit_reached:text('This server has reached Discord’s channel limit. Choose an existing channel.', 'Este servidor atingiu o limite de canais do Discord. Escolhe um canal existente.'),
+        discord_channel_create_failed:text('Discord rejected the channel creation. Check the Helper’s server permissions and channel limit.', 'O Discord recusou a criação do canal. Verifica as permissões do Helper e o limite de canais do servidor.'),
+        discord_context_unavailable:text('Discord resources could not be refreshed. Refresh the resources before trying again.', 'Não foi possível atualizar os recursos Discord. Atualiza os recursos antes de tentar novamente.'),
+        unauthenticated:text('Your session expired. Sign in again before creating a channel.', 'A tua sessão expirou. Inicia sessão novamente antes de criar um canal.'),
         starboard_user_manage_channels_required:text('Your account needs Manage Server and Manage Channels, or Administrator.', 'A tua conta precisa de gerir servidor e canais, ou de Administrador.'),
         starboard_invalid_staff_role:text('Choose only existing moderator roles from this server.', 'Escolhe apenas cargos de moderação existentes neste servidor.'),
         starboard_everyone_administrator:text('Remove Administrator from @everyone first; channel overwrites cannot restrict administrators.', 'Remove primeiro Administrador de @everyone; as permissões do canal não restringem administradores.'),
@@ -66,7 +71,7 @@ export function StarboardChannel({context, onCreated}: {
         options={roles.map(role => ({id:role.id,label:role.name}))} value={staff}
         disabled={busy || !!created || !roles.length} onChange={setStaff} />
     </div>
-    {!allowed && <p role="status">{text('Refresh Discord resources and check the Helper permissions before creating a channel.','Atualiza os recursos Discord e verifica as permissões do Helper antes de criar um canal.')}</p>}
+    {!allowed && <p role="status">{text('Refresh Discord resources and check the Helper permissions, including Create Public/Private Threads and Send Messages in Threads. Administrator is not required.','Atualiza os recursos Discord e verifica as permissões do Helper, incluindo criar threads públicas/privadas e enviar mensagens em threads. Não precisa de Administrador.')}</p>}
     {error && <p className="starboard-channel__error" role="alert">{error}</p>}
     {created && <p className="starboard-channel__success" role="status">{text(`#${created} is ready and selected. Save changes to use it for Starboard.`, `#${created} está pronto e selecionado. Guarda as alterações para o usar no Starboard.`)}</p>}
   </section>;

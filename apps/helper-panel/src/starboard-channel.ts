@@ -16,7 +16,7 @@ export function canCreateStarboard(context: GuildContext | null) {
   if (!context || context.stale || !context.bot?.available) return false;
   try {
     const bot = BigInt(context.bot.permissions ?? '0');
-    const required = 16n | (1n << 6n) | (1n << 28n) | (1n << 10n) | (1n << 11n) | (1n << 14n) | (1n << 15n) | (1n << 16n);
+    const required = 16n | (1n << 6n) | (1n << 28n) | (1n << 10n) | (1n << 11n) | (1n << 14n) | (1n << 15n) | (1n << 16n) | (1n << 35n) | (1n << 36n) | (1n << 38n);
     return (bot & 8n) !== 0n || (bot & required) === required;
   } catch { return false; }
 }

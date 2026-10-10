@@ -4,7 +4,7 @@ import { mkdir } from 'node:fs/promises';
 const browser = await chromium.launch();
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 try {
-  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout', 'channel-create', 'channel-error', 'channel-wrong-guild', 'channel-switch', 'channel-no-permissions', 'channel-mobile', 'channel-pt', 'channel-one-click', 'multiple-resources', 'multiple-mobile', 'multiple-keyboard', 'fields-visible']) {
+  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout', 'channel-create', 'channel-error', 'channel-wrong-guild', 'channel-switch', 'channel-no-permissions', 'channel-mobile', 'channel-pt', 'channel-one-click', 'multiple-resources', 'multiple-mobile', 'multiple-keyboard', 'fields-visible', 'channel-permission-error']) {
     if (process.env.HELPER_SCENARIO && !scenario.startsWith(process.env.HELPER_SCENARIO)) continue;
     const page = await browser.newPage();
     let ready = false, guild = 'a', earlyReads = 0, detailReads = 0, switches = 0;
@@ -64,6 +64,7 @@ try {
         const requestedGuild = guild;
         await new Promise(resolve => setTimeout(resolve, scenario === 'channel-switch' ? 1500 : 350));
         if (scenario === 'channel-error') { await route.fulfill({status:409,json:{code:'starboard_channel_name_exists'}}); return; }
+        if (scenario === 'channel-permission-error') { await route.fulfill({status:403,json:{code:'starboard_bot_permissions_required',message:'starboard_bot_permissions_required',requestId:null}}); return; }
         value = {guildId:scenario === 'channel-wrong-guild' ? 'b' : requestedGuild,channel:{id:`${requestedGuild}-created`,name:'starboard',type:0},reused:false};
       }
       else if (path === '/api/session/switch') {
@@ -193,8 +194,12 @@ try {
           await page.waitForFunction(() => document.querySelector('select[aria-label="Current server"]')?.value === 'b');
           await new Promise(resolve => setTimeout(resolve,1700));
           assert.equal(await page.locator('option[value="a-created"]').count(),0,'late channel must not enter another guild');
-        } else if (scenario === 'channel-error' || scenario === 'channel-wrong-guild') {
+        } else if (scenario === 'channel-error' || scenario === 'channel-permission-error' || scenario === 'channel-wrong-guild') {
           await setup.getByRole('alert').waitFor();
+          if (scenario === 'channel-permission-error') {
+            assert.ok((await setup.getByRole('alert').innerText()).includes('Administrator is not required'));
+            assert.ok(!(await setup.getByRole('alert').innerText()).includes('Creation could not be confirmed'));
+          }
           assert.equal(await channel.inputValue(),'a-starboard');
           assert.equal(await create.isDisabled(),false);
         } else {

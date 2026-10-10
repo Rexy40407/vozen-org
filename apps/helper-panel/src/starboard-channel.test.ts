@@ -29,4 +29,9 @@ describe('Starboard channel creation', () => {
       expect(validStarboardName(name)).toBe(false);
     }
   });
+  it('supports a non-admin bot without TTS but requires the thread overwrite permissions', () => {
+    const bits = 16n | (1n << 6n) | (1n << 28n) | (1n << 10n) | (1n << 11n) | (1n << 14n) | (1n << 15n) | (1n << 16n) | (1n << 35n) | (1n << 36n) | (1n << 38n);
+    expect(canCreateStarboard({...context,bot:{available:true,permissions:bits.toString()}})).toBe(true);
+    for (const bit of [35n,36n,38n]) expect(canCreateStarboard({...context,bot:{available:true,permissions:(bits & ~(1n << bit)).toString()}})).toBe(false);
+  });
 });
