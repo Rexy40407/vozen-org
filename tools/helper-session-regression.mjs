@@ -4,11 +4,15 @@ import { mkdir } from 'node:fs/promises';
 const browser = await chromium.launch();
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 try {
-  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout', 'channel-create', 'channel-error', 'channel-wrong-guild', 'channel-switch', 'channel-no-permissions', 'channel-mobile', 'channel-pt', 'channel-one-click', 'multiple-resources', 'multiple-mobile', 'multiple-keyboard', 'fields-visible', 'channel-permission-error']) {
+  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout', 'channel-create', 'channel-error', 'channel-wrong-guild', 'channel-switch', 'channel-no-permissions', 'channel-mobile', 'channel-pt', 'channel-one-click', 'multiple-resources', 'multiple-mobile', 'multiple-keyboard', 'fields-visible', 'channel-permission-error', 'autosave-suggestions', 'autosave-rapid', 'autosave-failure', 'autosave-conflict', 'autosave-navigation', 'autosave-guild', 'autosave-validation']) {
     if (process.env.HELPER_SCENARIO && !scenario.startsWith(process.env.HELPER_SCENARIO)) continue;
     const page = await browser.newPage();
     let ready = false, guild = 'a', earlyReads = 0, detailReads = 0, switches = 0;
     let savedConfig;
+    let savedEnabled = true, revision = 1;
+    const writes = [];
+    const autosaveScenario = scenario.startsWith('autosave-');
+    const saved = async () => page.locator('.header-state').filter({hasText:/Saved automatically|Guardado automaticamente/}).waitFor();
     let contextReads = 0;
     let simulationReads = 0;
     let simulatedConfig;
@@ -18,7 +22,7 @@ try {
     const resourceScenario = scenario.endsWith('resources');
     const simulationScenario = scenario.startsWith('simulation-');
     const starboard = resourceScenario || simulationScenario || channelScenario || multipleScenario;
-    const feature = {key:starboard ? 'community.starboard' : 'community.levels',label:starboard ? 'Starboard' : 'Levels & XP',category:'community',available:true,enabled:true};
+    const feature = {key:autosaveScenario ? 'community.suggestions' : starboard ? 'community.starboard' : 'community.levels',label:autosaveScenario ? 'Suggestions' : starboard ? 'Starboard' : 'Levels & XP',category:'community',available:true,enabled:true};
     if (scenario === 'simulation-pt' || scenario === 'channel-pt') await page.addInitScript(() => localStorage.setItem('vozen.lang','pt'));
     if (scenario === 'channel-mobile' || scenario === 'multiple-mobile') await page.setViewportSize({width:390,height:844});
     if (scenario === 'simulation-video') await page.emulateMedia({reducedMotion:'reduce'});
@@ -73,14 +77,24 @@ try {
         value = {ok:true,guildId:guild};
       } else if (path === '/api/config/features') value = {guildId:guild,features:[feature]};
       else if (path === `/api/config/features/${feature.key}`) {
-        if (route.request().method() === 'PUT') savedConfig = route.request().postDataJSON().config;
+        if (route.request().method() === 'PUT') {
+          const body = route.request().postDataJSON();
+          writes.push({guild, ...body});
+          if (scenario === 'autosave-conflict' || (scenario === 'autosave-failure' && writes.length === 1)) {
+            await route.fulfill({status:scenario === 'autosave-conflict' ? 409 : 503,json:{code:scenario === 'autosave-conflict' ? 'revision_conflict' : 'temporary_failure'}}); return;
+          }
+          assert.equal(body.expected_revision,revision,'each write must use the confirmed revision');
+          if (autosaveScenario) await new Promise(resolve => setTimeout(resolve,300));
+          savedConfig = body.config; savedEnabled = body.enabled; revision++;
+        }
         detailReads++;
         const number = detailReads;
         if (!ready) { earlyReads++; await route.fulfill({status:401,json:{code:'session_not_ready'}}); return; }
         if (scenario === 'retry-detail' && detailReads === 1) { await route.fulfill({status:503,json:{code:'temporary_failure'}}); return; }
         if (scenario === 'stale-detail' && number === 1) await new Promise(resolve => setTimeout(resolve, 600));
-        value = {...feature,config:{xpMin:(guild === 'b' || (scenario === 'stale-detail' && number > 1)) ? 42 : 15},defaults:{},schema:{sections:[{title:'XP progression',fields:[{key:'xpMin',label:'Minimum XP',kind:'number'}]}]},revision:1};
-        if (starboard) value = {...feature,guildId:guild,config:savedConfig ?? {channel:'a-starboard',threshold:3,emoji:'⭐'},defaults:{},schema:{sections:[{title:'Starboard',fields:[{key:'channel',label:'Default channel',kind:'channel'},{key:'threshold',label:'Required reactions',kind:'number',min:1,max:100},{key:'emoji',label:'Highlight emoji',kind:'text'}]}]},revision:1};
+        value = {...feature,guildId:guild,enabled:savedEnabled,config:savedConfig ?? {xpMin:(guild === 'b' || (scenario === 'stale-detail' && number > 1)) ? 42 : 15},defaults:{},schema:{sections:[{title:'XP progression',fields:[{key:'xpMin',label:'Minimum XP',kind:'number'}]}]},revision};
+        if (starboard) value = {...feature,guildId:guild,enabled:savedEnabled,config:savedConfig ?? {channel:'a-starboard',threshold:3,emoji:'⭐'},defaults:{},schema:{sections:[{title:'Starboard',fields:[{key:'channel',label:'Default channel',kind:'channel'},{key:'threshold',label:'Required reactions',kind:'number',min:1,max:100},{key:'emoji',label:'Highlight emoji',kind:'text'}]}]},revision};
+        if (autosaveScenario) value = {...feature,guildId:guild,enabled:savedEnabled,config:savedConfig ?? {channel:'a-starboard',voteMode:'up_down',anonymous:false,cooldownHours:24,requiredRole:'',staffChannel:''},schema:{sections:[{title:'Suggestion intake',fields:[{key:'channel',label:'Suggestion channel',kind:'channel'},{key:'voteMode',label:'Voting mode',kind:'select',options:[['up_down','Support / against'],['up_only','Support only']]},{key:'anonymous',label:'Hide author in the public message',kind:'toggle'}]},{title:'Moderation',fields:[{key:'cooldownHours',label:'Cooldown per member (hours)',kind:'number',min:0,max:720,advanced:true},{key:'requiredRole',label:'Required role (optional)',kind:'role',advanced:true},{key:'staffChannel',label:'Staff notification channel (optional)',kind:'channel',advanced:true}]}]},revision};
         if (multipleScenario) {
           value.config = savedConfig ?? {...value.config,ignoredChannels:[],ignoredRoles:[]};
           value.schema.sections[0].fields.push({key:'allowSelfStar',label:'Allow the author reaction',kind:'toggle',advanced:true},{key:'includeImages',label:'Include images',kind:'toggle',advanced:true},{key:'ignoredChannels',label:'Channels ignored',kind:'channels',advanced:true},{key:'ignoredRoles',label:'Roles ignored',kind:'roles',advanced:true},{key:'autoRole',label:'Initial role',kind:'role',advanced:true});
@@ -95,7 +109,7 @@ try {
         if (scenario === 'simulation-close' || scenario === 'simulation-route-change' || scenario === 'simulation-timeout') await new Promise(resolve => setTimeout(resolve, 700));
         value = {ok:true,key:scenario === 'simulation-mismatch' ? 'community.levels' : feature.key,
           result:{would_apply:scenario !== 'simulation-invalid',effects:['Technical QA effect'],issues:scenario === 'simulation-invalid' ? [{severity:'error',message:'Select a channel'}] : []}};
-      } else if (path.endsWith('/preflight')) value = {ok:true,issues:[]};
+      } else if (path.endsWith('/preflight')) value = {guildId:guild,ok:scenario !== 'autosave-validation',issues:scenario === 'autosave-validation' ? [{message:'Select a valid channel'}] : []};
       else if (path === '/api/stats') value = {guildId:guild,totalCases:0};
       else if (path === '/api/cases') value = {cases:[]};
       else if (path === '/api/audit') value = {events:[]};
@@ -106,6 +120,68 @@ try {
       await route.fulfill({json:value});
     });
     await page.goto(`${base}#/config/${feature.key}`);
+    if (autosaveScenario) {
+      const cooldown = page.getByRole('spinbutton',{name:/Cooldown per member/});
+      await cooldown.waitFor();
+      assert.equal(writes.length,0,'loading never saves defaults');
+      assert.equal(await page.getByRole('button',{name:'Save changes',exact:true}).count(),0);
+      assert.equal(await page.getByRole('button',{name:'Discard',exact:true}).count(),0);
+      if (scenario === 'autosave-suggestions') {
+        await page.getByRole('combobox',{name:/Voting mode/}).selectOption('up_only');
+        await saved();
+        assert.equal(savedConfig.voteMode,'up_only');
+        await page.getByRole('checkbox',{name:'Allow anonymous suggestions',exact:true}).click();
+        await saved();
+        assert.equal(savedConfig.anonymous,true);
+        const active = page.locator('.detail-intro input[type=checkbox]');
+        await active.uncheck(); await saved(); assert.equal(savedEnabled,false);
+        await page.reload();
+        await cooldown.waitFor();
+        assert.equal(await active.isChecked(),false);
+        assert.equal(await page.getByRole('combobox',{name:/Voting mode/}).inputValue(),'up_only');
+        await mkdir('output/playwright',{recursive:true});
+        await page.screenshot({path:'output/playwright/autosave-suggestions.png',fullPage:true});
+      } else if (scenario === 'autosave-failure' || scenario === 'autosave-conflict') {
+        await cooldown.fill('7');
+        await page.getByRole('alert').filter({hasText:'Could not save'}).waitFor();
+        assert.equal(await cooldown.inputValue(),'7');
+        await new Promise(resolve => setTimeout(resolve,450));
+        assert.equal(writes.length,1,'no blind retry loop');
+        await Promise.all([page.waitForResponse(response => response.request().method() === 'PUT'),page.getByRole('button',{name:'Try again',exact:true}).click()]);
+        if (scenario === 'autosave-conflict') {
+          await page.locator('.header-state').filter({hasText:'Changes not saved'}).waitFor();
+          assert.equal(savedConfig,undefined,'a conflict must not overwrite another session');
+          assert.equal(await cooldown.inputValue(),'7');
+        } else { await saved(); assert.equal(savedConfig.cooldownHours,7); }
+        assert.equal(writes[1].expected_revision,1);
+      } else if (scenario === 'autosave-validation') {
+        await cooldown.fill('7');
+        await page.getByRole('alert').filter({hasText:'Could not save'}).waitFor();
+        assert.equal(writes.length,0,'preflight refusal must not write');
+      } else if (scenario === 'autosave-navigation') {
+        await cooldown.fill('12');
+        await page.getByRole('button',{name:'← Back to features',exact:true}).click();
+        await page.waitForFunction(() => window.location.hash === '#/features');
+        await cooldown.waitFor({state:'hidden'});
+        assert.equal(savedConfig.cooldownHours,12,'navigation flushes text edits');
+      } else if (scenario === 'autosave-guild') {
+        await cooldown.fill('9');
+        const picker = page.getByRole('combobox',{name:'Current server',exact:true});
+        assert.equal(await picker.isDisabled(),true);
+        await saved(); await picker.selectOption('b');
+        await page.waitForFunction(() => document.querySelector('select[aria-label="Current server"]')?.value === 'b');
+        assert.ok(writes.every(write => write.guild === 'a'));
+      } else {
+        await cooldown.fill('1'); await cooldown.fill('12'); await cooldown.fill('123');
+        await page.waitForRequest(request => request.method() === 'PUT');
+        await cooldown.fill('4'); await cooldown.fill('45');
+        await saved();
+        assert.deepEqual(writes.map(write => write.config.cooldownHours),[123,45]);
+        assert.equal(await cooldown.inputValue(),'45','earlier response must not erase new input');
+        assert.deepEqual(writes.map(write => write.expected_revision),[1,2]);
+      }
+      console.log(`PASS ${scenario}`); await page.close(); continue;
+    }
     if (multipleScenario) {
       const channels = page.getByRole('group',{name:'Channels ignored',exact:true});
       const roles = page.getByRole('group',{name:'Roles ignored',exact:true});
@@ -154,7 +230,7 @@ try {
         await roles.locator('label').first().screenshot({path:`output/playwright/${scenario}-focused-option.png`});
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
       }
-      await Promise.all([page.waitForResponse(response => response.request().method() === 'PUT'),page.getByRole('button',{name:'Save changes',exact:true}).click()]);
+      await saved();
       assert.deepEqual(savedConfig.ignoredChannels,['first','second']);
       assert.deepEqual([...savedConfig.ignoredRoles].sort(),['high','managed']);
       await page.reload();
@@ -205,16 +281,13 @@ try {
         } else {
           await setup.getByRole('status').filter({hasText:pt ? 'está pronto' : 'is ready'}).waitFor();
           assert.equal(await channel.inputValue(),'a-created');
-          assert.equal(savedConfig,undefined,'creation must not publish configuration');
+          await saved();
+          assert.equal(savedConfig.channel,'a-created','created channel is automatically selected and saved');
           if (scenario === 'channel-mobile' || scenario === 'channel-create') {
             await mkdir('output/playwright',{recursive:true});
             await page.screenshot({path:`output/playwright/${scenario}.png`,fullPage:true});
             assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),'no horizontal overflow');
           }
-          await Promise.all([
-            page.waitForResponse(response => response.request().method() === 'PUT'),
-            page.getByRole('button',{name:pt ? 'Guardar alterações' : 'Save changes',exact:true}).click(),
-          ]);
           assert.equal(savedConfig.channel,'a-created');
         }
         assert.equal(channelCreates,1);
@@ -228,6 +301,8 @@ try {
       const simulate = page.getByRole('button',{name:pt ? 'Simular configuração' : 'Simulate configuration',exact:true});
       const threshold = page.getByRole('spinbutton',{name:pt ? 'Reações necessárias' : 'Required reactions',exact:true});
       if (!pt) await threshold.fill('5');
+      if (!pt) await saved();
+      const writesBeforeSimulation = writes.length;
       await simulate.click();
       const dialog = page.getByRole('dialog',{name:pt ? 'Mural de estrelas' : 'Starboard',exact:true});
       await dialog.waitFor();
@@ -262,13 +337,13 @@ try {
           await dialog.getByRole('alert').filter({hasText:'Could not validate'}).waitFor();
           if (scenario === 'simulation-failure') await dialog.getByRole('button',{name:'Retry validation',exact:true}).click();
         }
-        if (scenario === 'simulation-invalid') await dialog.getByText('The draft needs changes before publishing.',{exact:true}).waitFor();
-        else if (scenario !== 'simulation-mismatch' && scenario !== 'simulation-timeout') await dialog.getByText(pt ? 'A simulação da API aplicaria estas definições. Nada foi guardado ou enviado.' : 'The API simulation would apply this draft. Nothing has been saved or sent.',{exact:true}).waitFor();
+        if (scenario === 'simulation-invalid') await dialog.getByText('These settings need changes before the feature can run.',{exact:true}).waitFor();
+        else if (scenario !== 'simulation-mismatch' && scenario !== 'simulation-timeout') await dialog.getByText(pt ? 'A API validou estas definições. A simulação não enviou mensagens nem alterou o servidor.' : 'The API validated these settings. The simulation did not send messages or change the server.',{exact:true}).waitFor();
         await dialog.getByRole('button',{name:pt ? 'Fechar demonstração' : 'Close demonstration',exact:true}).click();
         await dialog.waitFor({state:'hidden'});
         if (!pt) assert.equal(await threshold.inputValue(),'5','simulation must preserve unsaved settings');
       }
-      assert.equal(savedConfig,undefined,'simulation must not save the feature');
+      assert.equal(writes.length,writesBeforeSimulation,'simulation itself must not save the feature');
       assert.equal(simulationReads,scenario === 'simulation-failure' ? 2 : 1);
       if (!pt) assert.equal(simulatedConfig.threshold,5,'API must simulate the actual unsaved draft');
       console.log(`PASS ${scenario}`);
@@ -285,10 +360,7 @@ try {
       await channel.selectOption('a-starboard');
       assert.equal(await threshold.inputValue(),'5','resource retry must retain the unsaved configuration');
       assert.equal(await page.getByRole('button',{name:'Reload channels and roles',exact:true}).count(),0);
-      await Promise.all([
-        page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith('/api/config/features/community.starboard')),
-        page.getByRole('button',{name:'Save changes',exact:true}).click(),
-      ]);
+      await saved();
       assert.equal(savedConfig.channel,'a-starboard');
       assert.equal(savedConfig.threshold,5);
       assert.equal(savedConfig.emoji,'⭐');
@@ -310,7 +382,7 @@ try {
     if (scenario === 'delayed-session') {
       await page.getByRole('button',{name:'Simulate configuration',exact:true}).click();
       const dialog = page.getByRole('dialog',{name:'Levels & XP',exact:true});
-      await dialog.getByText('The API simulation would apply this draft. Nothing has been saved or sent.',{exact:true}).waitFor();
+      await dialog.getByText('The API validated these settings. The simulation did not send messages or change the server.',{exact:true}).waitFor();
       assert.equal(await dialog.locator('video').count(),0,'do not show a Starboard video for another feature');
       assert.equal(await dialog.getByText('Technical QA effect',{exact:true}).isVisible(),false,'technical effects should be collapsed');
       await page.keyboard.press('Escape');
@@ -320,10 +392,7 @@ try {
       await page.getByRole('checkbox',{name:'Show the banner in the level-up message',exact:true}).click();
       assert.equal(await page.getByRole('dialog').isVisible(),false);
       assert.equal(await page.getByRole('button',{name:'Moonlit Village',exact:true}).count(),0);
-      await Promise.all([
-        page.waitForResponse(response => response.request().method() === 'PUT' && response.url().endsWith('/api/config/features/community.levels')),
-        page.getByRole('button',{name:'Save changes',exact:true}).click(),
-      ]);
+      await saved();
       assert.equal(savedConfig.bannerEnabled,true);
       assert.equal('rankCard' in savedConfig,false,'free save cannot include customization');
     }

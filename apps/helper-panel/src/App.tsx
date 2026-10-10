@@ -41,6 +41,7 @@ import { createLoadGuard, isAbortError } from './load-lifecycle';
 import { loadGuildResources } from './guild-resources';
 import { isRoleResourceOptionDisabled, roleResourceLabel, roleRequiresAssignment } from './role-resource';
 import { ResourceMultiSelect } from './resource-multi-select';
+import { createAutosave, type AutosaveState } from './autosave';
 import {
   helperLocale,
   helperT,
@@ -1977,6 +1978,15 @@ function App() {
   const [detailSchema, setDetailSchema] = useState<FeatureSchema | null>(null);
   const [detailEnabled, setDetailEnabled] = useState(false);
   const [detailRevision, setDetailRevision] = useState(0);
+  type SettingsDraft = { config: FeatureConfig; enabled: boolean; rank: RankCardConfig };
+  const detailDraftRef = useRef<SettingsDraft>({ config: detailConfig, enabled: detailEnabled, rank: rankConfig });
+  detailDraftRef.current = { config: detailConfig, enabled: detailEnabled, rank: rankConfig };
+  const autosaveRef = useRef<ReturnType<typeof createAutosave<SettingsDraft, Awaited<ReturnType<typeof api.saveFeature>>>> | null>(null);
+  const autosaveOwner = useRef('');
+  const formOwner = `${me?.id}:${me?.guildId}:${route.page}:${route.key}`;
+  const formOwnerRef = useRef(formOwner);
+  formOwnerRef.current = formOwner;
+  const [autosaveState, setAutosaveState] = useState<AutosaveState | null>(null);
   const [providerHealth, setProviderHealth] = useState<ProviderSubscriptionHealth | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error' | 'auth' | 'saving'>(
     'loading',
@@ -1990,6 +2000,7 @@ function App() {
   const [detailError, setDetailError] = useState(false);
   const [detailRetry, setDetailRetry] = useState(0);
   const switchingGuild = useRef(false);
+  const repairingDetail = useRef(false);
 
   useEffect(() => {
     syncHelperDocumentLocale();
@@ -2008,16 +2019,45 @@ function App() {
   }, []);
 
   const navigate = (path: string) => {
-    const next = parseRoute(path);
-    if (window.location.hash === path) setRoute(next);
-    else window.location.hash = path;
+    void (async () => {
+      if (autosaveRef.current && !(await autosaveRef.current.flush())) return;
+      const next = parseRoute(path);
+      if (window.location.hash === path) setRoute(next);
+      else window.location.hash = path;
+    })();
   };
   useEffect(() => {
-    const onHash = () => setRoute(parseRoute(window.location.hash));
+    let activeHash = window.location.hash || '#/';
+    const onHash = async () => {
+      const nextHash = window.location.hash;
+      if (autosaveRef.current && !(await autosaveRef.current.flush())) {
+        window.history.replaceState(null, '', activeHash);
+        return;
+      }
+      if (nextHash !== window.location.hash) return;
+      activeHash = nextHash;
+      setRoute(parseRoute(nextHash));
+    };
     window.addEventListener('hashchange', onHash);
     if (!window.location.hash) window.location.hash = '#/';
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
+  useEffect(() => {
+    // Internal navigation flushes first. A reload/closing the tab must not
+    // discard a pending or failed draft without the browser's warning.
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      if (!autosaveRef.current?.hasUnsaved()) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => window.removeEventListener('beforeunload', beforeUnload);
+  }, []);
+  useEffect(() => {
+    autosaveRef.current = null;
+    autosaveOwner.current = '';
+    setAutosaveState(null);
+  }, [formOwner]);
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -2501,6 +2541,7 @@ function App() {
   }, [features, filter, search]);
   async function switchGuild(guildId: string, nextPath?: string) {
     if (switchingGuild.current || status === 'saving') return;
+    if (autosaveRef.current && !(await autosaveRef.current.flush())) return;
     if (localPreviewMode) {
       setMe((current) => (current ? { ...current, guildId } : current));
       if (nextPath) navigate(nextPath);
@@ -2523,73 +2564,120 @@ function App() {
       setMessage(cause instanceof Error ? cause.message : helperT('helper.switchServerError', 'Could not switch server.'));
     }
   }
-  async function saveDetail() {
-    if (!route.key) return;
-    setStatus('saving');
-    try {
-      const publishConfig = { ...detailConfig };
-      if (route.key === 'community.levels') {
+  function editSettings(next: Partial<SettingsDraft>, delay = 0) {
+    if (!route.key || detailLoading || detailError || repairingDetail.current) return;
+    const draft = { ...detailDraftRef.current, ...next };
+    detailDraftRef.current = draft;
+    setDetailConfig(draft.config);
+    setDetailEnabled(draft.enabled);
+    setRankConfig(draft.rank);
+    if (!autosaveRef.current || autosaveOwner.current !== formOwner) {
+      const key = route.key;
+      const owner = formOwner;
+      const guildId = me?.guildId;
+      autosaveOwner.current = owner;
+      autosaveRef.current = createAutosave({
+        revision: detailRevision,
+        write: async (sent, revision) => {
+          if (formOwnerRef.current !== owner || switchingGuild.current) throw new Error('guild_changed');
+          return publishSettings(key, guildId, sent, revision);
+        },
+        saved: (result, sent, latest) => {
+          if (formOwnerRef.current !== owner) return;
+          setFeatures(items => items.map(item => item.key === key ? { ...item, enabled: result.enabled } : item));
+          setSavedDetailConfig(result.config);
+          setDetailRevision(result.revision ?? detailRevision);
+          if (key === 'community.levels' && sent.config.bannerEnabled === true) setSavedRankConfig(sent.rank);
+          // An earlier response acknowledges only its own snapshot. It must
+          // not reset fields that were edited while that request was running.
+          if (latest) {
+            setDetailConfig(result.config);
+            setDetailEnabled(result.enabled);
+            detailDraftRef.current = { ...sent, config: result.config, enabled: result.enabled };
+          }
+          if (result.discordApply?.applied === false) setMessage(helperLocale() === 'pt'
+            ? 'Definições guardadas, mas não foi possível atualizar a publicação no Discord. Verifica o canal e as permissões do Helper antes de reparar a publicação.'
+            : 'Settings saved, but the Discord publication could not be updated. Check the channel and Helper permissions before repairing the publication.');
+        },
+        state: (state, error) => {
+          if (formOwnerRef.current !== owner) return;
+          setAutosaveState(state);
+          setStatus(state === 'saving' ? 'saving' : 'ready');
+          if (state === 'saving') setMessage('');
+          if (state === 'error') {
+            const code = error instanceof Error ? error.message : '';
+            const reason = code === 'feature_revision_conflict'
+              ? (helperLocale() === 'pt' ? 'A configuração foi alterada noutra sessão. Atualiza a página antes de voltar a editar; o teu rascunho continua aqui.' : 'The configuration changed in another session. Reload before editing again; your draft is still here.')
+              : code === 'unauthenticated'
+              ? (helperLocale() === 'pt' ? 'A sessão expirou. Inicia sessão novamente.' : 'Your session expired. Sign in again.')
+              : code;
+            setMessage(`${helperLocale() === 'pt' ? 'Alterações não guardadas.' : 'Changes not saved.'} ${reason}`);
+          }
+        },
+      });
+    }
+    autosaveRef.current.enqueue(draft, delay);
+  }
+  function editField(key: string, value: unknown) {
+    const field = detailSchema?.sections.flatMap(section => section.fields).find(item => item.key === key);
+    const discrete = ['toggle', 'select', 'channel', 'channels', 'role', 'roles', 'category'].includes(field?.kind ?? '');
+    editSettings({ config: { ...detailDraftRef.current.config, [key]: value } }, discrete || typeof value === 'boolean' ? 0 : 400);
+  }
+  async function publishSettings(key: string, guildId: string | undefined, sent: SettingsDraft, revision: number): Promise<Awaited<ReturnType<typeof api.saveFeature>>> {
+      const publishConfig = { ...sent.config };
+      if (key === 'community.levels') {
         delete publishConfig.rankCard;
         if (publishConfig.bannerEnabled === true && features.some(item => item.key === 'studio.rank_card' && item.premium_unlocked)) {
-          publishConfig.rankCard = rankConfig;
+          publishConfig.rankCard = sent.rank;
         }
       }
       if (!localPreviewMode) {
-        const preflight = await api.featurePreflight(route.key, publishConfig, detailEnabled);
+        const preflight = await api.featurePreflight(key, publishConfig, sent.enabled);
+        if (preflight.guildId !== guildId) throw new Error('guild_changed');
         if (!preflight.ok) {
-          setStatus('ready');
-          setMessage(preflight.issues.map((issue) => issue.message).join(' '));
-          return;
+          throw new Error(preflight.issues.map((issue) => issue.message).join(' '));
         }
       }
       const result = localPreviewMode
-        ? { enabled: detailEnabled, config: publishConfig, revision: detailRevision }
-        : await api.saveFeature(route.key, detailEnabled, publishConfig, detailRevision);
-      if (route.key === 'community.levels' && publishConfig.bannerEnabled === true) setSavedRankConfig(rankConfig);
+        ? { key, guildId: guildId ?? 'demo', enabled: sent.enabled, config: publishConfig, revision }
+        : await api.saveFeature(key, sent.enabled, publishConfig, revision);
+      if (result.guildId !== guildId) throw new Error('guild_changed');
       if (
         !localPreviewMode &&
-        route.key === 'community.role_panels' &&
-        detailEnabled &&
-        typeof detailConfig.channel === 'string' &&
-        Array.isArray(detailConfig.roleIds) &&
-        detailConfig.roleIds.length > 0
+        key === 'community.role_panels' &&
+        sent.enabled &&
+        typeof sent.config.channel === 'string' &&
+        Array.isArray(sent.config.roleIds) &&
+        sent.config.roleIds.length > 0
       ) {
+        try {
         const existingPanels = await api.rolePanels();
         const panelPayload = {
-          channel: detailConfig.channel,
-          title: String(detailConfig.panelTitle ?? 'Choose your roles'),
-          description: String(detailConfig.panelDescription ?? ''),
-          roleIds: detailConfig.roleIds.map(String),
-          selectionMode: detailConfig.selectionMode === 'unique' ? ('unique' as const) : ('multiple' as const),
-          removeOnUnselect: detailConfig.removeOnUnselect !== false,
+          channel: sent.config.channel,
+          title: String(sent.config.panelTitle ?? 'Choose your roles'),
+          description: String(sent.config.panelDescription ?? ''),
+          roleIds: sent.config.roleIds.map(String),
+          selectionMode: sent.config.selectionMode === 'unique' ? ('unique' as const) : ('multiple' as const),
+          removeOnUnselect: sent.config.removeOnUnselect !== false,
         };
         if (existingPanels.panels[0]) {
           await api.updateRolePanel(existingPanels.panels[0].message_id, panelPayload);
         } else {
           await api.createRolePanel(panelPayload);
         }
+        } catch {
+          // The configuration write already succeeded. Preserve its revision
+          // even if publishing the Discord message failed, instead of retrying
+          // the whole write with an obsolete revision or creating duplicates.
+          return { ...result, discordApply: { applied: false, code: 'role_panel_publish_failed' } };
+        }
       }
-      setFeatures((items) =>
-        items.map((item) => (item.key === route.key ? { ...item, enabled: result.enabled } : item)),
-      );
-      setDetailConfig(result.config);
-      setSavedDetailConfig(result.config);
-      setDetailRevision(result.revision ?? detailRevision);
-      setStatus('ready');
-      setMessage(
-        'discordApply' in result && result.discordApply?.applied === false
-          ? helperT('helper.ticketPanelFailed', 'Configuration saved, but the ticket panel could not be published. Check the selected channel, the bot permissions and the panel quota. If a panel appeared, do not create another manually; contact support before retrying.')
-          : localPreviewMode
-          ? helperT('helper.previewSaved', 'Preview saved in this browser.')
-          : helperT('helper.configurationPublished', 'Configuration published to the server.'),
-      );
-    } catch (cause) {
-      setStatus('error');
-      setMessage(cause instanceof Error ? cause.message : helperT('helper.saveError', 'Could not save.'));
-    }
+      return result;
   }
   async function repairDetail() {
     if (!route.key || localPreviewMode) return;
+    if (autosaveRef.current && !(await autosaveRef.current.flush())) return;
+    repairingDetail.current = true;
     setStatus('saving');
     try {
       const result = await api.repairFeature(route.key);
@@ -2597,6 +2685,9 @@ function App() {
       setSavedDetailConfig(result.config);
       setDetailEnabled(result.enabled);
       setDetailRevision(result.revision ?? detailRevision);
+      autosaveRef.current = null;
+      autosaveOwner.current = '';
+      setAutosaveState(null);
       setFeatures((items) =>
         items.map((item) =>
           item.key === route.key
@@ -2609,6 +2700,8 @@ function App() {
     } catch (cause) {
       setStatus('error');
       setMessage(cause instanceof Error ? cause.message : helperT('helper.repairError', 'Could not repair the publication.'));
+    } finally {
+      repairingDetail.current = false;
     }
   }
   async function testDetail() {
@@ -2728,23 +2821,6 @@ function App() {
             ? helperT('helper.twitchValidationError', 'Could not validate the Twitch channel. Check the name and the server credentials.')
             : helperT('helper.simulationUnavailable', 'Simulation is available when the API is connected.'),
       );
-    }
-  }
-  async function saveRankCard() {
-    setStatus('saving');
-    try {
-      const result = localPreviewMode ? { config: rankConfig } : await api.saveRankCard(rankConfig);
-      setRankConfig(result.config);
-      setSavedRankConfig(result.config);
-      setStatus('ready');
-      setMessage(
-        localPreviewMode
-          ? helperT('helper.previewSaved', 'Preview saved in this browser.')
-          : helperT('helper.rankCardPublished', 'XP card published in the server.'),
-      );
-    } catch (cause) {
-      setStatus('error');
-      setMessage(cause instanceof Error ? cause.message : helperT('helper.publishError', 'Could not publish.'));
     }
   }
   async function applyQuickSetupStep(
@@ -3066,9 +3142,13 @@ function App() {
               <h1 id="route-heading" data-route-heading tabIndex={-1}>{title}</h1>
               <p className="subtitle">{subtitle}</p>
             </div>
-            <div className="header-state">
+            <div className="header-state" role="status" aria-live="polite">
               <span className="status-dot" />{' '}
-              {route.page === 'detail' && detailError
+              {autosaveState === 'saving'
+                ? helperT('helper.saving', 'Saving…')
+                : autosaveState === 'error'
+                ? (helperLocale() === 'pt' ? 'Alterações não guardadas' : 'Changes not saved')
+                : route.page === 'detail' && detailError
                 ? helperT('helper.configurationLoadFailed', 'Could not load this configuration')
                 : route.page === 'detail' && detailLoading
                 ? helperT('helper.loadingConfiguration', 'Loading configuration…')
@@ -3076,6 +3156,8 @@ function App() {
                 ? helperT('helper.resourcesLoading', 'Loading Discord channels and roles…')
                 : guildContextError || guildContext?.stale
                 ? helperT('helper.resourcesUnavailableStatus', 'Discord resources unavailable')
+                : autosaveState === 'saved'
+                ? (helperLocale() === 'pt' ? 'Guardado automaticamente' : 'Saved automatically')
                 : dirty
                 ? helperT('helper.unpublished', 'Unpublished draft')
                 : localPreviewMode
@@ -3090,6 +3172,12 @@ function App() {
             <button type="button" aria-label={helperT('helper.close', 'Close')} onClick={() => setMessage('')}>
               ×
             </button>
+          </div>
+        )}
+        {autosaveState === 'error' && (
+          <div className="card resource-status" role="alert">
+            <span>{helperLocale() === 'pt' ? 'Não foi possível guardar. As alterações continuam neste formulário.' : 'Could not save. Your changes are still in this form.'}</span>
+            <button type="button" className="secondary" onClick={() => void autosaveRef.current?.retry()}>{helperT('helper.tryAgain', 'Try again')}</button>
           </div>
         )}
         {!localPreviewMode && needsGuildContext && (guildContextLoading || guildContextError || guildContext?.stale) && (
@@ -3148,15 +3236,6 @@ function App() {
           />
         )}
         {route.page === 'activity' && <Activity cases={cases} audit={audit} activity={activity} />}
-        {route.page === 'rank-card' && (
-          <RankCardEditor
-            config={rankConfig}
-            patch={(next) => setRankConfig((current) => ({ ...current, ...next }))}
-            onSave={() => void saveRankCard()}
-            onReset={() => setRankConfig(defaultRankCard)}
-            saving={status === 'saving'}
-          />
-        )}
         {route.page === 'detail' &&
           (detailLoading ? (
             <div className="loading-card card">
@@ -3178,17 +3257,10 @@ function App() {
               config={detailConfig}
               enabled={detailEnabled}
               revision={detailRevision}
-              onEnabled={setDetailEnabled}
-              onChange={(key, value) =>
-                setDetailConfig((current) => ({ ...current, [key]: value }))
-              }
-              onSave={() => void saveDetail()}
+              onEnabled={enabled => editSettings({ enabled })}
+              onChange={editField}
+              onFlush={() => void autosaveRef.current?.flush()}
               onRepair={() => void repairDetail()}
-              onDiscard={() => {
-                setDetailConfig(savedDetailConfig);
-                if (route.key === 'community.levels') setRankConfig(savedRankConfig);
-                setDetailEnabled(features.find((item) => item.key === route.key)?.enabled ?? false);
-              }}
               onTest={() => void testDetail()}
               templates={studioTemplates}
               onTemplatesChange={setStudioTemplates}
@@ -3203,7 +3275,7 @@ function App() {
                 if (updated.guildId !== me?.guildId || premiumGuildRef.current !== me?.guildId) throw new Error('guild_changed');
                 setFeatures(visibleWelcomeFeatures(updated.features));
               }}
-              bannerEditor={<RankCardEditor config={rankConfig} patch={(next) => setRankConfig(current => ({ ...current, ...next }))} onSave={() => void saveDetail()} onReset={() => setRankConfig(defaultRankCard)} saving={status === 'saving'} />}
+              bannerEditor={<RankCardEditor config={rankConfig} patch={next => editSettings({ rank: { ...detailDraftRef.current.rank, ...next } }, 400)} onReset={() => editSettings({ rank: defaultRankCard })} />}
             />
           ))}
       </main>
@@ -4538,9 +4610,8 @@ function FeatureDetail({
   revision,
   onEnabled,
   onChange,
-  onSave,
+  onFlush,
   onRepair,
-  onDiscard,
   onTest,
   templates,
   onTemplatesChange,
@@ -4561,9 +4632,8 @@ function FeatureDetail({
   revision: number;
   onEnabled: (value: boolean) => void;
   onChange: (key: string, value: unknown) => void;
-  onSave: () => void;
+  onFlush: () => void;
   onRepair: () => void;
-  onDiscard: () => void;
   onTest: () => void;
   templates: StudioTemplate[];
   onTemplatesChange: (templates: StudioTemplate[]) => void;
@@ -4677,7 +4747,7 @@ function FeatureDetail({
       </section>
     );
   return (
-    <section className="detail-page">
+    <section className="detail-page" onBlur={onFlush}>
       <button type="button" className="back-link" onClick={onBack}>
         {helperT('helper.backFeatures', '← Back to features')}
       </button>
@@ -4763,7 +4833,7 @@ function FeatureDetail({
         </div>
         <aside className="detail-aside card">
           <div>
-            <small className="eyebrow">{helperT('helper.beforePublishing', 'BEFORE PUBLISHING')}</small>
+            <small className="eyebrow">{helperLocale() === 'pt' ? 'GRAVAÇÃO AUTOMÁTICA' : 'AUTOMATIC SAVING'}</small>
             <h3>{helperT('helper.reviewSafely', 'Review safely')}</h3>
             <p>
               {helperT('helper.simulationHint', 'Use the simulation to see what would happen. It never deletes messages or punishes members.')}
@@ -4798,14 +4868,6 @@ function FeatureDetail({
         </aside>
       </div>
       {feature?.key === 'community.levels' && bannerPremium && config.bannerEnabled === true && bannerEditor}
-      <div className="sticky-actions">
-        <button type="button" className="secondary" onClick={onDiscard} disabled={saving}>
-          {helperT('helper.discard', 'Discard')}
-        </button>
-        <button type="button" className="primary" onClick={onSave} disabled={saving}>
-          {saving ? helperT('helper.saving', 'Saving…') : helperT('helper.saveChanges', 'Save changes')}
-        </button>
-      </div>
     </section>
   );
 }
@@ -6018,15 +6080,11 @@ function formatDate(value?: number | string) {
 function RankCardEditor({
   config,
   patch,
-  onSave,
   onReset,
-  saving,
 }: {
   config: RankCardConfig;
   patch: (next: Partial<RankCardConfig>) => void;
-  onSave: () => void;
   onReset: () => void;
-  saving: boolean;
 }) {
   return (
     <section className="editor-grid panel-editor-grid">
@@ -6086,9 +6144,6 @@ function RankCardEditor({
         <div className="actions rank-actions">
           <button type="button" className="secondary" onClick={onReset}>
             {helperT('helper.restore', 'Restore')}
-          </button>
-          <button type="button" className="primary" onClick={onSave} disabled={saving}>
-            {saving ? helperT('helper.saving', 'Saving…') : helperT('helper.saveChanges', 'Save changes')}
           </button>
         </div>
       </div>

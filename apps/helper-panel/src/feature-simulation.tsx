@@ -66,7 +66,7 @@ export function FeatureSimulation({ draft, onClose }: {
         <h2 id="simulation-title">{draft.label}</h2></div>
       <button type="button" className="secondary" autoFocus onClick={onClose}>{t('helper.demoClose', 'Close demonstration')}</button>
     </header>
-    <p id="simulation-safety">{t('helper.demoSafety', 'This demonstration does not send messages or change your server. Your unsaved settings stay in the editor.')}</p>
+    <p id="simulation-safety">{t('helper.demoSafety', 'This demonstration does not send messages or change your server. Editor changes are saved separately and automatically.')}</p>
     {starboard && <section className="feature-simulation__example" aria-labelledby="simulation-example">
       <h3 id="simulation-example">{t('helper.demoVideoTitle', 'How Starboard works · 10-second video')}</h3>
       <p>{t('helper.demoExample', 'Illustrative example: a message receives 3 stars and is copied to #starboard. The video uses sample data, not your server settings.')}</p>
@@ -89,8 +89,8 @@ export function FeatureSimulation({ draft, onClose }: {
         <button type="button" className="secondary" onClick={() => setAttempt(value => value + 1)}>{t('helper.demoRetry', 'Retry validation')}</button></>
         : !result ? <p role="status">{t('helper.demoChecking', 'Validating the current draft…')}</p>
         : <>
-          <p role="status">{errors.length ? t('helper.demoInvalid', 'The draft needs changes before publishing.')
-            : result.result.would_apply ? t('helper.demoValid', 'The API simulation would apply this draft. Nothing has been saved or sent.')
+          <p role="status">{errors.length ? t('helper.demoInvalid', 'These settings need changes before the feature can run.')
+            : result.result.would_apply ? t('helper.demoValid', 'The API validated these settings. The simulation did not send messages or change the server.')
             : t('helper.demoNoAction', 'The API simulation reports no action for this draft.')}</p>
           {result.result.issues.length > 0 && <ul>{result.result.issues.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>}
           <details><summary>{t('helper.demoTechnical', 'Technical simulation details')}</summary>

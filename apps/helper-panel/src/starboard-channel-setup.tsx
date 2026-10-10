@@ -73,6 +73,6 @@ export function StarboardChannel({context, onCreated}: {
     </div>
     {!allowed && <p role="status">{text('Refresh Discord resources and check the Helper permissions, including Create Public/Private Threads and Send Messages in Threads. Administrator is not required.','Atualiza os recursos Discord e verifica as permissões do Helper, incluindo criar threads públicas/privadas e enviar mensagens em threads. Não precisa de Administrador.')}</p>}
     {error && <p className="starboard-channel__error" role="alert">{error}</p>}
-    {created && <p className="starboard-channel__success" role="status">{text(`#${created} is ready and selected. Save changes to use it for Starboard.`, `#${created} está pronto e selecionado. Guarda as alterações para o usar no Starboard.`)}</p>}
+    {created && <p className="starboard-channel__success" role="status">{text(`#${created} is ready and selected. The configuration is saved automatically; check the saving status above.`, `#${created} está pronto e selecionado. A configuração é guardada automaticamente; verifica o estado da gravação acima.`)}</p>}
   </section>;
 }
