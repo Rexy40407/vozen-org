@@ -82,7 +82,7 @@ try {
         if (starboard) value = {...feature,guildId:guild,config:savedConfig ?? {channel:'a-starboard',threshold:3,emoji:'⭐'},defaults:{},schema:{sections:[{title:'Starboard',fields:[{key:'channel',label:'Default channel',kind:'channel'},{key:'threshold',label:'Required reactions',kind:'number',min:1,max:100},{key:'emoji',label:'Highlight emoji',kind:'text'}]}]},revision:1};
         if (multipleScenario) {
           value.config = savedConfig ?? {...value.config,ignoredChannels:[],ignoredRoles:[]};
-          value.schema.sections[0].fields.push({key:'ignoredChannels',label:'Channels ignored',kind:'channels',advanced:true},{key:'ignoredRoles',label:'Roles ignored',kind:'roles',advanced:true},{key:'autoRole',label:'Initial role',kind:'role',advanced:true});
+          value.schema.sections[0].fields.push({key:'allowSelfStar',label:'Allow the author reaction',kind:'toggle',advanced:true},{key:'includeImages',label:'Include images',kind:'toggle',advanced:true},{key:'ignoredChannels',label:'Channels ignored',kind:'channels',advanced:true},{key:'ignoredRoles',label:'Roles ignored',kind:'roles',advanced:true},{key:'autoRole',label:'Initial role',kind:'role',advanced:true});
         }
         if (scenario === 'fields-visible') value.schema.sections[0].fields.push({key:'cooldown',label:'Cooldown',kind:'number',advanced:true});
         if (scenario === 'missing-schema' && number === 1) delete value.schema;
@@ -127,15 +127,35 @@ try {
       assert.equal(await channels.getByRole('checkbox',{name:'#general',exact:true}).isChecked(),true);
       assert.equal(await channels.getByRole('checkbox',{name:'#off-topic',exact:true}).isChecked(),true);
       assert.equal(await roles.getByRole('checkbox',{name:'@Green',exact:true}).isChecked(),true);
+      for (const input of [channels.getByRole('checkbox',{name:'#general',exact:true}),roles.getByRole('checkbox',{name:'@Green',exact:true})]) {
+        await input.focus();
+        const geometry = await input.evaluate(element => {
+          const box = element.getBoundingClientRect();
+          return {width:box.width,height:box.height,minHeight:getComputedStyle(element).minHeight};
+        });
+        assert.equal(geometry.width,18,'checkbox stays 18px wide when focused');
+        assert.equal(geometry.height,18,'checkbox must not inherit 44px field height');
+        assert.equal(geometry.minHeight,'18px');
+      }
+      assert.equal(await page.getByRole('region',{name:'Behaviour',exact:true}).getByRole('checkbox').count(),2);
+      await page.keyboard.press('Space');
+      await page.keyboard.press('Space');
+      assert.equal(await roles.getByRole('checkbox',{name:'@Green',exact:true}).evaluate(element =>
+        getComputedStyle(element.closest('label')).outlineWidth),'2px','keyboard focus remains visible on the option row');
+      const channelBox = await channels.boundingBox(), roleBox = await roles.boundingBox();
+      assert.ok(channelBox && roleBox);
+      if (scenario === 'multiple-mobile') assert.ok(roleBox.y > channelBox.y + channelBox.height,'mobile exclusions stack');
+      else assert.ok(Math.abs(channelBox.y - roleBox.y) < 2,'desktop exclusions aligned');
       assert.notEqual(await page.getByRole('combobox',{name:/Initial role/}).getByRole('option',{name:'🔒 @Green',exact:true}).getAttribute('disabled'),null,'assignment restrictions must remain');
       if (scenario !== 'multiple-keyboard') {
         await mkdir('output/playwright',{recursive:true});
         await page.screenshot({path:`output/playwright/${scenario}.png`,fullPage:true});
+        await roles.locator('label').first().screenshot({path:`output/playwright/${scenario}-focused-option.png`});
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
       }
       await Promise.all([page.waitForResponse(response => response.request().method() === 'PUT'),page.getByRole('button',{name:'Save changes',exact:true}).click()]);
       assert.deepEqual(savedConfig.ignoredChannels,['first','second']);
-      assert.deepEqual(savedConfig.ignoredRoles,['high','managed']);
+      assert.deepEqual([...savedConfig.ignoredRoles].sort(),['high','managed']);
       await page.reload();
       await roles.getByRole('checkbox',{name:'@Green',exact:true}).waitFor();
       assert.equal(await roles.getByRole('checkbox',{name:'@Green',exact:true}).isChecked(),true);

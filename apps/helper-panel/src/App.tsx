@@ -5734,6 +5734,13 @@ function ConfigSection({
   onChange: (key: string, value: unknown) => void;
   beforeFields?: import('react').ReactNode;
 }) {
+  const renderField = (field: FieldSpec) => <FieldControl field={field} key={field.key}
+    value={config[field.key]} context={context} onChange={onChange} />;
+  const starboardGroups = beforeFields ? [
+    {title: helperLocale() === 'pt' ? 'Regras de destaque' : 'Highlight rules', keys: ['channel', 'threshold', 'emoji']},
+    {title: helperLocale() === 'pt' ? 'Comportamento' : 'Behaviour', keys: ['allowSelfStar', 'includeImages']},
+    {title: helperLocale() === 'pt' ? 'Exclusões' : 'Exclusions', keys: ['ignoredChannels', 'ignoredRoles']},
+  ] : null;
   return (
     <section className="config-section card">
       <div className="section-heading">
@@ -5744,17 +5751,16 @@ function ConfigSection({
         </div>
       </div>
       {beforeFields}
-      <div className="field-grid">
-        {section.fields.map((field) => (
-          <FieldControl
-            field={field}
-            key={field.key}
-            value={config[field.key]}
-            context={context}
-            onChange={onChange}
-          />
-        ))}
-      </div>
+      {starboardGroups ? <div className="starboard-settings">
+        {starboardGroups.map(group => {
+          const fields = section.fields.filter(field => group.keys.includes(field.key));
+          return fields.length ? <section className="starboard-settings__group" key={group.title} aria-label={group.title}>
+            <h4>{group.title}</h4>
+            <div className="field-grid">{fields.map(renderField)}</div>
+          </section> : null;
+        })}
+        <div className="field-grid">{section.fields.filter(field => !starboardGroups.some(group => group.keys.includes(field.key))).map(renderField)}</div>
+      </div> : <div className="field-grid">{section.fields.map(renderField)}</div>}
     </section>
   );
 }
