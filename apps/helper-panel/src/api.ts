@@ -268,6 +268,7 @@ export type GuildContext = {
     id: string;
     name: string;
     position: number;
+    permissions?: string | null;
     managed?: boolean;
     manageable?: boolean;
   }>;
@@ -558,6 +559,10 @@ async function meOrBootstrap(options?: ReadOptions): Promise<Me> {
 }
 
 export const api = {
+  createStarboardChannel: (name: string, moderatorRoleIds: string[]) =>
+    request<{guildId:string;channel:{id:string;name:string;type:number};reused:boolean}>('/api/starboard/channel', {
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,moderatorRoleIds}),
+    }),
   premiumServer: (options?: ReadOptions) => request<import('./premium-activation').PremiumSeatStatus>('/api/premium/server', options),
   activatePremiumServer: (guildId: string) => request<import('./premium-activation').PremiumSeatStatus>('/api/premium/server', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ guild_id: guildId }),

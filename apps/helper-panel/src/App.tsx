@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
 import { PremiumBannerSwitch } from './premium-banner-switch';
 import { FeatureSimulation, type SimulationDraft } from './feature-simulation';
+import { StarboardChannel } from './starboard-channel-setup';
 import { guildStorage, preferredGuild, rememberGuild } from './last-guild';
 import {
   api,
@@ -3169,6 +3170,7 @@ function App() {
             </section>
           ) : (
             <FeatureDetail
+              key={`${me?.guildId}:${route.key}`}
               feature={currentFeature}
               schema={detailSchema}
               context={guildContext}
@@ -4568,6 +4570,10 @@ function FeatureDetail({
   saving: boolean;
   onBack: () => void;
 }) {
+  const [createdChannel, setCreatedChannel] = useState<GuildContext['channels'][number] | null>(null);
+  const resourceContext = context && createdChannel ? {
+    ...context, channels:[...context.channels.filter(channel => channel.id !== createdChannel.id),createdChannel],
+  } : context;
   const translatedFeature = feature ? localizedFeature(feature) : undefined;
   const templateOptions: [string, string][] = [
     ['', helperT('helper.noTemplate', 'No template')],
@@ -4745,8 +4751,12 @@ function FeatureDetail({
               key={section.title}
               section={section}
               config={config}
-              context={context}
+              context={resourceContext}
               onChange={onChange}
+              afterFields={feature?.key === 'community.starboard' && section.fields.some(field => field.key === 'channel')
+                ? <StarboardChannel key={context?.guildId} context={context} onCreated={channel => {
+                    setCreatedChannel(channel);onChange('channel',channel.id);
+                  }} /> : undefined}
             />
           ))}
         </div>
@@ -5716,11 +5726,13 @@ function ConfigSection({
   config,
   context,
   onChange,
+  afterFields,
 }: {
   section: SectionSpec;
   config: FeatureConfig;
   context: GuildContext | null;
   onChange: (key: string, value: unknown) => void;
+  afterFields?: import('react').ReactNode;
 }) {
   const advanced = section.fields.filter((field) => field.advanced);
   const basic = section.fields.filter((field) => !field.advanced);
@@ -5762,6 +5774,7 @@ function ConfigSection({
           </div>
         </details>
       )}
+      {afterFields}
     </section>
   );
 }

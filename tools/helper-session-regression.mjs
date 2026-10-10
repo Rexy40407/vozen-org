@@ -1,20 +1,25 @@
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
 const browser = await chromium.launch();
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 try {
-  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout']) {
+  for (const scenario of ['delayed-session', 'remember-server', 'legacy-bearer', 'retry-detail', 'missing-schema', 'stale-detail', 'uncertain-switch', 'free-card', 'retry-resources', 'wrong-guild-resources', 'stale-resources', 'simulation-video', 'simulation-pt', 'simulation-failure', 'simulation-invalid', 'simulation-mismatch', 'simulation-close', 'simulation-media-error', 'simulation-route-change', 'simulation-timeout', 'channel-create', 'channel-error', 'channel-wrong-guild', 'channel-switch', 'channel-no-permissions', 'channel-mobile', 'channel-pt']) {
+    if (process.env.HELPER_SCENARIO && !scenario.startsWith(process.env.HELPER_SCENARIO)) continue;
     const page = await browser.newPage();
     let ready = false, guild = 'a', earlyReads = 0, detailReads = 0, switches = 0;
     let savedConfig;
     let contextReads = 0;
     let simulationReads = 0;
     let simulatedConfig;
+    let channelCreates = 0;
+    const channelScenario = scenario.startsWith('channel-');
     const resourceScenario = scenario.endsWith('resources');
     const simulationScenario = scenario.startsWith('simulation-');
-    const starboard = resourceScenario || simulationScenario;
+    const starboard = resourceScenario || simulationScenario || channelScenario;
     const feature = {key:starboard ? 'community.starboard' : 'community.levels',label:starboard ? 'Starboard' : 'Levels & XP',category:'community',available:true,enabled:true};
-    if (scenario === 'simulation-pt') await page.addInitScript(() => localStorage.setItem('vozen.lang','pt'));
+    if (scenario === 'simulation-pt' || scenario === 'channel-pt') await page.addInitScript(() => localStorage.setItem('vozen.lang','pt'));
+    if (scenario === 'channel-mobile') await page.setViewportSize({width:390,height:844});
     if (scenario === 'simulation-video') await page.emulateMedia({reducedMotion:'reduce'});
     if (scenario === 'simulation-timeout') await page.addInitScript(() => {
       const original = window.setTimeout;
@@ -45,6 +50,17 @@ try {
           name:'Alpha',permissions:'8',channels:[{id:`${guild}-starboard`,name:'starboard',type:'text'}],roles:[],
           hierarchy:{known:true},capabilities:{channelSelectors:!(scenario === 'stale-resources' && contextReads === 1),roleSelectors:true,permissionPreflight:true},
           stale:scenario === 'stale-resources' && contextReads === 1};
+        if (channelScenario) Object.assign(value,{bot:{available:true,permissions:scenario === 'channel-no-permissions' ? '2048' : '8'},roles:[{id:'mod',name:'Moderator',permissions:'8192'},{id:'member',name:'Member',permissions:'2048'}]});
+      }
+      else if (path === '/api/starboard/channel') {
+        channelCreates++;
+        const body = route.request().postDataJSON();
+        assert.deepEqual(body,{name:'starboard',moderatorRoleIds:['mod']});
+        assert.equal(route.request().method(),'POST');
+        const requestedGuild = guild;
+        await new Promise(resolve => setTimeout(resolve, scenario === 'channel-switch' ? 1500 : 350));
+        if (scenario === 'channel-error') { await route.fulfill({status:409,json:{code:'starboard_channel_name_exists'}}); return; }
+        value = {guildId:scenario === 'channel-wrong-guild' ? 'b' : requestedGuild,channel:{id:`${requestedGuild}-created`,name:'starboard',type:0},reused:false};
       }
       else if (path === '/api/session/switch') {
         switches++; guild = route.request().postDataJSON().guild_id;
@@ -80,6 +96,54 @@ try {
       await route.fulfill({json:value});
     });
     await page.goto(`${base}#/config/${feature.key}`);
+    if (channelScenario) {
+      const pt = scenario === 'channel-pt';
+      const setup = page.locator('.starboard-channel');
+      await setup.locator('summary').click();
+      const create = setup.getByRole('button',{name:pt ? 'Criar canal só de leitura' : 'Create read-only channel',exact:true});
+      const channel = page.getByRole('combobox',{name:pt ? /Canal predefinido/ : /Default channel/});
+      if (scenario === 'channel-no-permissions') {
+        assert.equal(await create.isDisabled(),true);
+        assert.equal(channelCreates,0);
+      } else {
+        const input = setup.getByRole('textbox',{name:pt ? /Nome do canal/ : /Channel name/});
+        await input.fill('../bad');
+        assert.equal(await create.isDisabled(),true);
+        await input.fill('starboard');
+        await setup.getByRole('listbox').selectOption('mod');
+        assert.equal(await setup.getByRole('option',{name:'Member',exact:true}).count(),0);
+        await create.click();
+        assert.equal(await setup.getByRole('button').isDisabled(),true,'prevent duplicate clicks');
+        if (scenario === 'channel-switch') {
+          await page.getByRole('combobox',{name:'Current server',exact:true}).selectOption('b');
+          await page.waitForFunction(() => document.querySelector('select[aria-label="Current server"]')?.value === 'b');
+          await new Promise(resolve => setTimeout(resolve,1700));
+          assert.equal(await page.locator('option[value="a-created"]').count(),0,'late channel must not enter another guild');
+        } else if (scenario === 'channel-error' || scenario === 'channel-wrong-guild') {
+          await setup.getByRole('alert').waitFor();
+          assert.equal(await channel.inputValue(),'a-starboard');
+          assert.equal(await create.isDisabled(),false);
+        } else {
+          await setup.getByRole('status').filter({hasText:pt ? 'está pronto' : 'is ready'}).waitFor();
+          assert.equal(await channel.inputValue(),'a-created');
+          assert.equal(savedConfig,undefined,'creation must not publish configuration');
+          if (scenario === 'channel-mobile' || scenario === 'channel-create') {
+            await mkdir('output/playwright',{recursive:true});
+            await page.screenshot({path:`output/playwright/${scenario}.png`,fullPage:true});
+            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),'no horizontal overflow');
+          }
+          await Promise.all([
+            page.waitForResponse(response => response.request().method() === 'PUT'),
+            page.getByRole('button',{name:pt ? 'Guardar alterações' : 'Save changes',exact:true}).click(),
+          ]);
+          assert.equal(savedConfig.channel,'a-created');
+        }
+        assert.equal(channelCreates,1);
+      }
+      console.log(`PASS ${scenario}`);
+      await page.close();
+      continue;
+    }
     if (simulationScenario) {
       const pt = scenario === 'simulation-pt';
       const simulate = page.getByRole('button',{name:pt ? 'Simular configuração' : 'Simulate configuration',exact:true});

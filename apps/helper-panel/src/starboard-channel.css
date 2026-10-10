@@ -1,0 +1,9 @@
+.starboard-channel {border-top:1px solid var(--line);padding-top:18px;margin-top:20px;}
+.starboard-channel summary {color:var(--mint);cursor:pointer;font-weight:600;line-height:1.5;}
+.starboard-channel summary:focus-visible {outline:2px solid var(--mint);outline-offset:5px;}
+.starboard-channel p {color:var(--muted);max-width:70ch;line-height:1.6;margin:12px 0;}
+.starboard-channel .field-grid {margin:16px 0;}
+.starboard-channel .starboard-channel__error {color:var(--danger);}
+.starboard-channel .starboard-channel__success {color:var(--mint);}
+.starboard-channel button {max-width:100%;white-space:normal;}
+@media(max-width:600px) {.starboard-channel .field-grid {grid-template-columns:1fr;}.starboard-channel button {width:100%;}}
