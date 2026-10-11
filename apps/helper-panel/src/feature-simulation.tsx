@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api, type FeatureConfig } from './api';
 import { helperLocale, helperT as t } from './i18n';
 import './feature-simulation.css';
+import { featureDemo } from './feature-demo';
 
 type Simulation = Awaited<ReturnType<typeof api.testFeature>>;
 export type SimulationDraft = {
@@ -24,9 +25,9 @@ export function FeatureSimulation({ draft, onClose }: {
   const [result, setResult] = useState<Simulation | null>(null);
   const [failed, setFailed] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
-  const starboard = draft.key === 'community.starboard';
   const locale = helperLocale() === 'pt' ? 'pt' : 'en';
-  const media = `${import.meta.env.BASE_URL}feature-demos/starboard-${locale}`;
+  const demo = featureDemo(draft.key, locale);
+  const media = demo ? `${import.meta.env.BASE_URL}feature-demos/${demo.asset}` : '';
 
   useEffect(() => {
     const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -67,19 +68,17 @@ export function FeatureSimulation({ draft, onClose }: {
       <button type="button" className="secondary" autoFocus onClick={onClose}>{t('helper.demoClose', 'Close demonstration')}</button>
     </header>
     <p id="simulation-safety">{t('helper.demoSafety', 'This demonstration does not send messages or change your server. Editor changes are saved separately and automatically.')}</p>
-    {starboard && <section className="feature-simulation__example" aria-labelledby="simulation-example">
-      <h3 id="simulation-example">{t('helper.demoVideoTitle', 'How Starboard works · 10-second video')}</h3>
-      <p>{t('helper.demoExample', 'Illustrative example: a message receives 3 stars and is copied to #starboard. The video uses sample data, not your server settings.')}</p>
+    {demo && <section className="feature-simulation__example" aria-labelledby="simulation-example">
+      <h3 id="simulation-example">{demo.title}</h3>
+      <p>{demo.example}</p>
       <video ref={video} controls playsInline preload="metadata" poster={`${media}.png`}
-        aria-label={t('helper.demoVideoTitle', 'How Starboard works · 10-second video')}
+        aria-label={demo.title}
         aria-describedby="simulation-transcript" onError={() => setVideoFailed(true)}>
         <source src={`${media}.webm`} type="video/webm" />
       </video>
       {videoFailed && <p role="alert">{t('helper.demoVideoError', 'The video could not load. You can still read the steps below and retry by reopening the demonstration.')}</p>}
       <div id="simulation-transcript" className="feature-simulation__steps">
-        <p>{t('helper.demoStep1', '1. A member posts a message in a channel the bot can read.')}</p>
-        <p>{t('helper.demoStep2', '2. Other members add the configured highlight reaction.')}</p>
-        <p>{t('helper.demoStep3', '3. At the required count, Helper creates or updates its mirror in the selected Starboard channel.')}</p>
+        {demo.steps.map(step => <p key={step}>{step}</p>)}
       </div>
     </section>}
     <section className="feature-simulation__validation" aria-labelledby="simulation-validation" aria-busy={!result && !failed}>
