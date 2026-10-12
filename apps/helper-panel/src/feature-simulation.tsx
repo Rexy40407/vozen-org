@@ -20,11 +20,10 @@ export function FeatureSimulation({ draft, onClose }: {
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<Simulation | null>(null);
   const [failed, setFailed] = useState(false);
-  const [videoFailed, setVideoFailed] = useState(false);
+  const [animationFailed, setAnimationFailed] = useState(false);
   const locale = helperLocale() === 'pt' ? 'pt' : 'en';
   const demo = featureDemo(draft.key, locale);
   const media = demo ? `${import.meta.env.BASE_URL}feature-demos/${demo.asset}` : '';
@@ -32,9 +31,7 @@ export function FeatureSimulation({ draft, onClose }: {
   useEffect(() => {
     const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dialog.current?.showModal();
-    const player = video.current;
     return () => {
-      player?.pause();
       if (trigger?.isConnected) trigger.focus();
     };
   }, []);
@@ -71,12 +68,12 @@ export function FeatureSimulation({ draft, onClose }: {
     {demo && <section className="feature-simulation__example" aria-labelledby="simulation-example">
       <h3 id="simulation-example">{demo.title}</h3>
       <p>{demo.example}</p>
-      <video ref={video} controls playsInline preload="metadata" poster={`${media}.png`}
-        aria-label={demo.title}
-        aria-describedby="simulation-transcript" onError={() => setVideoFailed(true)}>
-        <source src={`${media}.webm`} type="video/webm" />
-      </video>
-      {videoFailed && <p role="alert">{t('helper.demoVideoError', 'The video could not load. You can still read the steps below and retry by reopening the demonstration.')}</p>}
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)" srcSet={`${media}.png`} type="image/png" />
+        <img className="feature-simulation__animation" src={`${media}.gif`} alt={demo.title}
+          aria-describedby="simulation-transcript" onError={() => setAnimationFailed(true)} />
+      </picture>
+      {animationFailed && <p role="alert">{t('helper.demoAnimationError', 'The animation could not load. You can still read the steps below and retry by reopening the demonstration.')}</p>}
       <div id="simulation-transcript" className="feature-simulation__steps">
         {demo.steps.map(step => <p key={step}>{step}</p>)}
       </div>
@@ -84,7 +81,7 @@ export function FeatureSimulation({ draft, onClose }: {
     <section className="feature-simulation__validation" aria-labelledby="simulation-validation" aria-busy={!result && !failed}>
       <h3 id="simulation-validation">{t('helper.demoValidation', 'Check of your current draft')}</h3>
       {!draft.enabled && <p>{t('helper.demoDisabled', 'This feature is disabled in the editor. The demonstration does not enable it.')}</p>}
-      {failed ? <><p role="alert">{t('helper.demoCheckError', 'Could not validate the current draft with the API. The example video is not a successful validation.')}</p>
+      {failed ? <><p role="alert">{t('helper.demoCheckError', 'Could not validate the current draft with the API. The example animation is not a successful validation.')}</p>
         <button type="button" className="secondary" onClick={() => setAttempt(value => value + 1)}>{t('helper.demoRetry', 'Retry validation')}</button></>
         : !result ? <p role="status">{t('helper.demoChecking', 'Validating the current draft…')}</p>
         : <>

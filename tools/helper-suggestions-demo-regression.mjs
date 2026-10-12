@@ -6,7 +6,7 @@ import { mkdir } from 'node:fs/promises';
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 const browser = await chromium.launch();
 try {
-  for (const scenario of ['en', 'pt', 'api-failure', 'invalid', 'media-failure', 'mobile', 'close', 'route-change', 'timeout', 'unauthenticated']) {
+  for (const scenario of ['en', 'pt', 'api-failure', 'invalid', 'media-failure', 'mobile', 'close', 'route-change', 'timeout', 'unauthenticated', 'reduced-motion']) {
     if (process.env.SUGGESTIONS_DEMO_SCENARIO && process.env.SUGGESTIONS_DEMO_SCENARIO !== scenario) continue;
     const page = await browser.newPage();
     const pt = scenario === 'pt';
@@ -15,12 +15,12 @@ try {
     const feature = { key: 'community.suggestions', label: 'Suggestions', category: 'community', enabled: true, available: true };
     if (pt) await page.addInitScript(() => localStorage.setItem('vozen.lang', 'pt'));
     if (scenario === 'mobile') await page.setViewportSize({ width: 390, height: 844 });
-    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.emulateMedia({ reducedMotion: scenario === 'reduced-motion' ? 'reduce' : 'no-preference' });
     if (scenario === 'timeout') await page.addInitScript(() => {
       const original = window.setTimeout;
       window.setTimeout = (callback, delay, ...args) => original(callback, delay === 20000 ? 200 : delay, ...args);
     });
-    if (scenario === 'media-failure') await page.route('**/feature-demos/suggestions-*.webm', route => route.fulfill({ status: 404, body: '' }));
+    if (scenario === 'media-failure') await page.route('**/feature-demos/suggestions-*.gif', route => route.fulfill({ status: 404, body: '' }));
     await page.route('**/api/**', async route => {
       const path = new URL(route.request().url()).pathname.replace(/^.*?(?=\/api\/)/, '');
       let value;
@@ -58,34 +58,30 @@ try {
     await simulate.click();
     const dialog = page.getByRole('dialog', { name: pt ? 'Sugestões' : 'Suggestions', exact: true });
     await dialog.waitFor();
-    const video = dialog.locator('video');
-    assert.equal(await video.count(), 1, 'Suggestions must include its own video, independent of API validation');
-    assert.equal(await video.locator('source').getAttribute('src'), `/panel/helper-tracker/feature-demos/suggestions-${pt ? 'pt' : 'en'}.webm`);
+    assert.equal(await dialog.locator('video').count(), 0, 'no video player or native media controls');
+    const animation = dialog.locator('img.feature-simulation__animation');
+    assert.equal(await animation.count(), 1, 'Suggestions must include its own animation, independent of API validation');
+    assert.equal(await animation.getAttribute('src'), `/panel/helper-tracker/feature-demos/suggestions-${pt ? 'pt' : 'en'}.gif`);
     assert.equal(await dialog.locator('.feature-simulation__steps p').count(), 3);
     if (scenario === 'media-failure') {
-      await dialog.getByRole('alert').filter({ hasText: 'video could not load' }).waitFor();
+      await dialog.getByRole('alert').filter({ hasText: 'animation could not load' }).waitFor();
       assert.equal(await dialog.locator('.feature-simulation__steps').isVisible(), true);
     } else {
-      await page.waitForFunction(() => document.querySelector('.feature-simulation video')?.readyState >= 2);
-      assert.equal(await video.evaluate(element => element.paused), true, 'no autoplay, including reduced-motion');
-      const duration = await video.evaluate(element => element.duration);
-      assert.ok(Number.isFinite(duration) && duration > 9 && duration < 11, 'playable 10-second example');
-      await video.evaluate(element => element.play());
-      await page.waitForFunction(() => document.querySelector('.feature-simulation video')?.currentTime > .5);
-      await video.evaluate(element => element.pause());
-      if (scenario === 'en' || pt) {
-        await video.evaluate(element => { element.currentTime = 8; });
-        await page.waitForFunction(() => {
-          const player = document.querySelector('.feature-simulation video');
-          return player && !player.seeking && player.readyState >= 2 && player.currentTime >= 8;
-        });
-        await mkdir('output/playwright', { recursive: true });
-        await video.screenshot({ path: `output/playwright/suggestions-demo-${scenario}-approved.png` });
+      await page.waitForFunction(() => {
+        const image = document.querySelector('.feature-simulation__animation');
+        return image?.complete && image.naturalWidth > 0;
+      });
+      assert.equal(await animation.evaluate(element => element.currentSrc.endsWith('.png')), scenario === 'reduced-motion', 'reduced motion uses the static poster');
+      if (scenario === 'en') {
+        const before = await animation.screenshot();
+        await new Promise(resolve => setTimeout(resolve, 2600));
+        const after = await animation.screenshot();
+        assert.ok(!before.equals(after), 'GIF advances automatically without pressing play');
       }
     }
     if (['api-failure', 'unauthenticated', 'timeout'].includes(scenario)) {
       await dialog.getByRole('alert').filter({ hasText: 'Could not validate' }).waitFor();
-      assert.equal(await video.isVisible(), true, 'API failure must not hide the example');
+      assert.equal(await animation.isVisible(), true, 'API failure must not hide the example');
       assert.equal(await dialog.getByText('The API validated these settings.', { exact: false }).count(), 0);
       if (scenario !== 'timeout') {
         await dialog.getByRole('button', { name: 'Retry validation', exact: true }).click();

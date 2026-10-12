@@ -4,10 +4,10 @@ import { featureDemo } from './feature-demo';
 describe('feature-specific demonstrations', () => {
   for (const [key, asset] of [['community.starboard', 'starboard'], ['community.suggestions', 'suggestions']]) {
     for (const locale of ['en', 'pt']) {
-      it(`selects the owned ${locale} video and written steps for ${key}`, () => {
+      it(`selects the owned ${locale} animation and written steps for ${key}`, () => {
         const demo = featureDemo(key, locale);
         expect(demo?.asset).toBe(`${asset}-${locale}`);
-        expect(demo?.title).toContain('10');
+        expect(demo?.title).toMatch(/animation|animação/);
         expect(demo?.example.length).toBeGreaterThan(20);
         expect(demo?.steps).toHaveLength(3);
       });

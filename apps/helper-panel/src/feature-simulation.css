@@ -16,7 +16,7 @@
 .feature-simulation h2 { margin: 4px 0; font-size: 26px; }
 .feature-simulation h3 { margin: 0 0 8px; font-size: 16px; }
 .feature-simulation p { margin: 10px 0; font-size: 13px; color: #b9c9df; }
-.feature-simulation video { display: block; width: 100%; aspect-ratio: 16 / 9; max-height: 360px; object-fit: contain; border-radius: 12px; background: #080f1c; margin-top: 16px; }
+.feature-simulation__animation { display: block; width: 100%; aspect-ratio: 16 / 9; max-height: 360px; object-fit: contain; border-radius: 12px; background: #080f1c; margin-top: 16px; }
 .feature-simulation__example, .feature-simulation__validation { border-top: 1px solid #304158; margin-top: 22px; padding-top: 20px; }
 .feature-simulation__steps { margin: 16px 0; }
 .feature-simulation__steps p { margin: 5px 0; }

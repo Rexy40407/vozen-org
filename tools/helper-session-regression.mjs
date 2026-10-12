@@ -30,7 +30,7 @@ try {
       const original = window.setTimeout;
       window.setTimeout = (callback, delay, ...args) => original(callback, delay === 20000 ? 200 : delay, ...args);
     });
-    if (scenario === 'simulation-media-error') await page.route('**/feature-demos/*.webm', route => route.fulfill({status:404,body:''}));
+    if (scenario === 'simulation-media-error') await page.route('**/feature-demos/*.gif', route => route.fulfill({status:404,body:''}));
     if (scenario === 'legacy-bearer') await page.addInitScript(() => {
       if (!sessionStorage.getItem('qa-seeded')) {
         sessionStorage.setItem('qa-seeded','1');
@@ -306,8 +306,9 @@ try {
       await simulate.click();
       const dialog = page.getByRole('dialog',{name:pt ? 'Mural de estrelas' : 'Starboard',exact:true});
       await dialog.waitFor();
-      const video = dialog.locator('video');
-      assert.equal(await video.count(),1,'simulation must open a video, not a technical toast');
+      const animation = dialog.locator('img.feature-simulation__animation');
+      assert.equal(await dialog.locator('video').count(),0,'no player or video controls in any demonstration');
+      assert.equal(await animation.count(),1,'simulation must show a GIF, not a technical toast');
       if (scenario === 'simulation-close') {
         await page.waitForFunction(() => document.querySelector('.feature-simulation [role="status"]') !== null);
         await page.keyboard.press('Escape');
@@ -322,16 +323,20 @@ try {
         await new Promise(resolve => setTimeout(resolve, 800));
         assert.equal(await dialog.count(),0,'leaving the feature must discard its simulation');
       } else {
-        if (scenario === 'simulation-media-error') await dialog.getByRole('alert').filter({hasText:'video could not load'}).waitFor();
+        if (scenario === 'simulation-media-error') await dialog.getByRole('alert').filter({hasText:'animation could not load'}).waitFor();
         else {
-          await page.waitForFunction(() => document.querySelector('.feature-simulation video')?.readyState >= 2);
-          const duration = await video.evaluate(element => element.duration);
-          assert.ok(Number.isFinite(duration) && duration > 9 && duration < 11,'demo must have a playable finite 10-second duration');
-          assert.equal(await video.evaluate(element => element.paused),true,'demo must be user initiated, including reduced motion');
-          assert.equal(await video.evaluate(element => element.currentSrc.endsWith(`starboard-${document.documentElement.lang === 'pt' ? 'pt' : 'en'}.webm`)),true);
-          await video.evaluate(element => element.play());
-          await page.waitForFunction(() => document.querySelector('.feature-simulation video')?.currentTime > .5);
-          await video.evaluate(element => element.pause());
+          await page.waitForFunction(() => {
+            const image = document.querySelector('.feature-simulation__animation');
+            return image?.complete && image.naturalWidth > 0;
+          });
+          const extension = scenario === 'simulation-video' ? 'png' : 'gif';
+          assert.equal(await animation.evaluate((element, ext) => element.currentSrc.endsWith(`starboard-${document.documentElement.lang === 'pt' ? 'pt' : 'en'}.${ext}`),extension),true);
+          if (scenario === 'simulation-pt') {
+            const before = await animation.screenshot();
+            await new Promise(resolve => setTimeout(resolve,2400));
+            const after = await animation.screenshot();
+            assert.ok(!before.equals(after),'Starboard GIF must advance automatically');
+          }
         }
         if (scenario === 'simulation-failure' || scenario === 'simulation-mismatch' || scenario === 'simulation-timeout') {
           await dialog.getByRole('alert').filter({hasText:'Could not validate'}).waitFor();
@@ -384,6 +389,7 @@ try {
       const dialog = page.getByRole('dialog',{name:'Levels & XP',exact:true});
       await dialog.getByText('The API validated these settings. The simulation did not send messages or change the server.',{exact:true}).waitFor();
       assert.equal(await dialog.locator('video').count(),0,'do not show a Starboard video for another feature');
+      assert.equal(await dialog.locator('.feature-simulation__animation').count(),0,'do not show an unrelated GIF for a feature without its own demonstration');
       assert.equal(await dialog.getByText('Technical QA effect',{exact:true}).isVisible(),false,'technical effects should be collapsed');
       await page.keyboard.press('Escape');
       await dialog.waitFor({state:'hidden'});
