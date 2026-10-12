@@ -6,15 +6,16 @@ import { mkdir } from 'node:fs/promises';
 const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-tracker/';
 const browser = await chromium.launch();
 try {
-  for (const scenario of ['en', 'pt', 'api-failure', 'invalid', 'media-failure', 'mobile', 'close', 'route-change', 'timeout', 'unauthenticated', 'reduced-motion']) {
+  for (const scenario of ['en', 'pt', 'api-failure', 'invalid', 'media-failure', 'mobile', 'close', 'route-change', 'timeout', 'unauthenticated', 'reduced-motion', 'dismiss-outside', 'dismiss-inside', 'dismiss-padding', 'dismiss-drag', 'dismiss-mobile', 'dismiss-touch', 'dismiss-escape']) {
     if (process.env.SUGGESTIONS_DEMO_SCENARIO && process.env.SUGGESTIONS_DEMO_SCENARIO !== scenario) continue;
-    const page = await browser.newPage();
+    const page = await browser.newPage(scenario === 'dismiss-touch' ? { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true } : {});
+    const dismissScenario = scenario.startsWith('dismiss-');
     const pt = scenario === 'pt';
     let simulations = 0, writes = 0;
     const config = { channel: 'sample-suggestions', voteMode: 'up_down', anonymous: false, cooldownHours: 24, requiredRole: '', staffChannel: '' };
     const feature = { key: 'community.suggestions', label: 'Suggestions', category: 'community', enabled: true, available: true };
     if (pt) await page.addInitScript(() => localStorage.setItem('vozen.lang', 'pt'));
-    if (scenario === 'mobile') await page.setViewportSize({ width: 390, height: 844 });
+    if (scenario === 'mobile' || scenario === 'dismiss-mobile') await page.setViewportSize({ width: 390, height: 844 });
     await page.emulateMedia({ reducedMotion: scenario === 'reduced-motion' ? 'reduce' : 'no-preference' });
     if (scenario === 'timeout') await page.addInitScript(() => {
       const original = window.setTimeout;
@@ -32,7 +33,7 @@ try {
         if ((scenario === 'api-failure' || scenario === 'unauthenticated') && simulations === 1) {
           await route.fulfill({ status: scenario === 'unauthenticated' ? 401 : 503, json: { code: scenario === 'unauthenticated' ? 'unauthenticated' : 'unavailable' } }); return;
         }
-        if (['close', 'route-change', 'timeout'].includes(scenario)) await new Promise(resolve => setTimeout(resolve, 700));
+        if (['close', 'route-change', 'timeout'].includes(scenario) || dismissScenario) await new Promise(resolve => setTimeout(resolve, dismissScenario ? 1500 : 700));
         value = { ok: scenario !== 'invalid', key: feature.key, mode: 'simulation', result: { key: feature.key, would_apply: scenario !== 'invalid', effects: ['Synthetic suggestion preview'], issues: scenario === 'invalid' ? [{ severity: 'error', message: 'Select a valid channel' }] : [] } };
       } else {
         if (!['GET', 'HEAD'].includes(route.request().method())) writes++;
@@ -58,6 +59,39 @@ try {
     await simulate.click();
     const dialog = page.getByRole('dialog', { name: pt ? 'Sugestões' : 'Suggestions', exact: true });
     await dialog.waitFor();
+    if (dismissScenario) {
+      const box = await dialog.boundingBox();
+      assert.ok(box);
+      const outside = { x: Math.max(1, box.x - 8), y: box.y + 100 };
+      const padding = { x: box.x + 10, y: box.y + 100 };
+      if (scenario === 'dismiss-inside') {
+        await dialog.getByRole('heading', { name: 'Suggestions', exact: true }).click();
+        assert.equal(await dialog.isVisible(), true, 'content click stays open');
+        await page.keyboard.press('Escape');
+      } else if (scenario === 'dismiss-padding') {
+        await page.mouse.click(padding.x, padding.y);
+        assert.equal(await dialog.isVisible(), true, 'dialog padding is not backdrop');
+        await page.keyboard.press('Escape');
+      } else if (scenario === 'dismiss-drag') {
+        await page.mouse.move(padding.x, padding.y); await page.mouse.down();
+        await page.mouse.move(outside.x, outside.y); await page.mouse.up();
+        assert.equal(await dialog.isVisible(), true, 'dragging out of the form stays open');
+        await page.mouse.move(outside.x, outside.y); await page.mouse.down();
+        await page.mouse.move(padding.x, padding.y); await page.mouse.up();
+        assert.equal(await dialog.isVisible(), true, 'dragging into the form stays open');
+        await page.mouse.click(outside.x, outside.y);
+      } else if (scenario === 'dismiss-touch') await page.touchscreen.tap(outside.x, outside.y);
+      else if (scenario === 'dismiss-escape') await page.keyboard.press('Escape');
+      else await page.mouse.click(outside.x, outside.y);
+      await dialog.waitFor({ state: 'hidden', timeout: 2000 });
+      assert.equal(await simulate.evaluate(element => element === document.activeElement), true, 'focus returns to the simulation trigger');
+      await new Promise(resolve => setTimeout(resolve, 1600));
+      assert.equal(await dialog.count(), 0, 'late validation response cannot reopen the modal');
+      assert.equal(writes, 0, 'dismissal must not write configuration');
+      assert.equal(new URL(page.url()).hash, '#/config/community.suggestions', 'backdrop click must not activate underlying navigation');
+      console.log(`PASS suggestions-demo-${scenario}`);
+      await page.close(); continue;
+    }
     assert.equal(await dialog.locator('video').count(), 0, 'no video player or native media controls');
     const animation = dialog.locator('img.feature-simulation__animation');
     assert.equal(await animation.count(), 1, 'Suggestions must include its own animation, independent of API validation');

@@ -3,6 +3,7 @@ import { api, type FeatureConfig } from './api';
 import { helperLocale, helperT as t } from './i18n';
 import './feature-simulation.css';
 import { featureDemo } from './feature-demo';
+import { isOutsideDialog } from './dialog-dismiss';
 
 type Simulation = Awaited<ReturnType<typeof api.testFeature>>;
 export type SimulationDraft = {
@@ -20,6 +21,7 @@ export function FeatureSimulation({ draft, onClose }: {
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const backdropPress = useRef(false);
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<Simulation | null>(null);
   const [failed, setFailed] = useState(false);
@@ -58,7 +60,22 @@ export function FeatureSimulation({ draft, onClose }: {
 
   const errors = result?.result.issues.filter(issue => issue.severity === 'error') ?? [];
   return <dialog ref={dialog} className="feature-simulation" aria-labelledby="simulation-title"
-    aria-describedby="simulation-safety" onCancel={event => { event.preventDefault(); onClose(); }}>
+    aria-describedby="simulation-safety" onCancel={event => { event.preventDefault(); onClose(); }}
+    onPointerDown={event => {
+      // Native dialog backdrop events target the dialog itself, as do clicks
+      // on its padding. Geometry distinguishes them; remember where a gesture
+      // began so dragging text/the scrollbar outside cannot dismiss the form.
+      backdropPress.current = event.isPrimary && event.button === 0
+        && event.target === event.currentTarget
+        && isOutsideDialog(event.currentTarget.getBoundingClientRect(), event);
+    }}
+    onPointerCancel={() => { backdropPress.current = false; }}
+    onClick={event => {
+      const beganOutside = backdropPress.current;
+      backdropPress.current = false;
+      if (beganOutside && event.target === event.currentTarget
+        && isOutsideDialog(event.currentTarget.getBoundingClientRect(), event)) onClose();
+    }}>
     <header className="feature-simulation__header">
       <div><small className="eyebrow">{t('helper.demoEyebrow', 'SAFE DEMONSTRATION')}</small>
         <h2 id="simulation-title">{draft.label}</h2></div>
