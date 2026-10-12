@@ -8,11 +8,18 @@ import {
   faqEntities,
   localize,
   translationMap,
+  comparableLocalizedHtml,
 } from '../../tools/build-localized-pages.mjs';
 
 const readCatalogue = (locale) => JSON.parse(
   fs.readFileSync(path.resolve('tools', 'i18n-marketing-src', `${locale}.json`), 'utf8'),
 );
+
+test('localized source checks ignore rendered fragments but still detect authored copy changes', () => {
+  const source = '<html><body><h1>Original</h1><div data-prerender-fragment="faq">English FAQ</div></body></html>';
+  assert.equal(comparableLocalizedHtml(source), comparableLocalizedHtml(source.replace('English FAQ', 'Translated FAQ')));
+  assert.notEqual(comparableLocalizedHtml(source), comparableLocalizedHtml(source.replace('Original', 'Incorrect')));
+});
 
 const helperPage = {
   route: 'helper',

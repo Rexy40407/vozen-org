@@ -144,6 +144,18 @@ function translateExactText(document, translations) {
   });
 }
 
+// Prerendered fragments are verified separately against the no-JavaScript
+// contract. Their children come from the page's runtime at build time, while
+// this check still verifies all authored copy, metadata and route attributes.
+export function comparableLocalizedHtml(html) {
+  const document = parse5.parse(html);
+  visit(document, (node) => {
+    if (attr(node, 'data-prerender-fragment') != null) node.childNodes = [];
+    node.attrs?.sort((left, right) => left.name.localeCompare(right.name));
+  });
+  return normalized(parse5.serialize(document));
+}
+
 function applyHelperTranslations(document, messages) {
   const message = (key) => messages[key];
   const set = (node, key) => { if (message(key) != null) setText(node, message(key)); };
@@ -448,7 +460,8 @@ export function buildLocalizedPages({ onlyCheck = checkOnly } = {}) {
   for (const [output, generated] of desiredFiles) {
     let current = '';
     try { current = fs.readFileSync(output, 'utf8'); } catch {}
-    if (normalized(current) !== normalized(generated)) {
+    if ((onlyCheck ? comparableLocalizedHtml(current) : normalized(current)) !==
+        (onlyCheck ? comparableLocalizedHtml(generated) : normalized(generated))) {
       if (onlyCheck) mismatches.push(path.relative(root, output));
       else {
         fs.mkdirSync(path.dirname(output), { recursive: true });

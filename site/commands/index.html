@@ -1,24 +1,16 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org https://cloudflareinsights.com; form-action 'self'"
-    />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#07070d" />
+<!DOCTYPE html><html lang="en" data-vozen-prerendered="true"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.discordapp.com; connect-src 'self' https://api.vozen.org https://cloudflareinsights.com; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07070d">
     <title data-i18n="commands.documentTitle">Commands — Vozen</title>
-    <meta
-      name="description"
-      content="Find every Vozen Discord command, with quick descriptions, options and access labels."
-    />
-    <link rel="canonical" href="https://vozen.org/commands/" />
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-    <link rel="stylesheet" href="../css/main-v43.css?v=007d176db80d" />
-    <link rel="stylesheet" href="../css/commands-v1.css?v=fa085318d4a0" />
-    <link rel="stylesheet" href="../css/global-nav-v1.css?v=ba456a4e033a" />
+    <meta name="description" content="Find every Vozen Discord command, with quick descriptions, options and access labels.">
+    <link rel="canonical" href="https://vozen.org/commands/">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/main-v43.css?v=e09fb8a4f245">
+    <link rel="stylesheet" href="../css/commands-v1.css?v=7f9aed34515b">
+    <link rel="stylesheet" href="../css/global-nav-v1.css?v=43b89c573f3f">
     <script>
       if (window.location.protocol !== 'file:' && /\/commands\/index\.html$/i.test(window.location.pathname)) {
         window.location.replace('/commands/' + window.location.search + window.location.hash);
@@ -46,43 +38,35 @@
 
     <a class="skip-link" href="#commandSearch" data-i18n="commands.skipSearch">Skip to command search</a>
 
-    <div data-vozen-nav data-nav-root="../" data-nav-current="commands" data-nav-product="Ecosystem"></div>
-    <header class="nav" id="legacy-nav">
+    <header class="nav vozen-global-nav" id="nav" data-vozen-nav="" data-nav-root="../" data-nav-current="commands" data-nav-product="Ecosystem" data-nav-prerendered="true" data-prerender-fragment="navigation">
       <div class="wrap nav__inner">
-        <a class="brand" href="../" aria-label="Vozen home">
-          <span class="brand__mark" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span></span>
+        <a class="brand" href="../" aria-label="Vozen ecosystem home" data-i18n-aria-label="ecosystem.homeAria">
+          <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="../favicon.svg" alt="" width="40" height="40"></span>
           <span class="brand__word">Vozen</span>
+          <span class="nav__product" data-i18n="ecosystem.label">Ecosystem</span>
         </a>
-
-        <nav class="nav__links" aria-label="Primary">
-          <a href="../#features" data-i18n="nav.features">Features</a>
-          <a href="../#games" data-i18n="nav.games">Games</a>
-          <a class="is-current" href="./" data-i18n="nav.commands" aria-current="page">Commands</a>
-          <a href="../#languages" data-i18n="nav.languages">Languages</a>
-          <a href="../#premium" data-i18n="nav.premium">Premium</a>
-          <a href="../#faq" data-i18n="nav.faq">FAQ</a>
+        <nav class="nav__links" aria-label="Vozen products" data-i18n-aria-label="ecosystem.productsAria">
+          <a class="" href="../tts/" data-i18n="ecosystem.tts">Vozen TTS</a>
+          <a class="" href="../helper/" data-i18n="ecosystem.helper">Vozen Helper</a>
+          <a class="" href="../docs/" data-i18n="ecosystem.docs">Docs</a>
+          <a class="is-current" href="../commands/" aria-current="page" data-i18n="ecosystem.commands">Commands</a>
+          <span class="nav__premium-disabled" aria-disabled="true" title="Premium is temporarily unavailable" data-i18n-title="ecosystem.premiumUnavailable" data-i18n="nav.premium">Premium</span>
         </nav>
-
         <div class="nav__actions">
-          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" title="Open source on GitHub">
-            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-          </a>
+          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="Vozen on GitHub (open source)" data-i18n-aria-label="common.githubLabel" title="Open source on GitHub" data-i18n-title="common.githubTitle"><svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg></a>
           <div class="lang" id="langMenu">
-            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language">
-              <span class="lang__flag" id="langBtnFlag">🇬🇧</span>
-              <span class="lang__name" id="langBtnName">English</span>
-              <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site language" data-i18n-aria-label="ecosystem.siteLanguage">
+              <span class="lang__flag" id="langBtnFlag"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-gb"></use></svg></span><span class="lang__name" id="langBtnName">English</span>
+              <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
             </button>
-            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language"></ul>
+            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language" data-i18n-aria-label="ecosystem.chooseLanguage"><li role="presentation"><a class="lang__opt is-active" href="/" role="option" data-lang="en" aria-selected="true" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-gb"></use></svg><span class="lang__optname">English</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/pt/" role="option" data-lang="pt" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-pt"></use></svg><span class="lang__optname">Português</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/fr/" role="option" data-lang="fr" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-fr"></use></svg><span class="lang__optname">Français</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/es/" role="option" data-lang="es" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-es"></use></svg><span class="lang__optname">Español</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/de/" role="option" data-lang="de" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-de"></use></svg><span class="lang__optname">Deutsch</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/tr/" role="option" data-lang="tr" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-tr"></use></svg><span class="lang__optname">Türkçe</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/ar/" role="option" data-lang="ar" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-sa"></use></svg><span class="lang__optname">العربية</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/zh/" role="option" data-lang="zh" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-tw"></use></svg><span class="lang__optname">繁體中文</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/ru/" role="option" data-lang="ru" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-ru"></use></svg><span class="lang__optname">Русский</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/ko/" role="option" data-lang="ko" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-kr"></use></svg><span class="lang__optname">한국어</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li></ul>
           </div>
-          <button class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" type="button">
-            <svg viewBox="0 0 24 18" width="18" height="14" fill="currentColor" aria-hidden="true"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg>
-            <span data-i18n="nav.login">Log in</span>
-          </button>
+          <a class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" href="../account/"><svg viewBox="0 0 24 18" width="20" height="15" aria-hidden="true" fill="currentColor"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"></path></svg><span data-i18n="nav.login">Log in</span></a>
           <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
         </div>
       </div>
     </header>
+
 
     <main>
       <section class="commands-hero">
@@ -110,7 +94,7 @@
               <button type="button" role="tab" aria-selected="false" data-command-product="helper">
                 <span class="command-product-picker__title">
                   <span class="command-product-picker__icon command-product-picker__icon--helper" aria-hidden="true">
-                    <svg viewBox="0 0 64 64"><path d="m15 34-6-4m2 0-2 4M49 34l6-4m-2 0 2 4M32 17v-5"/><circle cx="32" cy="9" r="3"/><rect x="13" y="18" width="38" height="31" rx="13"/><rect x="18" y="24" width="28" height="19" rx="8"/><circle cx="26" cy="33" r="3"/><circle cx="38" cy="33" r="3"/><path d="M26 38c3.3 3.2 8.7 3.2 12 0"/></svg>
+                    <svg viewBox="0 0 64 64"><path d="m15 34-6-4m2 0-2 4M49 34l6-4m-2 0 2 4M32 17v-5"></path><circle cx="32" cy="9" r="3"></circle><rect x="13" y="18" width="38" height="31" rx="13"></rect><rect x="18" y="24" width="28" height="19" rx="8"></rect><circle cx="26" cy="33" r="3"></circle><circle cx="38" cy="33" r="3"></circle><path d="M26 38c3.3 3.2 8.7 3.2 12 0"></path></svg>
                   </span>
                   <span>Vozen Helper</span>
                 </span>
@@ -119,12 +103,12 @@
             </div>
             <label class="command-search">
               <span class="sr-only">Search commands</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
-              <input id="commandSearch" type="search" autocomplete="off" placeholder="Try setup, voice or games" />
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"></path></svg>
+              <input id="commandSearch" type="search" autocomplete="off" placeholder="Try setup, voice or games">
               <kbd>/</kbd>
             </label>
-            <div class="command-filters" id="commandFilters" role="group" aria-label="Command filters"></div>
-            <p class="command-results" id="commandResults" aria-live="polite">Showing all commands</p>
+            <div class="command-filters" id="commandFilters" role="group" aria-label="Command filters" data-prerender-fragment="commandFilters"><button class="is-active" type="button" data-filter="all" aria-pressed="true">All</button><button class="" type="button" data-filter="start" aria-pressed="false">Start &amp; voice</button><button class="" type="button" data-filter="fun" aria-pressed="false">Fun &amp; games</button><button class="" type="button" data-filter="stats" aria-pressed="false">Stats &amp; activity</button><button class="" type="button" data-filter="settings" aria-pressed="false">Settings &amp; privacy</button><button class="" type="button" data-filter="premium" aria-pressed="false">Premium</button><button class="" type="button" data-filter="help" aria-pressed="false">Help &amp; community</button></div>
+            <p class="command-results" id="commandResults" aria-live="polite" data-prerender-fragment="commandResults">Showing all 46 Vozen TTS commands.</p>
           </div>
         </div>
       </section>
@@ -134,13 +118,337 @@
           <div class="commands-section__head">
             <div>
               <p class="command-finder__kicker">Full catalogue</p>
-              <h2 id="catalogueTitle">Explore every command</h2>
+              <h2 id="catalogueTitle" data-prerender-fragment="catalogueTitle">Explore every command Vozen TTS commands</h2>
             </div>
-            <p id="catalogueNote">Choose a category above or scan the complete TTS command set below.</p>
+            <p id="catalogueNote" data-prerender-fragment="catalogueNote">Choose a category above or scan the complete command set below.</p>
           </div>
 
           <div class="commands-layout">
-            <div class="command-groups" id="commandGroups"></div>
+            <div class="command-groups" id="commandGroups" data-prerender-fragment="commandGroups"><section id="catalogue-tts" aria-label="Vozen TTS commands"><section class="command-group" aria-labelledby="group-start">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-start">Start &amp; voice</h3><span class="command-group__count">11</span></div><p>Get the bot into a call and control the queue.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/invite</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Get the link to add Vozen to another server.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/setup</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Configure the text channel, auto-read and voice permissions in one guided step.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/join</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Join your current voice channel.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/leave</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Leave the voice channel.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/tts &lt;text&gt;</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Read a message out loud with your selected voice.</p>
+      <span class="command-row__usage">Voice channel required</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/tts-file &lt;text&gt;</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Create a private audio file from short text without joining a call.</p>
+      <span class="command-row__usage">Max 500 characters</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/skip</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Skip the audio currently playing.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/queue</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>View or manage the privacy-safe playback queue.</p>
+      <span class="command-row__usage">show · remove · clear · pause · resume</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/shut-up</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Stop Vozen speaking now and clear the whole queue.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/laugh</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Make Vozen laugh out loud in your current voice.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/sound &lt;clip&gt;</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Play a sound clip in the voice channel.</p>
+
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-fun">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-fun">Fun &amp; games</h3><span class="command-group__count">12</span></div><p>Make the voice channel playful.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/joke &lt;language&gt;</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Tell a short joke in the language you choose.</p>
+      <span class="command-row__usage">Optional engine · optional laughter</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/rizz &lt;language&gt;</code><span class="command-tag command-tag--premium">Premium</span></div>
+      <p>Drop a pickup line in the language you choose.</p>
+      <span class="command-row__usage">Engine required · optional sound</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/8-ball &lt;question&gt;</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Ask the magic 8-ball a yes/no question.</p>
+      <span class="command-row__usage">Language · engine</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/fortune</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Read a fortune out loud.</p>
+      <span class="command-row__usage">Language · engine</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/fact</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Tell a random fun fact.</p>
+      <span class="command-row__usage">Language · engine</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/wyr</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Ask a would-you-rather question.</p>
+      <span class="command-row__usage">Language · engine</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/cast</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Randomly cast everyone in your voice call and reveal the result.</p>
+      <span class="command-row__usage">Voice channel required</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/birthday</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Set, show or clear your birthday greeting.</p>
+      <span class="command-row__usage">set · show · clear</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/game play</code><span class="command-tag command-tag--premium">Free + Premium</span></div>
+      <p>Start a voice or text minigame with the server.</p>
+      <span class="command-row__usage">Menu · language · engine</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/game list</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>See the minigames available to this server.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/game stop</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Stop the active minigame.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/randomizer</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Pick one option at random and say it out loud.</p>
+      <span class="command-row__usage">Options · language</span>
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-stats">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-stats">Stats &amp; activity</h3><span class="command-group__count">5</span></div><p>See what your server is saying.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/top-speakers</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>See who Vozen has read the most, with daily streaks.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/server-stats</code><span class="command-tag command-tag--premium">Free + Premium</span></div>
+      <p>View server messages, top talkers and game stats.</p>
+      <span class="command-row__usage">Free preview</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/stats</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Show Vozen bot statistics.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/bot-stats</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Show public servers, voice sessions and uptime.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/uptime</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>See how long Vozen has been online.</p>
+
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-settings">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-settings">Settings &amp; privacy</h3><span class="command-group__count">10</span></div><p>Shape Vozen around your server.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/voice</code><span class="command-tag command-tag--premium">Free + Premium</span></div>
+      <p>Manage your personal voice, language, engine and effects.</p>
+      <span class="command-row__usage">set · show · reset · preview</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/config</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Manage server-wide Vozen settings.</p>
+      <span class="command-row__usage">show · reset · channels · toggles</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/config language</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Set the language Vozen uses for this server.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/config default-voice</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Choose the server default voice and engine.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/config block-word</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Add or remove words Vozen skips while reading.</p>
+      <span class="command-row__usage">add · remove</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/config greet-language</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Choose the language used for greetings.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/privacy</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Manage your personal data and opt-out preferences.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/translate</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Configure opt-in text translation.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/pronunciation</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Teach Vozen how to say a word in your messages.</p>
+      <span class="command-row__usage">add · list · remove</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/server-pronunciation</code><span class="command-tag command-tag--premium">Admin + Premium</span></div>
+      <p>Manage pronunciations for everyone in the server.</p>
+      <span class="command-row__usage">Admin · 3 free / 50 Premium</span>
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-premium">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-premium">Premium</h3><span class="command-group__count">3</span></div><p>Extra engines and server-wide upgrades.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/premium</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Check Premium status or activate a server licence.</p>
+      <span class="command-row__usage">info · activate · redeem</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/transcribe</code><span class="command-tag command-tag--premium">Premium</span></div>
+      <p>Start or stop live voice transcription for consenting speakers.</p>
+      <span class="command-row__usage">start · stop</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/redeem &lt;code&gt;</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Redeem a Vozen gift code.</p>
+
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-help">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-help">Help &amp; community</h3><span class="command-group__count">5</span></div><p>Find support and share Vozen.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/help</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Show Vozen's command list in Discord.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/vote</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Get the link to vote for Vozen on top.gg.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/Speak</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Read a selected message out loud.</p>
+      <span class="command-row__usage">Message context action</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/Translate</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Translate a selected message.</p>
+      <span class="command-row__usage">Message context action</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/Transcribe voice message</code><span class="command-tag command-tag--premium">Premium</span></div>
+      <p>Transcribe a selected voice message.</p>
+      <span class="command-row__usage">Message context action</span>
+    </article></div>
+      </section></section><section id="catalogue-helper" aria-label="Vozen Helper commands"><h2>Vozen Helper commands</h2><section class="command-group" aria-labelledby="group-protection">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-protection">Protection</h3><span class="command-group__count">2</span></div><p>Review safety settings before they act in Discord.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/anti-raid</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Review or toggle raid-protection settings.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/join-gate</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Review or toggle entry checks for new members.</p>
+
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-community">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-community">Community</h3><span class="command-group__count">9</span></div><p>Run healthy community tools and events.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/achievements</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>View or manage community achievements.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/balance</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Check the economy balance configured for this server.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/event-create</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Create a server event with the Helper.</p>
+      <span class="command-row__usage">Manage Events</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/giveaway-start</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Start a giveaway using this server's giveaway settings.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/leaderboard</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Show the server XP leaderboard.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/rank</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Show a member's current XP level and rank card.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/rolepanel</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Publish or open a configured role panel.</p>
+      <span class="command-row__usage">Manage Roles</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/starboard-set</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Configure the channel and threshold for a starboard.</p>
+      <span class="command-row__usage">Manage Messages</span>
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/suggest</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Submit a suggestion for the community to review.</p>
+
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-support">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-support">Support</h3><span class="command-group__count">1</span></div><p>Set up private, auditable support conversations.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/ticket-panel</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Publish a configured support ticket panel.</p>
+      <span class="command-row__usage">Manage Channels</span>
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-management">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-management">Management</h3><span class="command-group__count">7</span></div><p>Moderate, audit and automate the server.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/modlogs</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Open moderation logs for this server.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/tag</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Create, view or use a configured Helper tag.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/invites</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Check invite-tracker information for the server.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/warn</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Record a warning with a reason.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/poll</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Create a poll with the Helper.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/privacy</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Access privacy controls and data requests.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/workflow-create</code><span class="command-tag command-tag--admin">Admin</span></div>
+      <p>Create a bounded automation workflow.</p>
+
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-utilities">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-utilities">Utilities</h3><span class="command-group__count">6</span></div><p>Use small tools that keep work moving.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/embed</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Create a bounded Discord embed.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/emojis</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>List or manage available server emojis.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/help</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Show contextual Helper help in Discord.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/remind</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Set a reminder through the Helper scheduler.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/search</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Run an approved, bounded search query.</p>
+
+    </article><article class="command-row">
+      <div class="command-row__top"><code>/temp-channel</code><span class="command-tag command-tag--admin">Moderator</span></div>
+      <p>Create or manage a temporary voice channel.</p>
+      <span class="command-row__usage">Manage Channels</span>
+    </article></div>
+      </section><section class="command-group" aria-labelledby="group-insights">
+        <div class="command-group__head"><div><div class="command-group__title"><h3 id="group-insights">Insights</h3><span class="command-group__count">1</span></div><p>See an at-a-glance server activity summary.</p></div></div>
+        <div class="command-list"><article class="command-row">
+      <div class="command-row__top"><code>/serverstats</code><span class="command-tag command-tag--free">Free</span></div>
+      <p>Show the server statistics summary.</p>
+
+    </article></div>
+      </section></section></div>
             <aside class="commands-aside">
               <div class="commands-aside__block commands-aside__block--accent">
                 <p class="command-finder__kicker">New here?</p>
@@ -176,15 +484,22 @@
       <div class="wrap foot__base"><span>© 2026 Vozen</span><span class="foot__legal"><a href="../privacy.html" data-i18n="foot.privacy">Privacy</a><a href="../terms.html" data-i18n="foot.terms">Terms</a></span><span data-i18n="foot.legal">Not affiliated with Discord</span></div>
     </footer>
 
-    <script defer src="../js/analytics-config.js?v=aeac0d49e3b7"></script>
-    <script defer src="../js/web-analytics-v1.js?v=8a15ad19f3e3"></script>
-    <script defer src="../js/install-config-v1.js?v=8331c77a4ed5"></script>
-    <script defer src="../js/tts-install-v1.js?v=40da3de42ed5"></script>
-    <script defer src="../js/global-nav-v1.js?v=3eb0d4a94467"></script>
-    <script defer src="../js/i18n-public-loader-v1.js?v=da5e7921399b"></script>
-    <script defer src="../js/oauth-config.js?v=619a1fcb0b71"></script>
-    <script defer src="../js/main-v51.js?oauth=ecosystem-v3&auth-tabs=1&account-fast=1&auth-race=1&v=7556d6ee852c"></script>
-    <script defer src="../js/motion-v1.js?v=fb1f4a036091"></script>
-    <script defer src="../js/commands-v1.js?v=75a7fd2bbbde"></script>
-  </body>
-</html>
+    <script defer="" src="../js/analytics-config.js?v=f6b49da441d8"></script>
+    <script defer="" src="../js/web-analytics-v1.js?v=e934b4dd1f34"></script>
+    <script defer="" src="../js/install-config-v1.js?v=97c30a4aaef1"></script>
+    <script defer="" src="../js/tts-install-v1.js?v=06da33493db0"></script>
+    <script defer="" src="../js/global-nav-v1.js?v=0876f9ed6d6d"></script>
+    <script defer="" src="../js/i18n-public-loader-v1.js?v=d29fcfb97378"></script>
+    <script defer="" src="../js/oauth-config.js?v=15ffe1a765c9"></script>
+    <script defer="" src="../js/main-v51.js?oauth=ecosystem-v3&amp;auth-tabs=1&amp;account-fast=1&amp;auth-race=1&amp;v=19cb4b294962"></script>
+    <script defer="" src="../js/motion-v1.js?v=e61ca8f4a378"></script>
+    <script defer="" src="../js/commands-v1.js?v=bb3ce572bfda"></script>
+
+
+<noscript data-prerender-fallback=""><style>
+.reveal{opacity:1!important;transform:none!important}.qa__a{max-height:none!important}
+.helper-module-panel[hidden]{display:block!important}.nav__links{display:flex!important;flex-wrap:wrap}
+.nav__inner{flex-wrap:wrap}.nav__burger,.lang,.docs-ecosystem-nav__language{display:none!important}
+.page-account main,.page-account .foot{visibility:visible!important}
+@media(max-width:900px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}}
+</style><p>Interactive search, audio, account information and live service checks require JavaScript. All public documentation and command descriptions are available below.</p></noscript></body></html>

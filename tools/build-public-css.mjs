@@ -63,6 +63,7 @@ function compareOrWrite(output, expected) {
 
 function createRenderDocument(html, css) {
   return normalize(html)
+    .replace(/<noscript\b[^>]*data-prerender-fallback[^>]*>[\s\S]*?<\/noscript>/gi, '')
     .replace(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*>/gi, '')
     .replace(/<noscript>\s*<link\b[^>]*\brel=["']stylesheet["'][\s\S]*?<\/noscript>/gi, '')
     .replace('</head>', `<style data-critical-build>${css}</style></head>`);

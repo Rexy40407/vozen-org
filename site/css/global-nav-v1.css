@@ -281,3 +281,5 @@
     transition: none;
   }
 }
+
+.lang__opt, .docs-ecosystem-nav__language-option { text-decoration: none; color: inherit; }

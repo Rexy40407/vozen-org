@@ -4915,6 +4915,8 @@ html:has(.helper-page) {
   }
 }
 
+.lang__opt, .docs-ecosystem-nav__language-option { text-decoration: none; color: inherit; }
+
 /* source: helper-ui-preview.css */
 /*
   Reversible visual study for helper.html?ui-preview=1.

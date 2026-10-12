@@ -2307,6 +2307,8 @@ body.page-dashboard .dash-picker h2 {
   }
 }
 
+.lang__opt, .docs-ecosystem-nav__language-option { text-decoration: none; color: inherit; }
+
 /* source: tts-ui-v1.css */
 /* Vozen TTS — voice studio visual system. */
 

@@ -70,6 +70,7 @@ jobs:
           npm test --prefix apps/helper-panel
           node tools/install-helper-panel.mjs
           node tools/release-artifact-check.mjs
+          node tools/prerender-check.mjs
       - name: Check Helper session and server recovery
         run: |
           node apps/helper-panel/node_modules/vite/bin/vite.js preview apps/helper-panel --host 127.0.0.1 --port 5179 --base /panel/helper-tracker/ &

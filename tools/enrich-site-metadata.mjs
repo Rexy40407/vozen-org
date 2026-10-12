@@ -3,7 +3,6 @@ import path from 'node:path';
 import {
   absoluteCanonical,
   escapeAttribute,
-  isIndexable,
   linkHref,
   metaContent,
   relativeSiteAsset,
@@ -40,6 +39,10 @@ function addDescription(html, title, relative) {
     'privacy.html': 'Read how Vozen handles account, server and diagnostic data, and how to request deletion.',
     'terms.html': 'Terms governing use of the Vozen tools for Discord communities.',
     'status.html': 'Current availability and service health for Vozen services.',
+    '404.html': 'The requested Vozen page could not be found. Return to the ecosystem, products or documentation.',
+    'account.html': 'Continue to your Vozen account to review your Discord identity and personal Plus and Premium access.',
+    'panel/helper/index.html': 'Continue to the authenticated Vozen Helper panel to manage your Discord server configuration.',
+    'docs/tts/troubleshooting/provider-failure/index.html': 'This Vozen TTS troubleshooting page has moved to the service failure guide.',
   };
   const description = descriptions[relative] || `${title || 'Vozen'} — public information from Vozen.`;
   return addMeta(html, 'name', 'description', description);
@@ -63,8 +66,6 @@ function addStructuredData(html, title, description, canonical) {
 for (const file of walkHtml(root)) {
   const relative = path.relative(root, file).replaceAll('\\', '/');
   let html = fs.readFileSync(file, 'utf8');
-  if (!isIndexable(relative, html)) continue;
-
   const title = titleContent(html) || 'Vozen';
   html = addDescription(html, title, relative);
   const description = metaContent(html, 'description') || `${title} — public information from Vozen.`;

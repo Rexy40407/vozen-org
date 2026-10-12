@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="tr" data-vozen-locale="tr" data-vozen-localized-route="tts"><head>
+<!DOCTYPE html><html lang="tr" data-vozen-locale="tr" data-vozen-localized-route="tts" data-vozen-prerendered="true"><head>
     <!-- This route is served from /tts/. Keep the established site assets rooted at / so it does not depend on a runtime fetch. -->
     <base href="../../">
     <meta charset="UTF-8">
@@ -40,7 +40,7 @@
 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-    <link rel="stylesheet" href="css/tts-page-v1.css?v=66e1dfcdacc3">
+    <link rel="stylesheet" href="css/tts-page-v1.css?v=a1b6eb77b2b5">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Vozen TTS","applicationCategory":"UtilitiesApplication","operatingSystem":"Discord","url":"https://vozen.org/tr/tts/","description":"Vozen, Discord sohbetini doğal nöral seslerle yüksek sesle okur — 35 dilde, oyunlar, kahkahalar ve sonsuza dek ücretsiz bir temel sürümle","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"inLanguage":"tr"}</script>
 
     <!-- FAQ structured data (Google rich results). Mantém em sincronia com
@@ -60,40 +60,31 @@
     <a class="skip-link" href="https://vozen.org/tr/tts/#hero">İçeriğe geç</a>
 
     <!-- ─────────────── NAVBAR ─────────────── -->
-    <header class="nav vozen-global-nav" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-locale-root="tr/">
+    <header class="nav vozen-global-nav is-stuck" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-locale-root="tr/" data-nav-prerendered="true" data-prerender-fragment="navigation">
       <div class="wrap nav__inner">
-        <a class="brand" href="https://vozen.org/tr/tts/" aria-label="Vozen ekosistem ana sayfası">
+        <a class="brand" href="tr/" aria-label="Vozen ekosistem ana sayfası" data-i18n-aria-label="ecosystem.homeAria">
           <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="favicon.svg" alt="" width="40" height="40"></span>
           <span class="brand__word">Vozen</span>
           <span class="nav__product">TTS</span>
         </a>
-
-        <nav class="nav__links" aria-label="Primary">
-          <a class="is-current" href="tr/tts/" aria-current="page">Vozen TTS</a>
-          <a href="tr/helper/">Vozen Helper</a>
-          <a href="commands/">Komutlar</a>
-          <a href="premium.html">Premium</a>
+        <nav class="nav__links" aria-label="Vozen ürünleri" data-i18n-aria-label="ecosystem.productsAria">
+          <a class="is-current" href="tr/tts/" aria-current="page" data-i18n="ecosystem.tts">Vozen TTS</a>
+          <a class="" href="tr/helper/" data-i18n="ecosystem.helper">Vozen Helper</a>
+          <a class="" href="docs/" data-i18n="ecosystem.docs">Belgeler</a>
+          <a class="" href="commands/" data-i18n="ecosystem.commands">Komutlar</a>
+          <span class="nav__premium-disabled" aria-disabled="true" title="Premium geçici olarak kullanılamıyor" data-i18n-title="ecosystem.premiumUnavailable" data-i18n="nav.premium">Premium</span>
         </nav>
-
         <div class="nav__actions">
-          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="GitHub’da Vozen (açık kaynak)" title="GitHub’da açık kaynak">
-            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
-          </a>
+          <a class="nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener" aria-label="GitHub’da Vozen (açık kaynak)" data-i18n-aria-label="common.githubLabel" title="GitHub’da açık kaynak" data-i18n-title="common.githubTitle"><svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg></a>
           <div class="lang" id="langMenu">
-            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site dili">
-              <span class="lang__flag" id="langBtnFlag">🇬🇧</span>
-              <span class="lang__name" id="langBtnName">English</span>
+            <button class="lang__btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Site dili" data-i18n-aria-label="ecosystem.siteLanguage">
+              <span class="lang__flag" id="langBtnFlag"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-tr"></use></svg></span><span class="lang__name" id="langBtnName">Türkçe</span>
               <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
             </button>
-            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Dil seç"></ul>
+            <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Dil seç" data-i18n-aria-label="ecosystem.chooseLanguage"><li role="presentation"><a class="lang__opt" href="/tts/" role="option" data-lang="en" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-gb"></use></svg><span class="lang__optname">English</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/pt/tts/" role="option" data-lang="pt" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-pt"></use></svg><span class="lang__optname">Português</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/fr/tts/" role="option" data-lang="fr" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-fr"></use></svg><span class="lang__optname">Français</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/es/tts/" role="option" data-lang="es" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-es"></use></svg><span class="lang__optname">Español</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/de/tts/" role="option" data-lang="de" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-de"></use></svg><span class="lang__optname">Deutsch</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt is-active" href="/tr/tts/" role="option" data-lang="tr" aria-selected="true" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-tr"></use></svg><span class="lang__optname">Türkçe</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/ar/tts/" role="option" data-lang="ar" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-sa"></use></svg><span class="lang__optname">العربية</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/zh/tts/" role="option" data-lang="zh" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-tw"></use></svg><span class="lang__optname">繁體中文</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/ru/tts/" role="option" data-lang="ru" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-ru"></use></svg><span class="lang__optname">Русский</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li><li role="presentation"><a class="lang__opt" href="/ko/tts/" role="option" data-lang="ko" aria-selected="false" tabindex="-1"><svg class="lang__flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-kr"></use></svg><span class="lang__optname">한국어</span><svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg></a></li></ul>
           </div>
-          <button class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" type="button">
-            <svg viewBox="0 0 24 18" width="18" height="14" fill="currentColor" aria-hidden="true"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"></path></svg>
-            <span data-i18n="nav.login">Giriş</span>
-          </button>
-          <button class="nav__burger" id="burger" aria-label="Menü" aria-expanded="false">
-            <span></span><span></span><span></span>
-          </button>
+          <a class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" href="account/"><svg viewBox="0 0 24 18" width="20" height="15" aria-hidden="true" fill="currentColor"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"></path></svg><span data-i18n="nav.login">Giriş</span></a>
+          <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
         </div>
       </div>
     </header>
@@ -138,9 +129,18 @@
                 <span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
                 <span class="discord__ch"># general</span>
               </div>
-              <div class="discord__body" id="chat">
-                <!-- messages injected by JS -->
-              </div>
+              <div class="discord__body" id="chat" data-prerender-fragment="chat"><div class="msg">
+      <div class="msg__av msg__av--u">K</div>
+      <div class="msg__b">
+        <div class="msg__name">Kai</div>
+        <div class="msg__text">what's the plan tonight?</div>
+
+      </div></div><div class="msg">
+      <div class="msg__av msg__av--v"><span class="eq" style="height:16px"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="msg__b">
+        <div class="msg__name"><b>Vozen</b><span class="tag">APP</span></div>
+        <div class="speaking"><span class="eq"><i></i><i></i><i></i><i></i><i></i></span> tts.reading</div>
+      </div></div></div>
             </div>
             <div class="demo__glow"></div>
           </div>
@@ -335,7 +335,7 @@
         </div>
 
         <div class="marquee" aria-hidden="true">
-          <div class="marquee__track" id="marqueeTrack"></div>
+          <div class="marquee__track" id="marqueeTrack" data-prerender-fragment="marqueeTrack"><span class="chip">🇬🇧 English</span><span class="chip">🇵🇹 Português</span><span class="chip">🇪🇸 Español</span><span class="chip">🇫🇷 Français</span><span class="chip">🇩🇪 Deutsch</span><span class="chip">🇮🇹 Italiano</span><span class="chip">🇳🇱 Nederlands</span><span class="chip">🇵🇱 Polski</span><span class="chip">🇷🇺 Русский</span><span class="chip">🇺🇦 Українська</span><span class="chip">🇹🇷 Türkçe</span><span class="chip">🇸🇪 Svenska</span><span class="chip">🇯🇵 日本語</span><span class="chip">🇰🇷 한국어</span><span class="chip">🇨🇳 中文</span><span class="chip">🇸🇦 العربية</span><span class="chip">🇬🇷 Ελληνικά</span><span class="chip">🇨🇿 Čeština</span><span class="chip">🇩🇰 Dansk</span><span class="chip">🇫🇮 Suomi</span><span class="chip">🇷🇴 Română</span><span class="chip">🇭🇺 Magyar</span><span class="chip">🇻🇳 Tiếng Việt</span><span class="chip">🇮🇸 Íslenska</span><span class="chip">🇬🇪 ქართული</span><span class="chip">🇮🇷 فارسی</span><span class="chip">🇮🇳 हिन्दी</span><span class="chip">🇹🇭 ไทย</span><span class="chip">🇮🇩 Bahasa Indonesia</span><span class="chip">🇷🇸 Српски</span><span class="chip">🇸🇰 Slovenčina</span><span class="chip">🇸🇮 Slovenščina</span><span class="chip">🇱🇻 Latviešu</span><span class="chip">🇰🇿 Қазақ тілі</span><span class="chip">🇧🇬 Български</span><span class="chip">🇬🇧 English</span><span class="chip">🇵🇹 Português</span><span class="chip">🇪🇸 Español</span><span class="chip">🇫🇷 Français</span><span class="chip">🇩🇪 Deutsch</span><span class="chip">🇮🇹 Italiano</span><span class="chip">🇳🇱 Nederlands</span><span class="chip">🇵🇱 Polski</span><span class="chip">🇷🇺 Русский</span><span class="chip">🇺🇦 Українська</span><span class="chip">🇹🇷 Türkçe</span><span class="chip">🇸🇪 Svenska</span><span class="chip">🇯🇵 日本語</span><span class="chip">🇰🇷 한국어</span><span class="chip">🇨🇳 中文</span><span class="chip">🇸🇦 العربية</span><span class="chip">🇬🇷 Ελληνικά</span><span class="chip">🇨🇿 Čeština</span><span class="chip">🇩🇰 Dansk</span><span class="chip">🇫🇮 Suomi</span><span class="chip">🇷🇴 Română</span><span class="chip">🇭🇺 Magyar</span><span class="chip">🇻🇳 Tiếng Việt</span><span class="chip">🇮🇸 Íslenska</span><span class="chip">🇬🇪 ქართული</span><span class="chip">🇮🇷 فارسی</span><span class="chip">🇮🇳 हिन्दी</span><span class="chip">🇹🇭 ไทย</span><span class="chip">🇮🇩 Bahasa Indonesia</span><span class="chip">🇷🇸 Српски</span><span class="chip">🇸🇰 Slovenčina</span><span class="chip">🇸🇮 Slovenščina</span><span class="chip">🇱🇻 Latviešu</span><span class="chip">🇰🇿 Қазақ тілі</span><span class="chip">🇧🇬 Български</span></div>
         </div>
       </section>
 
@@ -344,7 +344,7 @@
         <div class="wrap show show--rev">
           <div class="show__visual reveal">
             <div class="wordle">
-              <div class="wordle__rows" id="wordle"></div>
+              <div class="wordle__rows" id="wordle" data-prerender-fragment="wordle"><div class="wrow"><span class="wtile g">V</span><span class="wtile g">O</span><span class="wtile x">I</span><span class="wtile x">C</span><span class="wtile y">E</span></div><div class="wrow"><span class="wtile x">T</span><span class="wtile g">O</span><span class="wtile x">K</span><span class="wtile g">E</span><span class="wtile g">N</span></div><div class="wrow"><span class="wtile g">V</span><span class="wtile g">O</span><span class="wtile g">Z</span><span class="wtile g">E</span><span class="wtile g">N</span></div></div>
               <div class="game-pills">
                 <span>Guess the Language</span><span>Fast Talk</span><span>Reflexes</span>
                 <span>Spelling Bee</span><span>Wordle</span><span>Vozen Says</span>
@@ -393,7 +393,7 @@
             <button data-tab="fun" data-i18n="cmd.fun">Eğlence</button>
             <button data-tab="admin" data-i18n="cmd.admin">Yönetici</button>
           </div>
-          <div class="cmd-list reveal" id="cmdList"></div>
+          <div class="cmd-list reveal" id="cmdList" data-prerender-fragment="cmdList"><section aria-label="Genel"><div class="cmd"><code>/help</code><span>Vozen'in komut listesini göster</span></div><div class="cmd"><code>/join</code><span>Ses kanalına katıl</span></div><div class="cmd"><code>/leave</code><span>Ses kanalından ayrıl</span></div><div class="cmd"><code>/tts</code><span>Bir metni yüksek sesle oku</span></div><div class="cmd"><code>/tts-file</code><span>Create a private audio file without joining a call</span></div><div class="cmd"><code>/translate text</code><span>Translate text privately, including as a User App</span></div><div class="cmd"><code>/skip</code><span>Mevcut sesi atla</span></div><div class="cmd"><code>/shut-up</code><span>Vozen'i hemen sustur (kuyruğu temizler)</span></div><div class="cmd"><code>/setup</code><span>Tek adımlı rehberli kurulum</span></div><div class="cmd"><code>/invite</code><span>Davet bağlantısını al</span></div><div class="cmd"><code>/vote</code><span>top.gg'de Vozen'e oy ver</span></div><div class="cmd"><code>/uptime</code><span>Vozen ne kadardır çevrimiçi</span></div><div class="cmd"><code>/premium</code><span>Sunucunun ve senin Premium durumun</span></div></section><section aria-label="Ses"><div class="cmd"><code>/voice set</code><span>Sesini, dilini ve motorunu seç</span></div><div class="cmd"><code>/voice list</code><span>Tüm seslere göz at</span></div><div class="cmd"><code>/voice favorites</code><span>Open your saved favourite voices</span></div><div class="cmd"><code>/voice recent</code><span>Open your recently used voices</span></div><div class="cmd"><code>/voice preview</code><span>Bir ses örneği dinle</span></div><div class="cmd"><code>/voice effect</code><span>Robot, yankı, iblis… ses efektleri</span></div><div class="cmd"><code>/voice nickname</code><span>Vozen sana yüksek sesle nasıl seslenir</span></div><div class="cmd"><code>/voice opt-out</code><span>Otomatik okunmayı durdur</span></div><div class="cmd"><code>/pronunciation</code><span>Vozen'e bir kelimeyi nasıl söyleyeceğini öğret (sana özel)</span></div></section><section aria-label="Eğlence"><div class="cmd"><code>/game play</code><span>16 mini oyundan birini başlat</span></div><div class="cmd"><code>/game leaderboard</code><span>Sunucudaki en iyi oyuncular</span></div><div class="cmd"><code>/game stats</code><span>Puanların, galibiyetlerin ve sıralaman</span></div><div class="cmd"><code>/joke</code><span>Herhangi bir dilde kısa bir şaka</span></div><div class="cmd"><code>/laugh</code><span>Vozen senin sesinle güler</span></div><div class="cmd"><code>/8-ball</code><span>Sihirli 8 topa sor, yüksek sesle</span></div><div class="cmd"><code>/fact · /fortune · /wyr</code><span>Eğlenceli bilgiler, kehanetler ve ikilemler</span></div><div class="cmd"><code>/birthday set</code><span>Vozen doğum gününde şarkı söyler</span></div><div class="cmd"><code>/top-speakers</code><span>En çok konuşan kim + seriler</span></div><div class="cmd"><code>/randomizer</code><span>Vozen rastgele bir seçenek seçip söyler</span></div><div class="cmd"><code>/cast</code><span>Sesli kanaldaki herkese rastgele temalı bir rol ata ve sonuçları dinle</span></div></section><section aria-label="Yönetici"><div class="cmd"><code>/config greet</code><span>Aramaya katılanları selamla</span></div><div class="cmd"><code>/config language</code><span>Arayüz dilini ayarla</span></div><div class="cmd"><code>/config default-voice</code><span>Sunucunun varsayılan sesini ayarla</span></div><div class="cmd"><code>/config auto-read</code><span>Otomatik okumayı aç/kapat</span></div><div class="cmd"><code>/config block-word</code><span>Engel listesini yönet</span></div><div class="cmd"><code>/server-pronunciation</code><span>Tüm sunucu için telaffuzlar (yönetici, 3 · Premium ile 50)</span></div></section></div>
         </div>
       </section>
 
@@ -602,7 +602,55 @@
             <span class="eyebrow" data-i18n="faq.eyebrow">SSS</span>
             <h2 data-i18n="faq.title">Sorular, yanıtlandı</h2>
           </header>
-          <div class="faq" id="faq-list"></div>
+          <div class="faq" id="faq-list" data-prerender-fragment="faq-list">
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-0">
+          <span>Vozen gerçekten ücretsiz mi?</span>
+        </button>
+        <div class="qa__a" id="qa-0" role="region"><p>Evet — çekirdek ücretsiz kalır: 35 dilde 38 Piper sesi, otomatik okuma, selamlamalar, oyunların çoğu ve tüm yönetici kontrolleri. Kokoro ve Google HD Premium motorlardır; Plus kişisel, Premium ise sunucu çapında açar</p></div>
+      </div>
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-1">
+          <span>Premium neleri içerir?</span>
+        </button>
+        <div class="qa__a" id="qa-1" role="region"><p>Kokoro nöral ve Google HD motorları, 8 ses efektinin tamamı, 7/24 kanalda kalma, 50 kişisel telaffuz, /rizz ve Premium oyunlar. Sunucu Premium ayrıca canlı ses transkripsiyonu içerir. Aylık €6.99 2 sunucuyu, €14.99 ise 5 sunucuyu kapsar; Vozen Plus (€3.99/ay) kişisel ayrıcalıkları her sunucuda verir</p></div>
+      </div>
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-2">
+          <span>Vozen'i sunucuma nasıl eklerim?</span>
+        </button>
+        <div class="qa__a" id="qa-2" role="region"><p>"Discord'a Ekle"ye tıkla, sunucunu seç (Sunucuyu Yönet yetkisi gerekir) ve /setup çalıştır. Hepsi bu</p></div>
+      </div>
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-3">
+          <span>Hangi dilleri destekliyor?</span>
+        </button>
+        <div class="qa__a" id="qa-3" role="region"><p>38 nöral sesle 35 dil — Portekizce, İngilizce, İspanyolca, Fransızca, Almanca, Japonca, Arapça, Rusça ve çok daha fazlası, her biri ana dilde bir sesle</p></div>
+      </div>
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-4">
+          <span>Bir şey yapılandırmam gerekiyor mu?</span>
+        </button>
+        <div class="qa__a" id="qa-4" role="region"><p>Hayır. /setup bunu tek adımda yapar. Ardından her şey mantıklı varsayılanlarla çalışır — daha sonra /config ile ince ayar yapabilirsin</p></div>
+      </div>
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-5">
+          <span>Herkesin farklı bir sesi olabilir mi?</span>
+        </button>
+        <div class="qa__a" id="qa-5" role="region"><p>Evet. Her üye /voice set ile kendi sesini ve dilini ayarlar. Bu ses varsayılandır; mesaj başına isteğe bağlı algılama /voice detection on ile açılır</p></div>
+      </div>
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-6">
+          <span>Piper, Kokoro veya Google HD — hangi ses motoru?</span>
+        </button>
+        <div class="qa__a" id="qa-6" role="region"><p>Piper ücretsiz yerel motordur. Kokoro nöral ve Google HD için kişisel Vozen Plus ya da sunucuda Vozen Premium gerekir. /voice set ile değiştir; erişim bitince otomatik olarak ücretsiz motora döner</p></div>
+      </div>
+      <div class="qa">
+        <button class="qa__q" aria-expanded="false" aria-controls="qa-7">
+          <span>Özellikleri nasıl kapatırım?</span>
+        </button>
+        <div class="qa__a" id="qa-7" role="region"><p>Her şey /config ile açılıp kapatılabilir — selamlama, otomatik okuma, kim-söyledi duyuruları, anti-spam filtresi ve daha fazlası. Ayrıca tam bir acil durdurma da var</p></div>
+      </div></div>
         </div>
       </section>
 
@@ -656,15 +704,21 @@
       </div>
     </footer>
 
-    <script defer="" src="js/analytics-config.js?v=aeac0d49e3b7"></script>
-    <script defer="" src="js/web-analytics-v1.js?v=8a15ad19f3e3"></script>
-    <script defer="" src="js/install-config-v1.js?v=8331c77a4ed5"></script>
-    <script defer="" src="js/tts-install-v1.js?v=40da3de42ed5"></script>
-    <script defer="" src="js/oauth-config.js?v=619a1fcb0b71"></script>
-    <script defer="" src="js/global-nav-v1.js?v=3eb0d4a94467"></script>
-    <script defer="" src="js/i18n-public-loader-v1.js?v=da5e7921399b"></script>
-    <script defer="" src="js/main-v51.js?oauth=ecosystem-v5&amp;auth-tabs=1&amp;account-fast=1&amp;auth-race=4&amp;auth-persist=1&amp;v=7556d6ee852c"></script>
-    <script defer="" src="js/motion-v1.js?v=fb1f4a036091"></script>
+    <script defer="" src="js/analytics-config.js?v=f6b49da441d8"></script>
+    <script defer="" src="js/web-analytics-v1.js?v=e934b4dd1f34"></script>
+    <script defer="" src="js/install-config-v1.js?v=97c30a4aaef1"></script>
+    <script defer="" src="js/tts-install-v1.js?v=06da33493db0"></script>
+    <script defer="" src="js/oauth-config.js?v=15ffe1a765c9"></script>
+    <script defer="" src="js/global-nav-v1.js?v=0876f9ed6d6d"></script>
+    <script defer="" src="js/i18n-public-loader-v1.js?v=d29fcfb97378"></script>
+    <script defer="" src="js/main-v51.js?oauth=ecosystem-v5&amp;auth-tabs=1&amp;account-fast=1&amp;auth-race=4&amp;auth-persist=1&amp;v=19cb4b294962"></script>
+    <script defer="" src="js/motion-v1.js?v=e61ca8f4a378"></script>
 
 
-</body></html>
+<noscript data-prerender-fallback=""><style>
+.reveal{opacity:1!important;transform:none!important}.qa__a{max-height:none!important}
+.helper-module-panel[hidden]{display:block!important}.nav__links{display:flex!important;flex-wrap:wrap}
+.nav__inner{flex-wrap:wrap}.nav__burger,.lang,.docs-ecosystem-nav__language{display:none!important}
+.page-account main,.page-account .foot{visibility:visible!important}
+@media(max-width:900px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}}
+</style><p>Interactive search, audio, account information and live service checks require JavaScript. All public documentation and command descriptions are available below.</p></noscript></body></html>

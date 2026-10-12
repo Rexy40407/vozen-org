@@ -217,9 +217,9 @@
     if (!menu || !btn || !panel) return;
     panel.innerHTML = LANG_UI.map(
       ([code, flag, name]) =>
-        `<li class="lang__opt" role="option" data-lang="${code}" aria-selected="false" tabindex="-1">` +
+        `<li role="presentation"><a class="lang__opt" href="${typeof window.vozenLocalizedUrl === 'function' ? window.vozenLocalizedUrl(code) : '/' + (code === 'en' ? '' : code + '/')}" role="option" data-lang="${code}" aria-selected="false" tabindex="-1">` +
         `${flagMarkup(flag)}<span class="lang__optname">${name}</span>` +
-        `<svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></li>`,
+        `<svg class="lang__check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></a></li>`,
     ).join("");
     const opts = $$(".lang__opt", panel);
     const isOpen = () => menu.classList.contains("is-open");
@@ -256,7 +256,9 @@
       }
     });
     opts.forEach((o, i) => {
-      o.addEventListener("click", () => {
+      o.addEventListener("click", (event) => {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
         choose(o.dataset.lang);
         close(true);
       });
@@ -2234,7 +2236,9 @@
 
   const navLoginBtn = document.getElementById("navLogin");
   if (navLoginBtn) {
-    navLoginBtn.addEventListener("click", () => {
+    navLoginBtn.addEventListener("click", (event) => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
       if (!IS_ACCOUNT) {
         if (storedToken() || !PREMIUM_API_BASE) window.location.href = "/account/";
         else login();
@@ -2440,8 +2444,7 @@
     if (!chat) return;
     if (reduce) {
       // static: show one exchange, no loop
-      chat.appendChild(bubble(SCRIPT[0], SCRIPT[0].text, false));
-      chat.appendChild(vozenBubble());
+      chat.replaceChildren(bubble(SCRIPT[0], SCRIPT[0].text, false), vozenBubble());
       return;
     }
     let i = 0;

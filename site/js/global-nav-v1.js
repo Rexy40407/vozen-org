@@ -46,7 +46,7 @@
     window.dispatchEvent(new CustomEvent("vozen:languagechange", { detail: { language: locale } }));
   };
   const renderDocsLanguageOptions = () => NAV_LANGUAGES.map(([code, flag, name]) =>
-    `<li role="option" aria-selected="false"><button class="docs-ecosystem-nav__language-option" type="button" data-language="${code}">${flagMarkup(flag)}<span class="docs-ecosystem-nav__language-option-name">${escapeHtml(name)}</span><span class="docs-ecosystem-nav__language-check" aria-hidden="true">✓</span></button></li>`).join("");
+    `<li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option" href="/${code === 'en' ? '' : code + '/'}" data-language="${code}">${flagMarkup(flag)}<span class="docs-ecosystem-nav__language-option-name">${escapeHtml(name)}</span><span class="docs-ecosystem-nav__language-check" aria-hidden="true">✓</span></a></li>`).join("");
   const syncDocsLanguageMenus = () => {
     const current = navLocale();
     const selected = NAV_LANGUAGES.find(([code]) => code === current) || NAV_LANGUAGES[0];
@@ -211,6 +211,9 @@
   const discordIcon = '<svg viewBox="0 0 24 18" width="18" height="14" fill="currentColor" aria-hidden="true"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2-1-2-2.3 0-1.24.88-2.28 2-2.28s2.02 1.04 2 2.28c0 1.26-.9 2.3-2 2.3Z"/></svg>';
 
   hosts.forEach((host) => {
+    // The build already supplies this header. Keep its DOM and attach the
+    // account/language enhancements below instead of replacing it on load.
+    if (host.dataset.navPrerendered === "true") return;
     const root = host.dataset.navRoot || "";
     const localeRoot = host.dataset.navLocaleRoot || "";
     const current = host.dataset.navCurrent || "";
@@ -283,7 +286,7 @@
             </button>
             <ul class="lang__panel" id="langPanel" role="listbox" tabindex="-1" aria-label="Choose language" data-i18n-aria-label="ecosystem.chooseLanguage"></ul>
           </div>
-          <button class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" type="button">${discordIcon}<span data-i18n="ecosystem.login">Log in</span></button>
+          <a class="btn btn--primary btn--discord-cta btn--sm nav__login" id="navLogin" href="${link('account/')}">${discordIcon}<span data-i18n="ecosystem.login">Log in</span></a>
           <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
         </div>
       </div>
@@ -304,6 +307,8 @@
     panel?.addEventListener("click", (event) => {
       const option = event.target.closest("[data-language]");
       if (!option) return;
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
       setNavLocale(option.getAttribute("data-language"));
       close();
       button?.focus();

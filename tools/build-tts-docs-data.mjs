@@ -25,6 +25,8 @@ function find(node, predicate) {
 
 function text(node) {
   if (!node || ['script', 'style', 'noscript'].includes(node.tagName)) return '';
+  // Search indexes describe the article, not its generated navigation.
+  if ((attrs(node).class || '').split(/\s+/).some((name) => ['docs-breadcrumbs', 'docs-toc', 'docs-pager'].includes(name))) return '';
   if (node.nodeName === '#text') return node.value ?? '';
   return (node.childNodes ?? []).map(text).join(' ');
 }
