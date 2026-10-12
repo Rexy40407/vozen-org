@@ -23,7 +23,8 @@ python -m http.server 4173 --directory site
 
 ## Deployment
 
-Every push to `main` deploys `site/` through GitHub Pages. The `CNAME` file keeps
+Every push to `main` builds `site/`, then deploys the minified `.pages-artifact/`
+through GitHub Pages. The `CNAME` file keeps
 the custom domain on `vozen.org`.
 
 This repository is the sole public-site publisher for `vozen.org`, including
@@ -51,6 +52,28 @@ data and live service status still come from APIs after JavaScript starts. Rende
 those values in the initial response would require hosting the affected routes on
 a server or worker that handles authentication. Redirect aliases canonicalize to
 their destination rather than becoming duplicate indexable pages.
+
+## Publication minification
+
+After the public build and Helper panel installation, `npm run build:artifact`
+creates `.pages-artifact/` without modifying `site/`. HTML whitespace/comments,
+CSS and JavaScript are minified, including inline code. JavaScript property names and public
+globals are preserved; no encryption or runtime HTML decoding is introduced.
+Every HTML page is checked against its source for readable copy, metadata,
+structured data and link destinations. Binary assets are copied unchanged.
+
+Source maps, source-map references, source files, hidden development directories,
+package manifests, tests and design prototypes (`concepts/`) are not published.
+The private panel's browser bundle is still necessary and public; no client-side
+minification can hide secrets or guarantee search/AI ranking. Keep secrets in APIs.
+Repository source and license notices are retained.
+
+The output directory must not exist (to avoid overwriting a release). For repeated
+local builds, pass a fresh output directory:
+`node tools/build-public-artifact.mjs .pages-artifact-preview`.
+Preview and test that exact output with `SITE_ROOT=.pages-artifact-preview`
+(`$env:SITE_ROOT='.pages-artifact-preview'` in PowerShell). CI runs all browser
+tests against the final minified artifact before upload.
 
 ## License
 

@@ -10,3 +10,4 @@ site/panel/helper/fonts/
 site/panel/helper/rank-card-banners/
 test-results/
 playwright-report/
+.pages-artifact*/
