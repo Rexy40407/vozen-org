@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { featureDemo } from './feature-demo';
 
 describe('feature-specific demonstrations', () => {
-  for (const [key, asset] of [['community.starboard', 'starboard'], ['community.suggestions', 'suggestions']]) {
+  for (const [key, asset] of [['community.starboard', 'starboard'], ['community.suggestions', 'suggestions'], ['community.giveaways', 'giveaways']]) {
     for (const locale of ['en', 'pt']) {
       it(`selects the owned ${locale} animation and written steps for ${key}`, () => {
         const demo = featureDemo(key, locale);

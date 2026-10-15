@@ -7,10 +7,10 @@ import { chromium } from 'playwright';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = path.join(root, 'apps/helper-panel/public/feature-demos');
-// Retain the original command; pass "suggestions" to generate that storyboard
+// Retain the original command; pass "suggestions" or "giveaways" to generate that storyboard
 // without replacing any existing Starboard assets.
 const feature = process.argv[2] ?? 'starboard';
-if (!['starboard', 'suggestions'].includes(feature)) throw new Error('Unknown feature demo');
+if (!['starboard', 'suggestions', 'giveaways'].includes(feature)) throw new Error('Unknown feature demo');
 await fs.mkdir(destination, { recursive: true });
 const browser = await chromium.launch();
 try {
@@ -50,6 +50,7 @@ try {
         ctx.fillText(content, x, y);
       }
       function draw(time) {
+        if (feature === 'giveaways') { drawGiveaways(time); return; }
         if (feature === 'suggestions') { drawSuggestions(time); return; }
         ctx.fillStyle = '#080f1c'; ctx.fillRect(0, 0, 960, 540);
         label('VOZEN HELPER / STARBOARD', 42, 42, 18, '#8ee5d2');
@@ -111,6 +112,42 @@ try {
         label(pt ? 'Exemplo: canal #suggestions · votos a favor e contra' : 'Example: #suggestions channel · Support / Against voting', 42, 516, 14, '#a3b6d1');
         ctx.fillStyle = '#24354c'; ctx.fillRect(42, 531, 876, 3);
         ctx.fillStyle = '#8ee5d2'; ctx.fillRect(42, 531, 876 * Math.min(time / 10, 1), 3);
+      }
+      function drawGiveaways(time) {
+        const joined = time >= 4.5;
+        const ended = time >= 7;
+        const prize = pt ? 'Passe para a noite de jogos' : 'Game night pass';
+        ctx.fillStyle = '#080f1c'; ctx.fillRect(0, 0, 960, 540);
+        label(pt ? 'VOZEN HELPER / SORTEIOS' : 'VOZEN HELPER / GIVEAWAYS', 42, 42, 18, '#8ee5d2');
+        label(text.demo, 42, 70, 13, '#a3b6d1');
+        label(pt ? 'Criar, participar e conhecer o vencedor' : 'Create, join and see the winner', 42, 111, 30);
+        card(42, 135, 876, 80);
+        label(`/giveaway-start prize: ${prize}`, 62, 169, 22, '#8ee5d2');
+        label('duration: 1h  ·  winners: 1', 62, 199, 19, '#a3b6d1');
+        if (time >= 2) {
+          const reveal = Math.min(1, (time - 2) / .3);
+          card(42, 232, 876, 212, reveal);
+          ctx.globalAlpha = reveal;
+          label(pt ? '# sorteios · Vozen Helper' : '# giveaways · Vozen Helper', 64, 262, 16, '#a3b6d1');
+          label(`${pt ? 'Prémio' : 'Prize'}: ${prize}`, 64, 300, 28);
+          label(pt ? `1 vencedor · ${ended ? 'Terminado' : 'Aberto'}` : `1 winner · ${ended ? 'Ended' : 'Open'}`, 64, 333, 20, ended ? '#8ee5d2' : '#ffd170');
+          if (ended) {
+            label(pt ? 'Vencedor de exemplo: Alex' : 'Sample winner: Alex', 64, 386, 27, '#8ee5d2');
+            label(pt ? 'Prazo terminado · tempo acelerado' : 'Duration ended · accelerated time', 64, 420, 17, '#a3b6d1');
+          } else {
+            ctx.fillStyle = '#4e5bd4'; ctx.beginPath(); ctx.roundRect(64, 357, 154, 48, 9); ctx.fill();
+            label('Join', 119, 389, 23);
+            label(pt ? `${joined ? 'Alex, Sam e Jo' : 'Membros elegíveis'} · ${joined ? 'participação aceite' : 'clicam em Join'}`
+              : `${joined ? 'Alex, Sam and Jo' : 'Eligible members'} · ${joined ? 'entry accepted' : 'click Join'}`, 242, 389, 20, '#a3b6d1');
+            label(pt ? 'Exemplo: sem cargo obrigatório' : 'Example: no required role', 64, 430, 16, '#a3b6d1');
+          }
+          ctx.globalAlpha = 1;
+        }
+        const step = time < 2 ? (pt ? '1. Um moderador define o prémio e a duração' : '1. A moderator sets the prize and duration')
+          : time < 7 ? (pt ? '2. Os membros participam com o botão Join' : '2. Members enter using the Join button')
+          : (pt ? '3. No fim, o Helper publica o resultado' : '3. At the end, Helper publishes the result');
+        label(step, 42, 484, 23);
+        label(pt ? 'Exemplo ilustrativo · nenhum sorteio é criado · tempo acelerado' : 'Illustrative example · no giveaway is created · accelerated time', 42, 518, 14, '#a3b6d1');
       }
       draw(0);
       const poster = canvas.toDataURL('image/png').split(',')[1];
