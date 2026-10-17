@@ -84,6 +84,7 @@ jobs:
           node tools/helper-suggestions-demo-regression.mjs
           node tools/helper-giveaways-demo-regression.mjs
           node tools/helper-tickets-demo-regression.mjs
+          node tools/helper-ticket-channel-regression.mjs
       - name: Minify and test the publication artifact
         run: |
           npm run test:artifact

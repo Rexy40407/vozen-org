@@ -3,6 +3,7 @@ import { canonicalWelcomeKey, visibleWelcomeFeatures } from './welcome';
 import { PremiumBannerSwitch } from './premium-banner-switch';
 import { FeatureSimulation, type SimulationDraft } from './feature-simulation';
 import { StarboardChannel } from './starboard-channel-setup';
+import { TicketPanelChannel } from './ticket-channel-setup';
 import { guildStorage, preferredGuild, rememberGuild } from './last-guild';
 import {
   api,
@@ -4827,6 +4828,9 @@ function FeatureDetail({
               beforeFields={feature?.key === 'community.starboard' && section.fields.some(field => field.key === 'channel')
                 ? <StarboardChannel key={context?.guildId} context={context} onCreated={channel => {
                     setCreatedChannel(channel);onChange('channel',channel.id);
+                  }} /> : feature?.key === 'support.tickets' && !localPreviewMode && section.fields.some(field => field.key === 'panelChannel')
+                ? <TicketPanelChannel key={`${context?.guildId}:tickets`} context={context} onCreated={channel => {
+                    setCreatedChannel(channel); onChange('panelChannel', channel.id);
                   }} /> : undefined}
             />
           ))}
@@ -5798,7 +5802,7 @@ function ConfigSection({
 }) {
   const renderField = (field: FieldSpec) => <FieldControl field={field} key={field.key}
     value={config[field.key]} context={context} onChange={onChange} />;
-  const starboardGroups = beforeFields ? [
+  const starboardGroups = beforeFields && section.fields.some(field => field.key === 'threshold') ? [
     {title: helperLocale() === 'pt' ? 'Regras de destaque' : 'Highlight rules', keys: ['channel', 'threshold', 'emoji']},
     {title: helperLocale() === 'pt' ? 'Comportamento' : 'Behaviour', keys: ['allowSelfStar', 'includeImages']},
     {title: helperLocale() === 'pt' ? 'Exclusões' : 'Exclusions', keys: ['ignoredChannels', 'ignoredRoles']},

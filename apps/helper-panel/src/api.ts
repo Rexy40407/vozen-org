@@ -559,6 +559,10 @@ async function meOrBootstrap(options?: ReadOptions): Promise<Me> {
 }
 
 export const api = {
+  createTicketPanelChannel: (name: string) =>
+    request<{guildId:string;channel:{id:string;name:string;type:number};reused:boolean}>('/api/tickets/channel', {
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name}),
+    }),
   createStarboardChannel: (name: string, moderatorRoleIds: string[]) =>
     request<{guildId:string;channel:{id:string;name:string;type:number};reused:boolean}>('/api/starboard/channel', {
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,moderatorRoleIds}),
