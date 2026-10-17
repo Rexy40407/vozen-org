@@ -21,6 +21,7 @@ try {
       canvas.width = 960; canvas.height = 540;
       const ctx = canvas.getContext('2d');
       const pt = locale === 'pt';
+      const member = pt ? 'Membro' : 'Member';
       const text = pt ? {
         demo: 'EXEMPLO ILUSTRATIVO · SEM AÇÕES NO DISCORD',
         title: 'Uma mensagem que merece destaque',
@@ -64,7 +65,7 @@ try {
         card(42, 140, 876, 150);
         label('# general', 65, 172, 16, '#a3b6d1');
         ctx.fillStyle = '#8ee5d2'; ctx.beginPath(); ctx.arc(83, 211, 18, 0, Math.PI * 2); ctx.fill();
-        label('Alex · sample', 115, 208, 17, '#8ee5d2');
+        label(pt ? 'Membro de exemplo' : 'Sample member', 115, 208, 17, '#8ee5d2');
         label(text.message, 115, 238, 24);
         label(`★ ${stars} / 3`, 65, 272, 21, '#ffd170');
         if (reveal > 0) {
@@ -73,7 +74,7 @@ try {
           ctx.globalAlpha = eased;
           label('# starboard', 65, y + 32, 18, '#8ee5d2');
           label(text.mirrored, 65, y + 64, 17, '#a3b6d1');
-          label(`★ 3   Alex: ${text.message}`, 65, y + 101, 22);
+          label(`★ 3   ${member}: ${text.message}`, 65, y + 101, 22);
           ctx.globalAlpha = 1;
         }
         label(time < 2 ? text.one : time < 5.3 ? text.two : text.three, 42, 485, 22);
@@ -90,7 +91,7 @@ try {
         label(text.demo, 42, 70, 13, '#a3b6d1');
         label(pt ? 'Uma ideia, votos e uma decisão' : 'An idea, votes and a decision', 42, 111, 30);
         card(42, 135, 876, 75);
-        label(pt ? 'Alex · membro de exemplo' : 'Alex · sample member', 62, 160, 15, '#a3b6d1');
+        label(pt ? 'Membro de exemplo' : 'Sample member', 62, 160, 15, '#a3b6d1');
         label(`/suggest text: ${idea}`, 62, 193, 23, '#8ee5d2');
         if (time >= 2) {
           const reveal = Math.min(1, (time - 2) / .3);
@@ -134,13 +135,13 @@ try {
           label(`${pt ? 'Prémio' : 'Prize'}: ${prize}`, 64, 300, 28);
           label(pt ? `1 vencedor · ${ended ? 'Terminado' : 'Aberto'}` : `1 winner · ${ended ? 'Ended' : 'Open'}`, 64, 333, 20, ended ? '#8ee5d2' : '#ffd170');
           if (ended) {
-            label(pt ? 'Vencedor de exemplo: Alex' : 'Sample winner: Alex', 64, 386, 27, '#8ee5d2');
+            label(pt ? 'Vencedor de exemplo: Membro 1' : 'Sample winner: Member 1', 64, 386, 27, '#8ee5d2');
             label(pt ? 'Prazo terminado · tempo acelerado' : 'Duration ended · accelerated time', 64, 420, 17, '#a3b6d1');
           } else {
             ctx.fillStyle = '#4e5bd4'; ctx.beginPath(); ctx.roundRect(64, 357, 154, 48, 9); ctx.fill();
             label('Join', 119, 389, 23);
-            label(pt ? `${joined ? 'Alex, Sam e Jo' : 'Membros elegíveis'} · ${joined ? 'participação aceite' : 'clicam em Join'}`
-              : `${joined ? 'Alex, Sam and Jo' : 'Eligible members'} · ${joined ? 'entry accepted' : 'click Join'}`, 242, 389, 20, '#a3b6d1');
+            label(pt ? `${joined ? '3 membros' : 'Membros elegíveis'} · ${joined ? 'participação aceite' : 'clicam em Join'}`
+              : `${joined ? '3 members' : 'Eligible members'} · ${joined ? 'entry accepted' : 'click Join'}`, 242, 389, 20, '#a3b6d1');
             label(pt ? 'Exemplo: sem cargo obrigatório' : 'Example: no required role', 64, 430, 16, '#a3b6d1');
           }
           ctx.globalAlpha = 1;
@@ -168,9 +169,9 @@ try {
           const reveal = Math.min(1, (time - 2) / .3);
           card(42, 244, 876, 200, reveal);
           ctx.globalAlpha = reveal;
-          label('# ticket-alex', 64, 275, 21, '#8ee5d2');
-          label(pt ? 'Privado · Alex, Helper e equipa de suporte*' : 'Private · Alex, Helper and support team*', 64, 305, 17, '#a3b6d1');
-          label(pt ? 'Alex: Preciso de ajuda com o meu cargo.' : 'Alex: I need help with my role.', 64, 343, 24);
+          label(pt ? '# ticket-exemplo' : '# ticket-example', 64, 275, 21, '#8ee5d2');
+          label(pt ? 'Privado · Membro, Helper e equipa de suporte*' : 'Private · Member, Helper and support team*', 64, 305, 17, '#a3b6d1');
+          label(pt ? 'Membro: Preciso de ajuda com o meu cargo.' : 'Member: I need help with my role.', 64, 343, 24);
           if (claimed) label(pt ? 'Sam · suporte: Já estou a tratar do pedido.' : 'Sam · support: I am on it.', 64, 377, 23, '#8ee5d2');
           if (closed) {
             label(pt ? 'Pedido resolvido · Ticket fechado' : 'Request resolved · Ticket closed', 64, 420, 23, '#8ee5d2');
@@ -198,20 +199,20 @@ try {
         label(pt ? 'Uma receção e um ponto de partida' : 'A warm welcome and a place to start', 42, 111, 30);
         card(42, 135, 876, 65);
         ctx.fillStyle = '#8ee5d2'; ctx.beginPath(); ctx.arc(77, 167, 17, 0, Math.PI * 2); ctx.fill();
-        label(pt ? 'Alex entrou no servidor' : 'Alex joined the server', 110, 175, 24);
+        label(pt ? 'Um membro entrou no servidor' : 'A member joined the server', 110, 175, 24);
         label(pt ? 'membro de exemplo' : 'sample member', 714, 175, 16, '#a3b6d1');
         if (greeted) {
           const reveal = Math.min(1, (time - 2) / .3);
           card(42, 220, 876, 222, reveal);
           ctx.globalAlpha = reveal;
           label(pt ? '# boas-vindas · Vozen Helper' : '# welcome · Vozen Helper', 64, 251, 18, '#a3b6d1');
-          label(pt ? 'Bem-vindo, @Alex! Sente-te em casa.' : 'Welcome, @Alex! Make yourself at home.', 64, 291, 27);
+          label(pt ? 'Bem-vindo, @Membro! Sente-te em casa.' : 'Welcome, @Member! Make yourself at home.', 64, 291, 27);
           ctx.fillStyle = guided ? '#245044' : '#253c51'; ctx.beginPath(); ctx.roundRect(64, 312, 205, 39, 8); ctx.fill();
           label('Read the rules', 80, 338, 20, '#8ee5d2');
           ctx.fillStyle = '#253c51'; ctx.beginPath(); ctx.roundRect(284, 312, 235, 39, 8); ctx.fill();
           label('Introduce yourself', 300, 338, 20, '#a3b6d1');
           if (assigned) label(pt ? 'Cargo automático de exemplo: Membro' : 'Sample automatic role: Member', 64, 387, 21, '#8ee5d2');
-          if (guided) label(pt ? 'Só para Alex: Lê as regras em #regras.' : 'Only Alex: Please read the rules in #rules.', 64, 420, 19, '#a3b6d1');
+          if (guided) label(pt ? 'Só para ti: Lê as regras em #regras.' : 'Only you: Please read the rules in #rules.', 64, 420, 19, '#a3b6d1');
           ctx.globalAlpha = 1;
         }
         const step = time < 2 ? (pt ? '1. Um novo membro entra na comunidade' : '1. A new member joins the community')
