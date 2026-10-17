@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
-for (const asset of ['starboard-en', 'starboard-pt', 'suggestions-en', 'suggestions-pt', 'giveaways-en', 'giveaways-pt', 'tickets-en', 'tickets-pt']) {
+for (const asset of ['starboard-en', 'starboard-pt', 'suggestions-en', 'suggestions-pt', 'giveaways-en', 'giveaways-pt', 'tickets-en', 'tickets-pt', 'welcome-en', 'welcome-pt']) {
   test(`${asset} is an infinitely looping GIF, not a renamed video`, () => {
     const gif = readFileSync(new URL(`../../apps/helper-panel/public/feature-demos/${asset}.gif`, import.meta.url));
     assert.equal(gif.subarray(0, 6).toString(), 'GIF89a');

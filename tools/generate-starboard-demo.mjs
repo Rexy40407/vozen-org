@@ -7,10 +7,10 @@ import { chromium } from 'playwright';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = path.join(root, 'apps/helper-panel/public/feature-demos');
-// Retain the original command; pass "suggestions", "giveaways" or "tickets" to generate that storyboard
+// Retain the original command; pass a feature name to generate only that storyboard
 // without replacing any existing Starboard assets.
 const feature = process.argv[2] ?? 'starboard';
-if (!['starboard', 'suggestions', 'giveaways', 'tickets'].includes(feature)) throw new Error('Unknown feature demo');
+if (!['starboard', 'suggestions', 'giveaways', 'tickets', 'welcome'].includes(feature)) throw new Error('Unknown feature demo');
 await fs.mkdir(destination, { recursive: true });
 const browser = await chromium.launch();
 try {
@@ -50,6 +50,7 @@ try {
         ctx.fillText(content, x, y);
       }
       function draw(time) {
+        if (feature === 'welcome') { drawWelcome(time); return; }
         if (feature === 'tickets') { drawTickets(time); return; }
         if (feature === 'giveaways') { drawGiveaways(time); return; }
         if (feature === 'suggestions') { drawSuggestions(time); return; }
@@ -186,6 +187,38 @@ try {
           : (pt ? '3. Com o pedido resolvido, o ticket é fechado' : '3. Once resolved, the ticket is closed');
         label(step, 42, 484, 22);
         label(pt ? '* Administradores mantêm o acesso · exemplo sem criar canais' : '* Administrators retain access · example creates no channels', 42, 518, 14, '#a3b6d1');
+      }
+      function drawWelcome(time) {
+        const greeted = time >= 2;
+        const assigned = time >= 5;
+        const guided = time >= 7;
+        ctx.fillStyle = '#080f1c'; ctx.fillRect(0, 0, 960, 540);
+        label(pt ? 'VOZEN HELPER / BOAS-VINDAS' : 'VOZEN HELPER / WELCOME', 42, 42, 18, '#8ee5d2');
+        label(text.demo, 42, 70, 13, '#a3b6d1');
+        label(pt ? 'Uma receção e um ponto de partida' : 'A warm welcome and a place to start', 42, 111, 30);
+        card(42, 135, 876, 65);
+        ctx.fillStyle = '#8ee5d2'; ctx.beginPath(); ctx.arc(77, 167, 17, 0, Math.PI * 2); ctx.fill();
+        label(pt ? 'Alex entrou no servidor' : 'Alex joined the server', 110, 175, 24);
+        label(pt ? 'membro de exemplo' : 'sample member', 714, 175, 16, '#a3b6d1');
+        if (greeted) {
+          const reveal = Math.min(1, (time - 2) / .3);
+          card(42, 220, 876, 222, reveal);
+          ctx.globalAlpha = reveal;
+          label(pt ? '# boas-vindas · Vozen Helper' : '# welcome · Vozen Helper', 64, 251, 18, '#a3b6d1');
+          label(pt ? 'Bem-vindo, @Alex! Sente-te em casa.' : 'Welcome, @Alex! Make yourself at home.', 64, 291, 27);
+          ctx.fillStyle = guided ? '#245044' : '#253c51'; ctx.beginPath(); ctx.roundRect(64, 312, 205, 39, 8); ctx.fill();
+          label('Read the rules', 80, 338, 20, '#8ee5d2');
+          ctx.fillStyle = '#253c51'; ctx.beginPath(); ctx.roundRect(284, 312, 235, 39, 8); ctx.fill();
+          label('Introduce yourself', 300, 338, 20, '#a3b6d1');
+          if (assigned) label(pt ? 'Cargo automático de exemplo: Membro' : 'Sample automatic role: Member', 64, 387, 21, '#8ee5d2');
+          if (guided) label(pt ? 'Só para Alex: Lê as regras em #regras.' : 'Only Alex: Please read the rules in #rules.', 64, 420, 19, '#a3b6d1');
+          ctx.globalAlpha = 1;
+        }
+        const step = time < 2 ? (pt ? '1. Um novo membro entra na comunidade' : '1. A new member joins the community')
+          : time < 5 ? (pt ? '2. O Helper publica a mensagem de boas-vindas' : '2. Helper posts the welcome message')
+          : (pt ? '3. Com extras ativos, recebe um cargo e orientação' : '3. Enabled extras add a role and orientation');
+        label(step, 42, 484, 22);
+        label(pt ? 'Exemplo: guia e cargo ativos · mensagens privadas são opcionais' : 'Example: guide and role enabled · welcome DMs are optional', 42, 518, 14, '#a3b6d1');
       }
       draw(0);
       const poster = canvas.toDataURL('image/png').split(',')[1];
