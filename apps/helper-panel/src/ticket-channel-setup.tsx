@@ -49,19 +49,18 @@ export function TicketPanelChannel({context, onCreated}: {
     }
   }
   return <section className="starboard-channel ticket-panel-channel" aria-label={text('Create a ticket panel channel', 'Criar canal para o painel de tickets')}>
-    <div className="starboard-channel__heading">
-      <h4>{text('Need a channel for the ticket panel?', 'Precisas de um canal para o painel de tickets?')}</h4>
-      {!created && <button type="button" className="primary" disabled={busy || !allowed || !validStarboardName(name)} onClick={() => void create()}>
-        {busy ? text('Creating channel…', 'A criar canal…') : text('Create ticket panel channel', 'Criar canal para tickets')}
-      </button>}
-    </div>
-    <p>{text('Optional: create a public, read-only channel for the Open ticket button. Members can click the panel; only Helper and administrators can post. Private tickets still use the category selected below.', 'Opcional: cria um canal público de leitura para o botão Open ticket. Os membros podem clicar no painel; só o Helper e os administradores podem publicar. Os tickets privados continuam na categoria selecionada abaixo.')}</p>
-    <label className="field"><span><b>{text('New panel channel name', 'Nome do novo canal do painel')}</b></span>
-      <input value={name} maxLength={80} disabled={busy || !!created} onChange={event => setName(event.target.value)} aria-invalid={!validStarboardName(name)} />
+    {!created && <div className="ticket-channel-create__row">
+    <label className="field"><span><b>{text('Or create a new channel', 'Ou cria um canal novo')}</b></span>
+      <input value={name} maxLength={80} disabled={busy} onChange={event => setName(event.target.value)} aria-invalid={!validStarboardName(name)} />
       {!validStarboardName(name) && <small>{text('Use 2–80 letters, numbers, hyphens or underscores.', 'Usa 2–80 letras, números, hífenes ou underscores.')}</small>}
     </label>
+      <button type="button" className="secondary" disabled={busy || !allowed || !validStarboardName(name)} onClick={() => void create()}>
+        {busy ? text('Creating channel…', 'A criar canal…') : text('Create ticket panel channel', 'Criar canal para tickets')}
+      </button>
+    </div>}
+    {!created && <p>{text('New channels are read-only for members. Helper and administrators can post.', 'Os novos canais são de leitura para membros. O Helper e os administradores podem publicar.')}</p>}
     {!allowed && <p role="status">{text('Refresh Discord resources and check the Helper channel, role, messaging and thread permissions. Administrator is not required.', 'Atualiza os recursos Discord e verifica as permissões de canais, cargos, mensagens e threads do Helper. Não precisa de Administrador.')}</p>}
     {error && <p className="starboard-channel__error" role="alert">{error}</p>}
-    {created && <p className="starboard-channel__success" role="status">{text(`#${created} is ready and selected. Check automatic saving above. Enabling Tickets publishes the Open ticket panel; creating the channel does not enable the feature.`, `#${created} está pronto e selecionado. Verifica a gravação automática acima. Ativar Tickets publica o painel Open ticket; criar o canal não ativa a feature.`)}</p>}
+    {created && <p className="starboard-channel__success" role="status">{text(`#${created} is ready and selected. Check automatic saving above. Tickets must be enabled to publish the panel.`, `#${created} está pronto e selecionado. Verifica a gravação automática acima. Ativa Tickets para publicar o painel.`)}</p>}
   </section>;
 }

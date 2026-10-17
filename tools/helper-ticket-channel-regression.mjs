@@ -6,11 +6,12 @@ const base = process.env.HELPER_TEST_URL || 'http://127.0.0.1:5179/panel/helper-
 const browser = await chromium.launch();
 try {
   for (const scenario of ['create','pt','mobile','no-permissions','collision','permission-error','uncertain','reused','wrong-guild','disabled-feature','save-failure','route-change','guild-switch']) {
+    if (process.env.TICKET_CHANNEL_SCENARIO && process.env.TICKET_CHANNEL_SCENARIO !== scenario) continue;
     const page = await browser.newPage(scenario === 'mobile' ? {viewport:{width:390,height:844}} : {});
     const pt = scenario === 'pt';
     if (pt) await page.addInitScript(() => localStorage.setItem('vozen.lang', 'pt'));
     let guild = '10', creates = 0, writes = 0, revision = 1;
-    let saved = {panelChannel:'20',categoryId:'',staffRole:'',maxOpen:1};
+    let saved = {panelChannel:'20',categoryId:'',staffRole:'',maxOpen:1,transcriptChannel:'',closeAfterHours:1,panelTitle:'Need support?',panelDescription:'Open a private ticket.'};
     const enabled = scenario !== 'disabled-feature';
     const feature = {key:'support.tickets',label:'Tickets',category:'support',enabled,available:true};
     const mutations = [];
@@ -43,7 +44,7 @@ try {
           if (scenario === 'save-failure') { await route.fulfill({status:503,json:{code:'temporary_failure'}}); return; }
           saved = body.config; revision++;
         }
-        value = {...feature,guildId:guild,config:saved,defaults:{},revision,schema:{sections:[{title:'Support workflow',fields:[{key:'panelChannel',label:'Ticket panel channel',kind:'channel'},{key:'categoryId',label:'Ticket category',kind:'category'},{key:'staffRole',label:'Staff role to notify',kind:'role'},{key:'maxOpen',label:'Open tickets per member',kind:'number'}]}]}};
+        value = {...feature,guildId:guild,config:saved,defaults:{},revision,schema:{sections:[{title:'Support workflow',fields:[{key:'panelChannel',label:'Ticket panel channel',kind:'channel'},{key:'categoryId',label:'Ticket category',kind:'category'},{key:'staffRole',label:'Staff role to notify',kind:'role'},{key:'maxOpen',label:'Open tickets per member',kind:'number'},{key:'transcriptChannel',label:'Transcript channel',kind:'channel'},{key:'closeAfterHours',label:'Close after inactivity (hours)',kind:'number'},{key:'panelTitle',label:'Panel title',kind:'text'},{key:'panelDescription',label:'Panel description',kind:'textarea'}]}]}};
       } else if (path.endsWith('/preflight')) value = {guildId:guild,ok:true,issues:[]};
       else if (path === '/api/quotas') value = {plan:'Free',limits:{},usage:{}};
       else if (path === '/api/stats') value = {guildId:guild,totalCases:0};
@@ -57,6 +58,20 @@ try {
     const setup = page.locator('.ticket-panel-channel');
     const button = setup.getByRole('button',{name:pt ? 'Criar canal para tickets' : 'Create ticket panel channel',exact:true});
     await button.waitFor();
+    assert.equal(await page.locator('.ticket-settings__group').count(),3,'settings must form three named groups');
+    assert.equal(await page.locator('.ticket-settings details').count(),0,'do not collapse settings');
+    assert.equal(await page.locator('.ticket-settings input, .ticket-settings select, .ticket-settings textarea').count(),9,'eight settings plus the new channel name');
+    const reminder = page.getByRole('spinbutton',{name:pt ? /Lembrete para a equipa/ : /Support reminder/});
+    assert.equal(await reminder.isVisible(),true,'SLA must be labelled as a reminder');
+    if (['create','mobile','pt'].includes(scenario)) {
+      await mkdir('output/playwright',{recursive:true});
+      const viewport = page.viewportSize();
+      // The desktop shell scrolls internally. Fit the entire form for this
+      // visual fixture instead of capturing a clipped scroll-container child.
+      await page.setViewportSize({width:viewport.width,height:2400});
+      await page.locator('.ticket-settings').screenshot({path:`output/playwright/ticket-settings-${scenario}.png`});
+      await page.setViewportSize(viewport);
+    }
     const selected = page.locator('select').filter({has:page.locator('option', {hasText:pt ? 'Escolhe o canal para o botão' : 'Choose the channel for the Open ticket button'})});
     if (scenario === 'no-permissions') {
       assert.equal(await button.isDisabled(),true);

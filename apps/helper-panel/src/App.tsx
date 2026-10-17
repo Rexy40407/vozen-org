@@ -4,6 +4,8 @@ import { PremiumBannerSwitch } from './premium-banner-switch';
 import { FeatureSimulation, type SimulationDraft } from './feature-simulation';
 import { StarboardChannel } from './starboard-channel-setup';
 import { TicketPanelChannel } from './ticket-channel-setup';
+import { ticketSettingsGroups, ticketSettingCopy } from './ticket-settings';
+import './ticket-settings.css';
 import { guildStorage, preferredGuild, rememberGuild } from './last-guild';
 import {
   api,
@@ -5802,22 +5804,33 @@ function ConfigSection({
 }) {
   const renderField = (field: FieldSpec) => <FieldControl field={field} key={field.key}
     value={config[field.key]} context={context} onChange={onChange} />;
+  const ticketGroups = section.fields.some(field => field.key === 'panelChannel')
+    && section.fields.some(field => field.key === 'categoryId') ? ticketSettingsGroups(helperLocale()) : null;
   const starboardGroups = beforeFields && section.fields.some(field => field.key === 'threshold') ? [
     {title: helperLocale() === 'pt' ? 'Regras de destaque' : 'Highlight rules', keys: ['channel', 'threshold', 'emoji']},
     {title: helperLocale() === 'pt' ? 'Comportamento' : 'Behaviour', keys: ['allowSelfStar', 'includeImages']},
     {title: helperLocale() === 'pt' ? 'Exclusões' : 'Exclusions', keys: ['ignoredChannels', 'ignoredRoles']},
   ] : null;
   return (
-    <section className="config-section card">
+    <section className={`config-section card${ticketGroups ? ' ticket-settings' : ''}`}>
       <div className="section-heading">
         <div>
-          <small className="eyebrow">{helperT('helper.configuration', 'CONFIGURATION')}</small>
-          <h3>{section.title}</h3>
-          <p>{section.description}</p>
+          {!ticketGroups && <small className="eyebrow">{helperT('helper.configuration', 'CONFIGURATION')}</small>}
+          <h3>{ticketGroups ? (helperLocale() === 'pt' ? 'Configurar tickets' : 'Ticket setup') : section.title}</h3>
+          {!ticketGroups && <p>{section.description}</p>}
         </div>
       </div>
-      {beforeFields}
-      {starboardGroups ? <div className="starboard-settings">
+      {ticketGroups ? <div className="ticket-settings__groups">
+        {ticketGroups.map(group => {
+          const fields = group.keys.flatMap(key => section.fields.filter(field => field.key === key));
+          return fields.length ? <section className="ticket-settings__group" key={group.title} aria-label={group.title}>
+            <h4>{group.title}</h4><p className="ticket-settings__hint">{group.description}</p>
+            <div className="field-grid">{fields.map(field => renderField(ticketSettingCopy(field, helperLocale())))}</div>
+            {group.keys.includes('panelChannel') && beforeFields}
+          </section> : null;
+        })}
+        <div className="field-grid">{section.fields.filter(field => !ticketGroups.some(group => group.keys.includes(field.key))).map(renderField)}</div>
+      </div> : <>{beforeFields}{starboardGroups ? <div className="starboard-settings">
         {starboardGroups.map(group => {
           const fields = section.fields.filter(field => group.keys.includes(field.key));
           return fields.length ? <section className="starboard-settings__group" key={group.title} aria-label={group.title}>
@@ -5826,7 +5839,7 @@ function ConfigSection({
           </section> : null;
         })}
         <div className="field-grid">{section.fields.filter(field => !starboardGroups.some(group => group.keys.includes(field.key))).map(renderField)}</div>
-      </div> : <div className="field-grid">{section.fields.map(renderField)}</div>}
+      </div> : <div className="field-grid">{section.fields.map(renderField)}</div>}</>}
     </section>
   );
 }
