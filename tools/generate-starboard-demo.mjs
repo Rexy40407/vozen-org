@@ -7,10 +7,10 @@ import { chromium } from 'playwright';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = path.join(root, 'apps/helper-panel/public/feature-demos');
-// Retain the original command; pass "suggestions" or "giveaways" to generate that storyboard
+// Retain the original command; pass "suggestions", "giveaways" or "tickets" to generate that storyboard
 // without replacing any existing Starboard assets.
 const feature = process.argv[2] ?? 'starboard';
-if (!['starboard', 'suggestions', 'giveaways'].includes(feature)) throw new Error('Unknown feature demo');
+if (!['starboard', 'suggestions', 'giveaways', 'tickets'].includes(feature)) throw new Error('Unknown feature demo');
 await fs.mkdir(destination, { recursive: true });
 const browser = await chromium.launch();
 try {
@@ -50,6 +50,7 @@ try {
         ctx.fillText(content, x, y);
       }
       function draw(time) {
+        if (feature === 'tickets') { drawTickets(time); return; }
         if (feature === 'giveaways') { drawGiveaways(time); return; }
         if (feature === 'suggestions') { drawSuggestions(time); return; }
         ctx.fillStyle = '#080f1c'; ctx.fillRect(0, 0, 960, 540);
@@ -148,6 +149,43 @@ try {
           : (pt ? '3. No fim, o Helper publica o resultado' : '3. At the end, Helper publishes the result');
         label(step, 42, 484, 23);
         label(pt ? 'Exemplo ilustrativo · nenhum sorteio é criado · tempo acelerado' : 'Illustrative example · no giveaway is created · accelerated time', 42, 518, 14, '#a3b6d1');
+      }
+      function drawTickets(time) {
+        const opened = time >= 2;
+        const claimed = time >= 4.5;
+        const closed = time >= 7;
+        ctx.fillStyle = '#080f1c'; ctx.fillRect(0, 0, 960, 540);
+        label('VOZEN HELPER / TICKETS', 42, 42, 18, '#8ee5d2');
+        label(text.demo, 42, 70, 13, '#a3b6d1');
+        label(pt ? 'Um pedido, um canal privado, uma resposta' : 'A request, a private channel, a response', 42, 111, 30);
+        card(42, 135, 876, 91);
+        label(pt ? '# suporte · Painel de tickets' : '# support · Ticket panel', 62, 165, 18, '#a3b6d1');
+        label(pt ? 'Precisas de ajuda?' : 'Need a hand?', 62, 201, 25);
+        ctx.fillStyle = '#4e5bd4'; ctx.beginPath(); ctx.roundRect(697, 159, 196, 48, 9); ctx.fill();
+        label('Open ticket', 722, 191, 23);
+        if (opened) {
+          const reveal = Math.min(1, (time - 2) / .3);
+          card(42, 244, 876, 200, reveal);
+          ctx.globalAlpha = reveal;
+          label('# ticket-alex', 64, 275, 21, '#8ee5d2');
+          label(pt ? 'Privado · Alex, Helper e equipa de suporte*' : 'Private · Alex, Helper and support team*', 64, 305, 17, '#a3b6d1');
+          label(pt ? 'Alex: Preciso de ajuda com o meu cargo.' : 'Alex: I need help with my role.', 64, 343, 24);
+          if (claimed) label(pt ? 'Sam · suporte: Já estou a tratar do pedido.' : 'Sam · support: I am on it.', 64, 377, 23, '#8ee5d2');
+          if (closed) {
+            label(pt ? 'Pedido resolvido · Ticket fechado' : 'Request resolved · Ticket closed', 64, 420, 23, '#8ee5d2');
+          } else {
+            ctx.fillStyle = '#253c51'; ctx.beginPath(); ctx.roundRect(64, 393, 165, 35, 8); ctx.fill();
+            label(claimed ? (pt ? 'Assumido: Sam' : 'Claimed: Sam') : 'Claim', 79, 417, 18, '#8ee5d2');
+            ctx.fillStyle = '#483141'; ctx.beginPath(); ctx.roundRect(244, 393, 108, 35, 8); ctx.fill();
+            label('Close', 270, 417, 18, '#f9b4c6');
+          }
+          ctx.globalAlpha = 1;
+        }
+        const step = time < 2 ? (pt ? '1. Um membro clica em Open ticket' : '1. A member clicks Open ticket')
+          : time < 7 ? (pt ? '2. O Helper cria o canal e a equipa assume o pedido' : '2. Helper creates the channel and staff claim the request')
+          : (pt ? '3. Com o pedido resolvido, o ticket é fechado' : '3. Once resolved, the ticket is closed');
+        label(step, 42, 484, 22);
+        label(pt ? '* Administradores mantêm o acesso · exemplo sem criar canais' : '* Administrators retain access · example creates no channels', 42, 518, 14, '#a3b6d1');
       }
       draw(0);
       const poster = canvas.toDataURL('image/png').split(',')[1];

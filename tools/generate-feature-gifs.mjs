@@ -4,8 +4,8 @@ import { execFileSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const directory = resolve(dirname(fileURLToPath(import.meta.url)), '../apps/helper-panel/public/feature-demos');
-const features = process.argv.slice(2).length ? process.argv.slice(2) : ['starboard', 'suggestions', 'giveaways'];
-if (features.some(feature => !['starboard', 'suggestions', 'giveaways'].includes(feature))) throw new Error('Unknown feature demo');
+const features = process.argv.slice(2).length ? process.argv.slice(2) : ['starboard', 'suggestions', 'giveaways', 'tickets'];
+if (features.some(feature => !['starboard', 'suggestions', 'giveaways', 'tickets'].includes(feature))) throw new Error('Unknown feature demo');
 for (const feature of features) {
   for (const locale of ['en', 'pt']) {
     const asset = resolve(directory, `${feature}-${locale}`);
