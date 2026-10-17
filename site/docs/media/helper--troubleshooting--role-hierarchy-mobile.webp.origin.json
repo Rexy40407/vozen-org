@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#helper/troubleshooting/role-hierarchy/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "67542c89f99294f47371afa233489f43aef19cdcbe368100012da87e9c64adf8",
+  "size": {
+    "width": 420,
+    "height": 600
+  }
+}

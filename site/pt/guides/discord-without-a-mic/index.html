@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="pt-PT" data-vozen-prerendered="true"><head>
+<!DOCTYPE html><html data-vozen-locale="pt" lang="pt-PT" data-vozen-prerendered="true"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#05060f">
@@ -22,13 +22,37 @@
     <link rel="icon" href="../../../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../../../css/guides-v1.css?v=413bb9e94825">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","inLanguage":"pt-PT","headline":"Como participar numa conversa de voz no Discord sem microfone","description":"Uma configuração TTS prática para canais de voz do Discord.","url":"https://vozen.org/pt/guides/discord-without-a-mic/","publisher":{"@type":"Organization","name":"Vozen","url":"https://vozen.org/"}}</script>
-  </head>
-  <body data-vozen-public-analytics="true">
+  <link rel="stylesheet" href="/css/global-nav-v1.css?v=53483be846f4"></head>
+  <body class="vozen-guide-page" data-vozen-public-analytics="true">
     <a class="guide-skip" href="#main">Saltar para o conteúdo</a>
-    <header class="guide-shell guide-nav">
-      <a class="guide-brand" href="../../../"><span aria-hidden="true">◈</span> Vozen <span>TTS</span></a>
-      <nav class="guide-navlinks" aria-label="Principal"><a href="../../tts/">TTS</a><a href="../../../helper/">Helper</a><a href="../../../docs/tts/getting-started/install/">Guia de configuração</a></nav>
-    </header>
+    <header class="nav vozen-global-nav docs-ecosystem-nav" data-vozen-standalone-nav="" data-vozen-nav="" data-nav-root="/" data-nav-product="Ecosystem" data-nav-surface="docs" data-nav-prerendered="true" data-prerender-fragment="navigation">
+        <div class="docs-ecosystem-nav__inner nav__inner">
+          <a class="docs-ecosystem-nav__brand brand" href="/" aria-label="Página inicial do ecossistema Vozen" data-i18n-aria-label="ecosystem.homeAria">
+            <span class="docs-ecosystem-nav__mark brand__mark" aria-hidden="true"><img class="brand__portal" src="/favicon.svg" alt="" width="40" height="40"></span>
+            <span class="docs-ecosystem-nav__word brand__word">Vozen</span>
+            <span class="docs-ecosystem-nav__product nav__product" data-i18n="ecosystem.label">Ecossistema</span>
+          </a>
+          <nav class="docs-ecosystem-nav__links nav__links" aria-label="Produtos Vozen" data-i18n-aria-label="ecosystem.productsAria">
+            <a class="" href="/tts/" data-i18n="ecosystem.tts">Vozen TTS</a>
+            <a class="" href="/helper/" data-i18n="ecosystem.helper">Vozen Helper</a>
+            <a class="" href="/docs/" data-i18n="ecosystem.docs">Docs</a>
+            <a class="" href="/commands/" data-i18n="ecosystem.commands">Comandos</a>
+            <span class="docs-ecosystem-nav__premium-disabled nav__premium-disabled" aria-disabled="true" title="O Premium está temporariamente indisponível" data-i18n-title="ecosystem.premiumUnavailable" data-i18n="nav.premium">Premium</span>
+          </nav>
+          <div class="docs-ecosystem-nav__actions nav__actions">
+            <a class="docs-ecosystem-nav__github nav__gh" href="https://github.com/Rexy40407/vozen" target="_blank" rel="noopener noreferrer" aria-label="Vozen no GitHub" data-i18n-aria-label="ecosystem.githubAria"><svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg></a>
+            <div class="docs-ecosystem-nav__language lang" data-vozen-docs-language-menu="">
+              <button class="docs-ecosystem-nav__language-button lang__btn" type="button" data-vozen-docs-language-button="" aria-haspopup="listbox" aria-expanded="false" aria-label="Idioma do site">
+                <svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-pt"></use></svg><span class="docs-ecosystem-nav__language-name lang__name">Português</span>
+                <svg class="docs-ecosystem-nav__language-chevron lang__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+              <ul class="docs-ecosystem-nav__language-panel lang__panel" data-vozen-docs-language-panel="" role="listbox" tabindex="-1" aria-label="Escolher idioma"><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/" data-language="en"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-gb"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">English</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="true"><a class="docs-ecosystem-nav__language-option lang__opt is-active" href="/pt/" data-language="pt"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-pt"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">Português</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/fr/" data-language="fr"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-fr"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">Français</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/es/" data-language="es"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-es"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">Español</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/de/" data-language="de"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-de"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">Deutsch</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/tr/" data-language="tr"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-tr"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">Türkçe</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/ar/" data-language="ar"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-sa"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">العربية</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/zh/" data-language="zh"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-tw"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">繁體中文</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/ru/" data-language="ru"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-ru"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">Русский</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li><li role="option" aria-selected="false"><a class="docs-ecosystem-nav__language-option lang__opt" href="/ko/" data-language="ko"><svg class="docs-ecosystem-nav__language-flag" viewBox="0 0 24 18" aria-hidden="true" focusable="false"><use href="/assets/flags.svg#flag-kr"></use></svg><span class="docs-ecosystem-nav__language-option-name lang__optname">한국어</span><span class="docs-ecosystem-nav__language-check lang__check" aria-hidden="true">✓</span></a></li></ul>
+            </div>
+            <a class="docs-ecosystem-nav__login nav__login" data-vozen-docs-login="" href="/account/"><svg viewBox="0 0 24 18" width="18" height="14" fill="currentColor" aria-hidden="true"><path d="M20.3 1.6A19.8 19.8 0 0 0 15.4.1a14 14 0 0 0-.6 1.3 18.3 18.3 0 0 0-5.5 0A13 13 0 0 0 8.6.1 19.7 19.7 0 0 0 3.7 1.6C.6 6.3-.3 10.8.2 15.3a19.9 19.9 0 0 0 6 3 14.7 14.7 0 0 0 1.3-2.1 12.9 12.9 0 0 1-2-1c.2-.1.3-.3.5-.4a14.2 14.2 0 0 0 12 0l.5.4a12.8 12.8 0 0 1-2 1 14.5 14.5 0 0 0 1.3 2.1 19.8 19.8 0 0 0 6-3c.6-5.2-.8-9.7-3.5-13.7ZM8 12.6c-1.2 0-2.1-1.1-2.1-2.4S6.8 7.8 8 7.8s2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm8 0c-1.2 0-2-1-2-2.3 0-1.24.88-2.28 2-2.28s2.02 1.04 2 2.28c0 1.26-.9 2.3-2 2.3Z"></path></svg><span data-i18n="ecosystem.login">Entrar</span></a>
+            <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+          </div>
+        </div>
+      </header>
     <main id="main" class="guide-shell guide-main">
       <section class="guide-hero">
         <div>
@@ -67,10 +91,15 @@
     <script defer="" src="../../../js/tts-install-v1.js?v=06da33493db0"></script>
 
 
+<script src="/js/oauth-config.js?v=15ffe1a765c9"></script><script src="/js/i18n-v41.js?v=09e9c1d6b6ff"></script><script src="/js/i18n-v42.js?v=04e4e6aa1aa9"></script><script src="/js/global-nav-v1.js?v=d5e2e844b3e5"></script>
 <noscript data-prerender-fallback=""><style>
 .reveal{opacity:1!important;transform:none!important}.qa__a{max-height:none!important}
 .helper-module-panel[hidden]{display:block!important}.nav__links{display:flex!important;flex-wrap:wrap}
 .nav__inner{flex-wrap:wrap}.nav__burger,.lang,.docs-ecosystem-nav__language{display:none!important}
+.vozen-global-nav{position:static!important;height:auto!important}
+.vozen-global-nav .nav__inner{height:auto!important;padding-block:14px;row-gap:14px}
+.vozen-global-nav .nav__links{order:3;flex:1 1 100%;justify-content:flex-start;gap:16px}
+.docs-topbar{position:static!important}
 .page-account main,.page-account .foot{visibility:visible!important}
-@media(max-width:900px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}}
+@media(max-width:980px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}.docs-drawer-toggle,.docs-sidebar-scrim{display:none!important}}
 </style><p>Interactive search, audio, account information and live service checks require JavaScript. All public documentation and command descriptions are available below.</p></noscript></body></html>

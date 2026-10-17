@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/server-configuration/dashboard-configuration/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "e0d35062d681627602341f91fd9565aad188b97f41be48ccb8b52f87403e1b78",
+  "size": {
+    "width": 960,
+    "height": 486
+  }
+}

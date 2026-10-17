@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/reading-messages/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "b562fee8957c40a86640ddaa9610c043595c21c5713d619dcfdf59b22813183c",
+  "size": {
+    "width": 960,
+    "height": 584
+  }
+}

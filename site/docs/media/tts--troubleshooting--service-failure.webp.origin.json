@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/service-failure/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "123a32901fe5d83e14c69a8786f20d191880227f04eafaa98cc61e461f0d10b0",
+  "size": {
+    "width": 960,
+    "height": 468
+  }
+}

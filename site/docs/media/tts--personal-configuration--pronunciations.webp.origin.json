@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/personal-configuration/pronunciations/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "44eea3d9376ec5a7594f2b2794c831ee94f3c418691645e455d47bd309886866",
+  "size": {
+    "width": 960,
+    "height": 492
+  }
+}

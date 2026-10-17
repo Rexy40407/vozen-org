@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#social.youtube",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "86e475198f3918cf847cca20afb28fd359cf4cb7913f35d0fff6b289cb6476db",
+  "size": {
+    "width": 420,
+    "height": 598
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/no-audio/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "17d2bbbe4024f84cc89014b3c3ea803dd9c285972ab6f9289dd4bec22b671609",
+  "size": {
+    "width": 960,
+    "height": 604
+  }
+}

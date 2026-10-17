@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/voice-games/permissions-and-limits/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "019ffa5c0657df567a0d06b01312b065906f90129c5a6860c2706cd2f312f7f6",
+  "size": {
+    "width": 960,
+    "height": 426
+  }
+}

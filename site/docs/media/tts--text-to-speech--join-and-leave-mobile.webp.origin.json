@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/join-and-leave/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "fa9a6d8bf1b8f53c52fd5f0403ef65e4939fc450bc4c0772d42cfae170436699",
+  "size": {
+    "width": 420,
+    "height": 916
+  }
+}

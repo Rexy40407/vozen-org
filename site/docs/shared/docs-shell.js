@@ -2,7 +2,10 @@
   'use strict';
 
   const script = document.currentScript;
-  if (!script || document.body.dataset.vozenDocsShell === 'ready') return;
+  // Static prerendered markup is ready to read, not yet bound to interactions.
+  if (!script || window.vozenDocsShellBooted) return;
+  window.vozenDocsShellBooted = true;
+  document.body.dataset.vozenDocsShell = 'loading';
 
   const docsRoot = new URL('../', script.src);
   const siteRoot = new URL('../../', script.src);
@@ -97,11 +100,10 @@
     });
   }
 
-  // Older static pages may still link to an uncached shell stylesheet. Add the
-  // current stylesheet after the document's own styles so every route — even
-  // a directly opened file:// page — gets the same navigation geometry.
+  // Static pages already carry a versioned stylesheet. Bootstrap it only when
+  // absent, rather than overriding the current build with a cached duplicate.
   function ensureCurrentShellStyles() {
-    if (document.querySelector('link[data-vozen-current-docs-shell]')) return;
+    if (document.querySelector('link[data-vozen-current-docs-shell], link[href*="shared/docs-shell.css"]')) return;
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
     stylesheet.href = new URL('shared/docs-shell.css?v=ecosystem-nav-v15', docsRoot).href;
@@ -218,12 +220,9 @@
     const returnUrl = readDocsReturnUrl(fallback);
     topbar.innerHTML = '<div class="docs-topbar__inner">' +
       '<a class="docs-topbar__back" data-docs-back href="' + esc(returnUrl) + '">' + esc(docsText('docs.goBack', '← Go back')) + '</a>' +
-      '<span class="docs-topbar__arrow" aria-hidden="true">→</span>' +
       '<nav aria-label="' + esc(docsText('docs.products', 'Documentation products')) + '"><ul class="docs-topbar__products">' +
       '<li><a class="docs-topbar__link" data-docs-product-link="docs" href="' + esc(docsHome) + '">' + esc(docsText('ecosystem.docs', 'Docs')) + '</a></li>' +
-      '<li><span class="docs-topbar__arrow" aria-hidden="true">→</span></li>' +
       '<li><a class="docs-topbar__link" data-docs-product-link="helper" href="' + esc(productHome('helper/')) + '">' + esc(docsText('ecosystem.helper', 'Vozen Helper')) + '</a></li>' +
-      '<li><span class="docs-topbar__arrow" aria-hidden="true">→</span></li>' +
       '<li><a class="docs-topbar__link" data-docs-product-link="tts" href="' + esc(productHome('tts/')) + '">' + esc(docsText('ecosystem.tts', 'Vozen TTS')) + '</a></li>' +
       '</ul></nav></div>';
 
@@ -232,6 +231,7 @@
     topbar.querySelectorAll('[data-docs-product-link]').forEach(setActiveProduct);
     const back = topbar.querySelector('[data-docs-back]');
     back.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       window.location.assign(returnUrl);
     });
@@ -382,7 +382,7 @@
 
   function helperGroups(manifest) {
     const featureMap = new Map((manifest?.features || []).map((feature) => [feature.key, feature]));
-    const routes = globalThis.VOZEN_HELPER_ROUTES || {};
+    const routes = manifest?.routes || globalThis.VOZEN_HELPER_ROUTES || {};
     const modules = Object.keys(routes).map((key) => {
       const feature = featureMap.get(key) || {};
       return { key, title: feature.title || key.split('.').pop().replaceAll('_', ' '), route: routes[key], maturity: feature.maturity || 'catalog' };
@@ -475,16 +475,14 @@
 
   function renderGroups(sidebar, groups) {
     const tree = sidebar.querySelector('.docs-sidebar__tree');
-    const current = window.location.pathname;
     if (!groups.length) {
       tree.innerHTML = '<p class="docs-search-error">' + esc(docsText('docs.navigationUnavailable', 'Navigation is not available right now.')) + '</p>';
       return;
     }
     const saved = readDisclosureState();
-    const currentGroupIndex = groups.findIndex((group) => (group.links || []).some((link) => link && link.route && pathKey(docUrl(link.route)) === pathKey(current)));
+    const currentGroupIndex = groups.findIndex((group) => (group.links || []).some((link) => link && link.route && samePath(docUrl(link.route))));
     const savedGroupIndex = saved ? groups.findIndex((group, index) => disclosureKey(group, index) === saved.groupKey) : -1;
-    const savedMatchesCurrent = saved && saved.path === pathKey(current);
-    const openIndex = savedMatchesCurrent && savedGroupIndex >= 0 ? savedGroupIndex : currentGroupIndex >= 0 ? currentGroupIndex : savedGroupIndex >= 0 ? savedGroupIndex : 0;
+    const openIndex = currentGroupIndex >= 0 ? currentGroupIndex : savedGroupIndex >= 0 ? savedGroupIndex : 0;
     tree.innerHTML = groups.map((group, index) => {
       const links = (group.links || []).filter((link) => link && link.route);
       const markup = links.map((link) => {
@@ -674,6 +672,7 @@
 
   function addScaffolding(sidebar) {
     const main = document.querySelector('.docs-main');
+    window.VozenDocsReading?.enhance(main, sidebar);
     if (!main || main.dataset.vozenScaffold === 'ready') return;
     main.dataset.vozenScaffold = 'ready';
     main.querySelectorAll('.docs-visual').forEach((node) => node.setAttribute('data-docs-component', 'AnnotatedScreenshot'));
@@ -691,7 +690,7 @@
       main.insertBefore(breadcrumb, main.firstChild);
     }
     const headings = [...main.querySelectorAll('h2')].filter((node) => node.textContent.trim());
-    if (headings.length > 2 && !main.querySelector('.docs-local-toc')) {
+    if (product !== 'docs' && headings.length > 2 && !main.querySelector('.docs-local-toc')) {
       const toc = document.createElement('nav');
       toc.className = 'docs-local-toc';
       toc.setAttribute('aria-label', docsText('docs.onThisPage', 'On this page'));
@@ -704,7 +703,7 @@
       if (tocAnchor.parentElement === main) main.insertBefore(toc, tocAnchor);
       else main.appendChild(toc);
     }
-    const links = [...sidebar.querySelectorAll('.docs-sidebar__links a')];
+    const links = [...sidebar.querySelectorAll('.docs-sidebar__links > a')];
     const currentIndex = links.findIndex((link) => link.getAttribute('aria-current') === 'page');
     if (product !== 'docs' && currentIndex >= 0 && !main.querySelector('.docs-pager')) {
       const pager = document.createElement('nav');

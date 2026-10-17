@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#studio.rank_card",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "7cee23c8f2fd27217ee63930b983ebabfd543c7ef6f6ef3e7cac0cb83152ba62",
+  "size": {
+    "width": 960,
+    "height": 548
+  }
+}

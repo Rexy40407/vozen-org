@@ -19,8 +19,10 @@ for (const file of walkHtml('site')) {
   if (!isIndexable(relative, html)) continue;
   assert.match(html, /data-vozen-prerendered="true"/, `${relative}: public page was not prerendered`);
   const document = parse(html);
+  let sharedHeaders = 0;
   visit(document, (node) => {
     const attributes = attrs(node);
+    if (node.tagName === 'header' && (attributes.class || '').split(/\s+/).includes('vozen-global-nav')) sharedHeaders++;
     if (attributes['data-vozen-nav'] != null) {
       let links = 0;
       visit(node, (child) => { if (child.tagName === 'a' && attrs(child).href) links++; });
@@ -34,6 +36,7 @@ for (const file of walkHtml('site')) {
       assert.doesNotMatch(reference || '', /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/)/i, `${relative}: preview-server URL leaked into published HTML`);
     }
   });
+  assert.equal(sharedHeaders, 1, `${relative}: expected exactly one shared ecosystem header`);
   count++;
 }
 const commands = fs.readFileSync('site/commands/index.html', 'utf8');

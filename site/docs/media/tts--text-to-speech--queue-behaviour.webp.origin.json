@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/queue-behaviour/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "c43939979d7a74f1042205145edd21a440a30c33353a8b5ac92127ee676f495f",
+  "size": {
+    "width": 960,
+    "height": 508
+  }
+}

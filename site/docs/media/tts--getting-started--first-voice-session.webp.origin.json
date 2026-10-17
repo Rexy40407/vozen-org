@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/getting-started/first-voice-session/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "8f794666a35ecf7e5ec91854c8a3ceeebb53de16712af7e65bc99e491f50e16d",
+  "size": {
+    "width": 960,
+    "height": 558
+  }
+}

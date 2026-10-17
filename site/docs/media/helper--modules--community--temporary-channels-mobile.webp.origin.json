@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#utility.temp_channels",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "59b2e38bba266797000d0cd5ad28b48fc68e255fb7a1ee4429393ef05d146e95",
+  "size": {
+    "width": 420,
+    "height": 602
+  }
+}

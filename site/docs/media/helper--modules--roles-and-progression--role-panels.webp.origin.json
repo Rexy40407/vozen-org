@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#community.role_panels",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "31b4f5c617930e134d75b6dbedab31e1e83945f9c26bba45cee925171a599ceb",
+  "size": {
+    "width": 960,
+    "height": 500
+  }
+}

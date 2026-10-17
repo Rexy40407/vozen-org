@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/missing-permissions/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "f6cc92ed330c0b596f6db45837b01ac9875183552928f97efbee018522998ce4",
+  "size": {
+    "width": 960,
+    "height": 426
+  }
+}

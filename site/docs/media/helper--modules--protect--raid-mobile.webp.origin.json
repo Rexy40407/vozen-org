@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#protection.anti_raid",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "63338dc1594b55a4a165a638d70962bccdf85a5d2fa292bbd4990ac8a240e388",
+  "size": {
+    "width": 420,
+    "height": 804
+  }
+}

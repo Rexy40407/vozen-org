@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/server-configuration/channel-bindings/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "7c309512fd45975950c7faf66b6a321e0d74ac82ebcdd2cf0f8365f4c99fe1fa",
+  "size": {
+    "width": 420,
+    "height": 916
+  }
+}

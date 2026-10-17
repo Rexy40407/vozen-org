@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#social.bluesky",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "dd300240d4ac6d7f912fcc2dd945c4717e2a12847f40881bd46013bfc40bb722",
+  "size": {
+    "width": 960,
+    "height": 492
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/languages-and-voices/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "61db71f7a54bb992590b56a54d512da9c71f49ed448cbd2273e9571ec66fe398",
+  "size": {
+    "width": 420,
+    "height": 612
+  }
+}

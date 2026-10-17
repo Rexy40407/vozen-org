@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/voice-games/available-minigames/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "76da2de4c9f96f9de4f2a270c388efdd0b2e9220c4ae317e48325c34f4e0391c",
+  "size": {
+    "width": 960,
+    "height": 570
+  }
+}

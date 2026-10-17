@@ -1,0 +1,2378 @@
+{
+  "version": 1,
+  "pages": [
+    {
+      "route": "/docs/",
+      "id": "docs-home",
+      "source": "docs-data/docs-visual-content.mjs#",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "beb108841b6a7d2951359fd9f506e29c187740b515fe8180e8617feaf5b23cb0",
+      "image": "docs-home.webp",
+      "mobile": "docs-home-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 636
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/",
+      "id": "helper",
+      "source": "docs-data/docs-visual-content.mjs#helper/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "e86c4ddf40d105b6985a94963ed8045130fadb2f2eb678b94f95ce0b70315ce6",
+      "image": "helper.webp",
+      "mobile": "helper-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 418
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/",
+      "id": "helper--modules",
+      "source": "docs-data/docs-visual-content.mjs#helper/modules/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "d6c442f68933f01bc93734a7d228662db3dead09e50a122f53c995cd5753b748",
+      "image": "helper--modules.webp",
+      "mobile": "helper--modules-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 612
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/get-started/introduction/",
+      "id": "helper--get-started--introduction",
+      "source": "docs-data/docs-visual-content.mjs#helper/get-started/introduction/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "3f373874c780ff81a485ee441abb4c40fdaf7016d5346fbfb1c61818cdb7be72",
+      "image": "helper--get-started--introduction.webp",
+      "mobile": "helper--get-started--introduction-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/get-started/install/",
+      "id": "helper--get-started--install",
+      "source": "docs-data/docs-visual-content.mjs#helper/get-started/install/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b85ad6cd1bdbb05243441ac4d91c27ea9a8379bf9c85929aee7ed77d3bb2fe22",
+      "image": "helper--get-started--install.webp",
+      "mobile": "helper--get-started--install-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 582
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/get-started/quick-setup/",
+      "id": "helper--get-started--quick-setup",
+      "source": "docs-data/docs-visual-content.mjs#helper/get-started/quick-setup/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "ea055725727381b8bcb0f28e3275699ef15f816133b0b2a5890a9593a35fcca9",
+      "image": "helper--get-started--quick-setup.webp",
+      "mobile": "helper--get-started--quick-setup-mobile.webp",
+      "video": "helper--get-started--quick-setup.mp4",
+      "mobileVideo": "helper--get-started--quick-setup-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/get-started/server-selection/",
+      "id": "helper--get-started--server-selection",
+      "source": "docs-data/docs-visual-content.mjs#helper/get-started/server-selection/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "7fef5a7d0eb229d0ca47474fe230ced58117cc6f987ae631ae807345dc5aeb12",
+      "image": "helper--get-started--server-selection.webp",
+      "mobile": "helper--get-started--server-selection-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 552
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/get-started/feature-status/",
+      "id": "helper--get-started--feature-status",
+      "source": "docs-data/docs-visual-content.mjs#helper/get-started/feature-status/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "cfb98afe3d3418fc56450777410fcd550ce05ef511d990b77a97f19c177a69a6",
+      "image": "helper--get-started--feature-status.webp",
+      "mobile": "helper--get-started--feature-status-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 726
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/welcome/",
+      "id": "helper--guides--welcome",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/welcome/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "853816b00841c30c75056a74220dee47d76f5e9bf6d9f52c4569b1fceb26a64b",
+      "image": "helper--guides--welcome.webp",
+      "mobile": "helper--guides--welcome-mobile.webp",
+      "video": "helper--guides--welcome.mp4",
+      "mobileVideo": "helper--guides--welcome-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 472
+        },
+        "mobile": {
+          "width": 420,
+          "height": 518
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/alerts/",
+      "id": "helper--guides--alerts",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/alerts/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "9f69cca9e0a36ac262f64187b1108a15307a8f1a0b8b8c9ee1022653d50f33f3",
+      "image": "helper--guides--alerts.webp",
+      "mobile": "helper--guides--alerts-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 568
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/community/",
+      "id": "helper--guides--community",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/community/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "62a69385a3f3df619764ed6c2d3aea3d8461efda2a8a1a36e124c58e3da215ca",
+      "image": "helper--guides--community.webp",
+      "mobile": "helper--guides--community-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 524
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/grow/",
+      "id": "helper--guides--grow",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/grow/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "9c268df2bd30aadb60c4fc67fc87487ab7f43898c9e9542ebd197cda2168c6a5",
+      "image": "helper--guides--grow.webp",
+      "mobile": "helper--guides--grow-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 726
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/manage/",
+      "id": "helper--guides--manage",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/manage/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "6d69a5908dcc3aabdc765e369b3adab2e91490053b838005ebc744ef380864ae",
+      "image": "helper--guides--manage.webp",
+      "mobile": "helper--guides--manage-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 664
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/personalize/",
+      "id": "helper--guides--personalize",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/personalize/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "4e283ccb02e5bb28c5f047ae7f4d4abad8c583cc7ec6f3ab062ae0f4b76c19d7",
+      "image": "helper--guides--personalize.webp",
+      "mobile": "helper--guides--personalize-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 524
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/protect-a-server/",
+      "id": "helper--guides--protect-a-server",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/protect-a-server/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "c8d8bbf13fe18de0a935f71ced9178116c7cc8d1092473e5bf064eb960910295",
+      "image": "helper--guides--protect-a-server.webp",
+      "mobile": "helper--guides--protect-a-server-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 726
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/support/",
+      "id": "helper--guides--support",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/support/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "0f84d2dc5b1e83b5d28d5941b6e57d0d943225f10626f28571c8d94af50d74bb",
+      "image": "helper--guides--support.webp",
+      "mobile": "helper--guides--support-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 438
+        },
+        "mobile": {
+          "width": 420,
+          "height": 704
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/understand/",
+      "id": "helper--guides--understand",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/understand/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "a4cb4f649ea8b55768ad15702e96398621593ac6a86c065fc4c309c3f62be0b7",
+      "image": "helper--guides--understand.webp",
+      "mobile": "helper--guides--understand-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 726
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/use/",
+      "id": "helper--guides--use",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/use/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "d88b77f1f785a7271bc2ae5390416b36d2532729dc59fd6d1a2cbf1b17d634a6",
+      "image": "helper--guides--use.webp",
+      "mobile": "helper--guides--use-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 612
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/guides/web3/",
+      "id": "helper--guides--web3",
+      "source": "docs-data/docs-visual-content.mjs#helper/guides/web3/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "988d6a5afb85aa71b08ec0cfc207fbe685c982c714ee4bb5eb3f009f7b3121f8",
+      "image": "helper--guides--web3.webp",
+      "mobile": "helper--guides--web3-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 584
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/premium/feature-limits/",
+      "id": "helper--premium--feature-limits",
+      "source": "docs-data/docs-visual-content.mjs#helper/premium/feature-limits/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "ecf4a6ee0e1053da8023698333a4f7e7e069da00a6f1f4b1eef2796ef701724c",
+      "image": "helper--premium--feature-limits.webp",
+      "mobile": "helper--premium--feature-limits-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/premium/plans/",
+      "id": "helper--premium--plans",
+      "source": "docs-data/docs-visual-content.mjs#helper/premium/plans/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b271511bf94202294b7a961e89c58069583f268149b9ab7b6034f523fcf77705",
+      "image": "helper--premium--plans.webp",
+      "mobile": "helper--premium--plans-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 510
+        },
+        "mobile": {
+          "width": 420,
+          "height": 632
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/reference/commands/",
+      "id": "helper--reference--commands",
+      "source": "docs-data/docs-visual-content.mjs#helper/reference/commands/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "89ebbd4671ed4ef6f3b8b3639d4f1f8d44a284b470943e47cc4c1632d6dcc263",
+      "image": "helper--reference--commands.webp",
+      "mobile": "helper--reference--commands-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 636
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/reference/glossary/",
+      "id": "helper--reference--glossary",
+      "source": "docs-data/docs-visual-content.mjs#helper/reference/glossary/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "f0db9accacaf4418af9a32906d4f1329b034e269f07d92357cc7d9d14aa627a8",
+      "image": "helper--reference--glossary.webp",
+      "mobile": "helper--reference--glossary-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 418
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/reference/intents/",
+      "id": "helper--reference--intents",
+      "source": "docs-data/docs-visual-content.mjs#helper/reference/intents/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "dd0d816f00a3f8883b5d457ac8805f8cd7d95204e43099c333dc1748a55527b4",
+      "image": "helper--reference--intents.webp",
+      "mobile": "helper--reference--intents-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 690
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/reference/limits/",
+      "id": "helper--reference--limits",
+      "source": "docs-data/docs-visual-content.mjs#helper/reference/limits/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "7e162c80aec1c70275d4049b459e9a87a8a3336c4c56e237c9ef838b2da979f6",
+      "image": "helper--reference--limits.webp",
+      "mobile": "helper--reference--limits-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/reference/permissions/",
+      "id": "helper--reference--permissions",
+      "source": "docs-data/docs-visual-content.mjs#helper/reference/permissions/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "2326e9d58a31acfa5e08ceac3bd2fd6ad92ff9a36cdbc025b8ff06d9775919c7",
+      "image": "helper--reference--permissions.webp",
+      "mobile": "helper--reference--permissions-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 582
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/reference/variables/",
+      "id": "helper--reference--variables",
+      "source": "docs-data/docs-visual-content.mjs#helper/reference/variables/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "325744ee8b33ab2b9756fb5af36a641d457a5eefbd29bbc910536c3c9eb2de18",
+      "image": "helper--reference--variables.webp",
+      "mobile": "helper--reference--variables-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 458
+        },
+        "mobile": {
+          "width": 420,
+          "height": 668
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/security/account-safety/",
+      "id": "helper--security--account-safety",
+      "source": "docs-data/docs-visual-content.mjs#helper/security/account-safety/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "97a0b9b802964c14afbdc2b46d70db514bae6a5e4b616bea5e996dd4e1e765d5",
+      "image": "helper--security--account-safety.webp",
+      "mobile": "helper--security--account-safety-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 584
+        },
+        "mobile": {
+          "width": 420,
+          "height": 720
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/security/privacy/",
+      "id": "helper--security--privacy",
+      "source": "docs-data/docs-visual-content.mjs#helper/security/privacy/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "d904da761a8437c1bf4d73fcdfa8c2abed71aa7473006b4f7948021c93ed2cc8",
+      "image": "helper--security--privacy.webp",
+      "mobile": "helper--security--privacy-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 584
+        },
+        "mobile": {
+          "width": 420,
+          "height": 780
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/security/stored-data/",
+      "id": "helper--security--stored-data",
+      "source": "docs-data/docs-visual-content.mjs#helper/security/stored-data/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "91624ffd52daae0c9f295aacf8b62eebfbf6daa0db49fac8c48c8302ec3d6433",
+      "image": "helper--security--stored-data.webp",
+      "mobile": "helper--security--stored-data-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 624
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/status/features/",
+      "id": "helper--status--features",
+      "source": "docs-data/docs-visual-content.mjs#helper/status/features/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "4da1b1c1193e661251cc2d806ef7b9747f268fe625e5857696d8eb9dc1687b30",
+      "image": "helper--status--features.webp",
+      "mobile": "helper--status--features-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/status/providers/",
+      "id": "helper--status--providers",
+      "source": "docs-data/docs-visual-content.mjs#helper/status/providers/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "31604f9b441542f6989b7d670280d9ef3efc13240dbfe6b160317a081a0743e5",
+      "image": "helper--status--providers.webp",
+      "mobile": "helper--status--providers-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 776
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/troubleshooting/bot-not-responding/",
+      "id": "helper--troubleshooting--bot-not-responding",
+      "source": "docs-data/docs-visual-content.mjs#helper/troubleshooting/bot-not-responding/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "323ba6b5f76e5d8621060bdf2307f9e8bb170d5cce25ffdd13ecbc0f1c7a2362",
+      "image": "helper--troubleshooting--bot-not-responding.webp",
+      "mobile": "helper--troubleshooting--bot-not-responding-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 468
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/troubleshooting/missing-permissions/",
+      "id": "helper--troubleshooting--missing-permissions",
+      "source": "docs-data/docs-visual-content.mjs#helper/troubleshooting/missing-permissions/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "3c87dbf4759f55faac06f6eb69f9fbde176a142f0f4da5e00d90d33d2d9ad2e2",
+      "image": "helper--troubleshooting--missing-permissions.webp",
+      "mobile": "helper--troubleshooting--missing-permissions-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 606
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/troubleshooting/provider-failures/",
+      "id": "helper--troubleshooting--provider-failures",
+      "source": "docs-data/docs-visual-content.mjs#helper/troubleshooting/provider-failures/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "e68dbac0068e9ff0651a010acdc22c34115fcb58e4f6fb0f540c569ef8c17471",
+      "image": "helper--troubleshooting--provider-failures.webp",
+      "mobile": "helper--troubleshooting--provider-failures-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/troubleshooting/restore-configuration/",
+      "id": "helper--troubleshooting--restore-configuration",
+      "source": "docs-data/docs-visual-content.mjs#helper/troubleshooting/restore-configuration/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "7eb052999ee7866a9979055c08dde110c2c05622bc809b35e3c9f781f07a31fa",
+      "image": "helper--troubleshooting--restore-configuration.webp",
+      "mobile": "helper--troubleshooting--restore-configuration-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 690
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/troubleshooting/role-hierarchy/",
+      "id": "helper--troubleshooting--role-hierarchy",
+      "source": "docs-data/docs-visual-content.mjs#helper/troubleshooting/role-hierarchy/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "67542c89f99294f47371afa233489f43aef19cdcbe368100012da87e9c64adf8",
+      "image": "helper--troubleshooting--role-hierarchy.webp",
+      "mobile": "helper--troubleshooting--role-hierarchy-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 600
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/",
+      "id": "tts",
+      "source": "docs-data/docs-visual-content.mjs#tts/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "2a1848f9f690f9462226e682f2f4f8714fd5a994b8ccaf920e228937c3ea902c",
+      "image": "tts.webp",
+      "mobile": "tts-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 568
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/getting-started/introduction/",
+      "id": "tts--getting-started--introduction",
+      "source": "docs-data/docs-visual-content.mjs#tts/getting-started/introduction/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "8c356cb0486b30677c77f953bedd57a5bc00571820efd2e98171aedbb8b6047b",
+      "image": "tts--getting-started--introduction.webp",
+      "mobile": "tts--getting-started--introduction-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 558
+        },
+        "mobile": {
+          "width": 420,
+          "height": 940
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/getting-started/install/",
+      "id": "tts--getting-started--install",
+      "source": "docs-data/docs-visual-content.mjs#tts/getting-started/install/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b803200158bd8b9b9019cb33835478ee818ced611c4cb92cc1bb3da819d69ab9",
+      "image": "tts--getting-started--install.webp",
+      "mobile": "tts--getting-started--install-mobile.webp",
+      "video": "tts--getting-started--install.mp4",
+      "mobileVideo": "tts--getting-started--install-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 696
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/getting-started/permissions/",
+      "id": "tts--getting-started--permissions",
+      "source": "docs-data/docs-visual-content.mjs#tts/getting-started/permissions/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "f31eb158e2d84b3f1044db89c34450f2b49544661b2a1e72b23da72c72aea25e",
+      "image": "tts--getting-started--permissions.webp",
+      "mobile": "tts--getting-started--permissions-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 606
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/getting-started/first-voice-session/",
+      "id": "tts--getting-started--first-voice-session",
+      "source": "docs-data/docs-visual-content.mjs#tts/getting-started/first-voice-session/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "8f794666a35ecf7e5ec91854c8a3ceeebb53de16712af7e65bc99e491f50e16d",
+      "image": "tts--getting-started--first-voice-session.webp",
+      "mobile": "tts--getting-started--first-voice-session-mobile.webp",
+      "video": "tts--getting-started--first-voice-session.mp4",
+      "mobileVideo": "tts--getting-started--first-voice-session-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 558
+        },
+        "mobile": {
+          "width": 420,
+          "height": 916
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/text-to-speech/join-and-leave/",
+      "id": "tts--text-to-speech--join-and-leave",
+      "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/join-and-leave/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "fa9a6d8bf1b8f53c52fd5f0403ef65e4939fc450bc4c0772d42cfae170436699",
+      "image": "tts--text-to-speech--join-and-leave.webp",
+      "mobile": "tts--text-to-speech--join-and-leave-mobile.webp",
+      "video": "tts--text-to-speech--join-and-leave.mp4",
+      "mobileVideo": "tts--text-to-speech--join-and-leave-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 558
+        },
+        "mobile": {
+          "width": 420,
+          "height": 916
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/text-to-speech/reading-messages/",
+      "id": "tts--text-to-speech--reading-messages",
+      "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/reading-messages/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b562fee8957c40a86640ddaa9610c043595c21c5713d619dcfdf59b22813183c",
+      "image": "tts--text-to-speech--reading-messages.webp",
+      "mobile": "tts--text-to-speech--reading-messages-mobile.webp",
+      "video": "tts--text-to-speech--reading-messages.mp4",
+      "mobileVideo": "tts--text-to-speech--reading-messages-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 584
+        },
+        "mobile": {
+          "width": 420,
+          "height": 906
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/text-to-speech/queue-behaviour/",
+      "id": "tts--text-to-speech--queue-behaviour",
+      "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/queue-behaviour/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "c43939979d7a74f1042205145edd21a440a30c33353a8b5ac92127ee676f495f",
+      "image": "tts--text-to-speech--queue-behaviour.webp",
+      "mobile": "tts--text-to-speech--queue-behaviour-mobile.webp",
+      "video": "tts--text-to-speech--queue-behaviour.mp4",
+      "mobileVideo": "tts--text-to-speech--queue-behaviour-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 508
+        },
+        "mobile": {
+          "width": 420,
+          "height": 520
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/text-to-speech/languages-and-voices/",
+      "id": "tts--text-to-speech--languages-and-voices",
+      "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/languages-and-voices/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "61db71f7a54bb992590b56a54d512da9c71f49ed448cbd2273e9571ec66fe398",
+      "image": "tts--text-to-speech--languages-and-voices.webp",
+      "mobile": "tts--text-to-speech--languages-and-voices-mobile.webp",
+      "video": "tts--text-to-speech--languages-and-voices.mp4",
+      "mobileVideo": "tts--text-to-speech--languages-and-voices-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 612
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/text-to-speech/automatic-language-detection/",
+      "id": "tts--text-to-speech--automatic-language-detection",
+      "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/automatic-language-detection/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "8dd3a9c145992fefa30de2e74989abd7110cacc4535f33f7e63afbf996d4dc28",
+      "image": "tts--text-to-speech--automatic-language-detection.webp",
+      "mobile": "tts--text-to-speech--automatic-language-detection-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 628
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/text-to-speech/engines-and-effects/",
+      "id": "tts--text-to-speech--engines-and-effects",
+      "source": "docs-data/docs-visual-content.mjs#tts/text-to-speech/engines-and-effects/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "26b32d1e1fa0bf53d8d0aaf57cd5c348b47ffa8334f66d6f539b9a6644e86ddb",
+      "image": "tts--text-to-speech--engines-and-effects.webp",
+      "mobile": "tts--text-to-speech--engines-and-effects-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 612
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/personal-configuration/default-voice/",
+      "id": "tts--personal-configuration--default-voice",
+      "source": "docs-data/docs-visual-content.mjs#tts/personal-configuration/default-voice/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "f64b12ec95c1dfa524c266eadb49c0b63c53a60d97e76a4922a244571f8d5359",
+      "image": "tts--personal-configuration--default-voice.webp",
+      "mobile": "tts--personal-configuration--default-voice-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 690
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/personal-configuration/favourites/",
+      "id": "tts--personal-configuration--favourites",
+      "source": "docs-data/docs-visual-content.mjs#tts/personal-configuration/favourites/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "6b92d9e038bb6835c62de337c45ca373b01f41651c5c9026d96bdf9e0dc1c599",
+      "image": "tts--personal-configuration--favourites.webp",
+      "mobile": "tts--personal-configuration--favourites-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 612
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/personal-configuration/pronunciations/",
+      "id": "tts--personal-configuration--pronunciations",
+      "source": "docs-data/docs-visual-content.mjs#tts/personal-configuration/pronunciations/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "44eea3d9376ec5a7594f2b2794c831ee94f3c418691645e455d47bd309886866",
+      "image": "tts--personal-configuration--pronunciations.webp",
+      "mobile": "tts--personal-configuration--pronunciations-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 576
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/personal-configuration/recent-voices/",
+      "id": "tts--personal-configuration--recent-voices",
+      "source": "docs-data/docs-visual-content.mjs#tts/personal-configuration/recent-voices/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "2716445b6e6d51a0e3f95cc6ec5a6d6618c48b7cd2815f5264251bd77dca993f",
+      "image": "tts--personal-configuration--recent-voices.webp",
+      "mobile": "tts--personal-configuration--recent-voices-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 636
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/server-configuration/channel-bindings/",
+      "id": "tts--server-configuration--channel-bindings",
+      "source": "docs-data/docs-visual-content.mjs#tts/server-configuration/channel-bindings/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "7c309512fd45975950c7faf66b6a321e0d74ac82ebcdd2cf0f8365f4c99fe1fa",
+      "image": "tts--server-configuration--channel-bindings.webp",
+      "mobile": "tts--server-configuration--channel-bindings-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 558
+        },
+        "mobile": {
+          "width": 420,
+          "height": 916
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/server-configuration/server-defaults/",
+      "id": "tts--server-configuration--server-defaults",
+      "source": "docs-data/docs-visual-content.mjs#tts/server-configuration/server-defaults/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b22333a0b0680701ef1fdbb24028c43f0920e76dd235d2b2f42494c8aea465ab",
+      "image": "tts--server-configuration--server-defaults.webp",
+      "mobile": "tts--server-configuration--server-defaults-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 580
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/server-configuration/limits-and-permissions/",
+      "id": "tts--server-configuration--limits-and-permissions",
+      "source": "docs-data/docs-visual-content.mjs#tts/server-configuration/limits-and-permissions/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "dd7bc75ca8705d2ea17fae7738182a005eaca613bfaa57bd12de93342d906605",
+      "image": "tts--server-configuration--limits-and-permissions.webp",
+      "mobile": "tts--server-configuration--limits-and-permissions-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 726
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/server-configuration/dashboard-configuration/",
+      "id": "tts--server-configuration--dashboard-configuration",
+      "source": "docs-data/docs-visual-content.mjs#tts/server-configuration/dashboard-configuration/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "e0d35062d681627602341f91fd9565aad188b97f41be48ccb8b52f87403e1b78",
+      "image": "tts--server-configuration--dashboard-configuration.webp",
+      "mobile": "tts--server-configuration--dashboard-configuration-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 604
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/additional-tools/audio-files/",
+      "id": "tts--additional-tools--audio-files",
+      "source": "docs-data/docs-visual-content.mjs#tts/additional-tools/audio-files/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "120246bffff44db8bc652a43b236f840de3514a1abb5bfee554999573bf53830",
+      "image": "tts--additional-tools--audio-files.webp",
+      "mobile": "tts--additional-tools--audio-files-mobile.webp",
+      "video": "tts--additional-tools--audio-files.mp4",
+      "mobileVideo": "tts--additional-tools--audio-files-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 564
+        },
+        "mobile": {
+          "width": 420,
+          "height": 706
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/additional-tools/live-transcription/",
+      "id": "tts--additional-tools--live-transcription",
+      "source": "docs-data/docs-visual-content.mjs#tts/additional-tools/live-transcription/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "aaf94c45c806406284b4712ffde9ec0d02e322e6ce33a424236f9a9776c21b71",
+      "image": "tts--additional-tools--live-transcription.webp",
+      "mobile": "tts--additional-tools--live-transcription-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 584
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/additional-tools/translation/",
+      "id": "tts--additional-tools--translation",
+      "source": "docs-data/docs-visual-content.mjs#tts/additional-tools/translation/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "c5e9174e1bcde941f7b13f370a960daf5a12d55cc414187b43f75700ac2246e1",
+      "image": "tts--additional-tools--translation.webp",
+      "mobile": "tts--additional-tools--translation-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 568
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/voice-games/overview/",
+      "id": "tts--voice-games--overview",
+      "source": "docs-data/docs-visual-content.mjs#tts/voice-games/overview/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "8e96773a355478a362df2dd4b47e6ff4977faa76c68362d37fc4e21ab1214f5d",
+      "image": "tts--voice-games--overview.webp",
+      "mobile": "tts--voice-games--overview-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 592
+        },
+        "mobile": {
+          "width": 420,
+          "height": 636
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/voice-games/available-minigames/",
+      "id": "tts--voice-games--available-minigames",
+      "source": "docs-data/docs-visual-content.mjs#tts/voice-games/available-minigames/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "76da2de4c9f96f9de4f2a270c388efdd0b2e9220c4ae317e48325c34f4e0391c",
+      "image": "tts--voice-games--available-minigames.webp",
+      "mobile": "tts--voice-games--available-minigames-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 644
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/voice-games/starting-and-stopping/",
+      "id": "tts--voice-games--starting-and-stopping",
+      "source": "docs-data/docs-visual-content.mjs#tts/voice-games/starting-and-stopping/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "e941108d739f40412a012b23f0285cd6d11b994f19fa7c0cb81b32542308b052",
+      "image": "tts--voice-games--starting-and-stopping.webp",
+      "mobile": "tts--voice-games--starting-and-stopping-mobile.webp",
+      "video": "tts--voice-games--starting-and-stopping.mp4",
+      "mobileVideo": "tts--voice-games--starting-and-stopping-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 664
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/voice-games/permissions-and-limits/",
+      "id": "tts--voice-games--permissions-and-limits",
+      "source": "docs-data/docs-visual-content.mjs#tts/voice-games/permissions-and-limits/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "019ffa5c0657df567a0d06b01312b065906f90129c5a6860c2706cd2f312f7f6",
+      "image": "tts--voice-games--permissions-and-limits.webp",
+      "mobile": "tts--voice-games--permissions-and-limits-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 594
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/premium-and-plus/plans/",
+      "id": "tts--premium-and-plus--plans",
+      "source": "docs-data/docs-visual-content.mjs#tts/premium-and-plus/plans/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "704d53a6d2885935aafae094970778c54f34013cfb3850a143f172e691ac228d",
+      "image": "tts--premium-and-plus--plans.webp",
+      "mobile": "tts--premium-and-plus--plans-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 608
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/premium-and-plus/feature-limits/",
+      "id": "tts--premium-and-plus--feature-limits",
+      "source": "docs-data/docs-visual-content.mjs#tts/premium-and-plus/feature-limits/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "2c1730e758b7e8be7b9c8c5a48ade3e727ea2edd78a2d54e0a8d3d82d9528eb0",
+      "image": "tts--premium-and-plus--feature-limits.webp",
+      "mobile": "tts--premium-and-plus--feature-limits-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 632
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/reference/public-commands/",
+      "id": "tts--reference--public-commands",
+      "source": "docs-data/docs-visual-content.mjs#tts/reference/public-commands/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "80b6d3aba95d37c5d7d2001f97c8ee50ad64faf221b0f447be74e08db9fc9c27",
+      "image": "tts--reference--public-commands.webp",
+      "mobile": "tts--reference--public-commands-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 612
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/reference/languages-and-engines/",
+      "id": "tts--reference--languages-and-engines",
+      "source": "docs-data/docs-visual-content.mjs#tts/reference/languages-and-engines/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "9a44d0bc2656f6ef9413ae7ad8d01cff0932aedd7800da369b44e4daf6ae69c6",
+      "image": "tts--reference--languages-and-engines.webp",
+      "mobile": "tts--reference--languages-and-engines-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 570
+        },
+        "mobile": {
+          "width": 420,
+          "height": 636
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/reference/permissions/",
+      "id": "tts--reference--permissions",
+      "source": "docs-data/docs-visual-content.mjs#tts/reference/permissions/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "421a2026280b0ee36cc2512e6a61688e8df7cb48f9e7cac40cc71814a941c7c2",
+      "image": "tts--reference--permissions.webp",
+      "mobile": "tts--reference--permissions-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 630
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/reference/variables/",
+      "id": "tts--reference--variables",
+      "source": "docs-data/docs-visual-content.mjs#tts/reference/variables/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "9425e6a4c6d0438da6a11b5dd84c401e694f4caaa988038e591f1283a255b506",
+      "image": "tts--reference--variables.webp",
+      "mobile": "tts--reference--variables-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 534
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/troubleshooting/bot-does-not-join/",
+      "id": "tts--troubleshooting--bot-does-not-join",
+      "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/bot-does-not-join/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "861b421406c805b2e3aec2016ccd6f9ae6c81851ace78f18a0e7aedff04c6a8b",
+      "image": "tts--troubleshooting--bot-does-not-join.webp",
+      "mobile": "tts--troubleshooting--bot-does-not-join-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 606
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/troubleshooting/missing-permissions/",
+      "id": "tts--troubleshooting--missing-permissions",
+      "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/missing-permissions/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "f6cc92ed330c0b596f6db45837b01ac9875183552928f97efbee018522998ce4",
+      "image": "tts--troubleshooting--missing-permissions.webp",
+      "mobile": "tts--troubleshooting--missing-permissions-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 426
+        },
+        "mobile": {
+          "width": 420,
+          "height": 606
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/troubleshooting/no-audio/",
+      "id": "tts--troubleshooting--no-audio",
+      "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/no-audio/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "17d2bbbe4024f84cc89014b3c3ea803dd9c285972ab6f9289dd4bec22b671609",
+      "image": "tts--troubleshooting--no-audio.webp",
+      "mobile": "tts--troubleshooting--no-audio-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 604
+        },
+        "mobile": {
+          "width": 420,
+          "height": 688
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/troubleshooting/service-failure/",
+      "id": "tts--troubleshooting--service-failure",
+      "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/service-failure/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "123a32901fe5d83e14c69a8786f20d191880227f04eafaa98cc61e461f0d10b0",
+      "image": "tts--troubleshooting--service-failure.webp",
+      "mobile": "tts--troubleshooting--service-failure-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 468
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/troubleshooting/wrong-language-or-voice/",
+      "id": "tts--troubleshooting--wrong-language-or-voice",
+      "source": "docs-data/docs-visual-content.mjs#tts/troubleshooting/wrong-language-or-voice/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "aec659dcab7f50c4c663b51741b861e0f563bf2b907ece3d25d37db74633b82e",
+      "image": "tts--troubleshooting--wrong-language-or-voice.webp",
+      "mobile": "tts--troubleshooting--wrong-language-or-voice-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 696
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/privacy/",
+      "id": "tts--privacy",
+      "source": "docs-data/docs-visual-content.mjs#tts/privacy/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "9eba89713a70f2286c1df352e480db0b4c1118fc7535a683c0b6d3ae708ad8a1",
+      "image": "tts--privacy.webp",
+      "mobile": "tts--privacy-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 584
+        },
+        "mobile": {
+          "width": 420,
+          "height": 780
+        }
+      }
+    },
+    {
+      "route": "/docs/tts/service-health/",
+      "id": "tts--service-health",
+      "source": "docs-data/docs-visual-content.mjs#tts/service-health/",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "5176e03120516850654ec0882f4709d1da0dd10d5af0b7a4f4a7b943bab8d5e2",
+      "image": "tts--service-health.webp",
+      "mobile": "tts--service-health-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 446
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/roles-and-progression/achievements/",
+      "id": "helper--modules--roles-and-progression--achievements",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.achievements",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b3762d22c4fa701b3dde7d92d7034e229baec2065abec92884193d86497f1ad6",
+      "image": "helper--modules--roles-and-progression--achievements.webp",
+      "mobile": "helper--modules--roles-and-progression--achievements-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 524
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/welcome/birthdays/",
+      "id": "helper--modules--welcome--birthdays",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.birthdays",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "23dc2231e141391fa94f2359f03b271ccad32897e2f3b289d572e1131fdaa06e",
+      "image": "helper--modules--welcome--birthdays.webp",
+      "mobile": "helper--modules--welcome--birthdays-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 588
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/economy/",
+      "id": "helper--modules--community--economy",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.economy",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "25d26b183793c902874de980d21dd68e326e398ff884b09dcb40ba0639c1b00d",
+      "image": "helper--modules--community--economy.webp",
+      "mobile": "helper--modules--community--economy-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 576
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/events/",
+      "id": "helper--modules--community--events",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.events",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "2729f767ac49f580095654e19577f782a22467bc3bfe941cca0c14ac3f3f02cf",
+      "image": "helper--modules--community--events.webp",
+      "mobile": "helper--modules--community--events-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 638
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/giveaways/",
+      "id": "helper--modules--community--giveaways",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.giveaways",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "d06b14a4558e0171da9b30923935b0ffb7307df1bcc11e648d8c59bf1e9a2b6f",
+      "image": "helper--modules--community--giveaways.webp",
+      "mobile": "helper--modules--community--giveaways-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 584
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/roles-and-progression/leaderboard/",
+      "id": "helper--modules--roles-and-progression--leaderboard",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.leaderboard",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b35583088acb09746e43e19f6c234445d5789f4d6db44af9b47f1641641924cc",
+      "image": "helper--modules--roles-and-progression--leaderboard.webp",
+      "mobile": "helper--modules--roles-and-progression--leaderboard-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 412
+        },
+        "mobile": {
+          "width": 420,
+          "height": 552
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/roles-and-progression/levels/",
+      "id": "helper--modules--roles-and-progression--levels",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.levels",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "d85c03772958c869a79df2964263c8abd466009d6d9902abfebbb002858e933f",
+      "image": "helper--modules--roles-and-progression--levels.webp",
+      "mobile": "helper--modules--roles-and-progression--levels-mobile.webp",
+      "video": "helper--modules--roles-and-progression--levels.mp4",
+      "mobileVideo": "helper--modules--roles-and-progression--levels-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 524
+        },
+        "mobile": {
+          "width": 420,
+          "height": 660
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/roles-and-progression/role-panels/",
+      "id": "helper--modules--roles-and-progression--role-panels",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.role_panels",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "31b4f5c617930e134d75b6dbedab31e1e83945f9c26bba45cee925171a599ceb",
+      "image": "helper--modules--roles-and-progression--role-panels.webp",
+      "mobile": "helper--modules--roles-and-progression--role-panels-mobile.webp",
+      "video": "helper--modules--roles-and-progression--role-panels.mp4",
+      "mobileVideo": "helper--modules--roles-and-progression--role-panels-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 500
+        },
+        "mobile": {
+          "width": 420,
+          "height": 710
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/starboard/",
+      "id": "helper--modules--community--starboard",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.starboard",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "a9fcff4de1d9649bbfb79f720d1cc312ddde858acb3bd24c75bbc7bad9fdf2a8",
+      "image": "helper--modules--community--starboard.webp",
+      "mobile": "helper--modules--community--starboard-mobile.webp",
+      "video": "helper--modules--community--starboard.mp4",
+      "mobileVideo": "helper--modules--community--starboard-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 576
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/suggestions/",
+      "id": "helper--modules--community--suggestions",
+      "source": "docs-data/helper/helper-docs-manifest.json#community.suggestions",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "53b98e88756fad3a3881d2f4d2380632d9011211d00f9f2c401714258c3159d9",
+      "image": "helper--modules--community--suggestions.webp",
+      "mobile": "helper--modules--community--suggestions-mobile.webp",
+      "video": "helper--modules--community--suggestions.mp4",
+      "mobileVideo": "helper--modules--community--suggestions-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 532
+        },
+        "mobile": {
+          "width": 420,
+          "height": 580
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/growth/monetization/",
+      "id": "helper--modules--growth--monetization",
+      "source": "docs-data/helper/helper-docs-manifest.json#growth.monetization",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "859fc340fea4a90ac4c26cea31910bb87e4149cecd3d17fe44075a5cf81b7e0a",
+      "image": "helper--modules--growth--monetization.webp",
+      "mobile": "helper--modules--growth--monetization-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 372
+        },
+        "mobile": {
+          "width": 420,
+          "height": 582
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/activity/statistics-channels/",
+      "id": "helper--modules--activity--statistics-channels",
+      "source": "docs-data/helper/helper-docs-manifest.json#insights.stats",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "d57b2e429de560f0ec65ff610a075e3ad92d3a8314b715202ff61e2c66d429b1",
+      "image": "helper--modules--activity--statistics-channels.webp",
+      "mobile": "helper--modules--activity--statistics-channels-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 510
+        },
+        "mobile": {
+          "width": 420,
+          "height": 616
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/manage/audit/",
+      "id": "helper--modules--manage--audit",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.audit",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "0737675ff5f489dc724c9e1cde12f6e001d94275a00cbe6b81b2e17f9bf6b8de",
+      "image": "helper--modules--manage--audit.webp",
+      "mobile": "helper--modules--manage--audit-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 510
+        },
+        "mobile": {
+          "width": 420,
+          "height": 616
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/automate/custom-commands/",
+      "id": "helper--modules--automate--custom-commands",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.custom_commands",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "e7fa690aadc0f38d0b8909d9edebd1e82237f103c0f1587cc39413c4a743f9eb",
+      "image": "helper--modules--automate--custom-commands.webp",
+      "mobile": "helper--modules--automate--custom-commands-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 544
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/invite-tracker/",
+      "id": "helper--modules--community--invite-tracker",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.invite_tracker",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b857dc52715a525a7075cbdc93d11722004f073ade20675901a32b4023f35661",
+      "image": "helper--modules--community--invite-tracker.webp",
+      "mobile": "helper--modules--community--invite-tracker-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 436
+        },
+        "mobile": {
+          "width": 420,
+          "height": 508
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/manage/moderation/",
+      "id": "helper--modules--manage--moderation",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.moderation",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "07bbd1ea4fbf214016dfb154f014d57c945391083048ff5e2dd8f21c38097a7b",
+      "image": "helper--modules--manage--moderation.webp",
+      "mobile": "helper--modules--manage--moderation-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 502
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/management/nickname/",
+      "id": "helper--modules--management--nickname",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.nickname",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "aeef88e21956b24c8cbc903ab5b1d5d0583a520864f387ea75dbb4ecdcdce550",
+      "image": "helper--modules--management--nickname.webp",
+      "mobile": "helper--modules--management--nickname-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 496
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/polls/",
+      "id": "helper--modules--community--polls",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.polls",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "65d86c3316822cbd54284049509400522e96f92d854c289ae651a9d586f936c0",
+      "image": "helper--modules--community--polls.webp",
+      "mobile": "helper--modules--community--polls-mobile.webp",
+      "video": "helper--modules--community--polls.mp4",
+      "mobileVideo": "helper--modules--community--polls-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 532
+        },
+        "mobile": {
+          "width": 420,
+          "height": 554
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/security/privacy/",
+      "id": "helper--modules--security--privacy",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.privacy",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "20495d70e07d052ba769471704b22998cb24f23c88508bc2671930421483e327",
+      "image": "helper--modules--security--privacy.webp",
+      "mobile": "helper--modules--security--privacy-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 584
+        },
+        "mobile": {
+          "width": 420,
+          "height": 750
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/manage/templates/",
+      "id": "helper--modules--manage--templates",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.templates",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "94a20f4dd6404f4d2a5a0224421dbb9556a3dcf21f464a67f4d00ed98c5802e6",
+      "image": "helper--modules--manage--templates.webp",
+      "mobile": "helper--modules--manage--templates-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 472
+        },
+        "mobile": {
+          "width": 420,
+          "height": 658
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/automate/workflows/",
+      "id": "helper--modules--automate--workflows",
+      "source": "docs-data/helper/helper-docs-manifest.json#management.workflows",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "7de60ed0d70ee11b8bd0a672981d160cfc5ed6c6263f61c8c9f7d7e34db1959d",
+      "image": "helper--modules--automate--workflows.webp",
+      "mobile": "helper--modules--automate--workflows-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 472
+        },
+        "mobile": {
+          "width": 420,
+          "height": 690
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/protect/raid/",
+      "id": "helper--modules--protect--raid",
+      "source": "docs-data/helper/helper-docs-manifest.json#protection.anti_raid",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "63338dc1594b55a4a165a638d70962bccdf85a5d2fa292bbd4990ac8a240e388",
+      "image": "helper--modules--protect--raid.webp",
+      "mobile": "helper--modules--protect--raid-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 454
+        },
+        "mobile": {
+          "width": 420,
+          "height": 804
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/protect/scam/",
+      "id": "helper--modules--protect--scam",
+      "source": "docs-data/helper/helper-docs-manifest.json#protection.antiscam",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "2e02b347e85af586bac87ae842251f94cb628aa8207189dae3bbf9fb361cecfa",
+      "image": "helper--modules--protect--scam.webp",
+      "mobile": "helper--modules--protect--scam-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 454
+        },
+        "mobile": {
+          "width": 420,
+          "height": 832
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/protect/spam/",
+      "id": "helper--modules--protect--spam",
+      "source": "docs-data/helper/helper-docs-manifest.json#protection.antispam",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "a1b015e69db84ea18d85b7bfd7aaca10eaeccccbd6f6f675f69b586a2def1289",
+      "image": "helper--modules--protect--spam.webp",
+      "mobile": "helper--modules--protect--spam-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 454
+        },
+        "mobile": {
+          "width": 420,
+          "height": 804
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/protect/join-gate/",
+      "id": "helper--modules--protect--join-gate",
+      "source": "docs-data/helper/helper-docs-manifest.json#protection.join_gate",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "8b3fbcfb99df0e64167c2dc5493424779d923db8144b37b95a84fd169849e270",
+      "image": "helper--modules--protect--join-gate.webp",
+      "mobile": "helper--modules--protect--join-gate-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 464
+        },
+        "mobile": {
+          "width": 420,
+          "height": 658
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/bluesky/",
+      "id": "helper--modules--alerts--bluesky",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.bluesky",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "dd300240d4ac6d7f912fcc2dd945c4717e2a12847f40881bd46013bfc40bb722",
+      "image": "helper--modules--alerts--bluesky.webp",
+      "mobile": "helper--modules--alerts--bluesky-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 598
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/instagram/",
+      "id": "helper--modules--alerts--instagram",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.instagram",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "76e7551185434bda94b842cc80c7844313da140a578ca4f69925130127291695",
+      "image": "helper--modules--alerts--instagram.webp",
+      "mobile": "helper--modules--alerts--instagram-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 372
+        },
+        "mobile": {
+          "width": 420,
+          "height": 582
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/kick/",
+      "id": "helper--modules--alerts--kick",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.kick",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "6ca0ce714035fe19c3409cf754718914ea39503fe07248559320cc53a5ea0d0d",
+      "image": "helper--modules--alerts--kick.webp",
+      "mobile": "helper--modules--alerts--kick-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 372
+        },
+        "mobile": {
+          "width": 420,
+          "height": 582
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/podcasts/",
+      "id": "helper--modules--alerts--podcasts",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.podcasts",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "ff79678d1088e3785d846e4d5a92e32466571e69a038d8da61dc3d3e44d3df71",
+      "image": "helper--modules--alerts--podcasts.webp",
+      "mobile": "helper--modules--alerts--podcasts-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 598
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/rss/",
+      "id": "helper--modules--alerts--rss",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.rss",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "e82922e4543a69a427b90e04e59d02a6578d61b19177f9dd677cbe91911536a1",
+      "image": "helper--modules--alerts--rss.webp",
+      "mobile": "helper--modules--alerts--rss-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 630
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/tiktok/",
+      "id": "helper--modules--alerts--tiktok",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.tiktok",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b54084137d4d59d4f7fec7584156f63c2b3c978e03652e85ac558343f3239b51",
+      "image": "helper--modules--alerts--tiktok.webp",
+      "mobile": "helper--modules--alerts--tiktok-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 372
+        },
+        "mobile": {
+          "width": 420,
+          "height": 558
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/twitch/",
+      "id": "helper--modules--alerts--twitch",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.twitch",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "90268d22aff96a1b035192e639663670664245ee42131214ac6632b4a138093d",
+      "image": "helper--modules--alerts--twitch.webp",
+      "mobile": "helper--modules--alerts--twitch-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 598
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/alerts/youtube/",
+      "id": "helper--modules--alerts--youtube",
+      "source": "docs-data/helper/helper-docs-manifest.json#social.youtube",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "86e475198f3918cf847cca20afb28fd359cf4cb7913f35d0fff6b289cb6476db",
+      "image": "helper--modules--alerts--youtube.webp",
+      "mobile": "helper--modules--alerts--youtube-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 492
+        },
+        "mobile": {
+          "width": 420,
+          "height": 598
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/roles-and-progression/xp-card/",
+      "id": "helper--modules--roles-and-progression--xp-card",
+      "source": "docs-data/helper/helper-docs-manifest.json#studio.rank_card",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "7cee23c8f2fd27217ee63930b983ebabfd543c7ef6f6ef3e7cac0cb83152ba62",
+      "image": "helper--modules--roles-and-progression--xp-card.webp",
+      "mobile": "helper--modules--roles-and-progression--xp-card-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 548
+        },
+        "mobile": {
+          "width": 420,
+          "height": 660
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/support/tickets/",
+      "id": "helper--modules--support--tickets",
+      "source": "docs-data/helper/helper-docs-manifest.json#support.tickets",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "fa2d930a4d59a10b8fc664fe14f2fcb109641083090ea2ada198c986f8aace8f",
+      "image": "helper--modules--support--tickets.webp",
+      "mobile": "helper--modules--support--tickets-mobile.webp",
+      "video": "helper--modules--support--tickets.mp4",
+      "mobileVideo": "helper--modules--support--tickets-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 466
+        },
+        "mobile": {
+          "width": 420,
+          "height": 766
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/welcome/members/",
+      "id": "helper--modules--welcome--members",
+      "source": "docs-data/helper/helper-docs-manifest.json#support.welcome",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "3835bd55a19c0d729582630db482837ba13b9cd17c5210f739f5184ad324db8b",
+      "image": "helper--modules--welcome--members.webp",
+      "mobile": "helper--modules--welcome--members-mobile.webp",
+      "video": "helper--modules--welcome--members.mp4",
+      "mobileVideo": "helper--modules--welcome--members-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 574
+        },
+        "mobile": {
+          "width": 420,
+          "height": 674
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/welcome/guided-channel/",
+      "id": "helper--modules--welcome--guided-channel",
+      "source": "docs-data/helper/helper-docs-manifest.json#support.welcome_channel",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "2072405e1e936d00a687259a7c537de569add969cecf26976d1c86b1167e81d5",
+      "image": "helper--modules--welcome--guided-channel.webp",
+      "mobile": "helper--modules--welcome--guided-channel-mobile.webp",
+      "video": "helper--modules--welcome--guided-channel.mp4",
+      "mobileVideo": "helper--modules--welcome--guided-channel-mobile.mp4",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 448
+        },
+        "mobile": {
+          "width": 420,
+          "height": 722
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/automate/embeds/",
+      "id": "helper--modules--automate--embeds",
+      "source": "docs-data/helper/helper-docs-manifest.json#utility.embeds",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "c8134809c981c4fa9ace66d106e3bb135bbcc8a81c3d6d2136e7c7c174b3c303",
+      "image": "helper--modules--automate--embeds.webp",
+      "mobile": "helper--modules--automate--embeds-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 452
+        },
+        "mobile": {
+          "width": 420,
+          "height": 634
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/emojis/",
+      "id": "helper--modules--community--emojis",
+      "source": "docs-data/helper/helper-docs-manifest.json#utility.emojis",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "3eb793dcab3dff9ad6a99319e9b040c9baee07d43c02491f045415665d6074b2",
+      "image": "helper--modules--community--emojis.webp",
+      "mobile": "helper--modules--community--emojis-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 436
+        },
+        "mobile": {
+          "width": 420,
+          "height": 528
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/manage/help/",
+      "id": "helper--modules--manage--help",
+      "source": "docs-data/helper/helper-docs-manifest.json#utility.help",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "01dc849fa903845eadda4a062e0458b03c8cc57663ac136c914de0ff814f3db2",
+      "image": "helper--modules--manage--help.webp",
+      "mobile": "helper--modules--manage--help-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 494
+        },
+        "mobile": {
+          "width": 420,
+          "height": 538
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/automate/reminders/",
+      "id": "helper--modules--automate--reminders",
+      "source": "docs-data/helper/helper-docs-manifest.json#utility.reminders",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "a9b983b6b40e13cbaddad48b9ed3e6c0e8d51d95ec8f8b1980fa9892987c3ca0",
+      "image": "helper--modules--automate--reminders.webp",
+      "mobile": "helper--modules--automate--reminders-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 526
+        },
+        "mobile": {
+          "width": 420,
+          "height": 652
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/utilities/search/",
+      "id": "helper--modules--utilities--search",
+      "source": "docs-data/helper/helper-docs-manifest.json#utility.search",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "aa20dac4f9bbd7afa2f98109635ff12c5c209a6f09bef3e9301e5d696cec5732",
+      "image": "helper--modules--utilities--search.webp",
+      "mobile": "helper--modules--utilities--search-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 592
+        },
+        "mobile": {
+          "width": 420,
+          "height": 636
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/community/temporary-channels/",
+      "id": "helper--modules--community--temporary-channels",
+      "source": "docs-data/helper/helper-docs-manifest.json#utility.temp_channels",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "59b2e38bba266797000d0cd5ad28b48fc68e255fb7a1ee4429393ef05d146e95",
+      "image": "helper--modules--community--temporary-channels.webp",
+      "mobile": "helper--modules--community--temporary-channels-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 464
+        },
+        "mobile": {
+          "width": 420,
+          "height": 602
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/web3/crypto-queries/",
+      "id": "helper--modules--web3--crypto-queries",
+      "source": "docs-data/helper/helper-docs-manifest.json#web3.crypto_queries",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "29925f0debe9d2735160240b615e7c18b233e279834c7bfdcd957a2b7b67add2",
+      "image": "helper--modules--web3--crypto-queries.webp",
+      "mobile": "helper--modules--web3--crypto-queries-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 510
+        },
+        "mobile": {
+          "width": 420,
+          "height": 576
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/web3/crypto-statistics/",
+      "id": "helper--modules--web3--crypto-statistics",
+      "source": "docs-data/helper/helper-docs-manifest.json#web3.crypto_stats",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "b7331168e2de7cfb9c2e87969bfaf6f5c8a5407e871a24069b165915ed40d69d",
+      "image": "helper--modules--web3--crypto-statistics.webp",
+      "mobile": "helper--modules--web3--crypto-statistics-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 510
+        },
+        "mobile": {
+          "width": 420,
+          "height": 576
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/web3/gas-tracker/",
+      "id": "helper--modules--web3--gas-tracker",
+      "source": "docs-data/helper/helper-docs-manifest.json#web3.gas_tracker",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "a101ede3d4399c34c061116b0d6675a4b623310fcf54391938dc83bf12260104",
+      "image": "helper--modules--web3--gas-tracker.webp",
+      "mobile": "helper--modules--web3--gas-tracker-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 486
+        },
+        "mobile": {
+          "width": 420,
+          "height": 596
+        }
+      }
+    },
+    {
+      "route": "/docs/helper/modules/web3/wallet-gating/",
+      "id": "helper--modules--web3--wallet-gating",
+      "source": "docs-data/helper/helper-docs-manifest.json#web3.gating",
+      "provenance": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+      "hash": "5a4dfad41842231513d6eaed7376c545dfc21787ef2bbbfb5fabce9eca546400",
+      "image": "helper--modules--web3--wallet-gating.webp",
+      "mobile": "helper--modules--web3--wallet-gating-mobile.webp",
+      "sizes": {
+        "desktop": {
+          "width": 960,
+          "height": 372
+        },
+        "mobile": {
+          "width": 420,
+          "height": 582
+        }
+      }
+    }
+  ]
+}

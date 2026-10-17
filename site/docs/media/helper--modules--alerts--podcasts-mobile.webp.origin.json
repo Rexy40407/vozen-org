@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#social.podcasts",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "ff79678d1088e3785d846e4d5a92e32466571e69a038d8da61dc3d3e44d3df71",
+  "size": {
+    "width": 420,
+    "height": 598
+  }
+}

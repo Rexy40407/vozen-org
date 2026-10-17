@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#helper/guides/personalize/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "4e283ccb02e5bb28c5f047ae7f4d4abad8c583cc7ec6f3ab062ae0f4b76c19d7",
+  "size": {
+    "width": 960,
+    "height": 524
+  }
+}

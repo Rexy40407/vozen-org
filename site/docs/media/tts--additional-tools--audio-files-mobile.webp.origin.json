@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/additional-tools/audio-files/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "120246bffff44db8bc652a43b236f840de3514a1abb5bfee554999573bf53830",
+  "size": {
+    "width": 420,
+    "height": 706
+  }
+}

@@ -40,14 +40,14 @@
 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-    <link rel="stylesheet" href="css/tts-page-v1.css?v=a1b6eb77b2b5">
+    <link rel="stylesheet" href="css/tts-page-v1.css?v=db100088a107">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Vozen TTS","applicationCategory":"UtilitiesApplication","operatingSystem":"Discord","url":"https://vozen.org/es/tts/","description":"Vozen lee tu chat de Discord en voz alta con voces neuronales naturales — en 35 idiomas, con juegos, risas y un núcleo que es gratis para siempre","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"inLanguage":"es"}</script>
 
     <!-- FAQ structured data (Google rich results). Mantém em sincronia com
          window.VOZEN_FAQ (js/i18n.js) — o JSON-LD tem de ser ESTÁTICO porque os
          crawlers não correm o JS que renderiza o FAQ. -->
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"es","mainEntity":[{"@type":"Question","name":"¿Vozen es realmente gratis?","acceptedAnswer":{"@type":"Answer","text":"Sí — el núcleo sigue siendo gratis: 38 voces Piper en 35 idiomas, lectura automática, saludos, la mayoría de los juegos y todos los controles de administración. Kokoro y Google HD son motores Premium; Plus los desbloquea para ti y Premium para el servidor"}},{"@type":"Question","name":"¿Qué incluye Premium?","acceptedAnswer":{"@type":"Answer","text":"Motores Kokoro neuronal y Google HD, los 8 efectos de voz, permanencia 24/7, 50 pronunciaciones personales, /rizz y los juegos Premium. Premium de servidor también incluye transcripción de voz en directo. 6,99 €/mes cubre 2 servidores o 13,99 €/mes cubre 5; Vozen Plus (3,99 €/mes) da las ventajas personales en cualquier servidor"}},{"@type":"Question","name":"¿Cómo añado Vozen a mi servidor?","acceptedAnswer":{"@type":"Answer","text":"Haz clic en \"Añadir a Discord\", elige tu servidor (necesitas Gestionar servidor) y ejecuta /setup. Así de fácil"}},{"@type":"Question","name":"¿Qué idiomas admite?","acceptedAnswer":{"@type":"Answer","text":"35 idiomas con 38 voces neuronales — portugués, inglés, español, francés, alemán, japonés, árabe, ruso y muchos más, cada uno con una voz nativa"}},{"@type":"Question","name":"¿Tengo que configurar algo?","acceptedAnswer":{"@type":"Answer","text":"No. /setup lo hace en un solo paso. Después, todo funciona con valores predeterminados sensatos — puedes ajustarlo más tarde con /config"}},{"@type":"Question","name":"¿Puede cada uno tener una voz distinta?","acceptedAnswer":{"@type":"Answer","text":"Sí. Cada miembro define su voz e idioma con /voice set. Esa voz se usa de forma predeterminada; la detección opcional por mensaje se activa con /voice detection on"}},{"@type":"Question","name":"Piper, Kokoro o Google HD — ¿qué motor de voz?","acceptedAnswer":{"@type":"Answer","text":"Piper es el motor local gratuito. Kokoro neuronal y Google HD requieren Vozen Plus para ti o Vozen Premium en el servidor. Cambia con /voice set; al expirar el acceso, vuelve automáticamente al motor gratuito"}},{"@type":"Question","name":"¿Cómo desactivo funciones?","acceptedAnswer":{"@type":"Answer","text":"Todo se puede activar y desactivar desde /config — el saludo, la lectura automática, los avisos de quién habló, el filtro antispam y más. También hay un botón de apagado total"}}]}</script>
-  </head>
+  <link rel="stylesheet" href="/css/global-nav-v1.css?v=53483be846f4"></head>
   <body class="tts-page" data-i18n-document-title="tts.documentTitle" data-vozen-public-analytics="true">
     <!-- grain overlay -->
     <div class="grain" aria-hidden="true"></div>
@@ -60,12 +60,12 @@
     <a class="skip-link" href="https://vozen.org/es/tts/#hero">Ir al contenido</a>
 
     <!-- ─────────────── NAVBAR ─────────────── -->
-    <header class="nav vozen-global-nav is-stuck" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-locale-root="es/" data-nav-prerendered="true" data-prerender-fragment="navigation">
+    <header class="nav vozen-global-nav is-stuck" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-prerendered="true" data-nav-locale-root="es/" data-prerender-fragment="navigation">
       <div class="wrap nav__inner">
         <a class="brand" href="es/" aria-label="Inicio del ecosistema Vozen" data-i18n-aria-label="ecosystem.homeAria">
           <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="favicon.svg" alt="" width="40" height="40"></span>
           <span class="brand__word">Vozen</span>
-          <span class="nav__product">TTS</span>
+          <span class="nav__product" data-i18n="ecosystem.label">Ecosistema</span>
         </a>
         <nav class="nav__links" aria-label="Productos Vozen" data-i18n-aria-label="ecosystem.productsAria">
           <a class="is-current" href="es/tts/" aria-current="page" data-i18n="ecosystem.tts">Vozen TTS</a>
@@ -709,7 +709,7 @@
     <script defer="" src="js/install-config-v1.js?v=97c30a4aaef1"></script>
     <script defer="" src="js/tts-install-v1.js?v=06da33493db0"></script>
     <script defer="" src="js/oauth-config.js?v=15ffe1a765c9"></script>
-    <script defer="" src="js/global-nav-v1.js?v=0876f9ed6d6d"></script>
+    <script defer="" src="js/global-nav-v1.js?v=d5e2e844b3e5"></script>
     <script defer="" src="js/i18n-public-loader-v1.js?v=d29fcfb97378"></script>
     <script defer="" src="js/main-v51.js?oauth=ecosystem-v5&amp;auth-tabs=1&amp;account-fast=1&amp;auth-race=4&amp;auth-persist=1&amp;v=19cb4b294962"></script>
     <script defer="" src="js/motion-v1.js?v=e61ca8f4a378"></script>
@@ -719,6 +719,10 @@
 .reveal{opacity:1!important;transform:none!important}.qa__a{max-height:none!important}
 .helper-module-panel[hidden]{display:block!important}.nav__links{display:flex!important;flex-wrap:wrap}
 .nav__inner{flex-wrap:wrap}.nav__burger,.lang,.docs-ecosystem-nav__language{display:none!important}
+.vozen-global-nav{position:static!important;height:auto!important}
+.vozen-global-nav .nav__inner{height:auto!important;padding-block:14px;row-gap:14px}
+.vozen-global-nav .nav__links{order:3;flex:1 1 100%;justify-content:flex-start;gap:16px}
+.docs-topbar{position:static!important}
 .page-account main,.page-account .foot{visibility:visible!important}
-@media(max-width:900px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}}
+@media(max-width:980px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}.docs-drawer-toggle,.docs-sidebar-scrim{display:none!important}}
 </style><p>Interactive search, audio, account information and live service checks require JavaScript. All public documentation and command descriptions are available below.</p></noscript></body></html>

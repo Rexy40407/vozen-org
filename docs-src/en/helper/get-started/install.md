@@ -9,7 +9,7 @@ Open the official Vozen Helper panel and choose **Add to Discord**. Select only 
 ## Before you continue
 
 - Confirm that you control the server or have delegated setup access.
-- Keep the Helper role below the roles it needs to manage.
+- Keep the Helper role above the roles it needs to manage.
 - Enable the privileged intents requested by the installation and required by your chosen modules.
 
 Never paste bot tokens into the panel, documentation, or a browser address bar.

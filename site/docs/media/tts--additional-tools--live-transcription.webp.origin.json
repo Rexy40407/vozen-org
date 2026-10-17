@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/docs-visual-content.mjs#tts/additional-tools/live-transcription/",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "aaf94c45c806406284b4712ffde9ec0d02e322e6ce33a424236f9a9776c21b71",
+  "size": {
+    "width": 960,
+    "height": 584
+  }
+}

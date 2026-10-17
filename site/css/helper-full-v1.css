@@ -4631,7 +4631,122 @@ html:has(.helper-page) {
 }
 
 /* source: global-nav-v1.css */
-/* Shared marketing navigation for the Vozen ecosystem. */
+/* Single visual authority for navigation on marketing, account, docs and guides. */
+@font-face {
+  font-family: Outfit;
+  src: url('../assets/fonts/outfit-400-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+/* The logo must not remain in the system fallback after an optional font load. */
+@font-face {
+  font-family: "Vozen Header Display";
+  src: url('../assets/fonts/unbounded-critical-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+:root { --docs-ecosystem-nav-height: 92px; }
+@media (max-width: 1000px) { :root { --docs-ecosystem-nav-height: 76px; } }
+@media (max-width: 720px) { :root { --docs-ecosystem-nav-height: 70px; } }
+
+header.vozen-global-nav {
+  --text-0: #f6f7fe;
+  --text-1: #a3a9c4;
+  --line: rgba(246,247,254,.1);
+  --line-2: rgba(246,247,254,.18);
+  --aqua: #2ee6c8;
+  --blurple: #6672ff;
+  --blurple-2: #9fa8ff;
+  position: sticky; top: 0; z-index: 100;
+  box-sizing: border-box;
+  font: 400 16px/1.6 Outfit, system-ui, sans-serif;
+  color: var(--text-0);
+  border-bottom: 1px solid transparent;
+  box-shadow: none;
+}
+.vozen-global-nav *, .vozen-global-nav *::before, .vozen-global-nav *::after { box-sizing: border-box; }
+header.vozen-global-nav a { text-decoration: none; }
+header.vozen-global-nav a:focus-visible, header.vozen-global-nav button:focus-visible {
+  outline: 2px solid #6672ff; outline-offset: 3px;
+}
+header.vozen-global-nav .nav__inner { display: flex; align-items: center; justify-content: space-between; }
+header.vozen-global-nav .brand {
+  display: inline-flex; flex: none; align-items: center; gap: 11px;
+  color: var(--text-0); font: inherit; letter-spacing: normal;
+}
+header.vozen-global-nav .brand__mark {
+  display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg,#6672ff,#2ee6c8);
+  box-shadow: 0 8px 22px -6px rgba(102,114,255,.85), inset 0 1px 0 rgba(255,255,255,.35);
+}
+header.vozen-global-nav .brand__word {
+  font-family: "Vozen Header Display", system-ui, sans-serif;
+  font-size: 23px; font-weight: 700; letter-spacing: -.04em; color: var(--text-0);
+}
+header.vozen-global-nav .nav__links { display: flex; align-items: center; }
+header.vozen-global-nav .nav__links a {
+  margin: 0; padding: 0; color: var(--text-1); font: 500 15px/1.6 Outfit, system-ui, sans-serif;
+}
+header.vozen-global-nav .nav__links a:hover { color: var(--text-0); }
+header.vozen-global-nav .nav__actions { display: flex; align-items: center; flex: none; margin: 0; }
+header.vozen-global-nav .nav__gh { display: grid; place-items: center; color: var(--text-1); }
+header.vozen-global-nav .nav__login {
+  position: relative; display: inline-flex; align-items: center; gap: 8px;
+  min-width: 0; width: auto; border: 1px solid rgba(204,216,255,.24); border-radius: 999px;
+  background: linear-gradient(105deg,#657ff0,#3bcdbd); color: #fff;
+  font: 750 16px/1.6 Outfit, system-ui, sans-serif; text-decoration: none;
+  box-shadow: 0 12px 32px -15px rgba(83,141,255,.88);
+}
+header.vozen-global-nav .nav__login--account {
+  background: rgba(255,255,255,.06); color: var(--text-0); border-color: var(--line-2); box-shadow: none;
+}
+header.vozen-global-nav .nav__login--account:hover { background: rgba(255,255,255,.1); transform: none; box-shadow: none; }
+header.vozen-global-nav .nav__login > svg { display: block; flex: none; width: 20px; height: 15px; }
+header.vozen-global-nav .nav__login--account > span:last-child {
+  max-width: 132px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+header.vozen-global-nav .nav__login-av,
+header.vozen-global-nav .docs-ecosystem-nav__account-avatar,
+header.vozen-global-nav .docs-ecosystem-nav__account-mark {
+  display: grid; width: 24px; height: 24px; flex: none; place-items: center; border-radius: 50%; object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.34);
+}
+header.vozen-global-nav .docs-ecosystem-nav__account-avatar-wrap { position: relative; display: grid; width: 24px; height: 24px; flex: none; isolation: isolate; }
+header.vozen-global-nav .docs-ecosystem-nav__account-decoration { position: absolute; z-index: 2; inset: -17%; width: 134%; height: 134%; max-width: none; pointer-events: none; object-fit: contain; }
+header.vozen-global-nav .docs-ecosystem-nav__account-mark--fallback { background: rgba(255,255,255,.18); color: #fff; font-size: 12px; font-weight: 800; }
+header.vozen-global-nav .lang { position: relative; display: block; margin: 0; padding: 0; border: 0; }
+header.vozen-global-nav .lang__btn {
+  display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px;
+  color: var(--text-0); border: 1px solid var(--line); border-radius: 999px;
+  font: 600 13.5px/1.6 Outfit, system-ui, sans-serif; cursor: pointer; white-space: nowrap;
+}
+header.vozen-global-nav .lang__flag,
+header.vozen-global-nav .docs-ecosystem-nav__language-flag { display: block; flex: none; width: 20px; height: 15px; border-radius: 2px; }
+header.vozen-global-nav .lang__flag-icon { display: block; width: 100%; height: 100%; }
+header.vozen-global-nav .lang__chev { color: var(--text-1); flex: none; transition: transform .2s ease; }
+header.vozen-global-nav .lang.is-open .lang__chev { transform: rotate(180deg); }
+header.vozen-global-nav .lang__panel {
+  position: absolute; top: calc(100% + 8px); inset-inline-end: 0; z-index: 120;
+  min-width: 208px; max-height: min(60vh,420px); overflow-y: auto;
+  margin: 0; padding: 6px; list-style: none; border: 1px solid rgba(255,255,255,.16); border-radius: 16px;
+  background: rgba(28,32,52,.96); backdrop-filter: blur(14px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.45); opacity: 0; visibility: hidden; transform: translateY(-6px);
+}
+header.vozen-global-nav .lang.is-open .lang__panel { opacity: 1; visibility: visible; transform: none; }
+header.vozen-global-nav .lang__panel li { margin: 0; padding: 0; list-style: none; }
+header.vozen-global-nav .lang__opt {
+  display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 9px 10px;
+  border-radius: 10px; color: var(--text-1); font: 500 14px/1.6 Outfit, system-ui, sans-serif;
+}
+header.vozen-global-nav .lang__opt:hover, header.vozen-global-nav .lang__opt:focus-visible { background: rgba(102,114,255,.14); color: var(--text-0); }
+header.vozen-global-nav .lang__opt.is-active { background: rgba(102,114,255,.2); color: var(--text-0); font-weight: 600; }
+header.vozen-global-nav .lang__optname { flex: 1; }
+header.vozen-global-nav .lang__check { opacity: 0; color: #9fa8ff; }
+header.vozen-global-nav .lang__opt.is-active .lang__check { opacity: 1; }
+header.vozen-global-nav .nav__burger { display: none; }
 
 /* The display face is optional for the first visit: on a constrained network
    text paints in the metric-compatible system fallback instead of recording a
@@ -4786,21 +4901,21 @@ html:has(.helper-page) {
     padding: 0;
   }
 
-  .vozen-global-nav .brand__mark {
+  header.vozen-global-nav .brand__mark {
     width: 52px;
     height: 52px;
     border-radius: 15px;
   }
 
-  .vozen-global-nav .brand__word { font-size: 29px; }
+  header.vozen-global-nav .brand__word { font-size: 29px; }
   .vozen-global-nav .nav__product { font-size: 16px; }
   .vozen-global-nav .nav__links { gap: 36px; }
-  .vozen-global-nav .nav__links a { font-size: 17px; }
+  header.vozen-global-nav .nav__links a { font-size: 17px; }
   .vozen-global-nav .nav__actions { gap: 16px; }
   .vozen-global-nav .nav__gh { display: grid; width: 42px; height: 42px; place-items: center; }
   .vozen-global-nav .nav__gh svg { width: 23px; height: 23px; }
-  .vozen-global-nav .lang__btn { gap: 9px; padding: 8px 15px; font-size: 15px; }
-  .vozen-global-nav .nav__login { min-height: 52px; padding: 0 22px; font-size: 17px; }
+  header.vozen-global-nav .lang__btn { gap: 9px; padding: 8px 15px; font-size: 15px; }
+  header.vozen-global-nav .nav__login { min-height: 52px; padding: 0 22px; font-size: 17px; }
 }
 
 .vozen-global-nav .lang__btn {
@@ -4830,10 +4945,10 @@ html:has(.helper-page) {
 }
 
 @media (min-width: 1101px) {
-  body:not(.page-account) .vozen-global-nav { zoom: .9090909091; }
+  body:not(.page-account):not(.docs-shell-active):not(.vozen-guide-page) .vozen-global-nav { zoom: .9090909091; }
 }
 
-.vozen-global-nav .nav__links a.is-current {
+header.vozen-global-nav .nav__links a.is-current {
   position: relative;
   color: var(--text-0, #f7f8fb);
 }
@@ -4872,7 +4987,7 @@ html:has(.helper-page) {
 }
 
 @media (max-width: 820px) {
-  .vozen-global-nav .lang { display: none; }
+  header.vozen-global-nav .lang { display: none; }
 }
 
 @media (max-width: 720px) {
@@ -4885,7 +5000,7 @@ html:has(.helper-page) {
     display: none;
   }
 
-  .vozen-global-nav .nav__burger {
+  header.vozen-global-nav .nav__burger {
     width: 44px;
     height: 44px;
     align-items: center;
@@ -4895,8 +5010,8 @@ html:has(.helper-page) {
 }
 
 @media (max-width: 350px) {
-  .vozen-global-nav .nav__gh,
-  .vozen-global-nav .lang {
+  header.vozen-global-nav .nav__gh,
+  header.vozen-global-nav .lang {
     display: none;
   }
 
@@ -4916,6 +5031,31 @@ html:has(.helper-page) {
 }
 
 .lang__opt, .docs-ecosystem-nav__language-option { text-decoration: none; color: inherit; }
+
+@media (max-width: 1279px) {
+  header.vozen-global-nav .nav__links { display: none; }
+  header.vozen-global-nav .nav__links.is-open {
+    display: flex; flex-direction: column; align-items: stretch; position: absolute;
+    top: 100%; inset-inline: 0; padding: 14px 24px; gap: 0;
+    background: rgba(5,6,15,.97); backdrop-filter: blur(20px); border-bottom: 1px solid var(--line);
+  }
+  header.vozen-global-nav .nav__links.is-open a { padding: 12px 0; font-size: 16.5px; border-bottom: 1px solid rgba(255,255,255,.04); }
+  header.vozen-global-nav .nav__links.is-open a.is-current::after { bottom: 5px; }
+  header.vozen-global-nav .nav__burger {
+    display: flex; flex: none; flex-direction: column; gap: 5px; width: 44px; height: 44px;
+    align-items: center; justify-content: center; padding: 10px; background: none; border: 0; cursor: pointer;
+  }
+  header.vozen-global-nav .nav__burger span { width: 22px; height: 2px; background: var(--text-0); border-radius: 2px; }
+  header.vozen-global-nav .nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  header.vozen-global-nav .nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  header.vozen-global-nav .nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
+@media (max-width: 720px) {
+  header.vozen-global-nav .nav__login { width: 44px; height: 44px; min-height: 44px; padding: 0; gap: 0; border-radius: 50%; }
+  header.vozen-global-nav .nav__login > span:not(.discord-avatar):not(.nav__login-av):not(.docs-ecosystem-nav__account-avatar-wrap):not(.docs-ecosystem-nav__account-mark) {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+}
 
 /* source: helper-ui-preview.css */
 /*

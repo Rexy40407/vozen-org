@@ -1,0 +1,10 @@
+{
+  "origin": "Owned UI illustration with fictional names and values; not a live Discord screenshot.",
+  "source": "docs-data/helper/helper-docs-manifest.json#web3.crypto_queries",
+  "generator": "tools/build-docs-visuals.mjs",
+  "hash": "29925f0debe9d2735160240b615e7c18b233e279834c7bfdcd957a2b7b67add2",
+  "size": {
+    "width": 960,
+    "height": 510
+  }
+}

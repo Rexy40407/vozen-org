@@ -40,14 +40,14 @@
 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-    <link rel="stylesheet" href="css/tts-page-v1.css?v=a1b6eb77b2b5">
+    <link rel="stylesheet" href="css/tts-page-v1.css?v=db100088a107">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Vozen TTS","applicationCategory":"UtilitiesApplication","operatingSystem":"Discord","url":"https://vozen.org/zh/tts/","description":"Vozen 用自然的神經網路語音，把你的 Discord 聊天內容大聲朗讀出來——支援 35 種語言，內建遊戲與歡笑，核心功能永久免費。","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"inLanguage":"zh-Hant"}</script>
 
     <!-- FAQ structured data (Google rich results). Mantém em sincronia com
          window.VOZEN_FAQ (js/i18n.js) — o JSON-LD tem de ser ESTÁTICO porque os
          crawlers não correm o JS que renderiza o FAQ. -->
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"zh-Hant","mainEntity":[{"@type":"Question","name":"Vozen 真的免費嗎？","acceptedAnswer":{"@type":"Answer","text":"是的——核心功能仍然免费：35 种语言的 38 种 Piper 语音、自动朗读、问候、大多数游戏和全部管理控制。Kokoro 与 Google HD 属于 Premium 引擎；Plus 为个人解锁，服务器 Premium 为全服解锁。"}},{"@type":"Question","name":"Premium 包含哪些內容？","acceptedAnswer":{"@type":"Answer","text":"Kokoro 神经语音与 Google HD 引擎、全部 8 种语音特效、全天候驻留、50 条个人发音、/rizz 和 Premium 游戏。伺服器 Premium 也包含即時語音轉錄。每月 €6.99 覆盖 2 个服务器，€14.99 覆盖 5 个；Vozen Plus（每月 €3.99）可在任何服务器提供个人权益。"}},{"@type":"Question","name":"我要怎麼把 Vozen 加入我的伺服器？","acceptedAnswer":{"@type":"Answer","text":"點擊「加入 Discord」，選擇你的伺服器（你需要具備管理伺服器權限），然後執行 /setup。就這麼簡單。"}},{"@type":"Question","name":"它支援哪些語言？","acceptedAnswer":{"@type":"Answer","text":"35 種語言搭配 38 種神經網路語音——中文、英文、西班牙文、法文、德文、日文、阿拉伯文、俄文以及更多語言，每一種都配有道地的母語語音。"}},{"@type":"Question","name":"我需要設定任何東西嗎？","acceptedAnswer":{"@type":"Answer","text":"不需要。/setup 一步就能搞定。之後一切都會以合理的預設值運作——你日後可以用 /config 進行細部調整。"}},{"@type":"Question","name":"每個人都能使用不同的語音嗎？","acceptedAnswer":{"@type":"Answer","text":"可以。每位成員都能用 /voice set 設定自己的語音與語言。預設使用該語音；可用 /voice detection on 啟用每則訊息的選用語言偵測。"}},{"@type":"Question","name":"Piper、Kokoro 还是 Google HD——该选哪个语音引擎？","acceptedAnswer":{"@type":"Answer","text":"Piper 是免费的本地引擎。Kokoro 神经语音和 Google HD 需要个人 Vozen Plus 或服务器 Vozen Premium。可用 /voice set 切换；权益到期后会自动回到免费引擎。"}},{"@type":"Question","name":"我要怎麼關閉功能？","acceptedAnswer":{"@type":"Answer","text":"一切都能透過 /config 切換——問候、自動朗讀、發話者宣告、反垃圾訊息過濾器等等。也有一個完整的緊急停用開關。"}}]}</script>
-  </head>
+  <link rel="stylesheet" href="/css/global-nav-v1.css?v=53483be846f4"></head>
   <body class="tts-page" data-i18n-document-title="tts.documentTitle" data-vozen-public-analytics="true">
     <!-- grain overlay -->
     <div class="grain" aria-hidden="true"></div>
@@ -60,12 +60,12 @@
     <a class="skip-link" href="https://vozen.org/zh/tts/#hero">跳到內容</a>
 
     <!-- ─────────────── NAVBAR ─────────────── -->
-    <header class="nav vozen-global-nav is-stuck" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-locale-root="zh/" data-nav-prerendered="true" data-prerender-fragment="navigation">
+    <header class="nav vozen-global-nav is-stuck" id="nav" data-vozen-nav="" data-nav-product="TTS" data-nav-current="tts" data-nav-prerendered="true" data-nav-locale-root="zh/" data-prerender-fragment="navigation">
       <div class="wrap nav__inner">
         <a class="brand" href="zh/" aria-label="Vozen 生態系首頁" data-i18n-aria-label="ecosystem.homeAria">
           <span class="brand__mark" aria-hidden="true"><img class="brand__portal" src="favicon.svg" alt="" width="40" height="40"></span>
           <span class="brand__word">Vozen</span>
-          <span class="nav__product">TTS</span>
+          <span class="nav__product" data-i18n="ecosystem.label">生態系統</span>
         </a>
         <nav class="nav__links" aria-label="Vozen 產品" data-i18n-aria-label="ecosystem.productsAria">
           <a class="is-current" href="zh/tts/" aria-current="page" data-i18n="ecosystem.tts">Vozen TTS</a>
@@ -709,7 +709,7 @@
     <script defer="" src="js/install-config-v1.js?v=97c30a4aaef1"></script>
     <script defer="" src="js/tts-install-v1.js?v=06da33493db0"></script>
     <script defer="" src="js/oauth-config.js?v=15ffe1a765c9"></script>
-    <script defer="" src="js/global-nav-v1.js?v=0876f9ed6d6d"></script>
+    <script defer="" src="js/global-nav-v1.js?v=d5e2e844b3e5"></script>
     <script defer="" src="js/i18n-public-loader-v1.js?v=d29fcfb97378"></script>
     <script defer="" src="js/main-v51.js?oauth=ecosystem-v5&amp;auth-tabs=1&amp;account-fast=1&amp;auth-race=4&amp;auth-persist=1&amp;v=19cb4b294962"></script>
     <script defer="" src="js/motion-v1.js?v=e61ca8f4a378"></script>
@@ -719,6 +719,10 @@
 .reveal{opacity:1!important;transform:none!important}.qa__a{max-height:none!important}
 .helper-module-panel[hidden]{display:block!important}.nav__links{display:flex!important;flex-wrap:wrap}
 .nav__inner{flex-wrap:wrap}.nav__burger,.lang,.docs-ecosystem-nav__language{display:none!important}
+.vozen-global-nav{position:static!important;height:auto!important}
+.vozen-global-nav .nav__inner{height:auto!important;padding-block:14px;row-gap:14px}
+.vozen-global-nav .nav__links{order:3;flex:1 1 100%;justify-content:flex-start;gap:16px}
+.docs-topbar{position:static!important}
 .page-account main,.page-account .foot{visibility:visible!important}
-@media(max-width:900px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}}
+@media(max-width:980px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}.docs-drawer-toggle,.docs-sidebar-scrim{display:none!important}}
 </style><p>Interactive search, audio, account information and live service checks require JavaScript. All public documentation and command descriptions are available below.</p></noscript></body></html>

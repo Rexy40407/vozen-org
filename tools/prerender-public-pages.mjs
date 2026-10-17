@@ -13,8 +13,12 @@ const noScript = `<noscript data-prerender-fallback><style>
 .reveal{opacity:1!important;transform:none!important}.qa__a{max-height:none!important}
 .helper-module-panel[hidden]{display:block!important}.nav__links{display:flex!important;flex-wrap:wrap}
 .nav__inner{flex-wrap:wrap}.nav__burger,.lang,.docs-ecosystem-nav__language{display:none!important}
+.vozen-global-nav{position:static!important;height:auto!important}
+.vozen-global-nav .nav__inner{height:auto!important;padding-block:14px;row-gap:14px}
+.vozen-global-nav .nav__links{order:3;flex:1 1 100%;justify-content:flex-start;gap:16px}
+.docs-topbar{position:static!important}
 .page-account main,.page-account .foot{visibility:visible!important}
-@media(max-width:900px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}}
+@media(max-width:980px){.docs-sidebar{position:static!important;transform:none!important;visibility:visible!important}.docs-main{margin-left:0!important}.docs-drawer-toggle,.docs-sidebar-scrim{display:none!important}}
 </style><p>Interactive search, audio, account information and live service checks require JavaScript. All public documentation and command descriptions are available below.</p></noscript>`;
 
 const attrs = (node) => Object.fromEntries((node.attrs || []).map(({ name, value }) => [name, value]));
@@ -51,7 +55,7 @@ try {
   browser = await chromium.launch();
   const files = walkHtml(root).filter((file) => {
     const relative = path.relative(root, file).replaceAll('\\', '/');
-    return isIndexable(relative, fs.readFileSync(file, 'utf8')) || relative === 'account/index.html';
+    return isIndexable(relative, fs.readFileSync(file, 'utf8')) || relative === 'account/index.html' || relative === '404.html';
   });
   for (const file of files) {
     const relative = path.relative(root, file).replaceAll('\\', '/');
