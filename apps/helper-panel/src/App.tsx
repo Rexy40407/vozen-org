@@ -4644,9 +4644,14 @@ function FeatureDetail({
   saving: boolean;
   onBack: () => void;
 }) {
-  const [createdChannel, setCreatedChannel] = useState<GuildContext['channels'][number] | null>(null);
-  const resourceContext = context && createdChannel ? {
-    ...context, channels:[...context.channels.filter(channel => channel.id !== createdChannel.id),createdChannel],
+  const [createdResources, setCreatedResources] = useState<{guildId:string;channels:GuildContext['channels']} | null>(null);
+  const rememberCreatedResource = (channel: GuildContext['channels'][number]) => {
+    if (!context) return;
+    setCreatedResources(previous => ({guildId:context.guildId,channels:[...(previous?.guildId === context.guildId ? previous.channels.filter(item => item.id !== channel.id) : []),channel]}));
+  };
+  const localResources = createdResources?.guildId === context?.guildId ? createdResources?.channels ?? [] : [];
+  const resourceContext = context && localResources.length ? {
+    ...context, channels:[...context.channels.filter(channel => !localResources.some(item => item.id === channel.id)),...localResources],
   } : context;
   const translatedFeature = feature ? localizedFeature(feature) : undefined;
   const templateOptions: [string, string][] = [
@@ -4829,10 +4834,14 @@ function FeatureDetail({
               onChange={onChange}
               beforeFields={feature?.key === 'community.starboard' && section.fields.some(field => field.key === 'channel')
                 ? <StarboardChannel key={context?.guildId} context={context} onCreated={channel => {
-                    setCreatedChannel(channel);onChange('channel',channel.id);
+                    rememberCreatedResource(channel);onChange('channel',channel.id);
                   }} /> : feature?.key === 'support.tickets' && !localPreviewMode && section.fields.some(field => field.key === 'panelChannel')
                 ? <TicketPanelChannel key={`${context?.guildId}:tickets`} context={context} onCreated={channel => {
-                    setCreatedChannel(channel); onChange('panelChannel', channel.id);
+                    rememberCreatedResource(channel); onChange('panelChannel', channel.id);
+                  }} /> : undefined}
+              categorySetup={feature?.key === 'support.tickets' && !localPreviewMode && section.fields.some(field => field.key === 'categoryId')
+                ? <TicketPanelChannel key={`${context?.guildId}:category`} category context={context} onCreated={channel => {
+                    rememberCreatedResource(channel); onChange('categoryId', channel.id);
                   }} /> : undefined}
             />
           ))}
@@ -5795,12 +5804,14 @@ function ConfigSection({
   context,
   onChange,
   beforeFields,
+  categorySetup,
 }: {
   section: SectionSpec;
   config: FeatureConfig;
   context: GuildContext | null;
   onChange: (key: string, value: unknown) => void;
   beforeFields?: import('react').ReactNode;
+  categorySetup?: import('react').ReactNode;
 }) {
   const renderField = (field: FieldSpec) => <FieldControl field={field} key={field.key}
     value={config[field.key]} context={context} onChange={onChange} />;
@@ -5825,7 +5836,9 @@ function ConfigSection({
           const fields = group.keys.flatMap(key => section.fields.filter(field => field.key === key));
           return fields.length ? <section className="ticket-settings__group" key={group.title} aria-label={group.title}>
             <h4>{group.title}</h4><p className="ticket-settings__hint">{group.description}</p>
-            <div className="field-grid">{fields.map(field => renderField(ticketSettingCopy(field, helperLocale())))}</div>
+            <div className="field-grid">{fields.map(field => field.key === 'categoryId' && categorySetup
+              ? <div className="ticket-settings__category" key={field.key}>{renderField(ticketSettingCopy(field, helperLocale()))}{categorySetup}</div>
+              : renderField(ticketSettingCopy(field, helperLocale())))}</div>
             {group.keys.includes('panelChannel') && beforeFields}
           </section> : null;
         })}

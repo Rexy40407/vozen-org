@@ -559,6 +559,10 @@ async function meOrBootstrap(options?: ReadOptions): Promise<Me> {
 }
 
 export const api = {
+  createTicketCategory: (name: string) =>
+    request<{guildId:string;channel:{id:string;name:string;type:number};reused:boolean}>('/api/tickets/category', {
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name}),
+    }),
   createTicketPanelChannel: (name: string) =>
     request<{guildId:string;channel:{id:string;name:string;type:number};reused:boolean}>('/api/tickets/channel', {
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name}),

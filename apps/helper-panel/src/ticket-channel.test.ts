@@ -1,6 +1,16 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 afterEach(() => vi.unstubAllGlobals());
 describe('ticket panel channel API', () => {
+  it('creates a category through the category endpoint with name only', async () => {
+    vi.stubGlobal('window', {location:{hash:''}});
+    const { api } = await import('./api');
+    const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({guildId:'guild',channel:{id:'456',name:'tickets',type:4},reused:false}), {status:200,headers:{'Content-Type':'application/json'}}));
+    vi.stubGlobal('fetch', fetch);
+    const result = await api.createTicketCategory('tickets');
+    expect(result.channel.type).toBe(4);
+    expect(fetch.mock.calls[0][0]).toContain('/api/tickets/category');
+    expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({name:'tickets'});
+  });
   it('creates a channel without accepting arbitrary guilds or permission overrides', async () => {
     vi.stubGlobal('window', {location:{hash:''}});
     const { api } = await import('./api');
